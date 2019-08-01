@@ -24,7 +24,7 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingUIManager;
  * 
  * @author Tim Neumann
  */
-class TestSwingUiManager {
+class SwingUiManagerUiTest {
     
     private SwingUIManager uiManager;
     

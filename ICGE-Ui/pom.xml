@@ -15,4 +15,28 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>noUiTests</id>
+			<activation>
+				<property>
+					<name>noUiTests</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<exclude>**/*UiTest.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
