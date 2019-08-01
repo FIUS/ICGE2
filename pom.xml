@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.uni-stuttgart.informatik.fius</groupId>
 	<artifactId>ICGE</artifactId>
@@ -10,7 +12,7 @@
 	<packaging>pom</packaging>
 	<properties>
 		<java.version>11</java.version>
-		<junit.jupiter.version>5.1.0</junit.jupiter.version>
+		<junit.jupiter.version>5.3.1</junit.jupiter.version>
 		<junit.platform.version>1.1.0</junit.platform.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -28,7 +30,8 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.0.0-M3</version>
+					<version>2.19.1</version> <!-- newer versions understand modules, which is a problem for white box 
+						tests. -->
 					<configuration>
 						<includes>
 							<include>**/Test*.java</include>
@@ -74,6 +77,16 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>${junit.jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<distributionManagement>
 		<repository>
 			<id>c-hack.internal</id>
@@ -87,8 +100,6 @@
 		</snapshotRepository>
 	</distributionManagement>
 	<modules>
-		<module>ICGE-Renderer</module>
-    <module>ICGE-Test</module>
-    <module>ICGE-TEST</module>
-  </modules>
+		<module>ICGE-Ui</module>
+	</modules>
 </project>
