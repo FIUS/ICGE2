@@ -26,6 +26,8 @@ public interface TextureRegistry {
      *
      * @param resourceName the name of the texture resource
      * @return the handle to retrieve the texture
+     *
+     * @throws TextureNotFoundException
      */
     public String loadTextureFromResource(String resourceName);
 
@@ -36,6 +38,8 @@ public interface TextureRegistry {
      *
      * @param filePath the path to the texture image file
      * @return the handle to retrieve the texture
+     *
+     * @throws TextureNotFoundException
      */
     public String loadTextureFromFile(String filePath);
 
