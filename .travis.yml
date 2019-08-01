@@ -1,13 +1,6 @@
 language: java
 jdk:
   - openjdk11
-jobs:
-  include:
-    - stage: unitTest
-      name: "Junit Tests without UI"
-      script: mvn test -DnoUiTests=true
+services:
+  - xvfb
 
-stages:
-  - compile
-  - unitTest
-#  - integrationTest
