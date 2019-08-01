@@ -7,6 +7,12 @@
 # BlueJ files
 *.ctxt
 
+# VsCode
+.vscode
+
+# Classpath
+.classpath
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
