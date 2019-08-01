@@ -10,7 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 import java.awt.Image;
-import java.util.NoSuchElementException;;
+import java.util.NoSuchElementException;
 
 /**
  * The interface for a texture registry used by a {@link UiManager}.
