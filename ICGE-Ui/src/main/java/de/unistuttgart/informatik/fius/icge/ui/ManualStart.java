@@ -23,5 +23,6 @@ public class ManualStart {
     public static void main(String[] args) {
         UiManager manager = UiManagerFactory.createUiManager();
         manager.start();
+        manager.setWindowTitle("Manual start");
     }
 }
