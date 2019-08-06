@@ -41,7 +41,7 @@ public class SwingTextureRegistry implements TextureRegistry {
         if (this.resourceToHandle.containsKey(resourceName)) {
             return this.resourceToHandle.get(resourceName);
         }
-        try (InputStream input = SwingTextureRegistry.class.getResourceAsStream("resourceName")) {
+        try (InputStream input = SwingTextureRegistry.class.getResourceAsStream(resourceName)) {
             BufferedImage texture = ImageIO.read(input);
             this.resourceToHandle.put(resourceName, resourceName);
             this.handleToTexture.put(resourceName, texture);

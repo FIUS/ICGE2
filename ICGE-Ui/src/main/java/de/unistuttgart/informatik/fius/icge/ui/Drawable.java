@@ -10,45 +10,71 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 /**
- * A interface representing an object that can be drawn onto the playfield by a {@link PlayfieldDrawer}.
+ * A class containing all information needed to draw an object onto the playfield by a {@link PlayfieldDrawer}.
  *
  * @author Tim Neumann
  */
-public interface Drawable {
+public class Drawable implements Comparable<Drawable>{
 
     /**
-     * Get the x coordinate of the drawable.
+     * The x coordinate of the drawable.
      *
      * The coordinate system is based on cells where fractionals denote positions between cells.
-     *
-     * @return the x coordinate.
      */
-    public double getX();
+    public final double x;
 
     /**
-     * Get the y coordinate of the drawable.
+     * The y coordinate of the drawable.
      *
      * The coordinate system is based on cells where fractionals denote positions between cells.
-     *
-     * @return the y coordinate.
      */
-    public double getY();
+    public final double y;
 
     /**
-     * Get the z coordinate of the drawable.
+     * The z value of the drawable.
      *
-     * The z coordinate is used as a tie braker if two drawables are in the same cell.
-     *
-     * @return the z coordinate.
+     * The z value is used to decide the drawing order of Drawables in the same cell.
      */
-    public int getZ();
+    public final int z;
 
     /**
-     * Get the handle of the texture for this drawable.
+     * The handle of the texture for this drawable.
      *
      * The texture must be registered in the TextureRegistry.
-     *
-     * @return the texture handle
      */
-    public String getTextureHandle();
+    public final String textureHandle;
+
+    /**
+     * Create a new Drawable.
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @param z value
+     * @param textureHandle
+     */
+    public Drawable(double x, double y, int z, String textureHandle) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.textureHandle = textureHandle;
+    }
+
+    @Override
+    public int compareTo(Drawable o) {
+        double compareResult = 0;
+        compareResult = this.z - o.z;
+        if (compareResult == 0) {
+            compareResult = this.x - o.x;
+        }
+        if (compareResult == 0) {
+            compareResult = this.y - o.y;
+        }
+        if (compareResult < 0) {
+            return -1;
+        }
+        if (compareResult > 0) {
+            return 1;
+        }
+        return this.textureHandle.compareTo(o.textureHandle);
+    }
 }

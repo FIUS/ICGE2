@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +64,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
 
     public void setDrawables(List<Drawable> drawables) {
-        // TODO sort drawables!
+        drawables.sort((a, b) -> a.compareTo(b));
         this.drawables = drawables;
     }
 
@@ -71,6 +72,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     public void paint(Graphics g) {
         this.updateViewport(g);
         this.paintGrid(g);
+        this.paintDrawableList(g, this.drawables);
     }
 
     public void updateViewport(Graphics g) {
@@ -105,6 +107,32 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         );
     }
 
+    /**
+     * Compare two drawables and checks if they can be grouped together.
+     *
+     * Drawables have to be in the same cell and have the same texture to be considered equal.
+     * The cell coordinates of both drawables are rounded for this comparison.
+     *
+     * @param a Drawable a
+     * @param b Drawable b
+     * @return Drawables can be grouped
+     */
+    private boolean canGroupDrawables(Drawable a, Drawable b) {
+        if (a == null || b == null) {
+            return false;
+        }
+        if (!a.textureHandle.equals(b.textureHandle)) {
+            return false;
+        }
+        if (Math.round(a.x) != Math.round(b.x)) {
+            return false;
+        }
+        if (Math.round(a.y) != Math.round(b.y)) {
+            return false;
+        }
+        return true;
+    }
+
     private void paintDrawableList(Graphics g, List<Drawable> drawables) {
         if (drawables.size() <= 0) {
             return;
@@ -113,15 +141,33 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         Drawable last = null;
         int currentCount = 0;
 
+        // group and count drawables
         while (iter.hasNext()) {
             Drawable next = iter.next();
-
+            currentCount += 1;
+            if (this.canGroupDrawables(last, next)) {
+                continue;
+            }
+            if (last != null) {
+                this.paintDrawable(g, last, currentCount);
+            }
             last = next;
+            currentCount = 0;
+        }
+        if (last != null) {
+            this.paintDrawable(g, last, currentCount);
         }
     }
 
-    private void paintDrawable(Graphics g, Drawable drawable) {
-
+    private void paintDrawable(Graphics g, Drawable drawable, int count) {
+        if (count <= 1) {
+            Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
+            double cellSize = this.CELL_SIZE * this.scale;
+            int x = Math.toIntExact(Math.round(drawable.x * cellSize + this.offsetX));
+            int y = Math.toIntExact(Math.round(drawable.y * cellSize + this.offsetY));
+            int roundedCellSize = Math.toIntExact(Math.round(cellSize));
+            g.drawImage(texture, x, y, roundedCellSize, roundedCellSize, null);
+        }
     }
 
     private void paintOverlays(Graphics g) {
