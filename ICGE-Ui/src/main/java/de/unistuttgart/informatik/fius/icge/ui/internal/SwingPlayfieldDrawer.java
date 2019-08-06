@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Iterator;
@@ -28,12 +29,19 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
  */
 public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
 
+    /** Stretch factor for mapping row/column coordinates to screen coordinates. */
+    private final double CELL_SIZE = 32;
+
+    // Colors
+    private final Color GRID_COLOR    = new Color(46, 52, 54);
+    private final Color OVERLAY_COLOR = new Color(0, 255, 40, 50);
+
     private TextureRegistry textureRegistry;
 
-    private double       offsetX  = 0;
-    private double       offsetY  = 0;
-    private double       scale    = 1.0;
-    private final double cellSize = 16;
+    // current display offset and zoom
+    private double offsetX = 0;
+    private double offsetY = 0;
+    private double scale   = 1.0;
 
     private int minX = 0;
     private int minY = 0;
@@ -73,15 +81,15 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.offsetY = (0.5 * this.viewport.height) - (centerRow * this.scale);
     }
 
-    private static double remainder(double a, double b) {
-        double q = a / b;
-        return b * (q - Math.floor(q));
-    }
-
     private void paintGrid(Graphics g) {
-        double cellSize = this.cellSize * this.scale;
-        double firstX = remainder(this.offsetX - (0.5 * cellSize), cellSize);
-        double firstY = remainder(this.offsetY - (0.5 * cellSize), cellSize);
+        // cell size on screen (with zoom)
+        double cellSize = this.CELL_SIZE * this.scale;
+        // first visible cell (row/column coordinates without fractions correspond
+        // to the top left corner of e cell on screen)
+        double firstX = Math.IEEEremainder(this.offsetX, cellSize);
+        double firstY = Math.IEEEremainder(this.offsetY, cellSize);
+
+        g.setColor(this.GRID_COLOR);
         for (double x = firstX; x <= this.viewport.width; x += cellSize) {
             int ix = (int) x;
             g.drawLine(ix, 0, ix, this.viewport.height);
@@ -90,6 +98,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             int iy = (int) y;
             g.drawLine(0, iy, this.viewport.width, iy);
         }
+
+        // mark (0,0) for debugging
+        g.fillRect(
+                Math.toIntExact(Math.round(this.offsetX)), Math.toIntExact(Math.round(this.offsetY)), Math.toIntExact(Math.round(cellSize)), Math.toIntExact(Math.round(cellSize))
+        );
     }
 
     private void paintDrawableList(Graphics g, List<Drawable> drawables) {
