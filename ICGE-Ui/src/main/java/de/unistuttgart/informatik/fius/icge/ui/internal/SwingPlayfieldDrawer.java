@@ -152,7 +152,10 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 this.paintDrawable(g, last, currentCount);
             }
             last = next;
-            currentCount = 0;
+            if (iter.hasNext()) {
+                // do not reset count for the last drawable
+                currentCount = 0;
+            }
         }
         if (last != null) {
             this.paintDrawable(g, last, currentCount);
@@ -165,8 +168,38 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             double cellSize = this.CELL_SIZE * this.scale;
             int x = Math.toIntExact(Math.round(drawable.x * cellSize + this.offsetX));
             int y = Math.toIntExact(Math.round(drawable.y * cellSize + this.offsetY));
-            int roundedCellSize = Math.toIntExact(Math.round(cellSize));
-            g.drawImage(texture, x, y, roundedCellSize, roundedCellSize, null);
+            int textureSize = Math.toIntExact(Math.round(cellSize));
+            g.drawImage(texture, x, y, textureSize, textureSize, null);
+            return;
+        }
+        if (count <= 4) {
+            Double[] xOffsets = {0.0, 0.5, 0.0, 0.5};
+            Double[] yOffsets = {0.0, 0.0, 0.5, 0.5};
+            Double scaleAdjust = 0.5;
+            this.paintMultiCountDrawable(g, drawable, count, xOffsets, yOffsets, scaleAdjust);
+            return;
+        }
+        Double third = 1.0/3;
+        Double twoThird = 2.0/3;
+        Double[] xOffsets = {0.0, third, twoThird, 0.0, third, twoThird, 0.0, third, twoThird};
+        Double[] yOffsets = {0.0, 0.0, 0.0, third, third, third, twoThird, twoThird, twoThird};
+        Double scaleAdjust = third;
+        this.paintMultiCountDrawable(g, drawable, count, xOffsets, yOffsets, scaleAdjust);
+    }
+
+    private void paintMultiCountDrawable(Graphics g, Drawable drawable, int count, Double[] xOffsets, Double[] yOffsets, Double scaleAdjust) {
+        double cellSize = this.CELL_SIZE * this.scale;
+        int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
+        Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
+        // limit count to available offsets
+        count = Math.min(Math.min(xOffsets.length, yOffsets.length), count);
+        for (int i=0; i < count; i++) {
+            // intra cell offsets
+            double offsetX = cellSize * xOffsets[i];
+            double offsetY = cellSize * yOffsets[i];
+            int x = Math.toIntExact(Math.round(drawable.x * cellSize + this.offsetX + offsetX));
+            int y = Math.toIntExact(Math.round(drawable.y * cellSize + this.offsetY + offsetY));
+            g.drawImage(texture, x, y, textureSize, textureSize, null);
         }
     }
 
