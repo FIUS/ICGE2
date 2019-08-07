@@ -25,17 +25,19 @@ public class TextureNotFoundException extends RuntimeException {
      * @param message
      *     error message
      */
-    public TextureNotFoundException(String message) {
+    public TextureNotFoundException(final String message) {
         super(message);
     }
     
     /**
      * Construct a new {@code TextureNotFoundException} with the given message.
      *
-     * @param message error message
-     * @param e throwable cause
+     * @param message
+     *     error message
+     * @param e
+     *     throwable cause
      */
-    public TextureNotFoundException(String message, Throwable e) {
+    public TextureNotFoundException(final String message, final Throwable e) {
         super(message, e);
     }
 }

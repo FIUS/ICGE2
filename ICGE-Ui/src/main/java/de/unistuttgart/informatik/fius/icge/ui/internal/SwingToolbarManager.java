@@ -21,7 +21,12 @@ import de.unistuttgart.informatik.fius.icge.ui.ToolbarManager;
  * @author Tim Neumann
  */
 public class SwingToolbarManager extends JToolBar implements ToolbarManager {
-    public void initialize(JFrame parent) {
+    /**
+     * generated
+     */
+    private static final long serialVersionUID = -2525998620577603876L;
+    
+    public void initialize(final JFrame parent) {
         
     }
 }

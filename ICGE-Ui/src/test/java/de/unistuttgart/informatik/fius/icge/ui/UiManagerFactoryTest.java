@@ -25,7 +25,7 @@ class UiManagerFactoryTest {
      */
     @Test
     void testCreateUiManager() {
-        UiManager manager = UiManagerFactory.createUiManager();
+        final UiManager manager = UiManagerFactory.createUiManager();
         Assertions.assertNotNull(manager);
         Assertions.assertNotNull(manager.getPlayfieldDrawer());
         Assertions.assertNotNull(manager.getTextureRegistry());

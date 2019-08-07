@@ -29,121 +29,119 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
  * @author Tim Neumann
  */
 public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
-
+    
+    /**
+     * generated
+     */
+    private static final long serialVersionUID = 1800137555269066525L;
+    
     /** Stretch factor for mapping row/column coordinates to screen coordinates. */
     private final double CELL_SIZE = 32;
-
+    
     // Colors
     private final Color GRID_COLOR    = new Color(46, 52, 54);
     private final Color OVERLAY_COLOR = new Color(0, 255, 40, 50);
-
+    
     private TextureRegistry textureRegistry;
-
+    
     // current display offset and zoom
-    private double offsetX = 0;
-    private double offsetY = 0;
-    private double scale   = 1.0;
-
-    private int minX = 0;
-    private int minY = 0;
-    private int maxX = 10;
-    private int maxY = 10;
-
+    private double       offsetX = 0;
+    private double       offsetY = 0;
+    private final double scale   = 1.0;
+    
+    private final int minX = 0;
+    private final int minY = 0;
+    private final int maxX = 10;
+    private final int maxY = 10;
+    
     private Rectangle viewport;
-
+    
     private List<Drawable> drawables;
-
+    
     /**
      * Initialize the PlayfieldDrawer.
      *
      * @param parent
      *     the SwingUIManager that contains this PlayfieldDrawer.
      */
-    public void initialize(SwingUIManager parent) {
+    public void initialize(final SwingUIManager parent) {
         this.textureRegistry = parent.getTextureRegistry();
     }
-
-    public void setDrawables(List<Drawable> drawables) {
+    
+    @Override
+    public void setDrawables(final List<Drawable> drawables) {
         drawables.sort((a, b) -> a.compareTo(b));
         this.drawables = drawables;
     }
-
+    
     @Override
-    public void paint(Graphics g) {
+    public void paint(final Graphics g) {
         this.updateViewport(g);
         this.paintGrid(g);
         this.paintDrawableList(g, this.drawables);
     }
-
-    public void updateViewport(Graphics g) {
+    
+    public void updateViewport(final Graphics g) {
         this.viewport = g.getClipBounds();
-        double centerColumn = 0.5 * (this.minX + this.maxX);
-        double centerRow = 0.5 * (this.minY + this.maxY);
+        final double centerColumn = 0.5 * (this.minX + this.maxX);
+        final double centerRow = 0.5 * (this.minY + this.maxY);
         this.offsetX = (0.5 * this.viewport.width) - (centerColumn * this.scale);
         this.offsetY = (0.5 * this.viewport.height) - (centerRow * this.scale);
     }
-
-    private void paintGrid(Graphics g) {
+    
+    private void paintGrid(final Graphics g) {
         // cell size on screen (with zoom)
-        double cellSize = this.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         // first visible cell (row/column coordinates without fractions correspond
         // to the top left corner of e cell on screen)
-        double firstX = Math.IEEEremainder(this.offsetX, cellSize);
-        double firstY = Math.IEEEremainder(this.offsetY, cellSize);
-
+        final double firstX = Math.IEEEremainder(this.offsetX, cellSize);
+        final double firstY = Math.IEEEremainder(this.offsetY, cellSize);
+        
         g.setColor(this.GRID_COLOR);
         for (double x = firstX; x <= this.viewport.width; x += cellSize) {
-            int ix = (int) x;
+            final int ix = (int) x;
             g.drawLine(ix, 0, ix, this.viewport.height);
         }
         for (double y = firstY; y <= this.viewport.height; y += cellSize) {
-            int iy = (int) y;
+            final int iy = (int) y;
             g.drawLine(0, iy, this.viewport.width, iy);
         }
-
+        
         // mark (0,0) for debugging
         g.fillRect(
                 Math.toIntExact(Math.round(this.offsetX)), Math.toIntExact(Math.round(this.offsetY)), Math.toIntExact(Math.round(cellSize)), Math.toIntExact(Math.round(cellSize))
         );
     }
-
+    
     /**
      * Compare two drawables and checks if they can be grouped together.
      *
-     * Drawables have to be in the same cell and have the same texture to be considered equal.
-     * The cell coordinates of both drawables are rounded for this comparison.
+     * Drawables have to be in the same cell and have the same texture to be considered equal. The cell coordinates of
+     * both drawables are rounded for this comparison.
      *
-     * @param a Drawable a
-     * @param b Drawable b
+     * @param a
+     *     Drawable a
+     * @param b
+     *     Drawable b
      * @return Drawables can be grouped
      */
-    private boolean canGroupDrawables(Drawable a, Drawable b) {
-        if (a == null || b == null) {
-            return false;
-        }
-        if (!a.textureHandle.equals(b.textureHandle)) {
-            return false;
-        }
-        if (Math.round(a.x) != Math.round(b.x)) {
-            return false;
-        }
-        if (Math.round(a.y) != Math.round(b.y)) {
-            return false;
-        }
+    private boolean canGroupDrawables(final Drawable a, final Drawable b) {
+        if ((a == null) || (b == null)) return false;
+        if (!a.textureHandle.equals(b.textureHandle)) return false;
+        if (Math.round(a.x) != Math.round(b.x)) return false;
+        if (Math.round(a.y) != Math.round(b.y)) return false;
         return true;
     }
-
-    private void paintDrawableList(Graphics g, List<Drawable> drawables) {
-        if (drawables.size() <= 0) {
-            return;
-        }
-        Iterator<Drawable> iter = drawables.iterator();
+    
+    private void paintDrawableList(final Graphics g, final List<Drawable> drawables) {
+        if (drawables.size() <= 0) return;
+        final Iterator<Drawable> iter = drawables.iterator();
         Drawable last = null;
         int currentCount = 0;
-
+        
         // group and count drawables
         while (iter.hasNext()) {
-            Drawable next = iter.next();
+            final Drawable next = iter.next();
             currentCount += 1;
             if (this.canGroupDrawables(last, next)) {
                 continue;
@@ -161,49 +159,47 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             this.paintDrawable(g, last, currentCount);
         }
     }
-
-    private void paintDrawable(Graphics g, Drawable drawable, int count) {
+    
+    private void paintDrawable(final Graphics g, final Drawable drawable, final int count) {
         if (count <= 1) {
-            Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
-            double cellSize = this.CELL_SIZE * this.scale;
-            int x = Math.toIntExact(Math.round(drawable.x * cellSize + this.offsetX));
-            int y = Math.toIntExact(Math.round(drawable.y * cellSize + this.offsetY));
-            int textureSize = Math.toIntExact(Math.round(cellSize));
+            final Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
+            final double cellSize = this.CELL_SIZE * this.scale;
+            final int x = Math.toIntExact(Math.round((drawable.x * cellSize) + this.offsetX));
+            final int y = Math.toIntExact(Math.round((drawable.y * cellSize) + this.offsetY));
+            final int textureSize = Math.toIntExact(Math.round(cellSize));
             g.drawImage(texture, x, y, textureSize, textureSize, null);
             return;
         }
         if (count <= 4) {
-            Double[] xOffsets = {0.0, 0.5, 0.0, 0.5};
-            Double[] yOffsets = {0.0, 0.0, 0.5, 0.5};
-            Double scaleAdjust = 0.5;
+            final Double[] xOffsets = { 0.0, 0.5, 0.0, 0.5 };
+            final Double[] yOffsets = { 0.0, 0.0, 0.5, 0.5 };
+            final Double scaleAdjust = 0.5;
             this.paintMultiCountDrawable(g, drawable, count, xOffsets, yOffsets, scaleAdjust);
             return;
         }
-        Double third = 1.0/3;
-        Double twoThird = 2.0/3;
-        Double[] xOffsets = {0.0, third, twoThird, 0.0, third, twoThird, 0.0, third, twoThird};
-        Double[] yOffsets = {0.0, 0.0, 0.0, third, third, third, twoThird, twoThird, twoThird};
-        Double scaleAdjust = third;
+        final Double third = 1.0 / 3;
+        final Double twoThird = 2.0 / 3;
+        final Double[] xOffsets = { 0.0, third, twoThird, 0.0, third, twoThird, 0.0, third, twoThird };
+        final Double[] yOffsets = { 0.0, 0.0, 0.0, third, third, third, twoThird, twoThird, twoThird };
+        final Double scaleAdjust = third;
         this.paintMultiCountDrawable(g, drawable, count, xOffsets, yOffsets, scaleAdjust);
     }
-
-    private void paintMultiCountDrawable(Graphics g, Drawable drawable, int count, Double[] xOffsets, Double[] yOffsets, Double scaleAdjust) {
-        double cellSize = this.CELL_SIZE * this.scale;
-        int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
-        Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
+    
+    private void paintMultiCountDrawable(
+            final Graphics g, final Drawable drawable, int count, final Double[] xOffsets, final Double[] yOffsets, final Double scaleAdjust
+    ) {
+        final double cellSize = this.CELL_SIZE * this.scale;
+        final int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
+        final Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
         // limit count to available offsets
         count = Math.min(Math.min(xOffsets.length, yOffsets.length), count);
-        for (int i=0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             // intra cell offsets
-            double offsetX = cellSize * xOffsets[i];
-            double offsetY = cellSize * yOffsets[i];
-            int x = Math.toIntExact(Math.round(drawable.x * cellSize + this.offsetX + offsetX));
-            int y = Math.toIntExact(Math.round(drawable.y * cellSize + this.offsetY + offsetY));
+            final double offsetX = cellSize * xOffsets[i];
+            final double offsetY = cellSize * yOffsets[i];
+            final int x = Math.toIntExact(Math.round((drawable.x * cellSize) + this.offsetX + offsetX));
+            final int y = Math.toIntExact(Math.round((drawable.y * cellSize) + this.offsetY + offsetY));
             g.drawImage(texture, x, y, textureSize, textureSize, null);
         }
-    }
-
-    private void paintOverlays(Graphics g) {
-
     }
 }

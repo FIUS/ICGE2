@@ -33,9 +33,9 @@ class SwingUiManagerUiTest {
      */
     @BeforeEach
     public void setup() {
-        SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
-        SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        SwingToolbarManager toolbarManager = new SwingToolbarManager();
+        final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
+        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
+        final SwingToolbarManager toolbarManager = new SwingToolbarManager();
         
         this.uiManager = new SwingUIManager(textureRegistry, playfieldDrawer, toolbarManager);
     }

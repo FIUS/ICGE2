@@ -14,53 +14,56 @@ package de.unistuttgart.informatik.fius.icge.ui;
  *
  * @author Tim Neumann
  */
-public class Drawable implements Comparable<Drawable>{
-
+public class Drawable implements Comparable<Drawable> {
+    
     /**
      * The x coordinate of the drawable.
      *
      * The coordinate system is based on cells where fractionals denote positions between cells.
      */
     public final double x;
-
+    
     /**
      * The y coordinate of the drawable.
      *
      * The coordinate system is based on cells where fractionals denote positions between cells.
      */
     public final double y;
-
+    
     /**
      * The z value of the drawable.
      *
      * The z value is used to decide the drawing order of Drawables in the same cell.
      */
     public final int z;
-
+    
     /**
      * The handle of the texture for this drawable.
      *
      * The texture must be registered in the TextureRegistry.
      */
     public final String textureHandle;
-
+    
     /**
      * Create a new Drawable.
      *
-     * @param x coordinate
-     * @param y coordinate
-     * @param z value
+     * @param x
+     *     coordinate
+     * @param y
+     *     coordinate
+     * @param z
+     *     value
      * @param textureHandle
      */
-    public Drawable(double x, double y, int z, String textureHandle) {
+    public Drawable(final double x, final double y, final int z, final String textureHandle) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.textureHandle = textureHandle;
     }
-
+    
     @Override
-    public int compareTo(Drawable o) {
+    public int compareTo(final Drawable o) {
         double compareResult = 0;
         compareResult = this.z - o.z;
         if (compareResult == 0) {
@@ -69,12 +72,8 @@ public class Drawable implements Comparable<Drawable>{
         if (compareResult == 0) {
             compareResult = this.y - o.y;
         }
-        if (compareResult < 0) {
-            return -1;
-        }
-        if (compareResult > 0) {
-            return 1;
-        }
+        if (compareResult < 0) return -1;
+        if (compareResult > 0) return 1;
         return this.textureHandle.compareTo(o.textureHandle);
     }
 }
