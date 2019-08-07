@@ -15,5 +15,5 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @author Tim Neumann
  */
 public interface ToolbarManager {
-
+    
 }

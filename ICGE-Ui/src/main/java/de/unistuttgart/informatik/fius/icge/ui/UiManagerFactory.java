@@ -28,9 +28,9 @@ public class UiManagerFactory {
      * @return The new Ui Manager.
      */
     public static UiManager createUiManager() {
-        SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
-        SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        SwingToolbarManager toolbarManager = new SwingToolbarManager();
+        final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
+        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
+        final SwingToolbarManager toolbarManager = new SwingToolbarManager();
         
         return new SwingUIManager(textureRegistry, playfieldDrawer, toolbarManager);
     }
