@@ -56,7 +56,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     private Rectangle viewport;
     
-    private List<Drawable> drawables;
+    private List<Drawable> drawables = List.of();
     
     /**
      * Initialize the PlayfieldDrawer.
