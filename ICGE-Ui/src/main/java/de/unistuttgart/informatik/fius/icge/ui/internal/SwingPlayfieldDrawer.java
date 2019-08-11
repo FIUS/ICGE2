@@ -75,6 +75,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
     
     @Override
+    public void draw() {
+        repaint();
+    }
+    
+    @Override
     public void paint(final Graphics g) {
         this.updateViewport(g);
         this.paintGrid(g);
@@ -110,7 +115,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         // mark (0,0) for debugging
         g.fillRect(
                 Math.toIntExact(Math.round(this.offsetX)), Math.toIntExact(Math.round(this.offsetY)), Math.toIntExact(Math.round(cellSize)), Math.toIntExact(Math.round(cellSize))
-        );
+                );
     }
     
     /**
