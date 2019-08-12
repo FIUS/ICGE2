@@ -15,6 +15,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
+import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 
 
 /**
@@ -59,7 +60,7 @@ public abstract class BasicEntity implements Entity {
     @Override
     public Drawable getDrawInformation() {
         Position pos = this.getPosition();
-        return new Drawable(pos.getX(), pos.getY(), getZPosition(), getTextureHandle());
+        return new BasicDrawable(pos.getX(), pos.getY(), getZPosition(), getTextureHandle());
     }
     
     @Override

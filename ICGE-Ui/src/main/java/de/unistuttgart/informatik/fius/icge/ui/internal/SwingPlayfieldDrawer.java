@@ -132,9 +132,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      */
     private boolean canGroupDrawables(final Drawable a, final Drawable b) {
         if ((a == null) || (b == null)) return false;
-        if (!a.textureHandle.equals(b.textureHandle)) return false;
-        if (Math.round(a.x) != Math.round(b.x)) return false;
-        if (Math.round(a.y) != Math.round(b.y)) return false;
+        if (!a.getTextureHandle().equals(b.getTextureHandle())) return false;
+        if (Math.round(a.getX()) != Math.round(b.getX()))return false;
+        if (Math.round(a.getY()) != Math.round(b.getY())) return false;
         return true;
     }
     
@@ -143,34 +143,34 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         final Iterator<Drawable> iter = drawables.iterator();
         Drawable last = null;
         int currentCount = 0;
+        boolean isTilable = true;
         
         // group and count drawables
         while (iter.hasNext()) {
             final Drawable next = iter.next();
             currentCount += 1;
-            if (this.canGroupDrawables(last, next)) {
-                continue;
-            }
-            if (last != null) {
-                this.paintDrawable(g, last, currentCount);
+            isTilable = isTilable && next.isTilable();
+            boolean groupable = this.canGroupDrawables(last, next);
+            if (! groupable && last != null) {
+                this.paintDrawable(g, last, currentCount, isTilable);
             }
             last = next;
-            if (iter.hasNext()) {
-                // do not reset count for the last drawable
+            if (! groupable) {
                 currentCount = 0;
+                isTilable = true;
             }
         }
         if (last != null) {
-            this.paintDrawable(g, last, currentCount);
+            this.paintDrawable(g, last, currentCount + 1, isTilable);
         }
     }
     
-    private void paintDrawable(final Graphics g, final Drawable drawable, final int count) {
-        if (count <= 1) {
-            final Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
+    private void paintDrawable(final Graphics g, final Drawable drawable, final int count, final boolean isTilable) {
+        if (!isTilable || count <= 1) {
+            final Image texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
             final double cellSize = this.CELL_SIZE * this.scale;
-            final int x = Math.toIntExact(Math.round((drawable.x * cellSize) + this.offsetX));
-            final int y = Math.toIntExact(Math.round((drawable.y * cellSize) + this.offsetY));
+            final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX));
+            final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY));
             final int textureSize = Math.toIntExact(Math.round(cellSize));
             g.drawImage(texture, x, y, textureSize, textureSize, null);
             return;
@@ -195,15 +195,15 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     ) {
         final double cellSize = this.CELL_SIZE * this.scale;
         final int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
-        final Image texture = this.textureRegistry.getTextureForHandle(drawable.textureHandle);
+        final Image texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
         // limit count to available offsets
         count = Math.min(Math.min(xOffsets.length, yOffsets.length), count);
         for (int i = 0; i < count; i++) {
             // intra cell offsets
             final double offsetX = cellSize * xOffsets[i];
             final double offsetY = cellSize * yOffsets[i];
-            final int x = Math.toIntExact(Math.round((drawable.x * cellSize) + this.offsetX + offsetX));
-            final int y = Math.toIntExact(Math.round((drawable.y * cellSize) + this.offsetY + offsetY));
+            final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX + offsetX));
+            final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY + offsetY));
             g.drawImage(texture, x, y, textureSize, textureSize, null);
         }
     }

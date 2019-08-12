@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
+import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
@@ -40,7 +41,7 @@ public class ManualStartUi {
         
         // generate playfield
         final ArrayList<Drawable> drawables = new ArrayList<>(
-                List.of(new Drawable(-1, -1, 0, wallTexture), new Drawable(5, 5, 0, wallTexture))
+                List.of(new BasicDrawable(-1, -1, 0, wallTexture), new BasicDrawable(5, 5, 0, wallTexture))
         );
         manager.getPlayfieldDrawer().setDrawables(drawables);
         
