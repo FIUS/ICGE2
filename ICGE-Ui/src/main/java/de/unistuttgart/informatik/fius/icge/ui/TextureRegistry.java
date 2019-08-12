@@ -54,15 +54,4 @@ public interface TextureRegistry {
      * @throws TextureNotFoundException
      */
     String loadTextureFromFile(String filePath);
-    
-    /**
-     * Get the texture for the given texture handle.
-     *
-     * @param handle
-     *     the texture handle
-     * @return the texture for the handle
-     *
-     * @throws NoSuchElementException
-     */
-    Image getTextureForHandle(String handle);
 }

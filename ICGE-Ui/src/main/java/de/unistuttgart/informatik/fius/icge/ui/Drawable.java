@@ -10,7 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 /**
- * A class containing all information needed to draw an object onto the playfield by a {@link PlayfieldDrawer}.
+ * A interface providing all information needed to draw an object onto the playfield by a {@link PlayfieldDrawer}.
  *
  * @author Tim Neumann
  */

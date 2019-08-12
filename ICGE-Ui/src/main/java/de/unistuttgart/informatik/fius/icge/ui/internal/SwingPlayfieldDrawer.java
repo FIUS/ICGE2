@@ -11,7 +11,6 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +41,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private final Color GRID_COLOR    = new Color(46, 52, 54);
     private final Color OVERLAY_COLOR = new Color(0, 255, 40, 50);
     
-    private TextureRegistry textureRegistry;
+    private SwingTextureRegistry textureRegistry;
     
     // current display offset and zoom
     private double       offsetX = 0;
@@ -65,7 +64,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      *     the SwingUIManager that contains this PlayfieldDrawer.
      */
     public void initialize(final SwingUIManager parent) {
-        this.textureRegistry = parent.getTextureRegistry();
+        TextureRegistry tr = parent.getTextureRegistry();
+        if (!(tr instanceof SwingTextureRegistry)) {
+            throw new IllegalArgumentException("Only SwingTextureRegistry is supported!");
+        }
+        this.textureRegistry = (SwingTextureRegistry) tr;
     }
     
     @Override
@@ -167,12 +170,12 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     private void paintDrawable(final Graphics g, final Drawable drawable, final int count, final boolean isTilable) {
         if (!isTilable || count <= 1) {
-            final Image texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
+            final Texture texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
             final double cellSize = this.CELL_SIZE * this.scale;
             final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX));
             final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY));
             final int textureSize = Math.toIntExact(Math.round(cellSize));
-            g.drawImage(texture, x, y, textureSize, textureSize, null);
+            texture.drawTexture(g, x, y, textureSize, textureSize);
             return;
         }
         if (count <= 4) {
@@ -195,7 +198,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     ) {
         final double cellSize = this.CELL_SIZE * this.scale;
         final int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
-        final Image texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
+        final Texture texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
         // limit count to available offsets
         count = Math.min(Math.min(xOffsets.length, yOffsets.length), count);
         for (int i = 0; i < count; i++) {
@@ -204,7 +207,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final double offsetY = cellSize * yOffsets[i];
             final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX + offsetX));
             final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY + offsetY));
-            g.drawImage(texture, x, y, textureSize, textureSize, null);
+            texture.drawTexture(g, x, y, textureSize, textureSize);
         }
     }
 }

@@ -9,7 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +32,7 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 public class SwingTextureRegistry implements TextureRegistry {
     private final Map<String, String> resourceToHandle = new HashMap<>();
     private final Map<String, String> pathToHandle     = new HashMap<>();
-    private final Map<String, Image>  handleToTexture  = new HashMap<>();
+    private final Map<String, Texture>  handleToTexture  = new HashMap<>();
     
     /**
      * Load a texture from a local (ui module) resource.
@@ -53,7 +52,7 @@ public class SwingTextureRegistry implements TextureRegistry {
         try (InputStream input = resourceProvider.apply(resourceName)) {
             final BufferedImage texture = ImageIO.read(input);
             this.resourceToHandle.put(resourceName, resourceName);
-            this.handleToTexture.put(resourceName, texture);
+            this.handleToTexture.put(resourceName, new Texture(texture));
             return resourceName;
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
@@ -69,15 +68,23 @@ public class SwingTextureRegistry implements TextureRegistry {
             final File textureFile = resolvedPath.toFile();
             final BufferedImage texture = ImageIO.read(textureFile);
             this.pathToHandle.put(textureHandle, textureHandle);
-            this.handleToTexture.put(textureHandle, texture);
+            this.handleToTexture.put(textureHandle, new Texture(texture));
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested path could not be loaded!", e);
         }
         return textureHandle;
     }
     
-    @Override
-    public Image getTextureForHandle(final String handle) {
+    /**
+     * Get the texture for the given texture handle.
+     *
+     * @param handle
+     *     the texture handle
+     * @return the texture for the handle
+     *
+     * @throws NoSuchElementException
+     */
+    public Texture getTextureForHandle(final String handle) {
         return this.handleToTexture.get(handle);
     }
 }
