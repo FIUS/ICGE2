@@ -12,6 +12,11 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,20 +43,26 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private final double CELL_SIZE = 32;
     
     // Colors
-    private final Color GRID_COLOR    = new Color(46, 52, 54);
-    private final Color OVERLAY_COLOR = new Color(0, 255, 40, 50);
+    private final Color BACKGROUND_COLOR = new Color(255, 255, 255);
+    private final Color GRID_COLOR       = new Color(46, 52, 54);
+    private final Color OVERLAY_COLOR    = new Color(0, 255, 40, 50);
     
     private SwingTextureRegistry textureRegistry;
     
     // current display offset and zoom
-    private double       offsetX = 0;
-    private double       offsetY = 0;
-    private final double scale   = 1.0;
+    private double       offsetX = CELL_SIZE;
+    private double       offsetY = CELL_SIZE;
+    private double scale         = 1.0;
     
     private final int minX = 0;
     private final int minY = 0;
     private final int maxX = 10;
     private final int maxY = 10;
+    
+    // mouse events
+    private int mouseStartX = 0;
+    private int mouseStartY = 0;
+    private boolean isDrag = false;
     
     private Rectangle viewport;
     
@@ -69,6 +80,69 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             throw new IllegalArgumentException("Only SwingTextureRegistry is supported!");
         }
         this.textureRegistry = (SwingTextureRegistry) tr;
+        
+        this.addMouseListener(new MouseListener(){
+        
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    int x = e.getX();
+                    int y = e.getY();
+                    SwingPlayfieldDrawer.this.mouseReleased(x, y);
+                }
+            }
+        
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    int x = e.getX();
+                    int y = e.getY();
+                    SwingPlayfieldDrawer.this.mousePressed(x, y);
+                }
+            }
+        
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // ignore this for now
+            }
+        
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // ignore this for now
+            }
+        
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // ignore this for now
+                
+            }
+        });
+        
+        this.addMouseMotionListener(new MouseMotionListener(){
+        
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                // ignore this for now
+            }
+        
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                SwingPlayfieldDrawer.this.updateDrag(x, y);
+            }
+        });
+        
+        this.addMouseWheelListener(new MouseWheelListener() {
+            
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                int rot = e.getWheelRotation();
+                int x = e.getX();
+                int y = e.getY();
+                SwingPlayfieldDrawer.this.updateZoom(rot, x, y);
+            }
+        });
     }
     
     @Override
@@ -85,16 +159,14 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     @Override
     public void paint(final Graphics g) {
         this.updateViewport(g);
+        g.setColor(this.BACKGROUND_COLOR);
+        g.fillRect(0, 0, this.viewport.width, this.viewport.height);
         this.paintGrid(g);
         this.paintDrawableList(g, this.drawables);
     }
     
     public void updateViewport(final Graphics g) {
         this.viewport = g.getClipBounds();
-        final double centerColumn = 0.5 * (this.minX + this.maxX);
-        final double centerRow = 0.5 * (this.minY + this.maxY);
-        this.offsetX = (0.5 * this.viewport.width) - (centerColumn * this.scale);
-        this.offsetY = (0.5 * this.viewport.height) - (centerRow * this.scale);
     }
     
     private void paintGrid(final Graphics g) {
@@ -209,5 +281,52 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY + offsetY));
             texture.drawTexture(g, x, y, textureSize, textureSize);
         }
+    }
+    
+    private void mousePressed(int x, int y) {
+        this.mouseStartX = x;
+        this.mouseStartY = y;
+        this.isDrag = false;
+    }
+    
+    private void mouseReleased(int x, int y) {
+        if (! this.isDrag) {
+            this.mouseClick(this.mouseStartX, this.mouseStartY);
+        }
+    }
+    
+    private void mouseClick(int x, int y) {
+        // TODO
+        this.repaint();
+    }
+    
+    private void updateDrag(int x, int y) {
+        this.isDrag = true;
+        // TODO change this later to support different tools...
+        this.offsetX += x - this.mouseStartX;
+        this.offsetY += y - this.mouseStartY;
+        this.mouseStartX = x;
+        this.mouseStartY = y;
+        this.repaint();
+    }
+    
+    private void updateZoom(int amount, int x, int y) {
+        double zoomScaling = 0.1 * Math.ceil(this.scale);
+        double newScale = this.scale + (zoomScaling * -amount);
+        if (newScale < 0.4) {
+            newScale = 0.4;
+        }
+        if (newScale > 10) {
+            newScale = 10;
+        }
+        double dxOld = x - this.offsetX;
+        double dyOld = y - this.offsetY;
+        double stretchFactor = newScale / this.scale;
+        double dx = dxOld - (dxOld * stretchFactor);
+        double dy = dyOld - (dyOld * stretchFactor);
+        this.scale = newScale;
+        this.offsetX += dx;
+        this.offsetY += dy;
+        this.repaint();
     }
 }
