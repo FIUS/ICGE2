@@ -7,10 +7,12 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.simulation;
+package de.unistuttgart.informatik.fius.icge.example.manual;
 
+import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.BasicEntity;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
@@ -20,8 +22,9 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  *
  * @author Tim Neumann
  */
-public class ManualStart {
+public class ManualStartSimulation {
     private static String textureHandleWall;
+    
     /**
      * @param args
      *     the command line arguments. Not used.
@@ -31,16 +34,12 @@ public class ManualStart {
         prepareUiManager(sim.getUiManager());
         sim.initialize();
         sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
-        
-        StandardPlayfield pf = (StandardPlayfield) sim.getPlayfield();
-        
-        pf.drawEntities();
     }
     
     private static void prepareUiManager(UiManager manager) {
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
-        textureHandleWall = tr.loadTextureFromResource("/wall/wall-default.png");
+        textureHandleWall = tr.loadTextureFromResource("/textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);
         manager.setWindowTitle("Manual simulation start");
     }
     

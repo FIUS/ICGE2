@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
@@ -34,10 +35,22 @@ public class SwingTextureRegistry implements TextureRegistry {
     private final Map<String, String> pathToHandle     = new HashMap<>();
     private final Map<String, Image>  handleToTexture  = new HashMap<>();
     
-    @Override
+    /**
+     * Load a texture from a local (ui module) resource.
+     * 
+     * @param resourceName
+     *     The name of the resource
+     * @return The resource handle.
+     * @see #loadTextureFromResource(String, Function)
+     */
     public String loadTextureFromResource(final String resourceName) {
+        return loadTextureFromResource(resourceName, SwingTextureRegistry.class::getResourceAsStream);
+    }
+    
+    @Override
+    public String loadTextureFromResource(final String resourceName, final Function<String, InputStream> resourceProvider) {
         if (this.resourceToHandle.containsKey(resourceName)) return this.resourceToHandle.get(resourceName);
-        try (InputStream input = SwingTextureRegistry.class.getResourceAsStream(resourceName)) {
+        try (InputStream input = resourceProvider.apply(resourceName)) {
             final BufferedImage texture = ImageIO.read(input);
             this.resourceToHandle.put(resourceName, resourceName);
             this.handleToTexture.put(resourceName, texture);
