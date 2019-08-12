@@ -13,6 +13,7 @@ import java.util.List;
 
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 
 
 /**
@@ -78,11 +79,35 @@ public interface Playfield {
      * @param pos
      *     The position to add the entity; must <b>not</b> be <b>null</b>
      * @param entity
-     *     The entity to add; must <b>not</b> be <b>null</b>
+     *     The entity to add; must <b>not</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
      * @throws EntityAlreadyOnFieldExcpetion
      *     if the given entity has been added to this playfield before
      * @throws IllegalArgumentException
-     *     if the given pos or type is null
+     *     if the given pos or entity is null
      */
     void addEntity(Position pos, Entity entity);
+    
+    /**
+     * Get the position of the specified entity on the playfield.
+     * 
+     * @param entity
+     *     The entity to get the position of; <b>must</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
+     * @return The position of the given entity
+     * @throws EntityNotOnFieldException
+     *     if the given entity is not in this playfield
+     * @throws IllegalArgumentException
+     *     if the given entity is null
+     */
+    Position getEntityPosition(Entity entity);
+    
+    /**
+     * Check whether the specified entity is on this playfield.
+     * 
+     * @param entity
+     *     The entity to check; must <b>not</b> be <b>null</b>
+     * @return whether the given entity is on this playfield
+     * @throws IllegalArgumentException
+     *     if the given entity is null
+     */
+    boolean containsEntity(Entity entity);
 }

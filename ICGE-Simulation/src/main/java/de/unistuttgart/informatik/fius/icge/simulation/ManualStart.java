@@ -9,6 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+import de.unistuttgart.informatik.fius.icge.simulation.entity.BasicEntity;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
@@ -19,7 +21,7 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  * @author Tim Neumann
  */
 public class ManualStart {
-    
+    private static String textureHandleWall;
     /**
      * @param args
      *     the command line arguments. Not used.
@@ -28,12 +30,31 @@ public class ManualStart {
         final Simulation sim = SimulationFactory.createSimulation();
         prepareUiManager(sim.getUiManager());
         sim.initialize();
+        sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
+        
+        StandardPlayfield pf = (StandardPlayfield) sim.getPlayfield();
+        
+        pf.drawEntities();
     }
     
     private static void prepareUiManager(UiManager manager) {
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
-        tr.loadTextureFromResource("/wall/wall-default.png");
+        textureHandleWall = tr.loadTextureFromResource("/wall/wall-default.png");
         manager.setWindowTitle("Manual simulation start");
+    }
+    
+    private static class Wall extends BasicEntity {
+        
+        @Override
+        protected String getTextureHandle() {
+            return textureHandleWall;
+        }
+        
+        @Override
+        protected int getZPosition() {
+            return 0;
+        }
+        
     }
 }

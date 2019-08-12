@@ -15,7 +15,10 @@ import java.util.List;
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
+import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 
 
@@ -30,8 +33,26 @@ public class StandardPlayfield implements Playfield {
     //TODO: Improve data structure. Tim already has an idea with a matrix of linked lists and a hashmap of weak refs. 
     private final List<PlayfieldCell> cells = new ArrayList<>();
     
+    /**
+     * Initialize the playfield for the given simulation
+     * 
+     * @param simulation
+     *     the parent simulation
+     */
     public void initialize(StandardSimulation simulation) {
         this.drawer = simulation.getUiManager().getPlayfieldDrawer();
+    }
+    
+    /**
+     * Converts all entities to drawables and sends them to the playfield drawer.
+     */
+    public void drawEntities() {
+        List<Drawable> drawables = new ArrayList<>();
+        for (Entity entity : this.getAllEntities()) {
+            drawables.add(entity.getDrawInformation());
+        }
+        this.drawer.setDrawables(drawables);
+        this.drawer.draw();
     }
     
     @Override
@@ -77,15 +98,37 @@ public class StandardPlayfield implements Playfield {
         for (PlayfieldCell cell : this.cells) {
             if (cell.getPosition().equals(pos)) {
                 cellToAddIn = cell;
-                break;
+            }
+            if (cell.contains(entity)) {
+                throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
             }
         }
         
+
         if (cellToAddIn == null) {
             cellToAddIn = new PlayfieldCell(pos);
             this.cells.add(cellToAddIn);
         }
         
         cellToAddIn.addEntity(entity);
+        entity.initOnPlayfield(this);
+    }
+    
+    @Override
+    public Position getEntityPosition(Entity entity) {
+        if (entity == null) throw new IllegalArgumentException("The given entity is null.");
+        for (PlayfieldCell cell : this.cells) {
+            if (cell.contains(entity)) return cell.getPosition();
+        }
+        throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+    }
+    
+    @Override
+    public boolean containsEntity(Entity entity) {
+        if (entity == null) throw new IllegalArgumentException("The given entity is null.");
+        for (PlayfieldCell cell : this.cells) {
+            if (cell.contains(entity)) return true;
+        }
+        return false;
     }
 }
