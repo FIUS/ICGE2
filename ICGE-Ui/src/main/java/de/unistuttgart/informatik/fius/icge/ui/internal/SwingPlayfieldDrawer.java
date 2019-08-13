@@ -51,7 +51,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     // Colors
     private static final Color BACKGROUND_COLOR = new Color(255, 255, 255);
     private static final Color GRID_COLOR       = new Color(46, 52, 54);
-    private static final Color OVERLAY_COLOR    = new Color(0, 255, 40, 50);
+    private static final Color OVERLAY_COLOR    = new Color(0, 40, 255, 50);
     
     private static final RenderingHints RENDERING_HINTS = new RenderingHints(
             RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
@@ -311,25 +311,39 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         final int width = this.getWidth();
         final int height = this.getHeight();
         
-        if (g.hitClip(0, height - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, width, SwingPlayfieldDrawer.INFO_BAR_HEIGHT)) {
-            if (this.mouseInWindow) {
-                g.setColor(SwingPlayfieldDrawer.BACKGROUND_COLOR);
-                g.fillRect(0, height - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, width, SwingPlayfieldDrawer.INFO_BAR_HEIGHT);
-                g.setColor(SwingPlayfieldDrawer.GRID_COLOR);
-                
-                // calculate baseline
-                FontMetrics font = g.getFontMetrics();
-                final int heightAboveBaseline = font.getAscent();
-                final int heightBelowBaseline = font.getMaxDescent();
-                final int baselineCentered = Math
-                        .toIntExact(Math.round((SwingPlayfieldDrawer.INFO_BAR_HEIGHT / 2.0) - (heightAboveBaseline / 2.0)));
-                final int baseline = height - Math.max(baselineCentered, heightBelowBaseline);
-                
-                // build string
-                String infoText = "Cell (" + this.getColumnCoordinateFromScreenCoordinate(this.currentMouseX) + ", "
-                        + this.getRowCoordinateFromScreenCoordinate(this.currentMouseY) + ")";
-                g.drawString(infoText, 5, baseline);
-            }
+        final int currentCellX = this.getColumnCoordinateFromScreenCoordinate(this.currentMouseX);
+        final int currentCellY = this.getRowCoordinateFromScreenCoordinate(this.currentMouseY);
+        
+        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final int roundedCellSize = Math.toIntExact(Math.round(cellSize));
+        final int screenX = Math.toIntExact(Math.round(this.offsetX + (currentCellX * cellSize)));
+        final int screenY = Math.toIntExact(Math.round(this.offsetY + (currentCellY * cellSize)));
+        
+        if (this.mouseInWindow && g.hitClip(screenX, screenY, roundedCellSize, roundedCellSize)) {
+            g.setColor(SwingPlayfieldDrawer.OVERLAY_COLOR);
+            g.fillRect(screenX, screenY, roundedCellSize, roundedCellSize);
+        }
+        
+        if (
+            this.mouseInWindow && g.hitClip(0, height - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, width, SwingPlayfieldDrawer.INFO_BAR_HEIGHT)
+        ) {
+            
+            g.setColor(SwingPlayfieldDrawer.BACKGROUND_COLOR);
+            g.fillRect(0, height - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, width, SwingPlayfieldDrawer.INFO_BAR_HEIGHT);
+            g.setColor(SwingPlayfieldDrawer.GRID_COLOR);
+            
+            // calculate baseline
+            FontMetrics font = g.getFontMetrics();
+            final int heightAboveBaseline = font.getAscent();
+            final int heightBelowBaseline = font.getMaxDescent();
+            final int baselineCentered = Math
+                    .toIntExact(Math.round((SwingPlayfieldDrawer.INFO_BAR_HEIGHT / 2.0) - (heightAboveBaseline / 2.0)));
+            final int baseline = height - Math.max(baselineCentered, heightBelowBaseline);
+            
+            // build string
+            String infoText = "Cell (" + currentCellX + ", " + currentCellY + ")";
+            g.drawString(infoText, 5, baseline);
+            
         }
     }
     
@@ -352,13 +366,27 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     private void updateMouseInWindow(boolean mouseInWindow) {
         this.mouseInWindow = mouseInWindow;
-        this.repaint(0, this.getHeight() - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, this.getWidth(), SwingPlayfieldDrawer.INFO_BAR_HEIGHT);
+        this.repaintMouseOverlay();
     }
     
     private void updateMousePosition(int x, int y) {
+        final int oldX = this.currentMouseX;
+        final int oldY = this.currentMouseY;
         this.currentMouseX = x;
         this.currentMouseY = y;
+        this.repaintCellHighlight(oldX, oldY);
+        this.repaintMouseOverlay();
+    }
+    
+    private void repaintMouseOverlay() {
+        repaintCellHighlight(this.currentMouseX, this.currentMouseY);
         this.repaint(0, this.getHeight() - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, this.getWidth(), SwingPlayfieldDrawer.INFO_BAR_HEIGHT);
+    }
+    
+    private void repaintCellHighlight(int x, int y) {
+        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final int roundedCellSize = Math.toIntExact(Math.round(cellSize));
+        this.repaint(x - roundedCellSize, y - roundedCellSize, 2 * roundedCellSize, 2 * roundedCellSize);
     }
     
     private void updateDrag(int x, int y) {
