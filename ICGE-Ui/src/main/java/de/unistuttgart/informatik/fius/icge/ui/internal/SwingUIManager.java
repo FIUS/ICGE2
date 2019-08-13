@@ -71,11 +71,11 @@ public class SwingUIManager extends JFrame implements UiManager {
     @Override
     public void start() {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(800, 600);
         this.playfieldDrawer.initialize(this);
         this.getContentPane().add(BorderLayout.CENTER, this.playfieldDrawer);
         this.toolbarManager.initialize(this);
         this.getContentPane().add(BorderLayout.NORTH, this.toolbarManager);
+        this.pack();
         this.setVisible(true);
     }
     
