@@ -51,9 +51,10 @@ public class SwingTextureRegistry implements TextureRegistry {
         if (this.resourceToHandle.containsKey(resourceName)) return this.resourceToHandle.get(resourceName);
         try (InputStream input = resourceProvider.apply(resourceName)) {
             final BufferedImage texture = ImageIO.read(input);
-            this.resourceToHandle.put(resourceName, resourceName);
-            this.handleToTexture.put(resourceName, new Texture(texture));
-            return resourceName;
+            final String textureHandle = "resource://" + resourceName;
+            this.resourceToHandle.put(resourceName, textureHandle);
+            this.handleToTexture.put(textureHandle, new Texture(texture));
+            return textureHandle;
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
         }
@@ -62,12 +63,13 @@ public class SwingTextureRegistry implements TextureRegistry {
     @Override
     public String loadTextureFromFile(final String filePath) {
         final Path resolvedPath = Path.of(filePath).toAbsolutePath();
-        final String textureHandle = resolvedPath.toString();
-        if (this.pathToHandle.containsKey(textureHandle)) return this.pathToHandle.get(textureHandle);
+        final String fullPath = resolvedPath.toString();
+        final String textureHandle = "file://" + fullPath;
+        if (this.pathToHandle.containsKey(fullPath)) return this.pathToHandle.get(fullPath);
         try {
             final File textureFile = resolvedPath.toFile();
             final BufferedImage texture = ImageIO.read(textureFile);
-            this.pathToHandle.put(textureHandle, textureHandle);
+            this.pathToHandle.put(fullPath, textureHandle);
             this.handleToTexture.put(textureHandle, new Texture(texture));
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested path could not be loaded!", e);
