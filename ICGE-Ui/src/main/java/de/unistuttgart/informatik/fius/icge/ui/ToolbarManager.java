@@ -12,7 +12,6 @@ package de.unistuttgart.informatik.fius.icge.ui;
 import java.util.Collection;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
-import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector.EntityEntry;
 
 /**
  * The toolbar manager user by a {@link UiManager} to handle the toolbar.

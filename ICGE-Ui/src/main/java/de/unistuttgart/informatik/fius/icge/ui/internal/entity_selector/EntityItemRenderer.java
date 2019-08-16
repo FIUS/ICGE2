@@ -36,6 +36,9 @@ class EntityItemRenderer extends JPanel implements ListCellRenderer<EntitySelect
 
     private JLabel labelItem;
 
+    /**
+     * Constructor for the EntityItemRenderer
+     */
     public EntityItemRenderer() {
         this.labelItem = new JLabel();
         this.setLayout(new GridBagLayout());

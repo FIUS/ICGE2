@@ -28,7 +28,6 @@ import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.InputMode;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.SimulationState;
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
-import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector.EntityEntry;
 
 
 /**

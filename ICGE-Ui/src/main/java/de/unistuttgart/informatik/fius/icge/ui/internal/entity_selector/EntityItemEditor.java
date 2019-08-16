@@ -34,6 +34,9 @@ class EntityItemEditor extends BasicComboBoxEditor {
     private JLabel labelItem;
     private EntityEntry selectedValue;
 
+    /**
+     * Constructor for the EntityItemEditor
+     */
     public EntityItemEditor() {
         this.panel = new JPanel();
         this.panel.setBackground(Color.BLUE);
