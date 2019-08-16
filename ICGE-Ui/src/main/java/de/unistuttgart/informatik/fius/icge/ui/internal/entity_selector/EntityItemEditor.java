@@ -1,4 +1,4 @@
-q/*
+/*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
  *
