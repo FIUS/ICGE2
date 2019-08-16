@@ -63,6 +63,7 @@ public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
         }
     }
 
+    /** The data model of the EntitySelector */
     private DefaultComboBoxModel<EntityEntry> model;
 
     /**
