@@ -12,6 +12,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
@@ -55,9 +56,9 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
     public JSlider simulationTime;
 
     /** The button to change to view mode */
-    public JButton view;
+    public JToggleButton view;
     /** The button to change to entity mode */
-    public JButton entity;
+    public JToggleButton entity;
 
     /** The selector which selects the entity for the user to place */
     public EntitySelector entitySelect;
@@ -152,7 +153,7 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
         //
         // view button setup
         //
-        this.view = new JButton("View"); // FIXME Replace Text with Icon
+        this.view = new JToggleButton("View"); // FIXME Replace Text with Icon
         this.view.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -164,7 +165,7 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
         //
         // entity button setup
         //
-        this.entity = new JButton("Entity"); // FIXME Replace Text with Icon
+        this.entity = new JToggleButton("Entity"); // FIXME Replace Text with Icon
         this.entity.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -234,13 +235,13 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
     public void updateInputMode(InputMode mode) {
         switch (mode) {
             case VIEW:
-                this.view.setEnabled(false);
-                this.entity.setEnabled(true);
+                this.view.setSelected(true);
+                this.entity.setSelected(false);
                 break;
 
             case ENTITY:
-                this.view.setEnabled(true);
-                this.entity.setEnabled(false);
+                this.view.setSelected(false);
+                this.entity.setSelected(true);
                 break;
 
             default:
