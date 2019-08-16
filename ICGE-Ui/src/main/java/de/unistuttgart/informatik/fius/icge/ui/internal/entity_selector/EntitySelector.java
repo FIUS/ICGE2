@@ -13,7 +13,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 /**
- * EntitySelector
+ * The EntitySelector is a JComboBox based drop down menu to select a game entity
  *
  * @author Tobias Wältken
  * @version 1.0
