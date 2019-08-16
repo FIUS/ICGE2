@@ -62,9 +62,13 @@ class EntityItemRenderer extends JPanel implements ListCellRenderer<EntitySelect
             boolean isSelected,
             boolean cellHasFocus
     ) {
-        this.labelItem.setText(value.displayName);
-        // FIXME load texture
-        //this.labelItem.setIcon(<load icon here>);
+        if (value == null) {
+            this.labelItem.setText("No Entity available!");
+        } else {
+            this.labelItem.setText(value.displayName);
+            // FIXME load texture
+            //this.labelItem.setIcon(<load icon here>);
+        }
 
         if (isSelected) {
             this.labelItem.setBackground(Color.BLUE);
