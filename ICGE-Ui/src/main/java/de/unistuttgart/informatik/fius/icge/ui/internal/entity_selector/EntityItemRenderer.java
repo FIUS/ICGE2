@@ -17,11 +17,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector.EntityEntry;
 
 
@@ -34,12 +36,19 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySe
 class EntityItemRenderer extends JPanel implements ListCellRenderer<EntitySelector.EntityEntry> {
     private static final long serialVersionUID = 2930839533138981414L;
 
+    /** The texture registry */
+    private final SwingTextureRegistry textureRegistry;
+
     private JLabel labelItem;
 
     /**
      * Constructor for the EntityItemRenderer
+     *
+     * @param textureRegistry The texture registry the textures and icons are loaded from
      */
-    public EntityItemRenderer() {
+    public EntityItemRenderer(SwingTextureRegistry textureRegistry) {
+        this.textureRegistry = textureRegistry;
+
         this.labelItem = new JLabel();
         this.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -66,8 +75,12 @@ class EntityItemRenderer extends JPanel implements ListCellRenderer<EntitySelect
             this.labelItem.setText("No Entity available!");
         } else {
             this.labelItem.setText(value.displayName);
-            // FIXME load texture
-            //this.labelItem.setIcon(<load icon here>);
+
+            if (!value.textureID.equals("")) {
+                this.labelItem.setIcon(new ImageIcon(
+                    this.textureRegistry.getTextureForHandle(value.textureID).getTexture()
+                ));
+            }
         }
 
         if (isSelected) {

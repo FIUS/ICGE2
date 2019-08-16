@@ -41,6 +41,9 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySe
 public class SwingToolbarManager extends JToolBar implements ToolbarManager {
     private static final long serialVersionUID = -2525998620577603876L;
 
+    /** The texture registry */
+    private final SwingTextureRegistry textureRegistry;
+
     /** This array list contains all active listeners */
     private ArrayList<ToolbarListener> listeners;
 
@@ -65,11 +68,14 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
 
     /**
      * The constructor of the toolbar
+     *
+     * @param textureRegistry The texture registry the textures and icons are loaded from
      */
-    public SwingToolbarManager() {
+    public SwingToolbarManager(final SwingTextureRegistry textureRegistry) {
         //
         // class setup
         //
+        this.textureRegistry = textureRegistry;
         this.listeners = new ArrayList<>(2);
 
         //
@@ -177,7 +183,7 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
         // entity selector setup
         //
         this.addSeparator();
-        this.entitySelect = new EntitySelector();
+        this.entitySelect = new EntitySelector(this.textureRegistry);
         this.add(this.entitySelect);
 
         // setup the initial states

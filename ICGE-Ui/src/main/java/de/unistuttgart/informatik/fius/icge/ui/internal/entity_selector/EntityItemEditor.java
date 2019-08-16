@@ -17,10 +17,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector.EntityEntry;
 
 /**
@@ -30,14 +32,22 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySe
  * @version 1.0
  */
 class EntityItemEditor extends BasicComboBoxEditor {
+
+    /** The texture registry */
+    private final SwingTextureRegistry textureRegistry;
+
     private JPanel panel;
     private JLabel labelItem;
     private EntityEntry selectedValue;
 
     /**
      * Constructor for the EntityItemEditor
+     *
+     * @param textureRegistry The texture registry the textures and icons are loaded from
      */
-    public EntityItemEditor() {
+    public EntityItemEditor(SwingTextureRegistry textureRegistry) {
+        this.textureRegistry = textureRegistry;
+
         this.panel = new JPanel();
         this.panel.setBackground(Color.BLUE);
         this.panel.setLayout(new GridBagLayout());
@@ -70,7 +80,11 @@ class EntityItemEditor extends BasicComboBoxEditor {
 
         this.selectedValue = (EntityEntry) item;
         this.labelItem.setText(this.selectedValue.displayName);
-        // FIXME load texture
-        //this.labelItem.setIcon(<load icon here>);
+
+        if (!this.selectedValue.textureID.equals("")) {
+            this.labelItem.setIcon(new ImageIcon(
+                this.textureRegistry.getTextureForHandle(this.selectedValue.textureID).getTexture()
+            ));
+        }
     }
 }

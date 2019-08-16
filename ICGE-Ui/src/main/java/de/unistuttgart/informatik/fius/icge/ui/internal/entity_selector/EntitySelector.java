@@ -12,6 +12,8 @@ package de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
+
 /**
  * The EntitySelector is a JComboBox based drop down menu to select a game entity
  *
@@ -20,6 +22,9 @@ import javax.swing.JComboBox;
  */
 public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
     private static final long serialVersionUID = -3898035206502504991L;
+
+    /** The texture registry */
+    private final SwingTextureRegistry textureRegistry;
 
     /**
      * This class represents a single entry of the selector
@@ -68,12 +73,16 @@ public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
 
     /**
      * Constructor of the EntitySelector
+     *
+     * @param textureRegistry The texture registry the textures and icons are loaded from
      */
-    public EntitySelector() {
+    public EntitySelector(SwingTextureRegistry textureRegistry) {
+        this.textureRegistry = textureRegistry;
+
         this.model = new DefaultComboBoxModel<>();
         this.setModel(this.model);
-        this.setRenderer(new EntityItemRenderer());
-        this.setEditor(new EntityItemEditor());
+        this.setRenderer(new EntityItemRenderer(this.textureRegistry));
+        this.setEditor(new EntityItemEditor(this.textureRegistry));
     }
 
     /**
