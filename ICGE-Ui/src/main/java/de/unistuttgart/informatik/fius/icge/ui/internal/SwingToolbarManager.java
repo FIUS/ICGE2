@@ -191,10 +191,6 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
         this.updateInputMode(InputMode.VIEW);
     }
 
-    //FIXME Initialize with Simulation not JFrame because this is not needed anywhere
-    //public void initialize(final JFrame parent) {
-    //}
-
     /**
      * This function updates the simulation state and notifies the listeners
      *
