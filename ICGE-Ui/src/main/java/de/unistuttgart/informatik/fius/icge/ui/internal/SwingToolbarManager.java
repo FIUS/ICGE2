@@ -174,14 +174,11 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
         });
         this.add(this.entity);
 
+        //
+        // entity selector setup
+        //
         this.addSeparator();
         this.entitySelect = new EntitySelector();
-        //FIXME load the correct entities
-        this.entitySelect.addEntry(new EntityEntry[] {
-            this.entitySelect.new EntityEntry("Test A"),
-            this.entitySelect.new EntityEntry("Test B"),
-            this.entitySelect.new EntityEntry("Test C")
-        });
         this.add(this.entitySelect);
 
         // setup the initial states
@@ -249,6 +246,16 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
 
         for (ToolbarListener listener : this.listeners)
             listener.inputModeChanged(mode);
+    }
+
+    @Override
+    public String getCurrentEntity() {
+        return this.entitySelect.getCurrentEntry().displayName;
+    }
+
+    @Override
+    public void addEntity(String displayName, String textureID) {
+        this.entitySelect.addEntry(this.entitySelect.new EntityEntry(displayName, textureID));
     }
 
     @Override

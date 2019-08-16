@@ -54,4 +54,8 @@ public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
         for (EntityEntry entry : entries)
             this.model.addElement(entry);
     }
+
+    public EntityEntry getCurrentEntry() {
+        return (EntityEntry)this.getEditor().getItem();
+    }
 }
