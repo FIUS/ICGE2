@@ -20,7 +20,7 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySe
  * @author Tobias Wältken
  * @version 1.0
  */
-public interface ToolbarManager {
+public interface Toolbar {
 
     /**
      * Getter function for the user selected entity

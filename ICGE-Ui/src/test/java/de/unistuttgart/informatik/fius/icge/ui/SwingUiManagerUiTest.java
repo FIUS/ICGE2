@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbarManager;
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingUIManager;
 
 
@@ -35,7 +35,7 @@ class SwingUiManagerUiTest {
     public void setup() {
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        final SwingToolbarManager toolbarManager = new SwingToolbarManager(textureRegistry);
+        final SwingToolbar toolbarManager = new SwingToolbar(textureRegistry);
 
         this.uiManager = new SwingUIManager(textureRegistry, playfieldDrawer, toolbarManager);
     }

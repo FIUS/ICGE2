@@ -23,7 +23,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import de.unistuttgart.informatik.fius.icge.ui.ToolbarManager;
+import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.InputMode;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.SimulationState;
@@ -31,14 +31,14 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySe
 
 
 /**
- * An implementation of {@link ToolbarManager} using java swing.
+ * An implementation of {@link Toolbar} using java swing.
  *
  * @see javax.swing.JToolBar
  * @author Tim Neumann
  * @author Tobias Wältken
  * @version 1.0
  */
-public class SwingToolbarManager extends JToolBar implements ToolbarManager {
+public class SwingToolbar extends JToolBar implements Toolbar {
     private static final long serialVersionUID = -2525998620577603876L;
 
     /** The texture registry */
@@ -71,7 +71,7 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
      *
      * @param textureRegistry The texture registry the textures and icons are loaded from
      */
-    public SwingToolbarManager(final SwingTextureRegistry textureRegistry) {
+    public SwingToolbar(final SwingTextureRegistry textureRegistry) {
         //
         // class setup
         //
@@ -142,7 +142,7 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
             public void stateChanged(ChangeEvent event) {
                 JSlider source = (JSlider)event.getSource();
                 if (!source.getValueIsAdjusting()) {
-                    for (ToolbarListener listener : SwingToolbarManager.this.listeners)
+                    for (ToolbarListener listener : SwingToolbar.this.listeners)
                         listener.simulationSpeedChanged(source.getValue());
                 }
             }

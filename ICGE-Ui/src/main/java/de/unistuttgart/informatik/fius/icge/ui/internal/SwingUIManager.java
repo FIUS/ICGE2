@@ -16,7 +16,7 @@ import javax.swing.WindowConstants;
 
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.ToolbarManager;
+import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
 
@@ -33,7 +33,7 @@ public class SwingUIManager extends JFrame implements UiManager {
     private static final long          serialVersionUID = -7215617949088643819L;
     private final SwingTextureRegistry textureRegistry;
     private final SwingPlayfieldDrawer playfieldDrawer;
-    private final SwingToolbarManager  toolbarManager;
+    private final SwingToolbar  toolbarManager;
 
     /**
      * Create a new Swing UI Manager using the given submodules.
@@ -43,10 +43,10 @@ public class SwingUIManager extends JFrame implements UiManager {
      * @param playfieldDrawer
      *     The {@link PlayfieldDrawer} to use.
      * @param toolbarManager
-     *     The {@link ToolbarManager} to use.
+     *     The {@link Toolbar} to use.
      */
     public SwingUIManager(
-            final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final SwingToolbarManager toolbarManager
+            final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final SwingToolbar toolbarManager
     ) {
         this.textureRegistry = textureRegistry;
         this.playfieldDrawer = playfieldDrawer;
@@ -64,7 +64,7 @@ public class SwingUIManager extends JFrame implements UiManager {
     }
 
     @Override
-    public ToolbarManager getToolbarManager() {
+    public Toolbar getToolbarManager() {
         return this.toolbarManager;
     }
 
