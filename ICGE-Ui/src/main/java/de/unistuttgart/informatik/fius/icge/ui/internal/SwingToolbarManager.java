@@ -26,6 +26,8 @@ import de.unistuttgart.informatik.fius.icge.ui.ToolbarManager;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.InputMode;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.SimulationState;
+import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
+import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector.EntityEntry;
 
 
 /**
@@ -56,6 +58,10 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
     public JButton view;
     /** The button to change to entity mode */
     public JButton entity;
+
+    /** The selector which selects the entity for the user to place */
+    public EntitySelector entitySelect;
+
 
     /**
      * The constructor of the toolbar
@@ -167,7 +173,15 @@ public class SwingToolbarManager extends JToolBar implements ToolbarManager {
         });
         this.add(this.entity);
 
-        //TODO add entity selector
+        this.addSeparator();
+        this.entitySelect = new EntitySelector();
+        //FIXME load the correct entities
+        this.entitySelect.addEntry(new EntityEntry[] {
+            this.entitySelect.new EntityEntry("Test A"),
+            this.entitySelect.new EntityEntry("Test B"),
+            this.entitySelect.new EntityEntry("Test C")
+        });
+        this.add(this.entitySelect);
 
         // setup the initial states
         this.updateSimulationState(SimulationState.STOP);
