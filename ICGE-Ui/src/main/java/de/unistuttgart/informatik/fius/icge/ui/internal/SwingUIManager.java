@@ -26,7 +26,7 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  * @author Tim Neumann
  */
 public class SwingUIManager extends JFrame implements UiManager {
-    
+
     /**
      * generated
      */
@@ -34,7 +34,7 @@ public class SwingUIManager extends JFrame implements UiManager {
     private final SwingTextureRegistry textureRegistry;
     private final SwingPlayfieldDrawer playfieldDrawer;
     private final SwingToolbarManager  toolbarManager;
-    
+
     /**
      * Create a new Swing UI Manager using the given submodules.
      *
@@ -52,36 +52,36 @@ public class SwingUIManager extends JFrame implements UiManager {
         this.playfieldDrawer = playfieldDrawer;
         this.toolbarManager = toolbarManager;
     }
-    
+
     @Override
     public TextureRegistry getTextureRegistry() {
         return this.textureRegistry;
     }
-    
+
     @Override
     public PlayfieldDrawer getPlayfieldDrawer() {
         return this.playfieldDrawer;
     }
-    
+
     @Override
     public ToolbarManager getToolbarManager() {
         return this.toolbarManager;
     }
-    
+
     @Override
     public void start() {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.playfieldDrawer.initialize(this);
         this.getContentPane().add(BorderLayout.CENTER, this.playfieldDrawer);
-        this.toolbarManager.initialize(this);
+        //this.toolbarManager.initialize(this);
         this.getContentPane().add(BorderLayout.NORTH, this.toolbarManager);
         this.pack();
         this.setVisible(true);
     }
-    
+
     @Override
     public void setWindowTitle(final String title) {
         this.setTitle(title);
     }
-    
+
 }
