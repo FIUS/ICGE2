@@ -9,6 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbarManager;
@@ -28,6 +31,13 @@ public class UiManagerFactory {
      * @return The new Ui Manager.
      */
     public static UiManager createUiManager() {
+        // Set window look and feel
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
         final SwingToolbarManager toolbarManager = new SwingToolbarManager(textureRegistry);
