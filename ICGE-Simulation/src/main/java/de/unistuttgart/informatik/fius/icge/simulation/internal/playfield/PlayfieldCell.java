@@ -119,6 +119,15 @@ public class PlayfieldCell {
     }
     
     /**
+     * Return {@code true} iff the cell contains no entities.
+     * 
+     * @return {@code true} if empty
+     */
+    public boolean isEmpty() {
+        return this.entities.isEmpty();
+    }
+    
+    /**
      * Remove the given entity from this cell.
      * 
      * @param e
@@ -143,7 +152,7 @@ public class PlayfieldCell {
      * @return A list of all matching entities
      */
     public <T extends Entity> List<T> getEntities(Class<? extends T> type, boolean includeSubclasses) {
-        if(! includeSubclasses) {
+        if (!includeSubclasses) {
             return this.<T>getRelevantListGeneric(type).orElse(List.of());
         }
         

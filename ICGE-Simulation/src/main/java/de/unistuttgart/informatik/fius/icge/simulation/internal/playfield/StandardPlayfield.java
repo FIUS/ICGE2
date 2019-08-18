@@ -10,7 +10,9 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal.playfield;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
@@ -30,8 +32,8 @@ import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 public class StandardPlayfield implements Playfield {
     private PlayfieldDrawer drawer;
     
-    //TODO: Improve data structure. Tim already has an idea with a matrix of linked lists and a hashmap of weak refs. 
-    private final List<PlayfieldCell> cells = new ArrayList<>();
+    private final Map<Position, PlayfieldCell> cells           = new HashMap<>();
+    private final Map<Entity, Position>        entityPositions = new HashMap<>();
     
     /**
      * Initialize the playfield for the given simulation
@@ -64,7 +66,7 @@ public class StandardPlayfield implements Playfield {
     public <T extends Entity> List<T> getAllEntitiesOfType(Class<? extends T> type, boolean includeSubclasses) {
         if (type == null) throw new IllegalArgumentException("The given type is null.");
         List<T> result = new ArrayList<>();
-        for (PlayfieldCell cell : this.cells) {
+        for (PlayfieldCell cell : this.cells.values()) {
             result.addAll(cell.getEntities(type, includeSubclasses));
         }
         return result;
@@ -81,12 +83,32 @@ public class StandardPlayfield implements Playfield {
         if (type == null) throw new IllegalArgumentException("The given type is null.");
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         List<T> result = new ArrayList<>();
-        for (PlayfieldCell cell : this.cells) {
-            if (cell.getPosition().equals(pos)) {
-                result.addAll(cell.getEntities(type, includeSubclasses));
-            }
+        PlayfieldCell cell = this.cells.get(pos);
+        if (cell != null && cell.getPosition().equals(pos)) {
+            result.addAll(cell.getEntities(type, includeSubclasses));
         }
         return result;
+    }
+    
+    private void addEntityToCell(Position pos, Entity entity) {
+        PlayfieldCell cell = this.cells.get(pos);
+        if (cell == null) {
+            cell = new PlayfieldCell(pos);
+            this.cells.put(pos, cell);
+        }
+        cell.addEntity(entity);
+    }
+    
+    private void removeEntityFromCell(Position pos, Entity entity) {
+        PlayfieldCell cell = this.cells.get(pos);
+        if (cell == null || !cell.contains(entity)) {
+            // TODO decide if this should throw an Exception
+            return; // cell is already empty...
+        }
+        cell.remove(entity);
+        if (cell.isEmpty()) {
+            this.cells.remove(pos, cell);
+        }
     }
     
     @Override
@@ -94,41 +116,54 @@ public class StandardPlayfield implements Playfield {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
-        PlayfieldCell cellToAddIn = null;
-        for (PlayfieldCell cell : this.cells) {
-            if (cell.getPosition().equals(pos)) {
-                cellToAddIn = cell;
-            }
-            if (cell.contains(entity)) {
-                throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
-            }
+        if (this.entityPositions.containsKey(entity)) {
+            throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
         }
         
-
-        if (cellToAddIn == null) {
-            cellToAddIn = new PlayfieldCell(pos);
-            this.cells.add(cellToAddIn);
-        }
+        this.entityPositions.put(entity, pos);
         
-        cellToAddIn.addEntity(entity);
+        this.addEntityToCell(pos, entity);
+        
         entity.initOnPlayfield(this);
+    }
+    
+    @Override
+    public void moveEntity(Position pos, Entity entity) {
+        if (pos == null) throw new IllegalArgumentException("The given pos is null.");
+        if (entity == null) throw new IllegalArgumentException("The given entity is null.");
+        if (
+            !this.entityPositions.containsKey(entity)
+        ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+        
+        Position oldPos = this.entityPositions.get(entity);
+        this.removeEntityFromCell(oldPos, entity);
+        this.addEntityToCell(pos, entity);
+        this.entityPositions.put(entity, pos);
+    }
+    
+    @Override
+    public void removeEntity(Entity entity) {
+        if (entity == null) throw new IllegalArgumentException("The given entity is null.");
+        if (
+            !this.entityPositions.containsKey(entity)
+        ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+        
+        Position pos = this.entityPositions.get(entity);
+        this.removeEntityFromCell(pos, entity);
+        this.entityPositions.remove(entity, pos);
     }
     
     @Override
     public Position getEntityPosition(Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
-        for (PlayfieldCell cell : this.cells) {
-            if (cell.contains(entity)) return cell.getPosition();
-        }
-        throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+        Position pos = this.entityPositions.get(entity);
+        if (pos == null) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+        return pos;
     }
     
     @Override
     public boolean containsEntity(Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
-        for (PlayfieldCell cell : this.cells) {
-            if (cell.contains(entity)) return true;
-        }
-        return false;
+        return this.entityPositions.containsKey(entity);
     }
 }

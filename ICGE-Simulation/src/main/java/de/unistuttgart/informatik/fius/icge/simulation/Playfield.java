@@ -88,6 +88,32 @@ public interface Playfield {
     void addEntity(Position pos, Entity entity);
     
     /**
+     * Move a entity of this simulation to a given position on this playfield.
+     * 
+     * @param pos
+     *     The position to move the entity to; must <b>not</b> be <b>null</b>
+     * @param entity
+     *     The entity to add; <b>must</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
+     * @throws EntityNotOnFieldException
+     *     if the given entity is not in this playfield
+     * @throws IllegalArgumentException
+     *     if the given pos or entity is null
+     */
+    void moveEntity(Position pos, Entity entity);
+    
+    /**
+     * Remove a entity of this simulation from this playfield.
+     * 
+     * @param entity
+     *     The entity to add; <b>must</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
+     * @throws EntityNotOnFieldException
+     *     if the given entity is not in this playfield
+     * @throws IllegalArgumentException
+     *     if the given entity is null
+     */
+    void removeEntity(Entity entity);
+    
+    /**
      * Get the position of the specified entity on the playfield.
      * 
      * @param entity
