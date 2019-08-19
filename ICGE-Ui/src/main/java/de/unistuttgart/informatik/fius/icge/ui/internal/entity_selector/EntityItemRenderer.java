@@ -83,14 +83,6 @@ class EntityItemRenderer extends JPanel implements ListCellRenderer<EntitySelect
             }
         }
 
-        if (isSelected) {
-            this.labelItem.setBackground(Color.BLUE);
-            this.labelItem.setForeground(Color.YELLOW);
-        } else {
-            this.labelItem.setForeground(Color.BLACK);
-            this.labelItem.setBackground(Color.LIGHT_GRAY);
-        }
-
         return this;
     }
 }
