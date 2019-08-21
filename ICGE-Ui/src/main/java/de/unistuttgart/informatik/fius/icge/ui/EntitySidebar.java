@@ -16,4 +16,6 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @version 1.0
  */
 public interface EntitySidebar {
+
+    // TODO Add functions to connect to the sidebar
 }

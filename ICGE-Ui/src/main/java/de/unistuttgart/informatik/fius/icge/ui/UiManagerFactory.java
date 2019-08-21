@@ -14,7 +14,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingUIManager;
 
 
