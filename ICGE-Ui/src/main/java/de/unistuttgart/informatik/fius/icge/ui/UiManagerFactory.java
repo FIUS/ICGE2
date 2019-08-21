@@ -40,8 +40,7 @@ public class UiManagerFactory {
 
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        final SwingToolbar toolbarManager = new SwingToolbar(textureRegistry);
 
-        return new SwingUIManager(textureRegistry, playfieldDrawer, toolbarManager);
+        return new SwingUIManager(textureRegistry, playfieldDrawer);
     }
 }

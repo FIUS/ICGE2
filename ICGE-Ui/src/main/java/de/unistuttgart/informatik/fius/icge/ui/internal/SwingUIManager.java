@@ -12,8 +12,10 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
+import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
@@ -24,16 +26,16 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  * An implementation of {@link UiManager} using java swing.
  *
  * @author Tim Neumann
+ * @author Tobias Wältken
+ * @version 1.0
  */
 public class SwingUIManager extends JFrame implements UiManager {
+    private static final long serialVersionUID = -7215617949088643819L;
 
-    /**
-     * generated
-     */
-    private static final long          serialVersionUID = -7215617949088643819L;
     private final SwingTextureRegistry textureRegistry;
+    private final SwingToolbar toolbarManager;
+    private final SwingEntitySidebar entitySidebar;
     private final SwingPlayfieldDrawer playfieldDrawer;
-    private final SwingToolbar  toolbarManager;
 
     /**
      * Create a new Swing UI Manager using the given submodules.
@@ -42,15 +44,15 @@ public class SwingUIManager extends JFrame implements UiManager {
      *     The {@link TextureRegistry} to use.
      * @param playfieldDrawer
      *     The {@link PlayfieldDrawer} to use.
-     * @param toolbarManager
-     *     The {@link Toolbar} to use.
      */
     public SwingUIManager(
-            final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final SwingToolbar toolbarManager
+            final SwingTextureRegistry textureRegistry,
+            final SwingPlayfieldDrawer playfieldDrawer
     ) {
         this.textureRegistry = textureRegistry;
         this.playfieldDrawer = playfieldDrawer;
-        this.toolbarManager = toolbarManager;
+        this.toolbarManager = new SwingToolbar(this.textureRegistry);
+        this.entitySidebar = new SwingEntitySidebar();
     }
 
     @Override
@@ -69,13 +71,8 @@ public class SwingUIManager extends JFrame implements UiManager {
     }
 
     @Override
-    public void start() {
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.playfieldDrawer.initialize(this);
-        this.getContentPane().add(BorderLayout.CENTER, this.playfieldDrawer);
-        this.getContentPane().add(BorderLayout.NORTH, this.toolbarManager);
-        this.pack();
-        this.setVisible(true);
+    public EntitySidebar getEntitySidebar() {
+        return this.entitySidebar;
     }
 
     @Override
@@ -83,4 +80,22 @@ public class SwingUIManager extends JFrame implements UiManager {
         this.setTitle(title);
     }
 
+    @Override
+    public void start() {
+        // init jFrame
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.playfieldDrawer.initialize(this);
+
+        // setup toolbar
+        this.getContentPane().add(BorderLayout.NORTH, this.toolbarManager);
+
+        // setup main split pane with playfield and entity sidebar
+        JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                this.playfieldDrawer, this.entitySidebar);
+        this.getContentPane().add(BorderLayout.CENTER, sp);
+
+        // finalize jFrame
+        this.pack();
+        this.setVisible(true);
+    }
 }

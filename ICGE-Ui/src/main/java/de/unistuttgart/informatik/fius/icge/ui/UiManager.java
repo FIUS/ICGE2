@@ -32,9 +32,16 @@ public interface UiManager {
     /**
      * Get the toolbar manager for this UI Manager.
      *
-     * @return The toolbar manager used by this manaer.
+     * @return The toolbar manager used by this manager.
      */
     Toolbar getToolbarManager();
+
+    /**
+     * Get the entity sidebar for this UI Manager
+     *
+     * @return The entity sidebar used by this manager
+     */
+    EntitySidebar getEntitySidebar();
 
     /**
      * Set the title of the window, in which the ICGE is displayed.
