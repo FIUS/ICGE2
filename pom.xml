@@ -91,6 +91,11 @@
 				<artifactId>ICGE-Ui</artifactId>
 				<version>${icge.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>de.uni-stuttgart.informatik.fius</groupId>
+				<artifactId>ICGE-Simulation</artifactId>
+				<version>${icge.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<distributionManagement>

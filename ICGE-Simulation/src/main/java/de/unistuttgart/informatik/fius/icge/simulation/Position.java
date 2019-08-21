@@ -9,6 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+import java.util.Arrays;
+
+
 /**
  * Represents a position on the playfield.
  * <p>
@@ -46,5 +49,20 @@ public class Position {
      */
     public int getY() {
         return this.y;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Position)) {
+            return false;
+        }
+        Position p = (Position) o;
+        return this.x == p.getX() && this.y == p.getY();
+    }
+    
+    @Override
+    public int hashCode() {
+        final int[] numbers = { this.x, this.y };
+        return Arrays.hashCode(numbers);
     }
 }
