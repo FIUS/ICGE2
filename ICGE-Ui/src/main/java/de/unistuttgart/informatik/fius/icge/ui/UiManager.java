@@ -30,11 +30,11 @@ public interface UiManager {
     PlayfieldDrawer getPlayfieldDrawer();
 
     /**
-     * Get the toolbar manager for this UI Manager.
+     * Get the toolbar for this UI Manager.
      *
-     * @return The toolbar manager used by this manager.
+     * @return The toolbar used by this manager.
      */
-    Toolbar getToolbarManager();
+    Toolbar getToolbar();
 
     /**
      * Get the entity sidebar for this UI Manager
