@@ -29,20 +29,38 @@ public class SimulationTreeNode {
     private String elementId;
     private String displayText;
     private String textureId;
+    private boolean isLeaf;
 
     /**
-     * Default constructor
+     * Default constructor for leaf nodes
      *
      * @param elementId A non visible id used to better identify the slected entity.
      * @param displayText The name of the entity which is displayed to the user.
      * @param textureId The id of the texture which is rendered infront of the display text.
      */
     public SimulationTreeNode(String elementId, String displayText, String textureId) {
-        this.children = new ArrayList<>();
+        this.elementId = elementId;
+        this.displayText = displayText;
+        this.textureId = textureId;
+        this.isLeaf = true;
+    }
+
+    /**
+     * This constructor can be used to create non leaf nodes as well as leaf nodes.
+     *
+     * @param elementId A non visible id used to better identify the slected entity.
+     * @param displayText The name of the entity which is displayed to the user.
+     * @param textureId The id of the texture which is rendered infront of the display text.
+     * @param isLeaf This indicates if node is a leaf node or not.
+     */
+    public SimulationTreeNode(String elementId, String displayText, String textureId, boolean isLeaf) {
+        if (!isLeaf)
+            this.children = new ArrayList<>();
 
         this.elementId = elementId;
         this.displayText = displayText;
         this.textureId = textureId;
+        this.isLeaf = isLeaf;
     }
 
     /**
@@ -76,12 +94,35 @@ public class SimulationTreeNode {
     }
 
     /**
+     * This checks if node is a leaf node.
+     *
+     * @return Returns true if noe is a leaf node
+     */
+    public boolean isLeaf() {
+        return this.isLeaf;
+    }
+
+    /**
+     * Function to check if the node has children.
+     *
+     * @return Returns false if it has no childen.
+     */
+    public boolean hasChildren() {
+        if (this.isLeaf) return false;
+
+        return !this.children.isEmpty();
+    }
+
+    /**
      * Appends a child node to this node
      *
      * @param node The node to append
      * @return Returns true if action was successfull
      */
     public boolean appendChild(SimulationTreeNode node) {
+        if (this.isLeaf)
+            throw new LeafNodeException();
+
         return this.children.add(node);
     }
 
@@ -91,17 +132,11 @@ public class SimulationTreeNode {
      * @param lamda The function to run on every child node
      */
     public void forEachChild(Consumer<SimulationTreeNode> lamda) {
+        if (this.isLeaf)
+            throw new LeafNodeException();
+
         for (SimulationTreeNode child : this.children) {
             lamda.accept(child);
         }
-    }
-
-    /**
-     * Function to check if the node is a leaf node or has children.
-     *
-     * @return Returns false if it is a leaf node.
-     */
-    public boolean hasChildren() {
-        return !this.children.isEmpty();
     }
 }

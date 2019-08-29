@@ -18,6 +18,7 @@ import javax.swing.WindowConstants;
 
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
@@ -89,6 +90,7 @@ public class SwingUIManager extends JFrame implements UiManager {
         // init jFrame
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.playfieldDrawer.initialize(this);
+        this.addTempTestDataToEntitySidebar();
 
         // setup toolbar
         try {
@@ -108,5 +110,57 @@ public class SwingUIManager extends JFrame implements UiManager {
         // finalize jFrame
         this.pack();
         this.setVisible(true);
+    }
+
+    private void addTempTestDataToEntitySidebar() {
+        SimulationTreeNode rootNode = new SimulationTreeNode("root", "Simulation", "", false);
+
+        SimulationTreeNode players = new SimulationTreeNode("1", "Players", "", false);
+        players.appendChild(new SimulationTreeNode("1:0", "Neo", ""));
+        players.appendChild(new SimulationTreeNode("1:1", "Trinity", ""));
+        players.appendChild(new SimulationTreeNode("1:2", "Morpheus", ""));
+        rootNode.appendChild(players);
+
+        SimulationTreeNode pills = new SimulationTreeNode("2", "Pills", "", false);
+        pills.appendChild(new SimulationTreeNode("2:0", "Red-Pill <2,1>", ""));
+        pills.appendChild(new SimulationTreeNode("2:1", "Red-Pill <3,1>", ""));
+        pills.appendChild(new SimulationTreeNode("2:2", "Red-Pill <4,1>", ""));
+        pills.appendChild(new SimulationTreeNode("2:3", "Blue-Pill <1,4>", ""));
+        pills.appendChild(new SimulationTreeNode("2:4", "Blue-Pill <2,4>", ""));
+        pills.appendChild(new SimulationTreeNode("2:5", "Blue-Pill <3,4>", ""));
+        pills.appendChild(new SimulationTreeNode("2:6", "Blue-Pill <4,4>", ""));
+        pills.appendChild(new SimulationTreeNode("2:7", "Blue-Pill <5,4>", ""));
+        pills.appendChild(new SimulationTreeNode("2:8", "Blue-Pill <6,4>", ""));
+        rootNode.appendChild(pills);
+
+        SimulationTreeNode walls = new SimulationTreeNode("3", "Walls", "", false);
+        walls.appendChild(new SimulationTreeNode("3:0", "Wall <0,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:1", "Wall <1,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:2", "Wall <2,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:3", "Wall <3,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:4", "Wall <4,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:5", "Wall <5,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:6", "Wall <6,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:7", "Wall <7,0>", ""));
+        walls.appendChild(new SimulationTreeNode("3:8", "Wall <0,1>", ""));
+        walls.appendChild(new SimulationTreeNode("3:9", "Wall <0,2>", ""));
+        walls.appendChild(new SimulationTreeNode("3:10", "Wall <0,3>", ""));
+        walls.appendChild(new SimulationTreeNode("3:11", "Wall <0,4>", ""));
+        walls.appendChild(new SimulationTreeNode("3:12", "Wall <0,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:13", "Wall <1,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:14", "Wall <2,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:15", "Wall <3,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:16", "Wall <4,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:17", "Wall <5,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:18", "Wall <6,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:19", "Wall <7,5>", ""));
+        walls.appendChild(new SimulationTreeNode("3:20", "Wall <7,1>", ""));
+        walls.appendChild(new SimulationTreeNode("3:21", "Wall <7,2>", ""));
+        walls.appendChild(new SimulationTreeNode("3:22", "Wall <7,3>", ""));
+        walls.appendChild(new SimulationTreeNode("3:23", "Wall <7,4>", ""));
+        walls.appendChild(new SimulationTreeNode("3:24", "Wall <7,5>", ""));
+        rootNode.appendChild(walls);
+
+        this.entitySidebar.setSimulationTreeRootNode(rootNode);
     }
 }
