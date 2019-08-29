@@ -18,6 +18,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @version 1.0
  */
 public class LeafNodeException extends UnsupportedOperationException {
+    private static final long serialVersionUID = 2227365905217962083L;
 
     /**
      * Default constructor
