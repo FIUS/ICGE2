@@ -18,6 +18,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 /**
  * A swing implementation of the EntitySidebar
@@ -90,5 +91,15 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         walls.add(new DefaultMutableTreeNode("Wall"));
         walls.add(new DefaultMutableTreeNode("Wall"));
         this.rootNode.add(walls);
+    }
+
+    @Override
+    public void setSimulationTreeRootNode(SimulationTreeNode treeNode) {
+        //TODO implement
+    }
+
+    @Override
+    public void updateSimulationTree() {
+        //TODO implement
     }
 }
