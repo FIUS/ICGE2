@@ -44,6 +44,13 @@ public interface UiManager {
     EntitySidebar getEntitySidebar();
 
     /**
+     * Get the console for this UI Manager
+     *
+     * @return The console used by thsi manager
+     */
+    Console getConsole();
+
+    /**
      * Set the title of the window, in which the ICGE is displayed.
      *
      * @param title

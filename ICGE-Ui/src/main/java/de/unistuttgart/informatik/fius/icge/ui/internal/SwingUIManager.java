@@ -9,13 +9,18 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+import static javax.swing.SwingConstants.CENTER;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import de.unistuttgart.informatik.fius.icge.ui.Console;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
@@ -38,6 +43,7 @@ public class SwingUIManager extends JFrame implements UiManager {
     private final SwingPlayfieldDrawer playfieldDrawer;
     private final Toolbar toolbar;
     private final EntitySidebar entitySidebar;
+    private final Console console;
 
     /**
      * Create a new Swing UI Manager using the given submodules.
@@ -46,17 +52,20 @@ public class SwingUIManager extends JFrame implements UiManager {
      * @param playfieldDrawer The {@link PlayfieldDrawer} to use.
      * @param toolbar The {@link Toolbar} to use.
      * @param entitySidebar The {@link EntitySidebar} to use.
+     * @param console The {@link Console} to use.
      */
     public SwingUIManager(
             final SwingTextureRegistry textureRegistry,
             final SwingPlayfieldDrawer playfieldDrawer,
             final Toolbar toolbar,
-            final EntitySidebar entitySidebar
+            final EntitySidebar entitySidebar,
+            final Console console
     ) {
         this.textureRegistry = textureRegistry;
         this.playfieldDrawer = playfieldDrawer;
         this.toolbar = toolbar;
         this.entitySidebar = entitySidebar;
+        this.console = console;
     }
 
     @Override
@@ -80,6 +89,11 @@ public class SwingUIManager extends JFrame implements UiManager {
     }
 
     @Override
+    public Console getConsole() {
+        return this.console;
+    }
+
+    @Override
     public void setWindowTitle(final String title) {
         this.setTitle(title);
     }
@@ -90,28 +104,66 @@ public class SwingUIManager extends JFrame implements UiManager {
         // init jFrame
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.playfieldDrawer.initialize(this);
-        this.addTempTestDataToEntitySidebar();
+        this.addTempTestDataToEntitySidebar(); //FIXME Remove
 
-        // setup toolbar
+        // convert toolbar
+        JComponent toolbarComponent;
         try {
-            this.getContentPane().add(BorderLayout.NORTH, (JComponent) this.toolbar);
-        } catch (ClassCastException e) {/* Simply don't add toolbar if it isn't a JComponent */}
-
-        // setup main split pane with playfield and entity sidebar
-        try {
-            JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                    this.playfieldDrawer, (JComponent) this.entitySidebar);
-            this.getContentPane().add(BorderLayout.CENTER, sp);
-        } catch (ClassCastException e) {
-            // Only add the playfield drawer if the sidebar is not a JComponent
-            this.getContentPane().add(BorderLayout.CENTER, this.playfieldDrawer);
+            toolbarComponent = (JComponent) this.toolbar;
+        } catch (ClassCastException | NullPointerException e) {
+            toolbarComponent = new JLabel(
+                "Toolbar not valid!",
+                UIManager.getIcon("OptionPane.warningIcon"),
+                CENTER
+            );
         }
+
+        // convert sidebar
+        JComponent sidebarComponent;
+        try {
+            sidebarComponent = (JComponent) this.entitySidebar;
+        } catch (ClassCastException | NullPointerException e) {
+            sidebarComponent = new JLabel(
+                UIManager.getIcon("OptionPane.warningIcon"),
+                CENTER
+            );
+        }
+
+        // convert console
+        JComponent consoleComponent;
+        try {
+            consoleComponent = (JComponent) this.console;
+        } catch (ClassCastException | NullPointerException e) {
+            consoleComponent = new JLabel(
+                "Console not valid!",
+                UIManager.getIcon("OptionPane.warningIcon"),
+                CENTER
+            );
+        }
+
+        // setup JFrame layout
+        this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
+        JSplitPane jsp1 = new JSplitPane(
+            JSplitPane.VERTICAL_SPLIT,
+            this.playfieldDrawer,
+            consoleComponent
+        );
+        jsp1.setOneTouchExpandable(true);
+        jsp1.setResizeWeight(0.8);
+        JSplitPane jsp2 = new JSplitPane(
+            JSplitPane.HORIZONTAL_SPLIT,
+            jsp1,
+            sidebarComponent
+        );
+        jsp2.setOneTouchExpandable(true);
+        this.getContentPane().add(BorderLayout.CENTER, jsp2);
 
         // finalize jFrame
         this.pack();
         this.setVisible(true);
     }
 
+    //FIXME remove
     private void addTempTestDataToEntitySidebar() {
         SimulationTreeNode rootNode = new SimulationTreeNode("root", "Simulation", "", false);
 

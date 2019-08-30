@@ -13,6 +13,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
@@ -44,7 +45,10 @@ public class UiManagerFactory {
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
         final SwingToolbar toolbar = new SwingToolbar(textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
+        final SwingConsole console = new SwingConsole();
 
-        return new SwingUIManager(textureRegistry, playfieldDrawer, toolbar, entitySidebar);
+        return new SwingUIManager(
+            textureRegistry, playfieldDrawer, toolbar, entitySidebar, console
+        );
     }
 }

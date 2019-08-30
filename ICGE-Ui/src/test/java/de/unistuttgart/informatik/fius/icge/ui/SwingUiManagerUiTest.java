@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
@@ -38,8 +39,9 @@ class SwingUiManagerUiTest {
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
         final SwingToolbar toolbar = new SwingToolbar(textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
+        final SwingConsole console = new SwingConsole();
 
-        this.uiManager = new SwingUIManager(textureRegistry, playfieldDrawer, toolbar, entitySidebar);
+        this.uiManager = new SwingUIManager(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
     }
 
     /**
