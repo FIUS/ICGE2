@@ -7,9 +7,9 @@
  * @version 1.0.0
  *
  */
-package de.unistauttgart.informatil.fius.icge.example.mario;
+package de.unistauttgart.informatik.fius.icge.example.mario;
 
-import de.unistauttgart.informatil.fius.icge.example.mario.entity.Wall;
+import de.unistauttgart.informatik.fius.icge.example.mario.entity.Wall;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
