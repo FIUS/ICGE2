@@ -17,7 +17,7 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
  * @author Tobias Wältken
  * @version 1.0
  */
-public abstract class SwingTextureStorage {
+public abstract class StaticUiTextures {
 
     /** A play icon */
     public static String playIcon;
@@ -32,16 +32,16 @@ public abstract class SwingTextureStorage {
      *
      * @param registry The registry to load the icons in
      */
-    public static void init(TextureRegistry registry) {
-        SwingTextureStorage.playIcon = registry.loadTextureFromResource(
+    public static void load(TextureRegistry registry) {
+        StaticUiTextures.playIcon = registry.loadTextureFromResource(
             "textures/play.png",
             TextureRegistry.class::getResourceAsStream
         );
-        SwingTextureStorage.pauseIcon = registry.loadTextureFromResource(
+        StaticUiTextures.pauseIcon = registry.loadTextureFromResource(
             "textures/pause.png",
             TextureRegistry.class::getResourceAsStream
         );
-        SwingTextureStorage.stopIcon = registry.loadTextureFromResource(
+        StaticUiTextures.stopIcon = registry.loadTextureFromResource(
             "textures/stop.png",
             TextureRegistry.class::getResourceAsStream
         );

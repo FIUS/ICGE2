@@ -41,7 +41,7 @@ public class SwingTextureRegistry implements TextureRegistry {
      * Default constructor
      */
     public SwingTextureRegistry() {
-        SwingTextureStorage.init(this);
+        StaticUiTextures.load(this);
     }
 
     /**

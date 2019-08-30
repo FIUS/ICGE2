@@ -88,7 +88,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // play button setup
         //
         this.play = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(
-                SwingTextureStorage.playIcon).getTexture()));
+                StaticUiTextures.playIcon).getTexture()));
         this.play.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -101,7 +101,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // pause button setup
         //
         this.pause = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(
-                SwingTextureStorage.pauseIcon).getTexture()));
+                StaticUiTextures.pauseIcon).getTexture()));
         this.pause.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -114,7 +114,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // stop button setup
         //
         this.stop = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(
-            SwingTextureStorage.stopIcon).getTexture()));
+            StaticUiTextures.stopIcon).getTexture()));
         this.stop.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
