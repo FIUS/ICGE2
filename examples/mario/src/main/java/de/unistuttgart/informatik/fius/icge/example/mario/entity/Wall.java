@@ -7,9 +7,9 @@
  * @version 1.0.0
  *
  */
-package de.unistauttgart.informatik.fius.icge.example.mario.entity;
+package de.unistuttgart.informatik.fius.icge.example.mario.entity;
 
-import de.unistauttgart.informatik.fius.icge.example.mario.Texture;
+import de.unistuttgart.informatik.fius.icge.example.mario.Texture;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.BasicEntity;
 
 /**

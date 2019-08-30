@@ -7,7 +7,7 @@
  * @version 1.0.0
  *
  */
-package de.unistauttgart.informatik.fius.icge.example.mario;
+package de.unistuttgart.informatik.fius.icge.example.mario;
 
 import de.unistuttgart.informatik.fius.icge.ui.TextureNotFoundException;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
