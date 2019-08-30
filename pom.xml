@@ -113,5 +113,6 @@
 	<modules>
 		<module>ICGE-Ui</module>
 		<module>ICGE-Simulation</module>
+		<module>ICGE-ManualStart</module>
 	</modules>
 </project>

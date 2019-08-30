@@ -7,13 +7,13 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.example.manual;
+package de.unistuttgart.informatik.fius.icge.manualstart;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
+import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
@@ -37,7 +37,7 @@ public class ManualStartUi {
         
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
-        final String wallTexture = tr.loadTextureFromResource("/textures/wall-default.png", ManualStartUi.class::getResourceAsStream);
+        final String wallTexture = tr.loadTextureFromResource("textures/wall-default.png", ManualStartUi.class::getResourceAsStream);
         
         // generate playfield
         final ArrayList<Drawable> drawables = new ArrayList<>(
