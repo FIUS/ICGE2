@@ -7,7 +7,7 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.example.manual;
+package de.unistuttgart.informatik.fius.icge.manualstart;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -39,7 +39,7 @@ public class ManualStartSimulation {
     private static void prepareUiManager(UiManager manager) {
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
-        textureHandleWall = tr.loadTextureFromResource("/textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);
+        textureHandleWall = tr.loadTextureFromResource("textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);
         manager.setWindowTitle("Manual simulation start");
     }
     
