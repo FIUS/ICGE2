@@ -1,0 +1,49 @@
+/*
+ * This source file is part of the FIUS ICGE project.
+ * For more information see github.com/FIUS/ICGE2
+ *
+ * Copyright (c) 2019 the ICGE project authors.
+ *
+ * This software is available under the MIT license.
+ * SPDX-License-Identifier:    MIT
+ */
+package de.unistuttgart.informatik.fius.icge.ui.internal;
+
+import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
+
+/**
+ * The SwingTextureStorage contains all icon ids needed by swing ui components
+ *
+ * @author Tobias Wältken
+ * @version 1.0
+ */
+public abstract class StaticUiTextures {
+
+    /** A play icon */
+    public static String playIcon;
+    /** A pause icon */
+    public static String pauseIcon;
+    /** A stop icon */
+    public static String stopIcon;
+
+    /**
+     * This function loads all textures into the given texture registry and
+     * stores the icon ids
+     *
+     * @param registry The registry to load the icons in
+     */
+    public static void load(TextureRegistry registry) {
+        StaticUiTextures.playIcon = registry.loadTextureFromResource(
+            "textures/play.png",
+            TextureRegistry.class::getResourceAsStream
+        );
+        StaticUiTextures.pauseIcon = registry.loadTextureFromResource(
+            "textures/pause.png",
+            TextureRegistry.class::getResourceAsStream
+        );
+        StaticUiTextures.stopIcon = registry.loadTextureFromResource(
+            "textures/stop.png",
+            TextureRegistry.class::getResourceAsStream
+        );
+    }
+}

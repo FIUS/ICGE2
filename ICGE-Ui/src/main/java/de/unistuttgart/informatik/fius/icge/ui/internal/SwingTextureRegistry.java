@@ -29,11 +29,20 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
  * An implementation of {@link TextureRegistry} using java swing.
  *
  * @author Tim Neumann
+ * @author Tobias Wältken
+ * @version 1.0
  */
 public class SwingTextureRegistry implements TextureRegistry {
     private final Map<String, String> resourceToHandle = new HashMap<>();
     private final Map<String, String> pathToHandle     = new HashMap<>();
     private final Map<String, Texture>  handleToTexture  = new HashMap<>();
+
+    /**
+     * Default constructor
+     */
+    public SwingTextureRegistry() {
+        StaticUiTextures.load(this);
+    }
 
     /**
      * Load a texture from a local (ui module) resource.
