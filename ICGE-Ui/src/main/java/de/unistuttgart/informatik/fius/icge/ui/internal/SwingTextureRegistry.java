@@ -9,7 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +16,8 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
@@ -32,39 +33,61 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 public class SwingTextureRegistry implements TextureRegistry {
     private final Map<String, String> resourceToHandle = new HashMap<>();
     private final Map<String, String> pathToHandle     = new HashMap<>();
-    private final Map<String, Image>  handleToTexture  = new HashMap<>();
-    
-    @Override
+    private final Map<String, Texture>  handleToTexture  = new HashMap<>();
+
+    /**
+     * Load a texture from a local (ui module) resource.
+     *
+     * @param resourceName
+     *     The name of the resource
+     * @return The resource handle.
+     * @see #loadTextureFromResource(String, Function)
+     */
     public String loadTextureFromResource(final String resourceName) {
+        return loadTextureFromResource(resourceName, SwingTextureRegistry.class::getResourceAsStream);
+    }
+
+    @Override
+    public String loadTextureFromResource(final String resourceName, final Function<String, InputStream> resourceProvider) {
         if (this.resourceToHandle.containsKey(resourceName)) return this.resourceToHandle.get(resourceName);
-        try (InputStream input = SwingTextureRegistry.class.getResourceAsStream(resourceName)) {
+        try (InputStream input = resourceProvider.apply(resourceName)) {
             final BufferedImage texture = ImageIO.read(input);
-            this.resourceToHandle.put(resourceName, resourceName);
-            this.handleToTexture.put(resourceName, texture);
-            return resourceName;
+            final String textureHandle = "resource://" + resourceName;
+            this.resourceToHandle.put(resourceName, textureHandle);
+            this.handleToTexture.put(textureHandle, new Texture(texture));
+            return textureHandle;
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
         }
     }
-    
+
     @Override
     public String loadTextureFromFile(final String filePath) {
         final Path resolvedPath = Path.of(filePath).toAbsolutePath();
-        final String textureHandle = resolvedPath.toString();
-        if (this.pathToHandle.containsKey(textureHandle)) return this.pathToHandle.get(textureHandle);
+        final String fullPath = resolvedPath.toString();
+        final String textureHandle = "file://" + fullPath;
+        if (this.pathToHandle.containsKey(fullPath)) return this.pathToHandle.get(fullPath);
         try {
             final File textureFile = resolvedPath.toFile();
             final BufferedImage texture = ImageIO.read(textureFile);
-            this.pathToHandle.put(textureHandle, textureHandle);
-            this.handleToTexture.put(textureHandle, texture);
+            this.pathToHandle.put(fullPath, textureHandle);
+            this.handleToTexture.put(textureHandle, new Texture(texture));
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested path could not be loaded!", e);
         }
         return textureHandle;
     }
-    
-    @Override
-    public Image getTextureForHandle(final String handle) {
+
+    /**
+     * Get the texture for the given texture handle.
+     *
+     * @param handle
+     *     the texture handle
+     * @return the texture for the handle
+     *
+     * @throws NoSuchElementException
+     */
+    public Texture getTextureForHandle(final String handle) {
         return this.handleToTexture.get(handle);
     }
 }

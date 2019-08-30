@@ -10,70 +10,71 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 /**
- * A class containing all information needed to draw an object onto the playfield by a {@link PlayfieldDrawer}.
+ * A interface providing all information needed to draw an object onto the playfield by a {@link PlayfieldDrawer}.
  *
  * @author Tim Neumann
+ * @author Tobias Wältken
+ * @version 1.0
  */
-public class Drawable implements Comparable<Drawable> {
-    
+public interface Drawable extends Comparable<Drawable> {
+
     /**
-     * The x coordinate of the drawable.
+     * Get the x coordinate of the drawable.
      *
      * The coordinate system is based on cells where fractionals denote positions between cells.
+     *
+     * @return returns the X position as a double
      */
-    public final double x;
-    
+    double getX();
+
     /**
-     * The y coordinate of the drawable.
+     * Get the y coordinate of the drawable.
      *
      * The coordinate system is based on cells where fractionals denote positions between cells.
+     *
+     * @return returns the Y position as a double
      */
-    public final double y;
-    
+    double getY();
+
     /**
-     * The z value of the drawable.
+     * Get the z value of the drawable.
      *
      * The z value is used to decide the drawing order of Drawables in the same cell.
+     *
+     * @return returns the Z position as a double
      */
-    public final int z;
-    
+    int getZ();
+
     /**
-     * The handle of the texture for this drawable.
+     * Get the handle of the texture for this drawable.
      *
      * The texture must be registered in the TextureRegistry.
-     */
-    public final String textureHandle;
-    
-    /**
-     * Create a new Drawable.
      *
-     * @param x
-     *     coordinate
-     * @param y
-     *     coordinate
-     * @param z
-     *     value
-     * @param textureHandle
+     * @return returns the texture handle as a String
      */
-    public Drawable(final double x, final double y, final int z, final String textureHandle) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.textureHandle = textureHandle;
+    String getTextureHandle();
+
+    /**
+     * Return wether this Drawable can be drawn tiled if multiple are present in the same cell.
+     *
+     * @return true if the Drawable is tilable
+     */
+    default boolean isTilable() {
+        return true;
     }
-    
+
     @Override
-    public int compareTo(final Drawable o) {
+    default int compareTo(final Drawable o) {
         double compareResult = 0;
-        compareResult = this.z - o.z;
+        compareResult = this.getZ() - o.getZ();
         if (compareResult == 0) {
-            compareResult = this.x - o.x;
+            compareResult = this.getX() - o.getX();
         }
         if (compareResult == 0) {
-            compareResult = this.y - o.y;
+            compareResult = this.getY() - o.getY();
         }
         if (compareResult < 0) return -1;
         if (compareResult > 0) return 1;
-        return this.textureHandle.compareTo(o.textureHandle);
+        return this.getTextureHandle().compareTo(o.getTextureHandle());
     }
 }

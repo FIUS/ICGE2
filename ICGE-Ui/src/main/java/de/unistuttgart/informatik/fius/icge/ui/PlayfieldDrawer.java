@@ -29,4 +29,8 @@ public interface PlayfieldDrawer {
      */
     void setDrawables(List<Drawable> drawables);
     
+    /**
+     * Draws the playfield.
+     */
+    void draw();
 }
