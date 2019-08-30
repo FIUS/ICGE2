@@ -12,17 +12,26 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 
 /**
- * SwingTextureStorage
+ * The SwingTextureStorage contains all icon ids needed by swing ui components
  *
  * @author Tobias Wältken
  * @version 1.0
  */
 public abstract class SwingTextureStorage {
 
+    /** A play icon */
     public static String playIcon;
+    /** A pause icon */
     public static String pauseIcon;
+    /** A stop icon */
     public static String stopIcon;
 
+    /**
+     * This function loads all textures into the given texture registry and
+     * stores the icon ids
+     *
+     * @param registry The registry to load the icons in
+     */
     public static void init(TextureRegistry registry) {
         SwingTextureStorage.playIcon = registry.loadTextureFromResource(
             "textures/play.png",
