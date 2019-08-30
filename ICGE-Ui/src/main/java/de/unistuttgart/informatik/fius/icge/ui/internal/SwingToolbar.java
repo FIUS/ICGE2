@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
@@ -86,7 +87,8 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // play button setup
         //
-        this.play = new JButton("Play"); // FIXME Replace Text with Icon
+        this.play = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(
+                SwingTextureStorage.playIcon).getTexture()));
         this.play.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -98,7 +100,8 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // pause button setup
         //
-        this.pause = new JButton("Pause"); // FIXME Replace Text with Icon
+        this.pause = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(
+                SwingTextureStorage.pauseIcon).getTexture()));
         this.pause.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -110,7 +113,8 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // stop button setup
         //
-        this.stop = new JButton("Stop"); // FIXME Replace Text with Icon
+        this.stop = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(
+            SwingTextureStorage.stopIcon).getTexture()));
         this.stop.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
