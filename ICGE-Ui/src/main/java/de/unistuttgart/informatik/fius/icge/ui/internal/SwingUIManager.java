@@ -12,6 +12,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import static javax.swing.SwingConstants.CENTER;
 
 import java.awt.BorderLayout;
+import java.io.PrintStream;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -161,6 +162,22 @@ public class SwingUIManager extends JFrame implements UiManager {
         // finalize jFrame
         this.pack();
         this.setVisible(true);
+
+        {   // FIXME remove
+            PrintStream ps = new PrintStream(this.console.getSystemOutputStream());
+            ps.println("Currently Unavailable!");
+        }
+        {   // FIXME remove
+            PrintStream ps = new PrintStream(this.console.getSimulationOutputStream());
+            for (int i = 0; i < 1000; i++) {
+                ps.println(i);
+                try {
+                    Thread.sleep(750);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     //FIXME remove

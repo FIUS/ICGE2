@@ -9,6 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+
+import java.io.OutputStream;
+
+
 /**
  * A Console to show text output of the software
  *
@@ -16,5 +20,18 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @version 1.0
  */
 public interface Console {
-    //TODO Add functions
+
+    /**
+     * Getter for the output stream of the simulation console
+     *
+     * @return Returns a output stream
+     */
+    public OutputStream getSimulationOutputStream();
+
+    /**
+     * Getter for the output stream of the system console
+     *
+     * @return Returns a output stream
+     */
+    public OutputStream getSystemOutputStream();
 }
