@@ -10,6 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardTickManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
@@ -30,7 +31,8 @@ public class SimulationFactory {
         UiManager uiManager = UiManagerFactory.createUiManager();
         
         StandardPlayfield playfield = new StandardPlayfield();
+        StandardTickManager tickManager = new StandardTickManager();
         
-        return new StandardSimulation(uiManager, playfield);
+        return new StandardSimulation(uiManager, playfield, tickManager);
     }
 }

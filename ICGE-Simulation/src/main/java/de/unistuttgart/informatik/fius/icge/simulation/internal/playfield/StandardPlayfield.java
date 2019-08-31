@@ -43,6 +43,10 @@ public class StandardPlayfield implements Playfield {
      */
     public void initialize(StandardSimulation simulation) {
         this.drawer = simulation.getUiManager().getPlayfieldDrawer();
+        simulation.getTickManager().registerTickListener(count -> {
+            drawEntities();
+            return true;
+        });
     }
     
     /**

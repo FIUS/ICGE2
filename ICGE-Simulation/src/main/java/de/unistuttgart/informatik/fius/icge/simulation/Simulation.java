@@ -33,6 +33,13 @@ public interface Simulation {
     UiManager getUiManager();
     
     /**
+     * Get the tick manager for this simulation.
+     * 
+     * @return the ui manager used by this simulation
+     */
+    TickManager getTickManager();
+    
+    /**
      * Initialize the simulation and all its submodules.
      */
     void initialize();
