@@ -169,10 +169,10 @@ public class SwingUIManager extends JFrame implements UiManager {
         }
         {   // FIXME remove
             PrintStream ps = new PrintStream(this.console.getSimulationOutputStream());
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10; i++) {
                 ps.println(i);
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
