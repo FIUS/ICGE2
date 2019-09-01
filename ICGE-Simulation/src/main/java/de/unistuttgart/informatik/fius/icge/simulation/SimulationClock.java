@@ -13,11 +13,11 @@ import java.util.function.Function;
 
 
 /**
- * The interface of the manager, that produces the right amount of game and render ticks.
+ * The interface of the simulation clock, whcih produces the game and render ticks.
  * 
  * @author Tim Neumann
  */
-public interface TickManager {
+public interface SimulationClock {
     
     /**
      * The number of render ticks per one simulation tick.
@@ -75,4 +75,15 @@ public interface TickManager {
      *     The listener to be called.
      */
     public void registerTickListener(Function<Long, Boolean> listener);
+    
+    /**
+     * Register a listener for the end of simulation ticks.
+     * <p>
+     * The listener get's the current tick count as an argument and must return whether it wants to continue to listen.
+     * </p>
+     * 
+     * @param listener
+     *     The listener to be called.
+     */
+    public void registerPostTickListener(Function<Long, Boolean> listener);
 }

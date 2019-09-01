@@ -37,7 +37,7 @@ public interface Simulation {
      * 
      * @return the ui manager used by this simulation
      */
-    TickManager getTickManager();
+    SimulationClock getTickManager();
     
     /**
      * Initialize the simulation and all its submodules.

@@ -14,28 +14,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
-import de.unistuttgart.informatik.fius.icge.simulation.TickManager;
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 
 
 /**
- * The standard implementation of {@link TickManager}
+ * The standard implementation of {@link SimulationClock}
  * 
  * @author Tim Neumann
  */
-public class StandardTickManager implements TickManager {
+public class StandardSimulationClock implements SimulationClock {
     
     private PlayfieldDrawer drawer;
     
-    private ExecutorService executor = Executors.newCachedThreadPool(r -> new Thread(r, "StandardTickManagerExecutor"));
-    
     private List<Function<Long, Boolean>> tickListeners = Collections.synchronizedList(new ArrayList<>());
+    private List<Function<Long, Boolean>> postTickListeners = Collections.synchronizedList(new ArrayList<>());
     
     private TimerTask task;
     private Timer     timer = new Timer("STM-TickTimer");
@@ -79,7 +75,7 @@ public class StandardTickManager implements TickManager {
             
             @Override
             public void run() {
-                doTick();
+                tick();
             }
         };
         this.timer.schedule(this.task, 0, this.period);
@@ -91,45 +87,44 @@ public class StandardTickManager implements TickManager {
     }
     
     /**
-     * Do a low level tick
+     * Process a tick
      */
-    private void doTick() {
-        doRenderTick(this.tickCount);
+    private void tick() {
+        this.drawer.draw(this.tickCount);
         if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
-            doSimulationTick(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
+            tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
         }
         this.tickCount++;
     }
     
     /**
-     * Do / propagate a render tick.
+     * Process a simulation tick
      * 
      * @param tickNumber
-     *     The number of the render tick since the start of the tick manager.
+     *     The number of the simulation tick since the start of the clock.
      */
-    private void doRenderTick(long tickNumber) {
-        this.executor.execute(this.drawer::draw);
-    }
-    
-    /**
-     * Do / propagate a simulation tick
-     * 
-     * @param tickNumber
-     *     The number of the simulation tick since the start of the tick manager.
-     */
-    private void doSimulationTick(long tickNumber) {
+    private void tickSimulation(long tickNumber) {
         for (var listener : List.copyOf(this.tickListeners)) {
-            CompletableFuture.supplyAsync(() -> listener.apply(tickNumber), this.executor).thenAcceptAsync(keep -> {
-                if (!keep) {
-                    this.tickListeners.remove(listener);
-                }
-            }, this.executor);
+            if (!listener.apply(tickNumber)) {
+                this.tickListeners.remove(listener);
+            }
+        }
+        
+        for (var listener : List.copyOf(this.postTickListeners)) {
+            if (!listener.apply(tickNumber)) {
+                this.postTickListeners.remove(listener);
+            }
         }
     }
     
     @Override
     public void registerTickListener(Function<Long, Boolean> listener) {
         this.tickListeners.add(listener);
+    }
+    
+    @Override
+    public void registerPostTickListener(Function<Long, Boolean> listener) {
+        this.postTickListeners.add(listener);
     }
     
 }

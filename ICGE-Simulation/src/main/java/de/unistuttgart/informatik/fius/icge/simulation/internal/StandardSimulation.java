@@ -11,7 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
-import de.unistuttgart.informatik.fius.icge.simulation.TickManager;
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
@@ -25,7 +25,7 @@ public class StandardSimulation implements Simulation {
     
     private final UiManager uiManager;
     private final StandardPlayfield playfield;
-    private final StandardTickManager tickManager;
+    private final StandardSimulationClock tickManager;
     
     /**
      * Creates a new standard simulation with the given parameters.
@@ -37,7 +37,7 @@ public class StandardSimulation implements Simulation {
      * @param tickManager
      *     The tickManager to use
      */
-    public StandardSimulation(UiManager uiManager, StandardPlayfield playfield, StandardTickManager tickManager) {
+    public StandardSimulation(UiManager uiManager, StandardPlayfield playfield, StandardSimulationClock tickManager) {
         this.uiManager = uiManager;
         this.playfield = playfield;
         this.tickManager = tickManager;
@@ -64,7 +64,7 @@ public class StandardSimulation implements Simulation {
     }
     
     @Override
-    public TickManager getTickManager() {
+    public SimulationClock getTickManager() {
         return this.tickManager;
     }
     
