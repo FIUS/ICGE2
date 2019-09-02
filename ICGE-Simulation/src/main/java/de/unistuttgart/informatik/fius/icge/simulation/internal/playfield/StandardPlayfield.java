@@ -43,6 +43,10 @@ public class StandardPlayfield implements Playfield {
      */
     public void initialize(StandardSimulation simulation) {
         this.drawer = simulation.getUiManager().getPlayfieldDrawer();
+        simulation.getTickManager().registerPostTickListener(count -> {
+            drawEntities();
+            return true;
+        });
     }
     
     /**
@@ -54,7 +58,6 @@ public class StandardPlayfield implements Playfield {
             drawables.add(entity.getDrawInformation());
         }
         this.drawer.setDrawables(drawables);
-        this.drawer.draw();
     }
     
     @Override

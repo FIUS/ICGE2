@@ -31,6 +31,9 @@ public interface PlayfieldDrawer {
     
     /**
      * Draws the playfield.
+     * 
+     * @param tickCount
+     *     The number of the current tick
      */
-    void draw();
+    void draw(long tickCount);
 }
