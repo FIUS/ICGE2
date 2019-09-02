@@ -158,7 +158,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
     
     @Override
-    public void draw() {
+    public void draw(long tickCount) {
         repaint();
     }
     
