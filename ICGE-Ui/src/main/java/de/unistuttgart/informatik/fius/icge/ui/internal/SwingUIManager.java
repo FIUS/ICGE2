@@ -12,7 +12,6 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import static javax.swing.SwingConstants.CENTER;
 
 import java.awt.BorderLayout;
-import java.io.PrintStream;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -21,6 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
@@ -142,6 +142,11 @@ public class SwingUIManager extends JFrame implements UiManager {
             );
         }
 
+        // connect logger to console
+        Logger.addSimulationOutputStream(this.console.getSimulationOutputStream());
+        Logger.addOutOutputStream(this.console.getSystemOutputStream());
+        Logger.addErrorOutputStream(this.console.getSystemOutputStream());
+
         // setup JFrame layout
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
         JSplitPane jsp1 = new JSplitPane(
@@ -162,22 +167,6 @@ public class SwingUIManager extends JFrame implements UiManager {
         // finalize jFrame
         this.pack();
         this.setVisible(true);
-
-        {   // FIXME remove
-            PrintStream ps = new PrintStream(this.console.getSystemOutputStream());
-            ps.println("Currently Unavailable!");
-        }
-        {   // FIXME remove
-            PrintStream ps = new PrintStream(this.console.getSimulationOutputStream());
-            for (int i = 0; i < 10; i++) {
-                ps.println(i);
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     //FIXME remove
