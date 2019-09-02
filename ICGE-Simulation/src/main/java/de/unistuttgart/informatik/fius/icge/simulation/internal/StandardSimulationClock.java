@@ -90,10 +90,10 @@ public class StandardSimulationClock implements SimulationClock {
      * Process a tick
      */
     private void tick() {
-        this.drawer.draw(this.tickCount);
         if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
             tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
         }
+        this.drawer.draw(this.tickCount);
         this.tickCount++;
     }
     
