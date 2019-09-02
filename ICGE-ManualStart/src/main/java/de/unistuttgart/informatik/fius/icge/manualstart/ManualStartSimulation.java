@@ -24,6 +24,8 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  */
 public class ManualStartSimulation {
     private static String textureHandleWall;
+    private static String textureHandleCoin;
+    private static String animated;
     
     /**
      * @param args
@@ -40,6 +42,10 @@ public class ManualStartSimulation {
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
         textureHandleWall = tr.loadTextureFromResource("textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);
+        textureHandleCoin = tr.loadTextureFromResource("textures/coin-default.png", ManualStartSimulation.class::getResourceAsStream);
+        animated = tr.createAnimatedTexture(true);
+        tr.addAnimationFrameToTexture(animated, textureHandleWall, 3);
+        tr.addAnimationFrameToTexture(animated, textureHandleCoin, 3);
         manager.setWindowTitle("Manual simulation start");
     }
     
@@ -47,7 +53,7 @@ public class ManualStartSimulation {
         
         @Override
         protected String getTextureHandle() {
-            return textureHandleWall;
+            return animated;
         }
         
         @Override

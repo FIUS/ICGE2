@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.function.Function;
 
 import javax.imageio.ImageIO;
@@ -43,6 +44,15 @@ public class SwingTextureRegistry implements TextureRegistry {
     public SwingTextureRegistry() {
         StaticUiTextures.load(this);
     }
+    
+    /**
+     * Generate a new unique texture handle.
+     * 
+     * @return uuid texture handle
+     */
+    private String generateNewTextureHandle() {
+        return UUID.randomUUID().toString();
+    }
 
     /**
      * Load a texture from a local (ui module) resource.
@@ -63,7 +73,7 @@ public class SwingTextureRegistry implements TextureRegistry {
             final BufferedImage texture = ImageIO.read(input);
             final String textureHandle = "resource://" + resourceName;
             this.resourceToHandle.put(resourceName, textureHandle);
-            this.handleToTexture.put(textureHandle, new Texture(texture));
+            this.handleToTexture.put(textureHandle, new StaticTexture(texture));
             return textureHandle;
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
@@ -80,11 +90,31 @@ public class SwingTextureRegistry implements TextureRegistry {
             final File textureFile = resolvedPath.toFile();
             final BufferedImage texture = ImageIO.read(textureFile);
             this.pathToHandle.put(fullPath, textureHandle);
-            this.handleToTexture.put(textureHandle, new Texture(texture));
+            this.handleToTexture.put(textureHandle, new StaticTexture(texture));
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested path could not be loaded!", e);
         }
         return textureHandle;
+    }
+    
+    @Override
+    public String createAnimatedTexture(boolean loop) {
+        String textureHandle = this.generateNewTextureHandle();
+        
+        AnimatedTexture animTexture = new AnimatedTexture(this, loop);
+        this.handleToTexture.put(textureHandle, animTexture);
+        
+        return textureHandle;
+    }
+    
+    @Override
+    public void addAnimationFrameToTexture(String animatedTexture, String frameTexture, long frames) {
+        try {
+            AnimatedTexture animated = (AnimatedTexture) this.getTextureForHandle(animatedTexture);
+            animated.addAnimationFrame(frameTexture, frames);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("Texture handle was not a handle for an animated texture!", e);
+        }
     }
 
     /**

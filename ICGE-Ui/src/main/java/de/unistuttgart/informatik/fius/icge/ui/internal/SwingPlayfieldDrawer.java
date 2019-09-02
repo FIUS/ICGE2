@@ -64,11 +64,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private double offsetY = SwingPlayfieldDrawer.CELL_SIZE;
     private double scale   = 1.0;
     
-    private final int minX = 0;
-    private final int minY = 0;
-    private final int maxX = 10;
-    private final int maxY = 10;
-    
     // mouse events
     private boolean mouseInWindow = false;
     private int     currentMouseX = 0;
@@ -78,6 +73,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private boolean isDrag        = false;
     
     private List<Drawable> drawables = List.of();
+    private long currentFrame = 0;
     
     /**
      * Initialize the PlayfieldDrawer.
@@ -159,6 +155,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     @Override
     public void draw(long tickCount) {
+        this.currentFrame = tickCount;
         repaint();
     }
     
@@ -271,7 +268,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         }
         if (!isTilable || count <= 1) {
             final Texture texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
-            texture.drawTexture(g, x, y, textureSize, textureSize);
+            texture.drawTexture(this.currentFrame, g, x, y, textureSize, textureSize);
             return;
         }
         if (count <= 4) {
@@ -303,7 +300,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final double offsetY = cellSize * yOffsets[i];
             final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX + offsetX));
             final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY + offsetY));
-            texture.drawTexture(g, x, y, textureSize, textureSize);
+            texture.drawTexture(this.currentFrame, g, x, y, textureSize, textureSize);
         }
     }
     
