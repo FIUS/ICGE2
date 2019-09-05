@@ -10,10 +10,10 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -30,13 +30,15 @@ public class StandardSimulationClock implements SimulationClock {
     
     private PlayfieldDrawer drawer;
     
-    private List<Function<Long, Boolean>> tickListeners = Collections.synchronizedList(new ArrayList<>());
-    private List<Function<Long, Boolean>> postTickListeners = Collections.synchronizedList(new ArrayList<>());
+    private Object tickListenerLock = new Object();
+    
+    private List<Function<Long, Boolean>> tickListeners     = new ArrayList<>();
+    private List<Function<Long, Boolean>> postTickListeners = new ArrayList<>();
     
     private TimerTask task;
     private Timer     timer = new Timer("STM-TickTimer");
     
-    private long tickCount;
+    private volatile long tickCount = -1;
     
     private int period = DEFAULT_RENDER_TICK_PERIOD;
     
@@ -49,7 +51,6 @@ public class StandardSimulationClock implements SimulationClock {
      */
     public void initialize(Simulation parent) {
         this.drawer = parent.getUiManager().getPlayfieldDrawer();
-        this.start();
     }
     
     @Override
@@ -90,11 +91,14 @@ public class StandardSimulationClock implements SimulationClock {
      * Process a tick
      */
     private void tick() {
-        if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
-            tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
+        synchronized (this.tickListenerLock) {
+            this.tickCount++;
+            if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
+                tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
+            }
+            this.drawer.draw(this.tickCount);
         }
-        this.drawer.draw(this.tickCount);
-        this.tickCount++;
+        
     }
     
     /**
@@ -104,6 +108,7 @@ public class StandardSimulationClock implements SimulationClock {
      *     The number of the simulation tick since the start of the clock.
      */
     private void tickSimulation(long tickNumber) {
+        System.out.println("TICK:" + tickNumber);
         for (var listener : List.copyOf(this.tickListeners)) {
             if (!listener.apply(tickNumber)) {
                 this.tickListeners.remove(listener);
@@ -119,12 +124,46 @@ public class StandardSimulationClock implements SimulationClock {
     
     @Override
     public void registerTickListener(Function<Long, Boolean> listener) {
-        this.tickListeners.add(listener);
+        synchronized (this.tickListenerLock) {
+            this.tickListeners.add(listener);
+        }
     }
     
     @Override
     public void registerPostTickListener(Function<Long, Boolean> listener) {
-        this.postTickListeners.add(listener);
+        synchronized (this.tickListenerLock) {
+            this.postTickListeners.add(listener);
+        }
+    }
+    
+    @Override
+    public long getLastTickNumber() {
+        //not rounding is intended here as we'd need floor and casting is the same as floor for positive integers
+        return this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK;
+    }
+    
+    @Override
+    public void scheduleTickOperation(long tick, CompletableFuture<Void> endOfOperation) {
+        CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
+        registerTickListener(tickNumber -> {
+            if (tickNumber >= tick) {
+                startOfOperation.complete(null);
+                endOfOperation.join();
+                return false;
+            }
+            return true;
+        });
+        startOfOperation.join();
+    }
+    
+    @Override
+    public void scheduleTickOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation) {
+        scheduleTickOperation(getLastTickNumber() + ticks, endOfOperation);
+    }
+    
+    @Override
+    public void scheduleTickOperationAtNextTick(CompletableFuture<Void> endOfOperation) {
+        scheduleTickOperationInTicks(1, endOfOperation);
     }
     
 }

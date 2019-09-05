@@ -64,7 +64,7 @@ public class StandardSimulation implements Simulation {
     }
     
     @Override
-    public SimulationClock getTickManager() {
+    public SimulationClock getSimulationClock() {
         return this.tickManager;
     }
     

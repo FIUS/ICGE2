@@ -24,6 +24,11 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFiel
 public interface Playfield {
     
     /**
+     * @return the simulation this playfield is part of
+     */
+    Simulation getSimulation();
+    
+    /**
      * Get a list of all entities on this playfield.
      * 
      * @return A list of all entities
@@ -90,16 +95,16 @@ public interface Playfield {
     /**
      * Move a entity of this simulation to a given position on this playfield.
      * 
+     * @param entity
+     *     The entity to move; <b>must</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
      * @param pos
      *     The position to move the entity to; must <b>not</b> be <b>null</b>
-     * @param entity
-     *     The entity to add; <b>must</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
      * @throws EntityNotOnFieldException
      *     if the given entity is not in this playfield
      * @throws IllegalArgumentException
      *     if the given pos or entity is null
      */
-    void moveEntity(Position pos, Entity entity);
+    void moveEntity(Entity entity, Position pos);
     
     /**
      * Remove a entity of this simulation from this playfield.
