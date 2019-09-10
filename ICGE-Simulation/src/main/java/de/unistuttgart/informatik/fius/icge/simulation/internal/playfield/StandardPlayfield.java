@@ -3,7 +3,7 @@
  * For more information see github.com/FIUS/ICGE2
  *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -26,29 +26,29 @@ import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 
 /**
  * The standard implementation of {@link Playfield}
- * 
+ *
  * @author Tim Neumann
  */
 public class StandardPlayfield implements Playfield {
     private PlayfieldDrawer drawer;
-    
+
     private final Map<Position, PlayfieldCell> cells           = new HashMap<>();
     private final Map<Entity, Position>        entityPositions = new HashMap<>();
-    
+
     /**
      * Initialize the playfield for the given simulation
-     * 
+     *
      * @param simulation
      *     the parent simulation
      */
     public void initialize(StandardSimulation simulation) {
         this.drawer = simulation.getUiManager().getPlayfieldDrawer();
-        simulation.getTickManager().registerPostTickListener(count -> {
+        simulation.getSimulationClock().registerPostTickListener(count -> {
             drawEntities();
             return true;
         });
     }
-    
+
     /**
      * Converts all entities to drawables and sends them to the playfield drawer.
      */
@@ -59,12 +59,12 @@ public class StandardPlayfield implements Playfield {
         }
         this.drawer.setDrawables(drawables);
     }
-    
+
     @Override
     public List<Entity> getAllEntities() {
         return this.getAllEntitiesOfType(Entity.class, true);
     }
-    
+
     @Override
     public <T extends Entity> List<T> getAllEntitiesOfType(Class<? extends T> type, boolean includeSubclasses) {
         if (type == null) throw new IllegalArgumentException("The given type is null.");
@@ -74,13 +74,13 @@ public class StandardPlayfield implements Playfield {
         }
         return result;
     }
-    
+
     @Override
     public List<Entity> getEntitiesAt(Position pos) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         return getEntitiesOfTypeAt(pos, Entity.class, true);
     }
-    
+
     @Override
     public <T extends Entity> List<T> getEntitiesOfTypeAt(Position pos, Class<? extends T> type, boolean includeSubclasses) {
         if (type == null) throw new IllegalArgumentException("The given type is null.");
@@ -92,7 +92,7 @@ public class StandardPlayfield implements Playfield {
         }
         return result;
     }
-    
+
     private void addEntityToCell(Position pos, Entity entity) {
         PlayfieldCell cell = this.cells.get(pos);
         if (cell == null) {
@@ -101,7 +101,7 @@ public class StandardPlayfield implements Playfield {
         }
         cell.addEntity(entity);
     }
-    
+
     private void removeEntityFromCell(Position pos, Entity entity) {
         PlayfieldCell cell = this.cells.get(pos);
         if (cell == null || !cell.contains(entity)) {
@@ -113,23 +113,23 @@ public class StandardPlayfield implements Playfield {
             this.cells.remove(pos, cell);
         }
     }
-    
+
     @Override
     public void addEntity(Position pos, Entity entity) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
-        
+
         if (this.entityPositions.containsKey(entity)) {
             throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
         }
-        
+
         this.entityPositions.put(entity, pos);
-        
+
         this.addEntityToCell(pos, entity);
-        
+
         entity.initOnPlayfield(this);
     }
-    
+
     @Override
     public void moveEntity(Position pos, Entity entity) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
@@ -137,25 +137,25 @@ public class StandardPlayfield implements Playfield {
         if (
             !this.entityPositions.containsKey(entity)
         ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
-        
+
         Position oldPos = this.entityPositions.get(entity);
         this.removeEntityFromCell(oldPos, entity);
         this.addEntityToCell(pos, entity);
         this.entityPositions.put(entity, pos);
     }
-    
+
     @Override
     public void removeEntity(Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         if (
             !this.entityPositions.containsKey(entity)
         ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
-        
+
         Position pos = this.entityPositions.get(entity);
         this.removeEntityFromCell(pos, entity);
         this.entityPositions.remove(entity, pos);
     }
-    
+
     @Override
     public Position getEntityPosition(Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
@@ -163,7 +163,7 @@ public class StandardPlayfield implements Playfield {
         if (pos == null) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
         return pos;
     }
-    
+
     @Override
     public boolean containsEntity(Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");

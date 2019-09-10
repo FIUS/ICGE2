@@ -3,7 +3,7 @@
  * For more information see github.com/FIUS/ICGE2
  *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -18,61 +18,82 @@ import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.TimerAlreadyRunning;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 
 
 /**
  * The standard implementation of {@link SimulationClock}
- * 
+ *
  * @author Tim Neumann
+ * @author Tobias Wältken
+ * @version 1.0
  */
 public class StandardSimulationClock implements SimulationClock {
-    
+
     private PlayfieldDrawer drawer;
-    
-    private List<Function<Long, Boolean>> tickListeners = Collections.synchronizedList(new ArrayList<>());
-    private List<Function<Long, Boolean>> postTickListeners = Collections.synchronizedList(new ArrayList<>());
-    
+
+    private List<Function<Long, Boolean>> tickListeners;
+    private List<Function<Long, Boolean>> postTickListeners;
+
     private TimerTask task;
-    private Timer     timer = new Timer("STM-TickTimer");
-    
+    private Timer timer;
+
     private long tickCount;
-    
-    private int period = DEFAULT_RENDER_TICK_PERIOD;
-    
-    
+
+    private int period;
+
+    /**
+     * Default constructor
+     */
+    public StandardSimulationClock() {
+        this.tickListeners = Collections.synchronizedList(new ArrayList<>());
+        this.postTickListeners = Collections.synchronizedList(new ArrayList<>());
+        this.timer = new Timer("STM-TickTimer");
+        this.period = DEFAULT_RENDER_TICK_PERIOD;
+    }
+
     /**
      * Initialize this standard tick manager.
-     * 
+     *
      * @param parent
      *     The simulation for this tick manager
      */
     public void initialize(Simulation parent) {
         this.drawer = parent.getUiManager().getPlayfieldDrawer();
-        this.start();
     }
-    
+
     @Override
-    public void setPeriod(int millis) {
+    public synchronized void setPeriod(int millis) {
         this.period = millis;
-        this.stop();
-        this.start();
+
+        if (this.isRunning()) {
+            this.stop();
+            this.start();
+        }
     }
-    
+
     @Override
     public int getRenderTickPeriod() {
         return this.period;
     }
-    
+
     @Override
     public int getGameTickPeriod() {
         return this.period * RENDER_TICKS_PER_SIMULATION_TICK;
     }
-    
+
     @Override
-    public void start() {
+    public boolean isRunning() {
+        return this.task != null;
+    }
+
+    @Override
+    public synchronized void start() {
+        if (this.isRunning()) throw new TimerAlreadyRunning();
+
         this.task = new TimerTask() {
-            
+
             @Override
             public void run() {
                 tick();
@@ -80,26 +101,40 @@ public class StandardSimulationClock implements SimulationClock {
         };
         this.timer.schedule(this.task, 0, this.period);
     }
-    
+
     @Override
-    public void stop() {
-        this.task.cancel();
+    public synchronized void stop() {
+        if (this.isRunning())
+            this.task.cancel();
+        this.task = null;
     }
-    
+
+    @Override
+    public synchronized void step() {
+        if (this.isRunning()) throw new TimerAlreadyRunning();
+
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                tick();
+            }
+        }, "single-step").start();
+    }
+
     /**
      * Process a tick
      */
-    private void tick() {
+    private synchronized void tick() {
         if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
             tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
         }
         this.drawer.draw(this.tickCount);
         this.tickCount++;
     }
-    
+
     /**
      * Process a simulation tick
-     * 
+     *
      * @param tickNumber
      *     The number of the simulation tick since the start of the clock.
      */
@@ -109,22 +144,22 @@ public class StandardSimulationClock implements SimulationClock {
                 this.tickListeners.remove(listener);
             }
         }
-        
+
         for (var listener : List.copyOf(this.postTickListeners)) {
             if (!listener.apply(tickNumber)) {
                 this.postTickListeners.remove(listener);
             }
         }
     }
-    
+
     @Override
     public void registerTickListener(Function<Long, Boolean> listener) {
         this.tickListeners.add(listener);
     }
-    
+
     @Override
     public void registerPostTickListener(Function<Long, Boolean> listener) {
         this.postTickListeners.add(listener);
     }
-    
+
 }
