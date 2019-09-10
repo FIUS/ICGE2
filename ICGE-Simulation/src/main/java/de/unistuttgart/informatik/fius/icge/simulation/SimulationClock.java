@@ -17,7 +17,7 @@ import java.util.function.Function;
  *
  * @author Tim Neumann
  * @author Tobias Wältken
- * @versio 1.0
+ * @version 1.0
  */
 public interface SimulationClock {
 
