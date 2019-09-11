@@ -341,7 +341,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final int baseline = height - Math.max(baselineCentered, heightBelowBaseline);
             
             // build string
-            String infoText = "Cell (" + currentCellX + ", " + currentCellY + ")";
+            String infoText = "Cell (x=" + currentCellX + ", y=" + currentCellY + ")";
             g.drawString(infoText, 5, baseline);
             
         }

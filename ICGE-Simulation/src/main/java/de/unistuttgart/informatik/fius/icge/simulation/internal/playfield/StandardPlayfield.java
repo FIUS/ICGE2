@@ -19,6 +19,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.SolidEntity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
@@ -182,5 +183,16 @@ public class StandardPlayfield implements Playfield {
     public boolean containsEntity(Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         return this.entityPositions.containsKey(entity);
+    }
+    
+    @Override
+    public boolean isSolidEntityAt(Position pos) {
+        List<SolidEntity> solidEntitiesAtPos = this.getEntitiesOfTypeAt(pos, SolidEntity.class, true);
+        for (SolidEntity entity : solidEntitiesAtPos) {
+            if (entity.isCurrentlySolid()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

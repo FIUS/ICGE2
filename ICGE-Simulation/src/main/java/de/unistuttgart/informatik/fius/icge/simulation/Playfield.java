@@ -141,4 +141,13 @@ public interface Playfield {
      *     if the given entity is null
      */
     boolean containsEntity(Entity entity);
+    
+    /**
+     * Check whether a solid entity is at the given position.
+     * 
+     * @param pos
+     *     The position to check
+     * @return true if and only if a solid entity is at that position
+     */
+    boolean isSolidEntityAt(Position pos);
 }

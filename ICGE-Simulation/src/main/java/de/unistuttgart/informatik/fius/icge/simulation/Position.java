@@ -11,14 +11,23 @@ package de.unistuttgart.informatik.fius.icge.simulation;
 
 import java.util.Arrays;
 
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Direction;
-
 
 /**
  * Represents a position on the playfield.
  * <p>
  * Objects of this class are immutable
  * </p>
+ * 
+ * <p>
+ * x is the row; negative towards the top ({@link Direction#NORTH}) and positive towards the bottom
+ * ({@link Direction#SOUTH})
+ * </p>
+ * <p>
+ * y is the column; negative towards the left ({@link Direction#WEST}) and positive towards the right
+ * ({@link Direction#EAST})
+ * </p>
+ * 
+ * @see Direction
  * 
  * @author Tim Neumann
  */

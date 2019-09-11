@@ -108,7 +108,6 @@ public class StandardSimulationClock implements SimulationClock {
      *     The number of the simulation tick since the start of the clock.
      */
     private void tickSimulation(long tickNumber) {
-        System.out.println("TICK:" + tickNumber);
         for (var listener : List.copyOf(this.tickListeners)) {
             if (!listener.apply(tickNumber)) {
                 this.tickListeners.remove(listener);
@@ -143,7 +142,7 @@ public class StandardSimulationClock implements SimulationClock {
     }
     
     @Override
-    public void scheduleTickOperation(long tick, CompletableFuture<Void> endOfOperation) {
+    public void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation) {
         CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
         registerTickListener(tickNumber -> {
             if (tickNumber >= tick) {
@@ -157,13 +156,13 @@ public class StandardSimulationClock implements SimulationClock {
     }
     
     @Override
-    public void scheduleTickOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation) {
-        scheduleTickOperation(getLastTickNumber() + ticks, endOfOperation);
+    public void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation) {
+        scheduleOperationAtTick(getLastTickNumber() + ticks, endOfOperation);
     }
     
     @Override
-    public void scheduleTickOperationAtNextTick(CompletableFuture<Void> endOfOperation) {
-        scheduleTickOperationInTicks(1, endOfOperation);
+    public void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation) {
+        scheduleOperationInTicks(1, endOfOperation);
     }
     
 }

@@ -71,7 +71,9 @@ public abstract class BasicEntity implements Entity {
     }
 
     /**
-     * @return whether this entity is on a playfield
+     * Check whether this entity is on a playfield
+     * 
+     * @return true if and only if this entity is on a playfield
      */
     public boolean isOnPlayfield() {
         if (this.field == null) return false;

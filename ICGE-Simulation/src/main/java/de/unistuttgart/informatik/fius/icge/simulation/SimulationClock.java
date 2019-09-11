@@ -101,11 +101,11 @@ public interface SimulationClock {
      * </p>
      * 
      * @param tick
-     *     The number of the tick to schedule the operation for
+     *     The absolute number of the tick at which the operation will be run
      * @param endOfOperation
      *     Tick processing will be halted until this future is completed
      */
-    void scheduleTickOperation(long tick, CompletableFuture<Void> endOfOperation);
+    void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation);
     
     /**
      * Schedule an operation, to happen during the tick a given number of ticks in the future. This method will block
@@ -119,7 +119,7 @@ public interface SimulationClock {
      * @param endOfOperation
      *     Tick processing will be halted until this future is completed
      */
-    void scheduleTickOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation);
+    void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation);
     
     /**
      * Schedule an operation, to happen during the next tick. This method will block until that tick. Then the tick
@@ -128,5 +128,5 @@ public interface SimulationClock {
      * @param endOfOperation
      *     Tick processing will be halted until this future is completed
      */
-    void scheduleTickOperationAtNextTick(CompletableFuture<Void> endOfOperation);
+    void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation);
 }

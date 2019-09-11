@@ -15,5 +15,16 @@ package de.unistuttgart.informatik.fius.icge.simulation.entity;
  * @author Tim Neumann
  */
 public interface SolidEntity extends Entity {
-    //No new methods. Just for tagging
+    
+    /**
+     * Get whether this entity is really solid at the moment.
+     * <p>
+     * This can be used to make entities, that are not solid all the time.
+     * </p>
+     * 
+     * @return true if and only if this entity is currently solid
+     */
+    default boolean isCurrentlySolid() {
+        return true;
+    }
 }

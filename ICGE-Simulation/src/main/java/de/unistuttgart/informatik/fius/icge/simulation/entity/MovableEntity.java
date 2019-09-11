@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
 import java.util.concurrent.CompletableFuture;
 
+import de.unistuttgart.informatik.fius.icge.simulation.Direction;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.IllegalMoveException;
@@ -30,7 +31,7 @@ public abstract class MovableEntity extends BasicEntity {
      */
     public void turnClockWise() {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
-        this.getSimulation().getSimulationClock().scheduleTickOperationAtNextTick(endOfOperation);
+        this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
         this.lookingDirection = this.lookingDirection.clockWiseNext();
         endOfOperation.complete(null);
     }
@@ -43,7 +44,7 @@ public abstract class MovableEntity extends BasicEntity {
     }
     
     private boolean isSolidEntityAt(final Position pos) {
-        return !this.getPlayfield().getEntitiesOfTypeAt(pos, SolidEntity.class, true).isEmpty();
+        return this.getPlayfield().isSolidEntityAt(pos);
     }
     
     /**
@@ -56,7 +57,7 @@ public abstract class MovableEntity extends BasicEntity {
      */
     public void move() {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
-        this.getSimulation().getSimulationClock().scheduleTickOperationInTicks(4, endOfOperation);
+        this.getSimulation().getSimulationClock().scheduleOperationInTicks(4, endOfOperation);
         final Position nextPos = this.getPosition().adjacentPosition(this.lookingDirection);
         if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
         this.getPlayfield().moveEntity(this, nextPos);

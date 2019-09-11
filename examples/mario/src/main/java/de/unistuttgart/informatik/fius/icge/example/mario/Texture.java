@@ -9,7 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.example.mario;
 
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Direction;
+import de.unistuttgart.informatik.fius.icge.simulation.Direction;
 import de.unistuttgart.informatik.fius.icge.ui.TextureNotFoundException;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 
