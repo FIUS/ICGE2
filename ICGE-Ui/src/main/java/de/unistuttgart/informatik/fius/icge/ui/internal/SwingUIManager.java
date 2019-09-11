@@ -20,6 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
@@ -140,6 +141,11 @@ public class SwingUIManager extends JFrame implements UiManager {
                 CENTER
             );
         }
+
+        // connect logger to console
+        Logger.addSimulationOutputStream(this.console.getSimulationOutputStream());
+        Logger.addOutOutputStream(this.console.getSystemOutputStream());
+        Logger.addErrorOutputStream(this.console.getSystemOutputStream());
 
         // setup JFrame layout
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
