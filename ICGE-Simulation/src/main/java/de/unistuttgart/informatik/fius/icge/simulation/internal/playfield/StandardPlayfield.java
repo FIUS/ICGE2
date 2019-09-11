@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.playfield;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +17,13 @@ import java.util.Map;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.SolidEntity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
-import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 
 
 /**
@@ -30,7 +32,7 @@ import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
  * @author Tim Neumann
  */
 public class StandardPlayfield implements Playfield {
-    private PlayfieldDrawer drawer;
+    private WeakReference<Simulation> sim;
     
     private final Map<Position, PlayfieldCell> cells           = new HashMap<>();
     private final Map<Entity, Position>        entityPositions = new HashMap<>();
@@ -42,13 +44,26 @@ public class StandardPlayfield implements Playfield {
      *     the parent simulation
      */
     public void initialize(StandardSimulation simulation) {
-        this.drawer = simulation.getUiManager().getPlayfieldDrawer();
-        simulation.getTickManager().registerPostTickListener(count -> {
+        this.sim = new WeakReference<>(simulation);
+        simulation.getSimulationClock().registerPostTickListener(count -> {
             drawEntities();
             return true;
         });
     }
     
+    /**
+     * @throws IllegalStateException
+     *     if this playfield is not part of any simulation
+     */
+    @Override
+    public Simulation getSimulation() {
+        if (this.sim == null) throw new IllegalStateException("This playfield is not part of any simulation.");
+        Simulation simulation = this.sim.get();
+        if (simulation == null) throw new IllegalStateException("This playfield is not part of any simulation.");
+        return simulation;
+    }
+    
+
     /**
      * Converts all entities to drawables and sends them to the playfield drawer.
      */
@@ -57,7 +72,7 @@ public class StandardPlayfield implements Playfield {
         for (Entity entity : this.getAllEntities()) {
             drawables.add(entity.getDrawInformation());
         }
-        this.drawer.setDrawables(drawables);
+        this.getSimulation().getUiManager().getPlayfieldDrawer().setDrawables(drawables);
     }
     
     @Override
@@ -131,7 +146,7 @@ public class StandardPlayfield implements Playfield {
     }
     
     @Override
-    public void moveEntity(Position pos, Entity entity) {
+    public void moveEntity(Entity entity, Position pos) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         if (
@@ -168,5 +183,16 @@ public class StandardPlayfield implements Playfield {
     public boolean containsEntity(Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         return this.entityPositions.containsKey(entity);
+    }
+    
+    @Override
+    public boolean isSolidEntityAt(Position pos) {
+        List<SolidEntity> solidEntitiesAtPos = this.getEntitiesOfTypeAt(pos, SolidEntity.class, true);
+        for (SolidEntity entity : solidEntitiesAtPos) {
+            if (entity.isCurrentlySolid()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

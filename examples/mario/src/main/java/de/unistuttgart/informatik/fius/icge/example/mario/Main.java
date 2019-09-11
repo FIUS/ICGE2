@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.example.mario;
 
+import de.unistuttgart.informatik.fius.icge.example.mario.entity.Mario;
 import de.unistuttgart.informatik.fius.icge.example.mario.entity.Wall;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -34,7 +35,30 @@ public class Main {
         prepareUiManager(sim.getUiManager());
 
         sim.initialize();
+        sim.getPlayfield().addEntity(new Position(1, 4), new Wall());
+        sim.getPlayfield().addEntity(new Position(2, 4), new Wall());
         sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
+        sim.getPlayfield().addEntity(new Position(4, 4), new Wall());
+        
+        Mario mario = new Mario();
+        
+        sim.getPlayfield().addEntity(new Position(0, 0), mario);
+        
+        sim.getSimulationClock().start();
+        
+        mario.turnClockWise();
+        mario.turnClockWise();
+        mario.turnClockWise();
+        mario.turnClockWise();
+        mario.move();
+        mario.turnClockWise();
+        
+        mario.move();
+        mario.move();
+        mario.move();
+        mario.moveIfPossible();
+        System.out.println(mario.canMove());
+        mario.move();
     }
 
     private static void prepareUiManager(UiManager manager) {
