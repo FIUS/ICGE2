@@ -14,35 +14,36 @@ import java.io.OutputStream;
 
 import javax.swing.JTextArea;
 
+
 /**
- * The ConsoleBufferedOutputStream allows other streams and classes to write
- * text into a {@link JTextArea}
+ * The ConsoleBufferedOutputStream allows other streams and classes to write text into a {@link JTextArea}
  *
  * @author Tobias Wältken
  * @version 1.0
  */
 public class ConsoleBufferedOutputStream extends OutputStream {
-
-    private JTextArea textArea;
-
+    
+    private final JTextArea textArea;
+    
     //TODO add actual buffer to avoid overflowing the textarea and cause lag
-
+    
     /**
      * Default Constructor
      *
-     * @param textArea The text area to place the stream data into
+     * @param textArea
+     *     The text area to place the stream data into
      */
-    public ConsoleBufferedOutputStream(JTextArea textArea) {
+    public ConsoleBufferedOutputStream(final JTextArea textArea) {
         this.textArea = textArea;
     }
-
+    
     @Override
     public void flush() throws IOException {
         super.flush();
     }
-
+    
     @Override
-    public void write(int arg0) throws IOException {
+    public void write(final int arg0) throws IOException {
         this.textArea.append("" + (char) arg0);
     }
 }

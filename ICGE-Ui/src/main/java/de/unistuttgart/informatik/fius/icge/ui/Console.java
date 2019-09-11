@@ -9,7 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-
 import java.io.OutputStream;
 
 
@@ -20,18 +19,18 @@ import java.io.OutputStream;
  * @version 1.0
  */
 public interface Console {
-
+    
     /**
      * Getter for the output stream of the simulation console
      *
      * @return Returns a output stream
      */
-    public OutputStream getSimulationOutputStream();
-
+    OutputStream getSimulationOutputStream();
+    
     /**
      * Getter for the output stream of the system console
      *
      * @return Returns a output stream
      */
-    public OutputStream getSystemOutputStream();
+    OutputStream getSystemOutputStream();
 }
