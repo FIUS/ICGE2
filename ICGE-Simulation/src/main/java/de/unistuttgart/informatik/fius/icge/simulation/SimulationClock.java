@@ -9,11 +9,12 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 
 /**
- * The interface of the simulation clock, whcih produces the game and render ticks.
+ * The simulation clock is responsible for producing the game and render ticks.
  * 
  * @author Tim Neumann
  */
@@ -61,7 +62,7 @@ public interface SimulationClock {
      * Stop ticking.
      * <p>
      * Ticking can be started again with {@link #start()}
-     * <p>
+     * </p>
      */
     public void stop();
     
@@ -86,4 +87,46 @@ public interface SimulationClock {
      *     The listener to be called.
      */
     public void registerPostTickListener(Function<Long, Boolean> listener);
+    
+    /**
+     * @return the number of the last simulation tick
+     */
+    long getLastTickNumber();
+    
+    /**
+     * Schedule an operation, to happen during the given tick. This method will block until that tick. Then the tick
+     * processing will halt until the given end of operation is completed.
+     * <p>
+     * If the given tick is in the past, the operation will be scheduled for the next tick.
+     * </p>
+     * 
+     * @param tick
+     *     The absolute number of the tick at which the operation will be run
+     * @param endOfOperation
+     *     Tick processing will be halted until this future is completed
+     */
+    void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation);
+    
+    /**
+     * Schedule an operation, to happen during the tick a given number of ticks in the future. This method will block
+     * until that tick. Then the tick processing will halt until the given end of operation is completed.
+     * <p>
+     * If the given number of ticks is less or equal to one, the operation is scheduled for the next tick.
+     * </p>
+     *
+     * @param ticks
+     *     The number of ticks until the tick, for which to schedule the operation
+     * @param endOfOperation
+     *     Tick processing will be halted until this future is completed
+     */
+    void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation);
+    
+    /**
+     * Schedule an operation, to happen during the next tick. This method will block until that tick. Then the tick
+     * processing will halt until the given end of operation is completed.
+     * 
+     * @param endOfOperation
+     *     Tick processing will be halted until this future is completed
+     */
+    void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation);
 }

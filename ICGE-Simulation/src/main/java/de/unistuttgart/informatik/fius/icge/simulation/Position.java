@@ -18,6 +18,17 @@ import java.util.Arrays;
  * Objects of this class are immutable
  * </p>
  * 
+ * <p>
+ * x is the row; negative towards the top ({@link Direction#NORTH}) and positive towards the bottom
+ * ({@link Direction#SOUTH})
+ * </p>
+ * <p>
+ * y is the column; negative towards the left ({@link Direction#WEST}) and positive towards the right
+ * ({@link Direction#EAST})
+ * </p>
+ * 
+ * @see Direction
+ * 
  * @author Tim Neumann
  */
 public class Position {
@@ -49,6 +60,28 @@ public class Position {
      */
     public int getY() {
         return this.y;
+    }
+    
+    /**
+     * Get the adjacent position in the given direction.
+     * 
+     * @param direction
+     *     The direction to get the adjacent position in
+     * @return The position adjacent to this in the given direction
+     */
+    public Position adjacentPosition(Direction direction) {
+        switch (direction) {
+            case EAST:
+                return new Position(getX() + 1, getY());
+            case NORTH:
+                return new Position(getX(), getY() - 1);
+            case SOUTH:
+                return new Position(getX(), getY() + 1);
+            case WEST:
+                return new Position(getX() - 1, getY());
+            default:
+                throw new IllegalArgumentException("Unknown direction");
+        }
     }
     
     @Override

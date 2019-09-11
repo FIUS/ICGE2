@@ -34,6 +34,7 @@ public class ManualStartSimulation {
         prepareUiManager(sim.getUiManager());
         sim.initialize();
         sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
+        sim.getSimulationClock().start();
     }
     
     private static void prepareUiManager(UiManager manager) {
