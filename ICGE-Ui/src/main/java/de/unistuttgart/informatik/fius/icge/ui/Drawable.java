@@ -62,6 +62,15 @@ public interface Drawable extends Comparable<Drawable> {
     default boolean isTilable() {
         return true;
     }
+    
+    /**
+     * Return wether the Drawable is animated.
+     * 
+     * @return true iff any coordinate (x, y, z) is animated
+     */
+    default boolean isAnimated() {
+        return false;
+    }
 
     @Override
     default int compareTo(final Drawable o) {
