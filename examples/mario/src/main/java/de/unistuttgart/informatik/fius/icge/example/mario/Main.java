@@ -14,6 +14,7 @@ import de.unistuttgart.informatik.fius.icge.example.mario.entity.Wall;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramInfo;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
@@ -35,30 +36,32 @@ public class Main {
         prepareUiManager(sim.getUiManager());
 
         sim.initialize();
-        sim.getPlayfield().addEntity(new Position(1, 4), new Wall());
-        sim.getPlayfield().addEntity(new Position(2, 4), new Wall());
-        sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
-        sim.getPlayfield().addEntity(new Position(4, 4), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, -1), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, 0), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, 1), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, -1), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, 0), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, 1), new Wall());
         
-        Mario mario = new Mario();
+        Mario walkingMario = new Mario();
         
-        sim.getPlayfield().addEntity(new Position(0, 0), mario);
+        Mario spinningMario = new Mario();
+        
+        sim.getPlayfield().addEntity(new Position(-1, 0), walkingMario);
+        sim.getPlayfield().addEntity(new Position(0, 0), spinningMario);
+        
+        EntityProgramInfo walking = new EntityProgramInfo("Walking", new WalkingProgram());
+        
+        sim.getEntityProgramRegistry().registerEntityProgram(walking);
         
         sim.getSimulationClock().start();
         
-        mario.turnClockWise();
-        mario.turnClockWise();
-        mario.turnClockWise();
-        mario.turnClockWise();
-        mario.move();
-        mario.turnClockWise();
+        walking.run(walkingMario);
         
-        mario.move();
-        mario.move();
-        mario.move();
-        mario.moveIfPossible();
-        System.out.println(mario.canMove());
-        mario.move();
+        while (true) {
+            spinningMario.turnClockWise();
+        }
+        
     }
 
     private static void prepareUiManager(UiManager manager) {
