@@ -10,10 +10,10 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -33,13 +33,15 @@ public class StandardSimulationClock implements SimulationClock {
 
     private PlayfieldDrawer drawer;
 
+    private Object tickListenerLock = new Object();
+
     private List<Function<Long, Boolean>> tickListeners;
     private List<Function<Long, Boolean>> postTickListeners;
 
     private TimerTask task;
     private Timer timer;
 
-    private long tickCount;
+    private volatile long tickCount;
 
     private int period;
 
@@ -47,9 +49,10 @@ public class StandardSimulationClock implements SimulationClock {
      * Default constructor
      */
     public StandardSimulationClock() {
-        this.tickListeners = Collections.synchronizedList(new ArrayList<>());
-        this.postTickListeners = Collections.synchronizedList(new ArrayList<>());
+        this.tickListeners = new ArrayList<>();
+        this.postTickListeners = new ArrayList<>();
         this.timer = new Timer("STM-TickTimer");
+        this.tickCount = -1;
         this.period = DEFAULT_RENDER_TICK_PERIOD;
     }
 
@@ -125,11 +128,14 @@ public class StandardSimulationClock implements SimulationClock {
      * Process a tick
      */
     private synchronized void tick() {
-        if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
-            tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
+        synchronized (this.tickListenerLock) {
+            this.tickCount++;
+            if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
+                tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
+            }
+            this.drawer.draw(this.tickCount);
         }
-        this.drawer.draw(this.tickCount);
-        this.tickCount++;
+
     }
 
     /**
@@ -154,12 +160,46 @@ public class StandardSimulationClock implements SimulationClock {
 
     @Override
     public void registerTickListener(Function<Long, Boolean> listener) {
-        this.tickListeners.add(listener);
+        synchronized (this.tickListenerLock) {
+            this.tickListeners.add(listener);
+        }
     }
 
     @Override
     public void registerPostTickListener(Function<Long, Boolean> listener) {
-        this.postTickListeners.add(listener);
+        synchronized (this.tickListenerLock) {
+            this.postTickListeners.add(listener);
+        }
+    }
+
+    @Override
+    public long getLastTickNumber() {
+        //not rounding is intended here as we'd need floor and casting is the same as floor for positive integers
+        return this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK;
+    }
+
+    @Override
+    public void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation) {
+        CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
+        registerTickListener(tickNumber -> {
+            if (tickNumber >= tick) {
+                startOfOperation.complete(null);
+                endOfOperation.join();
+                return false;
+            }
+            return true;
+        });
+        startOfOperation.join();
+    }
+
+    @Override
+    public void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation) {
+        scheduleOperationAtTick(getLastTickNumber() + ticks, endOfOperation);
+    }
+
+    @Override
+    public void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation) {
+        scheduleOperationInTicks(1, endOfOperation);
     }
 
 }

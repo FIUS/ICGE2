@@ -3,7 +3,7 @@
  * For more information see github.com/FIUS/ICGE2
  *
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -18,18 +18,18 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
 /**
  * The standard implementation of {@link Simulation}
- *
+ * 
  * @author Tim Neumann
  */
 public class StandardSimulation implements Simulation {
-
+    
     private final UiManager uiManager;
     private final StandardPlayfield playfield;
     private final StandardSimulationClock simulationClock;
-
+    
     /**
      * Creates a new standard simulation with the given parameters.
-     *
+     * 
      * @param uiManager
      *     The uiManager to use
      * @param playfield
@@ -42,19 +42,19 @@ public class StandardSimulation implements Simulation {
         this.playfield = playfield;
         this.simulationClock = simulationClock;
     }
-
+    
     @Override
     public Playfield getPlayfield() {
         return this.playfield;
     }
-
+    
     @Override
     public void initialize() {
         this.playfield.initialize(this);
         this.simulationClock.initialize(this);
         this.uiManager.start();
     }
-
+    
     /**
      * @return the UiManager for this simulation
      */
@@ -62,10 +62,10 @@ public class StandardSimulation implements Simulation {
     public UiManager getUiManager() {
         return this.uiManager;
     }
-
+    
     @Override
     public SimulationClock getSimulationClock() {
         return this.simulationClock;
     }
-
+    
 }

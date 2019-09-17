@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.uni-stuttgart.informatik.fius</groupId>
 	<artifactId>ICGE</artifactId>
@@ -31,7 +29,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.19.1</version> <!-- newer versions understand modules, which is a problem for white box 
+					<version>2.19.1</version> <!-- newer versions understand modules, which is a problem for white box
 						tests. -->
 					<configuration>
 						<includes>
@@ -96,6 +94,11 @@
 				<artifactId>ICGE-Simulation</artifactId>
 				<version>${icge.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>de.uni-stuttgart.informatik.fius</groupId>
+				<artifactId>ICGE-Log</artifactId>
+				<version>${icge.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<distributionManagement>
@@ -114,5 +117,6 @@
 		<module>ICGE-Ui</module>
 		<module>ICGE-Simulation</module>
 		<module>ICGE-ManualStart</module>
-	</modules>
+    <module>ICGE-Log</module>
+  </modules>
 </project>
