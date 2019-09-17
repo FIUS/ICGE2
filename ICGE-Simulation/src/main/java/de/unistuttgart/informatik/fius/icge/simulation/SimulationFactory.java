@@ -3,7 +3,7 @@
  * For more information see github.com/FIUS/ICGE2
  *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -18,21 +18,21 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
 
 /**
  * The factory for creating a Simulation
- * 
+ *
  * @author Tim Neumann
  */
 public class SimulationFactory {
     /**
      * Creates a new Simulation including the initialization of all required submodules.
-     * 
+     *
      * @return The new Simulation.
      */
     public static Simulation createSimulation() {
-        UiManager uiManager = UiManagerFactory.createUiManager();
-        
+        UiManager uiManager = UiManagerFactory.createUiManager(new StandardSimulationProxy());
+
         StandardPlayfield playfield = new StandardPlayfield();
         StandardSimulationClock tickManager = new StandardSimulationClock();
-        
+
         return new StandardSimulation(uiManager, playfield, tickManager);
     }
 }

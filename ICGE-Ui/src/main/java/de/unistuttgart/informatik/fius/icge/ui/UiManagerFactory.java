@@ -33,7 +33,7 @@ public class UiManagerFactory {
      *
      * @return The new Ui Manager.
      */
-    public static UiManager createUiManager() {
+    public static UiManager createUiManager(final SimulationProxy simulationProxy) {
         // Set window look and feel
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -43,7 +43,7 @@ public class UiManagerFactory {
 
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        final SwingToolbar toolbar = new SwingToolbar(textureRegistry);
+        final SwingToolbar toolbar = new SwingToolbar(simulationProxy, textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();
 

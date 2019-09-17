@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListener;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
@@ -37,7 +39,18 @@ class SwingUiManagerUiTest {
     public void setup() {
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        final SwingToolbar toolbar = new SwingToolbar(textureRegistry);
+        final SwingToolbar toolbar = new SwingToolbar(new SimulationProxy(){
+
+            @Override
+            public void setButtonStateListener(ButtonStateListener listener) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void buttonPressed(ButtonType type) {
+                // TODO Auto-generated method stub
+            }
+        }, textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();
 

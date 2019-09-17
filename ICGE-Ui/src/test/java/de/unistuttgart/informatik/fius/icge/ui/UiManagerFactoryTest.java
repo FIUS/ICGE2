@@ -12,6 +12,9 @@ package de.unistuttgart.informatik.fius.icge.ui;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListener;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
+
 
 /**
  * Test class for {@link UiManagerFactory}.
@@ -25,7 +28,18 @@ class UiManagerFactoryTest {
      */
     @Test
     void testCreateUiManager() {
-        final UiManager manager = UiManagerFactory.createUiManager();
+        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy(){
+
+            @Override
+            public void setButtonStateListener(ButtonStateListener listener) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void buttonPressed(ButtonType type) {
+                // TODO Auto-generated method stub
+            }
+        });
         Assertions.assertNotNull(manager);
         Assertions.assertNotNull(manager.getPlayfieldDrawer());
         Assertions.assertNotNull(manager.getTextureRegistry());

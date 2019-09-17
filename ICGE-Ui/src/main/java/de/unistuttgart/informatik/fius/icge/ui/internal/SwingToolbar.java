@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener;
 import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.InputMode;
@@ -42,6 +43,8 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySe
 public class SwingToolbar extends JToolBar implements Toolbar {
     private static final long serialVersionUID = -2525998620577603876L;
 
+    /** The simulation proxy */
+    private final SimulationProxy simulationProxy;
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
 
@@ -72,12 +75,14 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     /**
      * The constructor of the toolbar
      *
+     * @param simulationProxy The simulation proxy to use
      * @param textureRegistry The texture registry the textures and icons are loaded from
      */
-    public SwingToolbar(final SwingTextureRegistry textureRegistry) {
+    public SwingToolbar(final SimulationProxy simulationProxy, final SwingTextureRegistry textureRegistry) {
         //
         // class setup
         //
+        this.simulationProxy = simulationProxy;
         this.textureRegistry = textureRegistry;
         this.listeners = new ArrayList<>(2);
 
