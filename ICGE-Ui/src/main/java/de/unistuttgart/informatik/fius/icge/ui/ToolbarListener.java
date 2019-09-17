@@ -42,6 +42,11 @@ public interface ToolbarListener extends EventListener {
     public void simulationStateChanged(SimulationState state);
 
     /**
+     * This function is called when the user requests a single simulation step
+     */
+    public void simulationStepRequested();
+
+    /**
      * This function is called when the user changes the simulation speed
      *
      * @param speed the speed selected by the user which ranges from 0 to 10

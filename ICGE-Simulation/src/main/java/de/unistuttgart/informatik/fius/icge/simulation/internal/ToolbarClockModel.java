@@ -41,7 +41,30 @@ public class ToolbarClockModel implements ToolbarListener {
     }
 
     @Override
-    public void simulationStateChanged(SimulationState state) {}
+    public void simulationStateChanged(SimulationState state) {
+        switch (state) {
+            case PLAY:
+                if (!this.clock.isRunning())
+                    this.clock.start();
+                break;
+            case PAUSE:
+                if (this.clock.isRunning())
+                    this.clock.stop();
+                break;
+            case STOP:
+                if (this.clock.isRunning())
+                    this.clock.stop();
+                //TODO Reset Simulation
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void simulationStepRequested() {
+        this.clock.step();
+    }
 
     @Override
     public void simulationSpeedChanged(int speed) {

@@ -50,6 +50,8 @@ public class SwingToolbar extends JToolBar implements Toolbar {
 
     /** The play button in the toolbar */
     public JButton play;
+    /** The step button in the toolbar */
+    public JButton step;
     /** The pause button in the toolbar */
     public JButton pause;
     /** The stop button in the toolbar */
@@ -96,6 +98,20 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             }
         });
         this.add(this.play);
+
+        //
+        // step button setup
+        //
+        this.step = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(
+                StaticUiTextures.stepIcon).getTexture()));
+        this.step.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                updateSimulationState(SimulationState.PAUSE);
+                requestSimulationStep();
+            }
+        });
+        this.add(this.step);
 
         //
         // pause button setup
@@ -205,18 +221,21 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         switch (state) {
             case PLAY:
                 this.play.setEnabled(false);
+                this.step.setEnabled(false);
                 this.pause.setEnabled(true);
                 this.stop.setEnabled(true);
                 break;
 
             case PAUSE:
                 this.play.setEnabled(true);
+                this.step.setEnabled(true);
                 this.pause.setEnabled(false);
                 this.stop.setEnabled(true);
                 break;
 
             case STOP:
                 this.play.setEnabled(true);
+                this.step.setEnabled(true);
                 this.pause.setEnabled(false);
                 this.stop.setEnabled(false);
                 break;
@@ -226,6 +245,14 @@ public class SwingToolbar extends JToolBar implements Toolbar {
 
         for (ToolbarListener listener : this.listeners)
             listener.simulationStateChanged(state);
+    }
+
+    /**
+     * This function requests a simulation step from all listeners
+     */
+    public void requestSimulationStep() {
+        for (ToolbarListener listener : this.listeners)
+            listener.simulationStepRequested();
     }
 
     /**
