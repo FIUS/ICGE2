@@ -212,42 +212,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     }
 
     /**
-     * This function updates the simulation state and notifies the listeners
-     *
-     * @param state The new state of the simulation
-     * @see SimulationState
-     */
-    public void updateSimulationState(SimulationState state) {
-        switch (state) {
-            case PLAY:
-                this.play.setEnabled(false);
-                this.step.setEnabled(false);
-                this.pause.setEnabled(true);
-                this.stop.setEnabled(true);
-                break;
-
-            case PAUSE:
-                this.play.setEnabled(true);
-                this.step.setEnabled(true);
-                this.pause.setEnabled(false);
-                this.stop.setEnabled(true);
-                break;
-
-            case STOP:
-                this.play.setEnabled(true);
-                this.step.setEnabled(true);
-                this.pause.setEnabled(false);
-                this.stop.setEnabled(false);
-                break;
-
-            default:
-        }
-
-        for (ToolbarListener listener : this.listeners)
-            listener.simulationStateChanged(state);
-    }
-
-    /**
      * This function requests a simulation step from all listeners
      */
     public void requestSimulationStep() {
@@ -303,5 +267,36 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     @Override
     public void clearAllToolbarListeners() {
         this.listeners.clear();
+    }
+
+    @Override
+    public void updateSimulationState(SimulationState state) {
+        switch (state) {
+            case PLAY:
+                this.play.setEnabled(false);
+                this.step.setEnabled(false);
+                this.pause.setEnabled(true);
+                this.stop.setEnabled(true);
+                break;
+
+            case PAUSE:
+                this.play.setEnabled(true);
+                this.step.setEnabled(true);
+                this.pause.setEnabled(false);
+                this.stop.setEnabled(true);
+                break;
+
+            case STOP:
+                this.play.setEnabled(true);
+                this.step.setEnabled(true);
+                this.pause.setEnabled(false);
+                this.stop.setEnabled(false);
+                break;
+
+            default:
+        }
+
+        for (ToolbarListener listener : this.listeners)
+            listener.simulationStateChanged(state);
     }
 }

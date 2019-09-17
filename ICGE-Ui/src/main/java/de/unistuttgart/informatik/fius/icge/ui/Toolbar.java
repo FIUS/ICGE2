@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
 
 import java.util.Collection;
 
+import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.SimulationState;
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
 
 /**
@@ -59,4 +60,12 @@ public interface Toolbar {
      * This function deletes all {@link ToolbarListener}s from the toolbar.
      */
     public void clearAllToolbarListeners();
+
+    /**
+     * This function updates the simulation state and notifies the listeners
+     *
+     * @param state The new state of the simulation
+     * @see SimulationState
+     */
+    public void updateSimulationState(SimulationState state);
 }
