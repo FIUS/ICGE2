@@ -9,9 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.example.mario;
 
-import de.unistuttgart.informatik.fius.icge.example.mario.entity.Mario;
-import de.unistuttgart.informatik.fius.icge.example.mario.entity.Wall;
-import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.example.mario.tasks.Solution1;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
@@ -35,32 +33,8 @@ public class Main {
         prepareUiManager(sim.getUiManager());
 
         sim.initialize();
-        sim.getPlayfield().addEntity(new Position(-3, -1), new Wall());
-        sim.getPlayfield().addEntity(new Position(-3, 0), new Wall());
-        sim.getPlayfield().addEntity(new Position(-3, 1), new Wall());
-        sim.getPlayfield().addEntity(new Position(3, -1), new Wall());
-        sim.getPlayfield().addEntity(new Position(3, 0), new Wall());
-        sim.getPlayfield().addEntity(new Position(3, 1), new Wall());
         
-        Mario walkingMario = new Mario();
-        
-        Mario spinningMario = new Mario();
-        
-        sim.getPlayfield().addEntity(new Position(-1, 0), walkingMario);
-        sim.getPlayfield().addEntity(new Position(0, 0), spinningMario);
-        
-        String walkingProgramName = "Walking";
-        
-        sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName, new WalkingProgram());
-        
-        sim.getSimulationClock().start();
-        
-        sim.getEntityProgramRunner().run(walkingProgramName, walkingMario);
-        
-        while (true) {
-            spinningMario.turnClockWise();
-        }
-        
+        sim.getTaskRunner().runTask(Solution1.class, sim);
     }
 
     private static void prepareUiManager(UiManager manager) {
