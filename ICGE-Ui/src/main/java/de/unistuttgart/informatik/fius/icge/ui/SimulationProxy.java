@@ -39,8 +39,12 @@ public interface SimulationProxy {
         PLAY,
         STEP,
         PAUSE,
-        STOP
+        STOP,
+        VIEW,
+        ENTITY
     }
 
     public void buttonPressed(ButtonType type);
+
+    public void simulationSpeedChange(int value);
 }

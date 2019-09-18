@@ -21,14 +21,13 @@ import javax.swing.event.ChangeListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
-import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener;
-import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.InputMode;
-import de.unistuttgart.informatik.fius.icge.ui.ToolbarListener.SimulationState;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListener;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
 
 
@@ -47,9 +46,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     private final SimulationProxy simulationProxy;
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
-
-    /** This array list contains all active listeners */
-    private ArrayList<ToolbarListener> listeners;
 
     /** The play button in the toolbar */
     public JButton play;
@@ -84,7 +80,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         this.simulationProxy = simulationProxy;
         this.textureRegistry = textureRegistry;
-        this.listeners = new ArrayList<>(2);
 
         //
         // toolbar setup
@@ -99,9 +94,10 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.play.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                updateSimulationState(SimulationState.PLAY);
+                simulationProxy.buttonPressed(ButtonType.PLAY);
             }
         });
+        this.play.setEnabled(false);
         this.add(this.play);
 
         //
@@ -112,10 +108,10 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.step.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                updateSimulationState(SimulationState.PAUSE);
-                requestSimulationStep();
+                simulationProxy.buttonPressed(ButtonType.STEP);
             }
         });
+        this.step.setEnabled(false);
         this.add(this.step);
 
         //
@@ -126,9 +122,10 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.pause.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                updateSimulationState(SimulationState.PAUSE);
+                simulationProxy.buttonPressed(ButtonType.PAUSE);
             }
         });
+        this.pause.setEnabled(false);
         this.add(this.pause);
 
         //
@@ -139,10 +136,51 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.stop.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                updateSimulationState(SimulationState.STOP);
+                simulationProxy.buttonPressed(ButtonType.STOP);
             }
         });
+        this.stop.setEnabled(false);
         this.add(this.stop);
+
+        //
+        // clock button listener setup
+        //
+        this.simulationProxy.setButtonStateListener(new ButtonStateListener(){
+            @Override
+            public void changeButtonState(ButtonState state) {
+                switch (state) {
+                    case PLAYING:
+                        SwingToolbar.this.play.setEnabled(false);
+                        SwingToolbar.this.step.setEnabled(false);
+                        SwingToolbar.this.pause.setEnabled(true);
+                        SwingToolbar.this.stop.setEnabled(true);
+                        break;
+
+                    case PAUSED:
+                        SwingToolbar.this.play.setEnabled(true);
+                        SwingToolbar.this.step.setEnabled(true);
+                        SwingToolbar.this.pause.setEnabled(false);
+                        SwingToolbar.this.stop.setEnabled(true);
+                        break;
+
+                    case STOPPED:
+                        SwingToolbar.this.play.setEnabled(true);
+                        SwingToolbar.this.step.setEnabled(true);
+                        SwingToolbar.this.pause.setEnabled(false);
+                        SwingToolbar.this.stop.setEnabled(false);
+                        break;
+
+                    case BLOCKED:
+                        SwingToolbar.this.play.setEnabled(false);
+                        SwingToolbar.this.step.setEnabled(false);
+                        SwingToolbar.this.pause.setEnabled(false);
+                        SwingToolbar.this.stop.setEnabled(false);
+                        break;
+
+                    default:
+                }
+            }
+        });
 
         //
         // simulation time slider setup
@@ -166,10 +204,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             @Override
             public void stateChanged(ChangeEvent event) {
                 JSlider source = (JSlider)event.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    for (ToolbarListener listener : SwingToolbar.this.listeners)
-                        listener.simulationSpeedChanged(source.getValue());
-                }
+
+                if (!source.getValueIsAdjusting())
+                    SwingToolbar.this.simulationProxy.simulationSpeedChange(source.getValue());
             }
         });
         this.add(this.simulationTime);
@@ -187,9 +224,10 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.view.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                updateInputMode(InputMode.VIEW);
+                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.VIEW);
             }
         });
+        this.view.setEnabled(false);
         this.add(this.view);
 
         //
@@ -199,9 +237,10 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.entity.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                updateInputMode(InputMode.ENTITY);
+                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ENTITY);
             }
         });
+        this.entity.setEnabled(false);
         this.add(this.entity);
 
         //
@@ -210,43 +249,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.addSeparator();
         this.entitySelect = new EntitySelector(this.textureRegistry);
         this.add(this.entitySelect);
-
-        // setup the initial states
-        this.updateSimulationState(SimulationState.STOP);
-        this.updateInputMode(InputMode.VIEW);
-    }
-
-    /**
-     * This function requests a simulation step from all listeners
-     */
-    public void requestSimulationStep() {
-        for (ToolbarListener listener : this.listeners)
-            listener.simulationStepRequested();
-    }
-
-    /**
-     * This function updates the input mode and notifies the listeners
-     *
-     * @param mode The new mode of the input
-     * @see InputMode
-     */
-    public void updateInputMode(InputMode mode) {
-        switch (mode) {
-            case VIEW:
-                this.view.setSelected(true);
-                this.entity.setSelected(false);
-                break;
-
-            case ENTITY:
-                this.view.setSelected(false);
-                this.entity.setSelected(true);
-                break;
-
-            default:
-        }
-
-        for (ToolbarListener listener : this.listeners)
-            listener.inputModeChanged(mode);
     }
 
     @Override
@@ -257,51 +259,5 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     @Override
     public void addEntity(String displayName, String textureID) {
         this.entitySelect.addEntry(this.entitySelect.new EntityEntry(displayName, textureID));
-    }
-
-    @Override
-    public boolean addToolbarListener(ToolbarListener listener) {
-        return this.listeners.add(listener);
-    }
-
-    @Override
-    public boolean removeToolbarListener(ToolbarListener listener) {
-        return this.listeners.add(listener);
-    }
-
-    @Override
-    public void clearAllToolbarListeners() {
-        this.listeners.clear();
-    }
-
-    @Override
-    public void updateSimulationState(SimulationState state) {
-        switch (state) {
-            case PLAY:
-                this.play.setEnabled(false);
-                this.step.setEnabled(false);
-                this.pause.setEnabled(true);
-                this.stop.setEnabled(true);
-                break;
-
-            case PAUSE:
-                this.play.setEnabled(true);
-                this.step.setEnabled(true);
-                this.pause.setEnabled(false);
-                this.stop.setEnabled(true);
-                break;
-
-            case STOP:
-                this.play.setEnabled(true);
-                this.step.setEnabled(true);
-                this.pause.setEnabled(false);
-                this.stop.setEnabled(false);
-                break;
-
-            default:
-        }
-
-        for (ToolbarListener listener : this.listeners)
-            listener.simulationStateChanged(state);
     }
 }
