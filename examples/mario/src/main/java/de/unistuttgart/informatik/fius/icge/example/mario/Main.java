@@ -35,30 +35,32 @@ public class Main {
         prepareUiManager(sim.getUiManager());
 
         sim.initialize();
-        sim.getPlayfield().addEntity(new Position(1, 4), new Wall());
-        sim.getPlayfield().addEntity(new Position(2, 4), new Wall());
-        sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
-        sim.getPlayfield().addEntity(new Position(4, 4), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, -1), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, 0), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, 1), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, -1), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, 0), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, 1), new Wall());
         
-        Mario mario = new Mario();
+        Mario walkingMario = new Mario();
         
-        sim.getPlayfield().addEntity(new Position(0, 0), mario);
+        Mario spinningMario = new Mario();
+        
+        sim.getPlayfield().addEntity(new Position(-1, 0), walkingMario);
+        sim.getPlayfield().addEntity(new Position(0, 0), spinningMario);
+        
+        String walkingProgramName = "Walking";
+        
+        sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName, new WalkingProgram());
         
         sim.getSimulationClock().start();
         
-        mario.turnClockWise();
-        mario.turnClockWise();
-        mario.turnClockWise();
-        mario.turnClockWise();
-        mario.move();
-        mario.turnClockWise();
+        sim.getEntityProgramRunner().run(walkingProgramName, walkingMario);
         
-        mario.move();
-        mario.move();
-        mario.move();
-        mario.moveIfPossible();
-        System.out.println(mario.canMove());
-        mario.move();
+        while (true) {
+            spinningMario.turnClockWise();
+        }
+        
     }
 
     private static void prepareUiManager(UiManager manager) {

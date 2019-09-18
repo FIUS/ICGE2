@@ -9,6 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
 
@@ -38,6 +40,20 @@ public interface Simulation {
      * @return the ui manager used by this simulation
      */
     SimulationClock getSimulationClock();
+    
+    /**
+     * Get the entity program registry for this simulation.
+     * 
+     * @return the entity program registry used by this simulation
+     */
+    EntityProgramRegistry getEntityProgramRegistry();
+    
+    /**
+     * Get the entity program runner for this simulation.
+     * 
+     * @return the entity program runner used by this simulation
+     */
+    EntityProgramRunner getEntityProgramRunner();
     
     /**
      * Initialize the simulation and all its submodules.

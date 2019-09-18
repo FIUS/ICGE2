@@ -11,6 +11,8 @@ package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
@@ -32,7 +34,9 @@ public class SimulationFactory {
         
         StandardPlayfield playfield = new StandardPlayfield();
         StandardSimulationClock tickManager = new StandardSimulationClock();
+        StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
+        StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
         
-        return new StandardSimulation(uiManager, playfield, tickManager);
+        return new StandardSimulation(uiManager, playfield, tickManager, entityProgramRegistry, entityProgramRunner);
     }
 }

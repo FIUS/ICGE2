@@ -14,10 +14,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 
 
@@ -147,12 +149,26 @@ public class StandardSimulationClock implements SimulationClock {
         registerTickListener(tickNumber -> {
             if (tickNumber >= tick) {
                 startOfOperation.complete(null);
-                endOfOperation.join();
+                try {
+                    endOfOperation.get();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 return false;
             }
             return true;
         });
-        startOfOperation.join();
+        try {
+            startOfOperation.get();
+        } catch (InterruptedException e) {
+            throw new UncheckedInterruptedException(e);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause().getCause();
+            if (cause instanceof InterruptedException) {
+                throw new UncheckedInterruptedException(cause);
+            }
+            throw new IllegalStateException("The end of operation completed exceptionally", cause);
+        }
     }
     
     @Override
