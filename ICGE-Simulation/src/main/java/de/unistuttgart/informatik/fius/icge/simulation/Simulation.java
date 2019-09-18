@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRunner;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
 
@@ -55,6 +56,13 @@ public interface Simulation {
      */
     EntityProgramRunner getEntityProgramRunner();
     
+    /**
+     * Get the task runner for this simulation.
+     * 
+     * @return the task runner used by this simulation
+     */
+    TaskRunner getTaskRunner();
+
     /**
      * Initialize the simulation and all its submodules.
      */

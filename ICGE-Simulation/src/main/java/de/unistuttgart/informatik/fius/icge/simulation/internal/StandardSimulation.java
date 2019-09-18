@@ -17,6 +17,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProg
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRunner;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
 
@@ -32,6 +34,7 @@ public class StandardSimulation implements Simulation {
     private final StandardSimulationClock tickManager;
     private final StandardEntityProgramRegistry entityProgramRegistry;
     private final StandardEntityProgramRunner   entityProgramRunner;
+    private final StandardTaskRunner            taskRunner;
     
     /**
      * Creates a new standard simulation with the given parameters.
@@ -46,16 +49,20 @@ public class StandardSimulation implements Simulation {
      *     The entityProgramRegistry to use
      * @param entityProgramRunner
      *     The entityProgramRunner to use
+     * @param taskRunner
+     *     The taskRunner to use
      */
     public StandardSimulation(
             UiManager uiManager, StandardPlayfield playfield, StandardSimulationClock tickManager,
-            StandardEntityProgramRegistry entityProgramRegistry, StandardEntityProgramRunner entityProgramRunner
+            StandardEntityProgramRegistry entityProgramRegistry, StandardEntityProgramRunner entityProgramRunner,
+            StandardTaskRunner taskRunner
     ) {
         this.uiManager = uiManager;
         this.playfield = playfield;
         this.tickManager = tickManager;
         this.entityProgramRegistry = entityProgramRegistry;
         this.entityProgramRunner = entityProgramRunner;
+        this.taskRunner = taskRunner;
     }
     
     @Override
@@ -91,6 +98,11 @@ public class StandardSimulation implements Simulation {
     @Override
     public EntityProgramRunner getEntityProgramRunner() {
         return this.entityProgramRunner;
+    }
+    
+    @Override
+    public TaskRunner getTaskRunner() {
+        return this.taskRunner;
     }
     
 }
