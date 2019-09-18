@@ -3,7 +3,7 @@
  * For more information see github.com/FIUS/ICGE2
  *
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -14,18 +14,20 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.TimerAlreadyRunning;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 
 
 /**
  * The standard implementation of {@link SimulationClock}
- *
+ * 
  * @author Tim Neumann
  * @author Tobias Wältken
  * @version 1.0
@@ -35,7 +37,7 @@ public class StandardSimulationClock implements SimulationClock {
     private StandardSimulationProxy simulationProxy;
 
     private PlayfieldDrawer drawer;
-
+    
     private Object tickListenerLock = new Object();
 
     private List<Function<Long, Boolean>> tickListeners;
@@ -61,7 +63,7 @@ public class StandardSimulationClock implements SimulationClock {
 
     /**
      * Initialize this standard tick manager.
-     *
+     * 
      * @param parent
      *     The simulation for this tick manager
      */
@@ -115,17 +117,17 @@ public class StandardSimulationClock implements SimulationClock {
             this.start();
         }
     }
-
+    
     @Override
     public int getRenderTickPeriod() {
         return this.period;
     }
-
+    
     @Override
     public int getGameTickPeriod() {
         return this.period * RENDER_TICKS_PER_SIMULATION_TICK;
     }
-
+    
     @Override
     public boolean isRunning() {
         return this.task != null;
@@ -172,12 +174,12 @@ public class StandardSimulationClock implements SimulationClock {
             }
             this.drawer.draw(this.tickCount);
         }
-
+        
     }
-
+    
     /**
      * Process a simulation tick
-     *
+     * 
      * @param tickNumber
      *     The number of the simulation tick since the start of the clock.
      */
@@ -187,53 +189,67 @@ public class StandardSimulationClock implements SimulationClock {
                 this.tickListeners.remove(listener);
             }
         }
-
+        
         for (var listener : List.copyOf(this.postTickListeners)) {
             if (!listener.apply(tickNumber)) {
                 this.postTickListeners.remove(listener);
             }
         }
     }
-
+    
     @Override
     public void registerTickListener(Function<Long, Boolean> listener) {
         synchronized (this.tickListenerLock) {
             this.tickListeners.add(listener);
         }
     }
-
+    
     @Override
     public void registerPostTickListener(Function<Long, Boolean> listener) {
         synchronized (this.tickListenerLock) {
             this.postTickListeners.add(listener);
         }
     }
-
+    
     @Override
     public long getLastTickNumber() {
         //not rounding is intended here as we'd need floor and casting is the same as floor for positive integers
         return this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK;
     }
-
+    
     @Override
     public void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation) {
         CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
         registerTickListener(tickNumber -> {
             if (tickNumber >= tick) {
                 startOfOperation.complete(null);
-                endOfOperation.join();
+                try {
+                    endOfOperation.get();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 return false;
             }
             return true;
         });
-        startOfOperation.join();
+        try {
+            startOfOperation.get();
+        } catch (InterruptedException e) {
+            throw new UncheckedInterruptedException(e);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause().getCause();
+            if (cause instanceof InterruptedException) {
+                throw new UncheckedInterruptedException(cause);
+            }
+            throw new IllegalStateException("The end of operation completed exceptionally", cause);
+        }
     }
-
+    
     @Override
     public void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation) {
         scheduleOperationAtTick(getLastTickNumber() + ticks, endOfOperation);
     }
-
+    
     @Override
     public void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation) {
         scheduleOperationInTicks(1, endOfOperation);
