@@ -19,7 +19,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * 
  * @author Tim Neumann
  */
-public class EntityProgramInfo {
+public class EntityProgramInfoOLD {
     private static final String THREAD_NAME_PREFIX = "EntityProgram_";
     
     private final String                  name;
@@ -39,7 +39,7 @@ public class EntityProgramInfo {
      * @throws IllegalArgumentException
      *     if an argument is null
      */
-    public EntityProgramInfo(final String name, final EntityProgram program) {
+    public EntityProgramInfoOLD(final String name, final EntityProgram program) {
         if ((name == null) || (program == null)) throw new IllegalArgumentException("Argument cannot be null");
         this.name = name;
         this.single = true;
@@ -57,7 +57,7 @@ public class EntityProgramInfo {
      * @throws IllegalArgumentException
      *     if an argument is null
      */
-    public EntityProgramInfo(final String name, final Supplier<EntityProgram> programGenerator) {
+    public EntityProgramInfoOLD(final String name, final Supplier<EntityProgram> programGenerator) {
         if ((name == null) || (programGenerator == null)) throw new IllegalArgumentException("Argument cannot be null");
         this.name = name;
         this.single = false;
@@ -128,7 +128,7 @@ public class EntityProgramInfo {
         
         if (toRun == null) throw new IllegalStateException("Program to run is null.");
         
-        final String threadName = EntityProgramInfo.THREAD_NAME_PREFIX + this.getName();
+        final String threadName = EntityProgramInfoOLD.THREAD_NAME_PREFIX + this.getName();
         new Thread(() -> {
             toRun.run(entity);
         }, threadName).start();
@@ -142,8 +142,8 @@ public class EntityProgramInfo {
     
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof EntityProgramInfo)) return false;
-        final EntityProgramInfo other = (EntityProgramInfo) obj;
+        if (!(obj instanceof EntityProgramInfoOLD)) return false;
+        final EntityProgramInfoOLD other = (EntityProgramInfoOLD) obj;
         if (this.single != other.single) return false;
         if (!this.name.equals(other.name)) return false;
         if (this.single) return this.program.equals(other.program);

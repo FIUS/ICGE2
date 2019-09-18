@@ -14,7 +14,6 @@ import de.unistuttgart.informatik.fius.icge.example.mario.entity.Wall;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramInfo;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
@@ -50,13 +49,13 @@ public class Main {
         sim.getPlayfield().addEntity(new Position(-1, 0), walkingMario);
         sim.getPlayfield().addEntity(new Position(0, 0), spinningMario);
         
-        EntityProgramInfo walking = new EntityProgramInfo("Walking", new WalkingProgram());
+        String walkingProgramName = "Walking";
         
-        sim.getEntityProgramRegistry().registerEntityProgram(walking);
+        sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName, new WalkingProgram());
         
         sim.getSimulationClock().start();
         
-        walking.run(walkingMario);
+        sim.getEntityProgramRunner().run(walkingProgramName, walkingMario);
         
         while (true) {
             spinningMario.turnClockWise();

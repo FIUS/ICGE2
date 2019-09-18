@@ -9,9 +9,12 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity.program;
 
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsException;
 
 
 /**
@@ -21,26 +24,67 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  */
 public interface EntityProgramRegistry {
     /**
-     * Register an entity program for the given entity type.
+     * Register an entity program with the given name.
+     * 
+     * @param name
+     *     the name of the program; must not be null; must be unique
      * 
      * @param program
-     *     the info about the program to register
-     */
-    void registerEntityProgram(EntityProgramInfo program);
-    
-    /**
-     * Get all registered entity programs.
+     *     the program to register; must not be null
      * 
-     * @return A set of all registered entity programs.
+     * @throws IllegalArgumentException
+     *     if an argument is null
+     * @throws ElementExistsException
+     *     if the name is already used
      */
-    Set<EntityProgramInfo> getEntityPrograms();
+    void registerEntityProgram(String name, EntityProgram program);
     
     /**
-     * Get all entity programs, which could run on the given entity.
+     * Register many entity programs of the same type with the given name.
+     * 
+     * @param name
+     *     the name for these programs; must not be null; must be unique
+     * 
+     * @param programGenerator
+     *     a generator for the type of program; must not be null; must provide non null programs
+     * 
+     * @throws IllegalArgumentException
+     *     if an argument is null
+     * 
+     * @throws ElementExistsException
+     *     if the name is already used
+     */
+    void registerManyEntityProgram(String name, Supplier<EntityProgram> programGenerator);
+    
+    /**
+     * Get the names of all registered entity programs.
+     * 
+     * @return a set of the names of all registered entity programs
+     */
+    Set<String> getPrograms();
+    
+    /**
+     * Get the names of all entity programs, which could run on the given entity.
      * 
      * @param entity
-     *     the entity to get the programs for
-     * @return a set of all info objects for entity programs which could be run on this entity
+     *     the entity to get the programs for; must not be null
+     * @return a set of the names of all entity programs which could be run on this entity
+     * 
+     * @throws IllegalArgumentException
+     *     if an argument is null
      */
-    Set<EntityProgramInfo> getProgramsForEntity(Entity entity);
+    Set<String> getProgramsForEntity(Entity entity);
+    
+    /**
+     * Get the entity program for a given name.
+     * 
+     * @param name
+     *     The name to get the program for; must not be null
+     * @return The program for the given name
+     * @throws IllegalArgumentException
+     *     if an argument is null
+     * @throws NoSuchElementException
+     *     if the given name is not registered
+     */
+    EntityProgram getEntityProgram(String name);
 }

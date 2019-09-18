@@ -103,7 +103,9 @@ public interface SimulationClock {
      * @param tick
      *     The absolute number of the tick at which the operation will be run
      * @param endOfOperation
-     *     Tick processing will be halted until this future is completed
+     *     Tick processing will be halted until this future is completed; must not complete exceptionally
+     * @throws IllegalStateException
+     *     if the end of operation completes exceptionally
      */
     void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation);
     
@@ -117,7 +119,9 @@ public interface SimulationClock {
      * @param ticks
      *     The number of ticks until the tick, for which to schedule the operation
      * @param endOfOperation
-     *     Tick processing will be halted until this future is completed
+     *     Tick processing will be halted until this future is completed; must not complete exceptionally
+     * @throws IllegalStateException
+     *     if the end of operation completes exceptionally
      */
     void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation);
     
@@ -126,7 +130,9 @@ public interface SimulationClock {
      * processing will halt until the given end of operation is completed.
      * 
      * @param endOfOperation
-     *     Tick processing will be halted until this future is completed
+     *     Tick processing will be halted until this future is completed; must not complete exceptionally
+     * @throws IllegalStateException
+     *     if the end of operation completes exceptionally
      */
     void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation);
 }
