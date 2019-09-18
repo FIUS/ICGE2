@@ -21,16 +21,23 @@ public interface SimulationProxy {
     // Toolbar
     //
 
-    public enum ButtonState {
+    public enum ClockButtonState {
         PLAYING,
         PAUSED,
         STOPPED,
         BLOCKED
     }
 
+    public enum ControlButtonState {
+        VIEW,
+        ENTITY,
+        BLOCKED
+    }
+
     public interface ButtonStateListener {
 
-        public void changeButtonState(ButtonState state);
+        public void changeButtonState(ClockButtonState state);
+        public void changeButtonState(ControlButtonState state);
     }
 
     public void setButtonStateListener(ButtonStateListener listener);

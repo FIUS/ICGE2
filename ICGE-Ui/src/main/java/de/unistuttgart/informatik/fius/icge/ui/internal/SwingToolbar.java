@@ -25,7 +25,8 @@ import java.util.Hashtable;
 
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ClockButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ControlButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
@@ -143,46 +144,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.add(this.stop);
 
         //
-        // clock button listener setup
-        //
-        this.simulationProxy.setButtonStateListener(new ButtonStateListener(){
-            @Override
-            public void changeButtonState(ButtonState state) {
-                switch (state) {
-                    case PLAYING:
-                        SwingToolbar.this.play.setEnabled(false);
-                        SwingToolbar.this.step.setEnabled(false);
-                        SwingToolbar.this.pause.setEnabled(true);
-                        SwingToolbar.this.stop.setEnabled(true);
-                        break;
-
-                    case PAUSED:
-                        SwingToolbar.this.play.setEnabled(true);
-                        SwingToolbar.this.step.setEnabled(true);
-                        SwingToolbar.this.pause.setEnabled(false);
-                        SwingToolbar.this.stop.setEnabled(true);
-                        break;
-
-                    case STOPPED:
-                        SwingToolbar.this.play.setEnabled(true);
-                        SwingToolbar.this.step.setEnabled(true);
-                        SwingToolbar.this.pause.setEnabled(false);
-                        SwingToolbar.this.stop.setEnabled(false);
-                        break;
-
-                    case BLOCKED:
-                        SwingToolbar.this.play.setEnabled(false);
-                        SwingToolbar.this.step.setEnabled(false);
-                        SwingToolbar.this.pause.setEnabled(false);
-                        SwingToolbar.this.stop.setEnabled(false);
-                        break;
-
-                    default:
-                }
-            }
-        });
-
-        //
         // simulation time slider setup
         //
         this.addSeparator();
@@ -242,6 +203,68 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         });
         this.entity.setEnabled(false);
         this.add(this.entity);
+
+        //
+        // button listener setup
+        //
+        this.simulationProxy.setButtonStateListener(new ButtonStateListener(){
+            @Override
+            public void changeButtonState(ClockButtonState state) {
+                switch (state) {
+                    case PLAYING:
+                        SwingToolbar.this.play.setEnabled(false);
+                        SwingToolbar.this.step.setEnabled(false);
+                        SwingToolbar.this.pause.setEnabled(true);
+                        SwingToolbar.this.stop.setEnabled(true);
+                        break;
+
+                    case PAUSED:
+                        SwingToolbar.this.play.setEnabled(true);
+                        SwingToolbar.this.step.setEnabled(true);
+                        SwingToolbar.this.pause.setEnabled(false);
+                        SwingToolbar.this.stop.setEnabled(true);
+                        break;
+
+                    case STOPPED:
+                        SwingToolbar.this.play.setEnabled(true);
+                        SwingToolbar.this.step.setEnabled(true);
+                        SwingToolbar.this.pause.setEnabled(false);
+                        SwingToolbar.this.stop.setEnabled(false);
+                        break;
+
+                    case BLOCKED:
+                        SwingToolbar.this.play.setEnabled(false);
+                        SwingToolbar.this.step.setEnabled(false);
+                        SwingToolbar.this.pause.setEnabled(false);
+                        SwingToolbar.this.stop.setEnabled(false);
+                        break;
+
+                    default:
+                }
+            }
+
+            @Override
+            public void changeButtonState(ControlButtonState state) {
+                switch (state) {
+                    case VIEW:
+                        SwingToolbar.this.view.setEnabled(false);
+                        SwingToolbar.this.entity.setEnabled(true);
+                        break;
+
+                    case ENTITY:
+                        SwingToolbar.this.view.setEnabled(true);
+                        SwingToolbar.this.entity.setEnabled(false);
+                        break;
+
+                    case BLOCKED:
+                        SwingToolbar.this.view.setEnabled(false);
+                        SwingToolbar.this.entity.setEnabled(false);
+                        break;
+
+                    default:
+                }
+            }
+        });
 
         //
         // entity selector setup
