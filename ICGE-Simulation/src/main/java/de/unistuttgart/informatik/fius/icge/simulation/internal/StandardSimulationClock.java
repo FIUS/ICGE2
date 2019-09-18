@@ -20,6 +20,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.TimerAlreadyRunning;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 
 
 /**
@@ -31,6 +32,8 @@ import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
  */
 public class StandardSimulationClock implements SimulationClock {
 
+    private StandardSimulationProxy simulationProxy;
+
     private PlayfieldDrawer drawer;
 
     private Object tickListenerLock = new Object();
@@ -39,7 +42,7 @@ public class StandardSimulationClock implements SimulationClock {
     private List<Function<Long, Boolean>> postTickListeners;
 
     private TimerTask task;
-    private Timer timer;
+    private Timer     timer;
 
     private volatile long tickCount;
 
@@ -64,6 +67,43 @@ public class StandardSimulationClock implements SimulationClock {
      */
     public void initialize(Simulation parent) {
         this.drawer = parent.getUiManager().getPlayfieldDrawer();
+    }
+
+    /**
+     * Setter function to set the simulation proxy which is notified about ui changes
+     *
+     * @param simulationProxy The proxy to set
+     */
+    public void setSimulationProxy(StandardSimulationProxy simulationProxy) {
+        this.simulationProxy = simulationProxy;
+    }
+
+    /**
+     * This internal start function actually starts the timer but does not notify
+     * the simulation proxy. If you don't know what you do use
+     * {@link SimulationClock#start()}
+     */
+    public synchronized void startInternal() {
+        if (this.isRunning()) throw new TimerAlreadyRunning();
+
+        this.task = new TimerTask() {
+
+            @Override
+            public void run() {
+                tick();
+            }
+        };
+        this.timer.schedule(this.task, 0, this.period);
+    }
+
+    /**
+     * This internal stop function actually stops the timer but does not notify
+     * the simulation proxy. If you don't know what you do use
+     * {@link SimulationClock#stop()}
+     */
+    public synchronized void stopInternal() {
+        if (this.isRunning()) this.task.cancel();
+        this.task = null;
     }
 
     @Override
@@ -93,30 +133,27 @@ public class StandardSimulationClock implements SimulationClock {
 
     @Override
     public synchronized void start() {
-        if (this.isRunning()) throw new TimerAlreadyRunning();
-
-        this.task = new TimerTask() {
-
-            @Override
-            public void run() {
-                tick();
-            }
-        };
-        this.timer.schedule(this.task, 0, this.period);
+        if (this.simulationProxy != null) {
+            this.simulationProxy.buttonPressed(ButtonType.PLAY);
+        } else {
+            this.startInternal();
+        }
     }
 
     @Override
     public synchronized void stop() {
-        if (this.isRunning())
-            this.task.cancel();
-        this.task = null;
+        if (this.simulationProxy != null) {
+            this.simulationProxy.buttonPressed(ButtonType.PAUSE);
+        } else {
+            this.stopInternal();
+        }
     }
 
     @Override
     public synchronized void step() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
 
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 tick();
@@ -201,5 +238,4 @@ public class StandardSimulationClock implements SimulationClock {
     public void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation) {
         scheduleOperationInTicks(1, endOfOperation);
     }
-
 }

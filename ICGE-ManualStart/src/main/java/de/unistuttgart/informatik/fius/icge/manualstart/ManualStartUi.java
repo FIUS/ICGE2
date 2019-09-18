@@ -12,9 +12,9 @@ package de.unistuttgart.informatik.fius.icge.manualstart;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.unistuttgart.informatik.fius.icge.simulation.StandardSimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
@@ -35,7 +35,23 @@ public class ManualStartUi {
      */
     public static void main(final String[] args) {
         //FIXME add correct simulation proxy
-        final UiManager manager = UiManagerFactory.createUiManager(new StandardSimulationProxy());
+        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy(){
+
+            @Override
+            public void simulationSpeedChange(int value) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void setButtonStateListener(ButtonStateListener listener) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void buttonPressed(ButtonType type) {
+                // TODO Auto-generated method stub
+            }
+        });
 
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();

@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationProxy;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
@@ -28,11 +29,13 @@ public class SimulationFactory {
      * @return The new Simulation.
      */
     public static Simulation createSimulation() {
-        UiManager uiManager = UiManagerFactory.createUiManager(new StandardSimulationProxy());
+        StandardSimulationProxy simulationProxy = new StandardSimulationProxy();
+        UiManager uiManager = UiManagerFactory.createUiManager(simulationProxy);
 
         StandardPlayfield playfield = new StandardPlayfield();
-        StandardSimulationClock tickManager = new StandardSimulationClock();
+        StandardSimulationClock simulationClock = new StandardSimulationClock();
+        simulationProxy.setSimulationClock(simulationClock);
 
-        return new StandardSimulation(uiManager, playfield, tickManager);
+        return new StandardSimulation(uiManager, playfield, simulationClock);
     }
 }
