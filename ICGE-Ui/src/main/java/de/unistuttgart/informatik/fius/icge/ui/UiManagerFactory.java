@@ -31,6 +31,7 @@ public class UiManagerFactory {
     /**
      * Creates a new Ui Manager including the initialization of all required submodules.
      *
+     * @param simulationProxy The simulation proxy to create the ui around
      * @return The new Ui Manager.
      */
     public static UiManager createUiManager(final SimulationProxy simulationProxy) {

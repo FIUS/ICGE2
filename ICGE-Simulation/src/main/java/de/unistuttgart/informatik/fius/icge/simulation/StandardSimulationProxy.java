@@ -21,11 +21,16 @@ public class StandardSimulationProxy implements SimulationProxy {
 
     @Override
     public void setButtonStateListener(ButtonStateListener listener) {
-
+        // TODO Auto-generated method stub
     }
 
     @Override
     public void buttonPressed(ButtonType type) {
+        // TODO Auto-generated method stub
+    }
 
+    @Override
+    public void simulationSpeedChange(int value) {
+        // TODO Auto-generated method stub
     }
 }

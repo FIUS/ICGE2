@@ -12,8 +12,6 @@ package de.unistuttgart.informatik.fius.icge.ui;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListener;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 
 
 /**
@@ -24,7 +22,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 class UiManagerFactoryTest {
 
     /**
-     * Test method for {@link de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory#createUiManager()}.
+     * Test method for {@link de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory#createUiManager(SimulationProxy)}.
      */
     @Test
     void testCreateUiManager() {
@@ -37,6 +35,11 @@ class UiManagerFactoryTest {
 
             @Override
             public void buttonPressed(ButtonType type) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void simulationSpeedChange(int value) {
                 // TODO Auto-generated method stub
             }
         });

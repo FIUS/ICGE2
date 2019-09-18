@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListener;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
@@ -48,6 +46,11 @@ class SwingUiManagerUiTest {
 
             @Override
             public void buttonPressed(ButtonType type) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void simulationSpeedChange(int value) {
                 // TODO Auto-generated method stub
             }
         }, textureRegistry);
