@@ -31,6 +31,8 @@ public class StandardSimulationProxy implements SimulationProxy {
     private ButtonStateListener buttonStateListener;
     
     private StandardSimulationClock simulationClock;
+
+    private TaskSelectorListener taskSelectorListener;
     
     /**
      * Default Constructor
@@ -127,5 +129,16 @@ public class StandardSimulationProxy implements SimulationProxy {
         if (this.simulationClock == null) return;
         
         this.simulationClock.setPeriod(StandardSimulationProxy.SIMULATION_TIMES[value]);
+    }
+    
+    @Override
+    public void setTaskSelectorListener(TaskSelectorListener listener) {
+        this.taskSelectorListener = listener;
+        
+    }
+    
+    @Override
+    public void selectedTaskChange(String element) {
+        // Intentionally left blank
     }
 }

@@ -42,6 +42,18 @@ class UiManagerFactoryTest {
             public void simulationSpeedChange(final int value) {
                 // TODO Auto-generated method stub
             }
+            
+            @Override
+            public void setTaskSelectorListener(TaskSelectorListener listener) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void selectedTaskChange(String element) {
+                // TODO Auto-generated method stub
+                
+            }
         });
         Assertions.assertNotNull(manager);
         Assertions.assertNotNull(manager.getPlayfieldDrawer());
