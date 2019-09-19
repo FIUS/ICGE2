@@ -9,6 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.example.mario;
 
+import java.util.List;
+
+import de.unistuttgart.informatik.fius.icge.example.mario.entity.Coin;
 import de.unistuttgart.informatik.fius.icge.example.mario.entity.Mario;
 import de.unistuttgart.informatik.fius.icge.example.mario.entity.MarioProgram;
 
@@ -28,6 +31,14 @@ public class WalkingProgram extends MarioProgram {
             } else {
                 mario.turnClockWise();
                 mario.turnClockWise();
+                final List<Coin> droppableCoins = mario.getCurrentlyDroppableEntities(Coin.class, false);
+                final List<Coin> collectableCoins = mario.getCurrentlyCollectableEntities(Coin.class, false);
+                
+                if (!droppableCoins.isEmpty()) {
+                    mario.drop(droppableCoins.get(0));
+                } else if (!collectableCoins.isEmpty()) {
+                    mario.collect(collectableCoins.get(0));
+                }
             }
         }
     }

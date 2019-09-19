@@ -36,7 +36,7 @@ public class EntityAlreadyOnFieldExcpetion extends SimulationExcpetion {
      * @param message
      *     the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
      */
-    public EntityAlreadyOnFieldExcpetion(String message) {
+    public EntityAlreadyOnFieldExcpetion(final String message) {
         super(message);
     }
     
@@ -50,7 +50,7 @@ public class EntityAlreadyOnFieldExcpetion extends SimulationExcpetion {
      *     permitted, and indicates that the cause is nonexistent or unknown.)
      * @since 1.4
      */
-    public EntityAlreadyOnFieldExcpetion(String message, Throwable cause) {
+    public EntityAlreadyOnFieldExcpetion(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

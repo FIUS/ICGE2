@@ -29,7 +29,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     
     private final EntityProgramRegistry registry;
     
-    private Map<String, EntityProgramRunningInfo> programs = new HashMap<>();
+    private final Map<String, EntityProgramRunningInfo> programs = new HashMap<>();
     
     /**
      * Create a new StandardEntityProgramRunner.
@@ -37,11 +37,11 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
      * @param registry
      *     The EntityProgramRegistry to use
      */
-    public StandardEntityProgramRunner(EntityProgramRegistry registry) {
+    public StandardEntityProgramRunner(final EntityProgramRegistry registry) {
         this.registry = registry;
     }
     
-    private EntityProgramRunningInfo getInfo(String program) {
+    private EntityProgramRunningInfo getInfo(final String program) {
         if (!this.programs.containsKey(program)) {
             this.programs.put(program, new EntityProgramRunningInfo(this.registry.getEntityProgram(program)));
         }
@@ -49,46 +49,46 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     }
     
     @Override
-    public EntityProgramState getState(String program) {
+    public EntityProgramState getState(final String program) {
         if (program == null) throw new IllegalArgumentException("Argument is null.");
-        return getInfo(program).getState();
+        return this.getInfo(program).getState();
     }
     
-    private boolean canRunProgram(EntityProgramRunningInfo info) {
+    private boolean canRunProgram(final EntityProgramRunningInfo info) {
         return info.getState() == EntityProgramState.NEW;
     }
     
     @Override
-    public boolean canRunProgram(String program) {
+    public boolean canRunProgram(final String program) {
         if (program == null) throw new IllegalArgumentException("Argument is null.");
-        return canRunProgram(getInfo(program));
+        return this.canRunProgram(this.getInfo(program));
     }
     
-    private boolean canRunProgramOn(EntityProgramRunningInfo info, Entity entity) {
-        if (!canRunProgram(info)) return false;
+    private boolean canRunProgramOn(final EntityProgramRunningInfo info, final Entity entity) {
+        if (!this.canRunProgram(info)) return false;
         return info.getProgram().canRunOn(entity);
     }
     
     @Override
-    public boolean canRunProgramOn(String program, Entity entity) {
-        if (program == null || entity == null) throw new IllegalArgumentException("Argument is null.");
-        return canRunProgramOn(getInfo(program), entity);
+    public boolean canRunProgramOn(final String program, final Entity entity) {
+        if ((program == null) || (entity == null)) throw new IllegalArgumentException("Argument is null.");
+        return this.canRunProgramOn(this.getInfo(program), entity);
     }
     
     @Override
-    public void run(String program, Entity entity) {
-        if (program == null || entity == null) throw new IllegalArgumentException("Argument is null.");
+    public void run(final String program, final Entity entity) {
+        if ((program == null) || (entity == null)) throw new IllegalArgumentException("Argument is null.");
         
-        var info = getInfo(program);
+        final var info = this.getInfo(program);
         
-        if (!canRunProgramOn(info, entity)) throw new CannotRunProgramException();
+        if (!this.canRunProgramOn(info, entity)) throw new CannotRunProgramException();
         
-        String threadName = "EntityProgramRunner" + "_" + program + "_on_" + entity.toString();
-        Thread thread = new Thread(() -> {
+        final String threadName = "EntityProgramRunner" + "_" + program + "_on_" + entity.toString();
+        final Thread thread = new Thread(() -> {
             try {
                 info.getProgram().run(entity);
                 info.setState(EntityProgramState.FINISHED);
-            } catch (@SuppressWarnings("unused") UncheckedInterruptedException e) {
+            } catch (@SuppressWarnings("unused") final UncheckedInterruptedException e) {
                 info.setState(EntityProgramState.KILLED);
             }
         }, threadName);
@@ -100,7 +100,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     
     @Override
     public void forceStop() {
-        for (EntityProgramRunningInfo info : this.programs.values()) {
+        for (final EntityProgramRunningInfo info : this.programs.values()) {
             info.getThread().interrupt();
         }
     }

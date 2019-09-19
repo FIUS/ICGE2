@@ -69,28 +69,26 @@ public class Position {
      *     The direction to get the adjacent position in
      * @return The position adjacent to this in the given direction
      */
-    public Position adjacentPosition(Direction direction) {
+    public Position adjacentPosition(final Direction direction) {
         switch (direction) {
             case EAST:
-                return new Position(getX() + 1, getY());
+                return new Position(this.getX() + 1, this.getY());
             case NORTH:
-                return new Position(getX(), getY() - 1);
+                return new Position(this.getX(), this.getY() - 1);
             case SOUTH:
-                return new Position(getX(), getY() + 1);
+                return new Position(this.getX(), this.getY() + 1);
             case WEST:
-                return new Position(getX() - 1, getY());
+                return new Position(this.getX() - 1, this.getY());
             default:
                 throw new IllegalArgumentException("Unknown direction");
         }
     }
     
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Position)) {
-            return false;
-        }
-        Position p = (Position) o;
-        return this.x == p.getX() && this.y == p.getY();
+    public boolean equals(final Object o) {
+        if (!(o instanceof Position)) return false;
+        final Position p = (Position) o;
+        return (this.x == p.getX()) && (this.y == p.getY());
     }
     
     @Override

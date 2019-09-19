@@ -33,7 +33,7 @@ public interface EntityProgramRunner {
      * @throws IllegalArgumentException
      *     if an argument is null
      */
-    public EntityProgramState getState(String program);
+    EntityProgramState getState(String program);
     
     /**
      * Check whether the given program can run.
@@ -47,7 +47,7 @@ public interface EntityProgramRunner {
      * @throws IllegalArgumentException
      *     if an argument is null
      */
-    public boolean canRunProgram(String program);
+    boolean canRunProgram(String program);
     
     /**
      * Check whether the given program can be run to the given entity.
@@ -65,7 +65,7 @@ public interface EntityProgramRunner {
      * @throws IllegalArgumentException
      *     if an argument is null
      */
-    public boolean canRunProgramOn(String program, Entity entity);
+    boolean canRunProgramOn(String program, Entity entity);
     
     /**
      * Run an entity program on an entity.
@@ -84,7 +84,7 @@ public interface EntityProgramRunner {
      * @throws RuntimeException
      *     if an exception occurred in the entity program
      */
-    public void run(String program, Entity entity);
+    void run(String program, Entity entity);
     
     /**
      * Force stop all running entity programs.
@@ -92,5 +92,5 @@ public interface EntityProgramRunner {
      * This does not block until successful shutdown
      * </p>
      */
-    public void forceStop();
+    void forceStop();
 }
