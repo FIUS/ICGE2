@@ -7,27 +7,24 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector;
-
-import java.awt.Component;
+package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 
 
 /**
- * The EntitySelector is a JComboBox based drop down menu to select a game entity
+ * The DropdownSelector is a JComboBox based drop down menu to select a string
  *
  * @author Tobias Wältken
  * @version 1.0
  */
-public class EntitySelector extends JPanel {
+public class DropdownSelector extends JPanel {
     private static final long serialVersionUID = -3898035206502504991L;
     
     /**
@@ -36,7 +33,7 @@ public class EntitySelector extends JPanel {
      * @author Tobias Wältken
      * @version 1.0
      */
-    public class EntityEntry {
+    public class DropdownEntry {
         /** The name of the entry which is shown to the user */
         public String displayName;
         /** The texture id of the icon which is rendert infront of the display name */
@@ -45,7 +42,7 @@ public class EntitySelector extends JPanel {
         /**
          * The empty constructor
          */
-        public EntityEntry() {
+        public DropdownEntry() {
             this.displayName = "";
             this.textureID = "";
         }
@@ -56,7 +53,7 @@ public class EntitySelector extends JPanel {
          * @param name
          *     the display name
          */
-        public EntityEntry(String name) {
+        public DropdownEntry(String name) {
             this.displayName = name;
             this.textureID = "";
         }
@@ -69,7 +66,7 @@ public class EntitySelector extends JPanel {
          * @param texture
          *     the texture id of the icon infront of the display text
          */
-        public EntityEntry(String name, String texture) {
+        public DropdownEntry(String name, String texture) {
             this.displayName = name;
             this.textureID = texture;
         }
@@ -79,18 +76,20 @@ public class EntitySelector extends JPanel {
     private final SwingTextureRegistry textureRegistry;
     
     private final JLabel                                label;
-    private final JComboBox<EntitySelector.EntityEntry> comboBox;
+    private final JComboBox<DropdownSelector.DropdownEntry> comboBox;
     
-    /** The data model of the EntitySelector */
-    private final DefaultComboBoxModel<EntityEntry> model;
+    /** The data model of the DropdownSelector */
+    private final DefaultComboBoxModel<DropdownEntry> model;
     
     /**
-     * Constructor of the EntitySelector
+     * Constructor of the DropdownSelector
      *
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
+     * @param header
+     *     The header text which is displayed above the combobox
      */
-    public EntitySelector(SwingTextureRegistry textureRegistry, String header) {
+    public DropdownSelector(SwingTextureRegistry textureRegistry, String header) {
         this.textureRegistry = textureRegistry;
         
         this.label = new JLabel(header + ": ");
@@ -98,8 +97,8 @@ public class EntitySelector extends JPanel {
 
         this.model = new DefaultComboBoxModel<>();
         this.comboBox.setModel(this.model);
-        this.comboBox.setRenderer(new EntityItemRenderer(this.textureRegistry));
-        this.comboBox.setEditor(new EntityItemEditor(this.textureRegistry));
+        this.comboBox.setRenderer(new DropdownItemRenderer(this.textureRegistry));
+        this.comboBox.setEditor(new DropdownItemEditor(this.textureRegistry));
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(this.label);
@@ -109,10 +108,10 @@ public class EntitySelector extends JPanel {
     /**
      * Getter for the currently selected entry
      *
-     * @return returns the current {@link EntityEntry}
+     * @return returns the current {@link DropdownEntry}
      */
-    public EntityEntry getCurrentEntry() {
-        return (EntityEntry)this.comboBox.getEditor().getItem();
+    public DropdownEntry getCurrentEntry() {
+        return (DropdownEntry)this.comboBox.getEditor().getItem();
     }
 
     /**
@@ -120,8 +119,8 @@ public class EntitySelector extends JPanel {
      *
      * @param entries 1 to n entries to be appended
      */
-    public void addEntry(EntityEntry ... entries) {
-        for (EntityEntry entry : entries)
+    public void addEntry(DropdownEntry ... entries) {
+        for (DropdownEntry entry : entries)
             this.model.addElement(entry);
     }
 }

@@ -9,7 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector;
 
 /**
  * The toolbar manager user by a {@link UiManager} to handle the toolbar.
@@ -24,7 +24,7 @@ public interface Toolbar {
      * Getter function for the user selected entity
      *
      * @return The displayname of the selected entry
-     * @see EntitySelector
+     * @see DropdownSelector
      */
     public String getCurrentEntity();
 
@@ -33,7 +33,7 @@ public interface Toolbar {
      *
      * @param displayName the name which is displayed for the user
      * @param textureID the texture which is rendert infront of the display name
-     * @see EntitySelector
+     * @see DropdownSelector
      */
     public void addEntity(String displayName, String textureID);
 }

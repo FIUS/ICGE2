@@ -25,8 +25,8 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListen
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ClockButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ControlButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
-import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
 
 
 /**
@@ -58,7 +58,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     public JSlider simulationTime;
     
     /** The selector which selects the task which is run in the simulation */
-    public EntitySelector taskSelect;
+    public DropdownSelector taskSelect;
 
     /** The button to change to view mode */
     public JToggleButton view;
@@ -66,7 +66,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     public JToggleButton entity;
     
     /** The selector which selects the entity for the user to place */
-    public EntitySelector entitySelect;
+    public DropdownSelector entitySelect;
     
     /**
      * The constructor of the toolbar
@@ -157,7 +157,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // task selector setup
         //
         this.addSeparator();
-        this.taskSelect = new EntitySelector(this.textureRegistry, "Task");
+        this.taskSelect = new DropdownSelector(this.textureRegistry, "Task");
         this.add(this.taskSelect);
         this.addSeparator();
         
@@ -248,7 +248,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // entity selector setup
         //
         this.addSeparator();
-        this.entitySelect = new EntitySelector(this.textureRegistry, "Entity");
+        this.entitySelect = new DropdownSelector(this.textureRegistry, "Entity");
         this.add(this.entitySelect);
     }
     
@@ -259,6 +259,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     @Override
     public void addEntity(final String displayName, final String textureID) {
-        this.entitySelect.addEntry(this.entitySelect.new EntityEntry(displayName, textureID));
+        this.entitySelect.addEntry(this.entitySelect.new DropdownEntry(displayName, textureID));
     }
 }

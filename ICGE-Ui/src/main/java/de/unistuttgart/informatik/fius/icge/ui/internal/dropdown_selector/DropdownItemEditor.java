@@ -7,7 +7,7 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector;
+package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector;
 
 import static javax.swing.SwingConstants.LEFT;
 
@@ -23,29 +23,29 @@ import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector.EntityEntry;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector.DropdownEntry;
 
 /**
- * EntityItemEditor
+ * DropdownItemEditor
  *
  * @author Tobias Wältken
  * @version 1.0
  */
-class EntityItemEditor extends BasicComboBoxEditor {
+class DropdownItemEditor extends BasicComboBoxEditor {
 
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
 
     private JPanel panel;
     private JLabel labelItem;
-    private EntityEntry selectedValue;
+    private DropdownEntry selectedValue;
 
     /**
-     * Constructor for the EntityItemEditor
+     * Constructor for the DropdownItemEditor
      *
      * @param textureRegistry The texture registry the textures and icons are loaded from
      */
-    public EntityItemEditor(SwingTextureRegistry textureRegistry) {
+    public DropdownItemEditor(SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
 
         this.panel = new JPanel();
@@ -78,7 +78,7 @@ class EntityItemEditor extends BasicComboBoxEditor {
     public void setItem(Object item) {
         if (item == null) return;
 
-        this.selectedValue = (EntityEntry) item;
+        this.selectedValue = (DropdownEntry) item;
         this.labelItem.setText(this.selectedValue.displayName);
 
         if (!this.selectedValue.textureID.equals("")) {
