@@ -29,12 +29,11 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsEx
  */
 public class StandardEntityProgramRegistry implements EntityProgramRegistry {
     
-    private Map<String, EntityProgramRegistryEntry> programs = new HashMap<>();
-    
+    private final Map<String, EntityProgramRegistryEntry> programs = new HashMap<>();
     
     @Override
-    public void registerEntityProgram(String name, EntityProgram program) {
-        if (name == null || program == null) throw new IllegalArgumentException("An argument is null.");
+    public void registerEntityProgram(final String name, final EntityProgram program) {
+        if ((name == null) || (program == null)) throw new IllegalArgumentException("An argument is null.");
         
         if (this.programs.containsKey(name)) throw new ElementExistsException("Name is already in use.");
         
@@ -42,8 +41,8 @@ public class StandardEntityProgramRegistry implements EntityProgramRegistry {
     }
     
     @Override
-    public void registerManyEntityProgram(String name, Supplier<EntityProgram> programGenerator) {
-        if (name == null || programGenerator == null) throw new IllegalArgumentException("An argument is null.");
+    public void registerManyEntityProgram(final String name, final Supplier<EntityProgram> programGenerator) {
+        if ((name == null) || (programGenerator == null)) throw new IllegalArgumentException("An argument is null.");
         
         if (this.programs.containsKey(name)) throw new ElementExistsException("Name is already in use.");
         
@@ -56,13 +55,13 @@ public class StandardEntityProgramRegistry implements EntityProgramRegistry {
     }
     
     @Override
-    public Set<String> getProgramsForEntity(Entity entity) {
+    public Set<String> getProgramsForEntity(final Entity entity) {
         return this.programs.entrySet().stream().filter(entry -> entry.getValue().getProgram().canRunOn(entity))
                 .map(entry -> entry.getKey()).collect(Collectors.toSet());
     }
     
     @Override
-    public EntityProgram getEntityProgram(String name) {
+    public EntityProgram getEntityProgram(final String name) {
         if (name == null) throw new IllegalArgumentException("An argument is null.");
         if (!this.programs.containsKey(name)) throw new NoSuchElementException();
         return this.programs.get(name).getProgram();

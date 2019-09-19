@@ -13,6 +13,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Direction;
 import de.unistuttgart.informatik.fius.icge.ui.TextureNotFoundException;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 
+
 /**
  * The enum for all builtin mario textures.
  * 
@@ -24,7 +25,9 @@ public enum Texture {
     /** The normal wall texture */
     WALL("wall/wall-default.png"),
     /** The default mario textures */
-    MARIO("mario/mario-east-0.png", "mario/mario-south-0.png", "mario/mario-west-0.png", "mario/mario-north-0.png");
+    MARIO("mario/mario-east-0.png", "mario/mario-south-0.png", "mario/mario-west-0.png", "mario/mario-north-0.png"),
+    /** The coin texture */
+    COIN("coin/coin-default.png");
     
     //for directional textures this is east
     private final TextureInfo info;
@@ -34,22 +37,26 @@ public enum Texture {
     private TextureInfo westInfo = null;
     
     private TextureInfo northInfo = null;
-
-    Texture(String textureLocation) {
+    
+    Texture(final String textureLocation) {
         this.info = new TextureInfo(textureLocation);
     }
     
-    Texture(String textureEastLocation, String textureSouthLocation, String textureWestLocation, String textureNorthLocation) {
+    Texture(
+            final String textureEastLocation, final String textureSouthLocation, final String textureWestLocation,
+            final String textureNorthLocation
+    ) {
         this.info = new TextureInfo(textureEastLocation);
         this.southInfo = new TextureInfo(textureSouthLocation);
         this.westInfo = new TextureInfo(textureWestLocation);
         this.northInfo = new TextureInfo(textureNorthLocation);
     }
     
-    private void load(TextureRegistry registry, TextureInfo infoToLoad) {
+    private void load(final TextureRegistry registry, final TextureInfo infoToLoad) {
         try {
-            infoToLoad.textureHandle = registry.loadTextureFromResource("textures/" + infoToLoad.textureLocation, Texture.class::getResourceAsStream);
-        } catch (TextureNotFoundException e) {
+            infoToLoad.textureHandle = registry
+                    .loadTextureFromResource("textures/" + infoToLoad.textureLocation, Texture.class::getResourceAsStream);
+        } catch (final TextureNotFoundException e) {
             System.out.println("Could not find texture:");
             e.printStackTrace();
             infoToLoad.textureHandle = registry
@@ -61,17 +68,23 @@ public enum Texture {
      * Load this texture with the given registry
      * 
      * @param registry
-     *            The registry to load the texture with.
+     *     The registry to load the texture with.
      * @throws TextureNotFoundException
-     *             if neither the correct nor the "missing texture" texture can be found
+     *     if neither the correct nor the "missing texture" texture can be found
      */
-    public void load(TextureRegistry registry) {
-        load(registry, this.info);
-        if (this.southInfo != null) load(registry, this.southInfo);
-        if (this.westInfo != null) load(registry, this.westInfo);
-        if (this.northInfo != null) load(registry, this.northInfo);
+    public void load(final TextureRegistry registry) {
+        this.load(registry, this.info);
+        if (this.southInfo != null) {
+            this.load(registry, this.southInfo);
+        }
+        if (this.westInfo != null) {
+            this.load(registry, this.westInfo);
+        }
+        if (this.northInfo != null) {
+            this.load(registry, this.northInfo);
+        }
     }
-
+    
     /**
      * Get the handle of this texture.
      * <p>
@@ -80,7 +93,7 @@ public enum Texture {
      * 
      * @return the texture handle of this
      * @throws IllegalStateException
-     *             if the texture was not loaded before.
+     *     if the texture was not loaded before.
      */
     public String getHandle() {
         if (this.info.textureHandle == null) throw new IllegalStateException("Need to be loaded first");
@@ -102,9 +115,9 @@ public enum Texture {
      * @throws IllegalStateException
      *     if the texture was not loaded before.
      */
-    public String getHandle(Direction direction) {
+    public String getHandle(final Direction direction) {
         if (this.info.textureHandle == null) throw new IllegalStateException("Need to be loaded first");
-        switch(direction) {
+        switch (direction) {
             case EAST:
                 break;
             case SOUTH:
@@ -126,7 +139,7 @@ public enum Texture {
         final String textureLocation;
         String       textureHandle;
         
-        TextureInfo(String location) {
+        TextureInfo(final String location) {
             this.textureLocation = location;
         }
     }

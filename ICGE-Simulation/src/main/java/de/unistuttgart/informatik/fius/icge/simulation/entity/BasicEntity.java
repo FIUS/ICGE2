@@ -34,7 +34,7 @@ public abstract class BasicEntity implements Entity {
      */
     @Override
     public Position getPosition() {
-        return getPlayfield().getEntityPosition(this);
+        return this.getPlayfield().getEntityPosition(this);
     }
     
     /**
@@ -60,16 +60,16 @@ public abstract class BasicEntity implements Entity {
      */
     @Override
     public Drawable getDrawInformation() {
-        Position pos = this.getPosition();
-        return new BasicDrawable(pos.getX(), pos.getY(), getZPosition(), getTextureHandle());
+        final Position pos = this.getPosition();
+        return new BasicDrawable(pos.getX(), pos.getY(), this.getZPosition(), this.getTextureHandle());
     }
     
     @Override
-    public void initOnPlayfield(Playfield playfield) {
+    public void initOnPlayfield(final Playfield playfield) {
         if (playfield == null) throw new IllegalArgumentException("The given playfield is null.");
         this.field = new WeakReference<>(playfield);
     }
-
+    
     /**
      * Check whether this entity is on a playfield
      * 
@@ -77,7 +77,7 @@ public abstract class BasicEntity implements Entity {
      */
     public boolean isOnPlayfield() {
         if (this.field == null) return false;
-        Playfield playfield = this.field.get();
+        final Playfield playfield = this.field.get();
         if (playfield == null) {
             // Was on playfield, but no reference to it left, so it does not have a reference to this either.
             this.field = null;
@@ -99,7 +99,7 @@ public abstract class BasicEntity implements Entity {
      *     if this entity is not on a playfield
      */
     protected Playfield getPlayfield() {
-        if (!isOnPlayfield()) throw new EntityNotOnFieldException("This entity is not on a playfield");
+        if (!this.isOnPlayfield()) throw new EntityNotOnFieldException("This entity is not on a playfield");
         return this.field.get();
     }
     
@@ -113,7 +113,7 @@ public abstract class BasicEntity implements Entity {
      *     if the playfield of this entity is not part of any simulation
      */
     protected Simulation getSimulation() {
-        return getPlayfield().getSimulation();
+        return this.getPlayfield().getSimulation();
     }
     
 }

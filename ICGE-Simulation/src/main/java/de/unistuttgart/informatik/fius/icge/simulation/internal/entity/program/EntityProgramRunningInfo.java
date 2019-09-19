@@ -15,6 +15,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProg
 
 /**
  * An object holding information about the execution of a entity program.
+ * 
  * @author Tim Neumann
  */
 public class EntityProgramRunningInfo {
@@ -30,7 +31,7 @@ public class EntityProgramRunningInfo {
      * @throws IllegalArgumentException
      *     if the argument is null
      */
-    public EntityProgramRunningInfo(EntityProgram program) {
+    public EntityProgramRunningInfo(final EntityProgram program) {
         if (program == null) throw new IllegalArgumentException("Argument is null.");
         
         this.program = program;
@@ -52,7 +53,7 @@ public class EntityProgramRunningInfo {
      * @throws IllegalArgumentException
      *     if the argument is null
      */
-    public void setState(EntityProgramState state) {
+    public void setState(final EntityProgramState state) {
         if (state == null) throw new IllegalArgumentException("Argument is null.");
         this.state = state;
     }
@@ -81,7 +82,7 @@ public class EntityProgramRunningInfo {
      * @param thread
      *     the new thread; may be null
      */
-    public void setThread(Thread thread) {
+    public void setThread(final Thread thread) {
         this.thread = thread;
     }
     

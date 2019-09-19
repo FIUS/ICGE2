@@ -15,32 +15,33 @@ import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.UiManager;
 
+
 /**
  * Main class of the example
  * 
  * @author Tim Neumann
  */
 public class Main {
-
+    
     /**
      * The main entry point of the example
      * 
      * @param args
-     *            the command line args; not used
+     *     the command line args; not used
      */
-    public static void main(String[] args) {
-        Simulation sim = SimulationFactory.createSimulation();
-        prepareUiManager(sim.getUiManager());
-
+    public static void main(final String[] args) {
+        final Simulation sim = SimulationFactory.createSimulation();
+        Main.prepareUiManager(sim.getUiManager());
+        
         sim.initialize();
         
         sim.getTaskRunner().runTask(Solution1.class, sim);
     }
-
-    private static void prepareUiManager(UiManager manager) {
+    
+    private static void prepareUiManager(final UiManager manager) {
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
-        for (Texture texture : Texture.values()) {
+        for (final Texture texture : Texture.values()) {
             texture.load(tr);
         }
         manager.setWindowTitle("Manual simulation start");

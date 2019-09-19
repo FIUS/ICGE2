@@ -43,10 +43,10 @@ public class StandardPlayfield implements Playfield {
      * @param simulation
      *     the parent simulation
      */
-    public void initialize(StandardSimulation simulation) {
+    public void initialize(final StandardSimulation simulation) {
         this.sim = new WeakReference<>(simulation);
         simulation.getSimulationClock().registerPostTickListener(count -> {
-            drawEntities();
+            this.drawEntities();
             return true;
         });
     }
@@ -58,18 +58,17 @@ public class StandardPlayfield implements Playfield {
     @Override
     public Simulation getSimulation() {
         if (this.sim == null) throw new IllegalStateException("This playfield is not part of any simulation.");
-        Simulation simulation = this.sim.get();
+        final Simulation simulation = this.sim.get();
         if (simulation == null) throw new IllegalStateException("This playfield is not part of any simulation.");
         return simulation;
     }
     
-
     /**
      * Converts all entities to drawables and sends them to the playfield drawer.
      */
     public void drawEntities() {
-        List<Drawable> drawables = new ArrayList<>();
-        for (Entity entity : this.getAllEntities()) {
+        final List<Drawable> drawables = new ArrayList<>();
+        for (final Entity entity : this.getAllEntities()) {
             drawables.add(entity.getDrawInformation());
         }
         this.getSimulation().getUiManager().getPlayfieldDrawer().setDrawables(drawables);
@@ -81,48 +80,48 @@ public class StandardPlayfield implements Playfield {
     }
     
     @Override
-    public <T extends Entity> List<T> getAllEntitiesOfType(Class<? extends T> type, boolean includeSubclasses) {
+    public <T extends Entity> List<T> getAllEntitiesOfType(final Class<? extends T> type, final boolean includeSubclasses) {
         if (type == null) throw new IllegalArgumentException("The given type is null.");
-        List<T> result = new ArrayList<>();
-        for (PlayfieldCell cell : this.cells.values()) {
-            result.addAll(cell.getEntities(type, includeSubclasses));
+        final List<T> result = new ArrayList<>();
+        for (final PlayfieldCell cell : this.cells.values()) {
+            result.addAll(cell.get(type, includeSubclasses));
         }
         return result;
     }
     
     @Override
-    public List<Entity> getEntitiesAt(Position pos) {
+    public List<Entity> getEntitiesAt(final Position pos) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
-        return getEntitiesOfTypeAt(pos, Entity.class, true);
+        return this.getEntitiesOfTypeAt(pos, Entity.class, true);
     }
     
     @Override
-    public <T extends Entity> List<T> getEntitiesOfTypeAt(Position pos, Class<? extends T> type, boolean includeSubclasses) {
+    public <T extends Entity> List<T> getEntitiesOfTypeAt(
+            final Position pos, final Class<? extends T> type, final boolean includeSubclasses
+    ) {
         if (type == null) throw new IllegalArgumentException("The given type is null.");
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
-        List<T> result = new ArrayList<>();
-        PlayfieldCell cell = this.cells.get(pos);
-        if (cell != null && cell.getPosition().equals(pos)) {
-            result.addAll(cell.getEntities(type, includeSubclasses));
+        final List<T> result = new ArrayList<>();
+        final PlayfieldCell cell = this.cells.get(pos);
+        if ((cell != null) && cell.getPosition().equals(pos)) {
+            result.addAll(cell.get(type, includeSubclasses));
         }
         return result;
     }
     
-    private void addEntityToCell(Position pos, Entity entity) {
+    private void addEntityToCell(final Position pos, final Entity entity) {
         PlayfieldCell cell = this.cells.get(pos);
         if (cell == null) {
             cell = new PlayfieldCell(pos);
             this.cells.put(pos, cell);
         }
-        cell.addEntity(entity);
+        cell.add(entity);
     }
     
-    private void removeEntityFromCell(Position pos, Entity entity) {
-        PlayfieldCell cell = this.cells.get(pos);
-        if (cell == null || !cell.contains(entity)) {
-            // TODO decide if this should throw an Exception
+    private void removeEntityFromCell(final Position pos, final Entity entity) {
+        final PlayfieldCell cell = this.cells.get(pos);
+        if ((cell == null) || !cell.contains(entity)) // TODO decide if this should throw an Exception
             return; // cell is already empty...
-        }
         cell.remove(entity);
         if (cell.isEmpty()) {
             this.cells.remove(pos, cell);
@@ -130,13 +129,13 @@ public class StandardPlayfield implements Playfield {
     }
     
     @Override
-    public void addEntity(Position pos, Entity entity) {
+    public void addEntity(final Position pos, final Entity entity) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
-        if (this.entityPositions.containsKey(entity)) {
-            throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
-        }
+        if (
+            this.entityPositions.containsKey(entity)
+        ) throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
         
         this.entityPositions.put(entity, pos);
         
@@ -146,52 +145,50 @@ public class StandardPlayfield implements Playfield {
     }
     
     @Override
-    public void moveEntity(Entity entity, Position pos) {
+    public void moveEntity(final Entity entity, final Position pos) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         if (
             !this.entityPositions.containsKey(entity)
         ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
         
-        Position oldPos = this.entityPositions.get(entity);
+        final Position oldPos = this.entityPositions.get(entity);
         this.removeEntityFromCell(oldPos, entity);
         this.addEntityToCell(pos, entity);
         this.entityPositions.put(entity, pos);
     }
     
     @Override
-    public void removeEntity(Entity entity) {
+    public void removeEntity(final Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         if (
             !this.entityPositions.containsKey(entity)
         ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
         
-        Position pos = this.entityPositions.get(entity);
+        final Position pos = this.entityPositions.get(entity);
         this.removeEntityFromCell(pos, entity);
         this.entityPositions.remove(entity, pos);
     }
     
     @Override
-    public Position getEntityPosition(Entity entity) {
+    public Position getEntityPosition(final Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
-        Position pos = this.entityPositions.get(entity);
+        final Position pos = this.entityPositions.get(entity);
         if (pos == null) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
         return pos;
     }
     
     @Override
-    public boolean containsEntity(Entity entity) {
+    public boolean containsEntity(final Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         return this.entityPositions.containsKey(entity);
     }
     
     @Override
-    public boolean isSolidEntityAt(Position pos) {
-        List<SolidEntity> solidEntitiesAtPos = this.getEntitiesOfTypeAt(pos, SolidEntity.class, true);
-        for (SolidEntity entity : solidEntitiesAtPos) {
-            if (entity.isCurrentlySolid()) {
-                return true;
-            }
+    public boolean isSolidEntityAt(final Position pos) {
+        final List<SolidEntity> solidEntitiesAtPos = this.getEntitiesOfTypeAt(pos, SolidEntity.class, true);
+        for (final SolidEntity entity : solidEntitiesAtPos) {
+            if (entity.isCurrentlySolid()) return true;
         }
         return false;
     }

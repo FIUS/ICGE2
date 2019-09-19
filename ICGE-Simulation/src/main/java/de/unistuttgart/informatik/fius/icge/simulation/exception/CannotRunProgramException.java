@@ -34,7 +34,7 @@ public class CannotRunProgramException extends IllegalArgumentException {
      * @param s
      *     the detail message.
      */
-    public CannotRunProgramException(String s) {
+    public CannotRunProgramException(final String s) {
         super(s);
     }
     
@@ -52,7 +52,7 @@ public class CannotRunProgramException extends IllegalArgumentException {
      *     value is permitted, and indicates that the cause is nonexistent or unknown.)
      * @since 1.5
      */
-    public CannotRunProgramException(String message, Throwable cause) {
+    public CannotRunProgramException(final String message, final Throwable cause) {
         super(message, cause);
     }
     
@@ -67,7 +67,7 @@ public class CannotRunProgramException extends IllegalArgumentException {
      *     value is permitted, and indicates that the cause is nonexistent or unknown.)
      * @since 1.5
      */
-    public CannotRunProgramException(Throwable cause) {
+    public CannotRunProgramException(final Throwable cause) {
         super(cause);
     }
 }
