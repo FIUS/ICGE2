@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 
+
 /**
  * The SwingTextureStorage contains all icon ids needed by swing ui components
  *
@@ -18,32 +19,26 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
  * @version 1.0
  */
 public abstract class StaticUiTextures {
-
+    
     /** A play icon */
     public static String playIcon;
+    /** A step icon */
+    public static String stepIcon;
     /** A pause icon */
     public static String pauseIcon;
     /** A stop icon */
     public static String stopIcon;
-
+    
     /**
-     * This function loads all textures into the given texture registry and
-     * stores the icon ids
+     * This function loads all textures into the given texture registry and stores the icon ids
      *
-     * @param registry The registry to load the icons in
+     * @param registry
+     *     The registry to load the icons in
      */
-    public static void load(TextureRegistry registry) {
-        StaticUiTextures.playIcon = registry.loadTextureFromResource(
-            "textures/play.png",
-            TextureRegistry.class::getResourceAsStream
-        );
-        StaticUiTextures.pauseIcon = registry.loadTextureFromResource(
-            "textures/pause.png",
-            TextureRegistry.class::getResourceAsStream
-        );
-        StaticUiTextures.stopIcon = registry.loadTextureFromResource(
-            "textures/stop.png",
-            TextureRegistry.class::getResourceAsStream
-        );
+    public static void load(final TextureRegistry registry) {
+        StaticUiTextures.playIcon = registry.loadTextureFromResource("textures/play.png", TextureRegistry.class::getResourceAsStream);
+        StaticUiTextures.stepIcon = registry.loadTextureFromResource("textures/step.png", TextureRegistry.class::getResourceAsStream);
+        StaticUiTextures.pauseIcon = registry.loadTextureFromResource("textures/pause.png", TextureRegistry.class::getResourceAsStream);
+        StaticUiTextures.stopIcon = registry.loadTextureFromResource("textures/stop.png", TextureRegistry.class::getResourceAsStream);
     }
 }

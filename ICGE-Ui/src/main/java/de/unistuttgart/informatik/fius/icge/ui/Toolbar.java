@@ -9,8 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import java.util.Collection;
-
 import de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector.EntitySelector;
 
 /**
@@ -38,25 +36,4 @@ public interface Toolbar {
      * @see EntitySelector
      */
     public void addEntity(String displayName, String textureID);
-
-    /**
-     * This function adds a {@link ToolbarListener} to the toolbar
-     *
-     * @param listener the listener to be added
-     * @return true (as specified in {@link Collection#add(Object)})
-     */
-    public boolean addToolbarListener(ToolbarListener listener);
-
-    /**
-     * This function removes the given listener from the toolbar
-     *
-     * @param listener the listener to be removed
-     * @return true if this list contained the specified element
-     */
-    public boolean removeToolbarListener(ToolbarListener listener);
-
-    /**
-     * This function deletes all {@link ToolbarListener}s from the toolbar.
-     */
-    public void clearAllToolbarListeners();
 }

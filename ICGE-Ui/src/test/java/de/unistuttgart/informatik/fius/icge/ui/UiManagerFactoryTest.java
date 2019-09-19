@@ -19,17 +19,34 @@ import org.junit.jupiter.api.Test;
  * @author Tim Neumann
  */
 class UiManagerFactoryTest {
-
+    
     /**
-     * Test method for {@link de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory#createUiManager()}.
+     * Test method for
+     * {@link de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory#createUiManager(SimulationProxy)}.
      */
     @Test
     void testCreateUiManager() {
-        final UiManager manager = UiManagerFactory.createUiManager();
+        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy() {
+            
+            @Override
+            public void setButtonStateListener(final ButtonStateListener listener) {
+                // TODO Auto-generated method stub
+            }
+            
+            @Override
+            public void buttonPressed(final ButtonType type) {
+                // TODO Auto-generated method stub
+            }
+            
+            @Override
+            public void simulationSpeedChange(final int value) {
+                // TODO Auto-generated method stub
+            }
+        });
         Assertions.assertNotNull(manager);
         Assertions.assertNotNull(manager.getPlayfieldDrawer());
         Assertions.assertNotNull(manager.getTextureRegistry());
         Assertions.assertNotNull(manager.getToolbar());
     }
-
+    
 }

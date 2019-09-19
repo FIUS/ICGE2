@@ -27,9 +27,9 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingUIManager;
  * @author Tim Neumann
  */
 class SwingUiManagerUiTest {
-
+    
     private SwingUIManager uiManager;
-
+    
     /**
      * Setup the uiManager
      */
@@ -37,13 +37,29 @@ class SwingUiManagerUiTest {
     public void setup() {
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        final SwingToolbar toolbar = new SwingToolbar(textureRegistry);
+        final SwingToolbar toolbar = new SwingToolbar(new SimulationProxy() {
+            
+            @Override
+            public void setButtonStateListener(final ButtonStateListener listener) {
+                // TODO Auto-generated method stub
+            }
+            
+            @Override
+            public void buttonPressed(final ButtonType type) {
+                // TODO Auto-generated method stub
+            }
+            
+            @Override
+            public void simulationSpeedChange(final int value) {
+                // TODO Auto-generated method stub
+            }
+        }, textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();
-
+        
         this.uiManager = new SwingUIManager(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
     }
-
+    
     /**
      * Test {@link SwingUIManager#start()}
      */

@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationProxy;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
@@ -31,14 +32,17 @@ public class SimulationFactory {
      * @return The new Simulation.
      */
     public static Simulation createSimulation() {
-        UiManager uiManager = UiManagerFactory.createUiManager();
+        final StandardSimulationProxy simulationProxy = new StandardSimulationProxy();
+        final UiManager uiManager = UiManagerFactory.createUiManager(simulationProxy);
         
-        StandardPlayfield playfield = new StandardPlayfield();
-        StandardSimulationClock tickManager = new StandardSimulationClock();
-        StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
-        StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
-        StandardTaskRunner taskRunner = new StandardTaskRunner();
+        final StandardPlayfield playfield = new StandardPlayfield();
+        final StandardSimulationClock simulationClock = new StandardSimulationClock();
+        simulationProxy.setSimulationClock(simulationClock);
         
-        return new StandardSimulation(uiManager, playfield, tickManager, entityProgramRegistry, entityProgramRunner, taskRunner);
+        final StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
+        final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
+        final StandardTaskRunner taskRunner = new StandardTaskRunner();
+        
+        return new StandardSimulation(uiManager, playfield, simulationClock, entityProgramRegistry, entityProgramRunner, taskRunner);
     }
 }

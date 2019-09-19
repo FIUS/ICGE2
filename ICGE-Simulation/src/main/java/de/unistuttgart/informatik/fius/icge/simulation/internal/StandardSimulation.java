@@ -29,9 +29,9 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  */
 public class StandardSimulation implements Simulation {
     
-    private final UiManager uiManager;
-    private final StandardPlayfield playfield;
-    private final StandardSimulationClock tickManager;
+    private final UiManager                     uiManager;
+    private final StandardPlayfield             playfield;
+    private final StandardSimulationClock       simulationClock;
     private final StandardEntityProgramRegistry entityProgramRegistry;
     private final StandardEntityProgramRunner   entityProgramRunner;
     private final StandardTaskRunner            taskRunner;
@@ -43,7 +43,7 @@ public class StandardSimulation implements Simulation {
      *     The uiManager to use
      * @param playfield
      *     The playfield to use
-     * @param tickManager
+     * @param simulationClock
      *     The tickManager to use
      * @param entityProgramRegistry
      *     The entityProgramRegistry to use
@@ -53,13 +53,13 @@ public class StandardSimulation implements Simulation {
      *     The taskRunner to use
      */
     public StandardSimulation(
-            UiManager uiManager, StandardPlayfield playfield, StandardSimulationClock tickManager,
-            StandardEntityProgramRegistry entityProgramRegistry, StandardEntityProgramRunner entityProgramRunner,
-            StandardTaskRunner taskRunner
+            final UiManager uiManager, final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
+            final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner,
+            final StandardTaskRunner taskRunner
     ) {
         this.uiManager = uiManager;
         this.playfield = playfield;
-        this.tickManager = tickManager;
+        this.simulationClock = simulationClock;
         this.entityProgramRegistry = entityProgramRegistry;
         this.entityProgramRunner = entityProgramRunner;
         this.taskRunner = taskRunner;
@@ -73,7 +73,7 @@ public class StandardSimulation implements Simulation {
     @Override
     public void initialize() {
         this.playfield.initialize(this);
-        this.tickManager.initialize(this);
+        this.simulationClock.initialize(this);
         this.uiManager.start();
     }
     
@@ -87,7 +87,7 @@ public class StandardSimulation implements Simulation {
     
     @Override
     public SimulationClock getSimulationClock() {
-        return this.tickManager;
+        return this.simulationClock;
     }
     
     @Override
