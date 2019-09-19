@@ -20,7 +20,7 @@ public class UncheckedInterruptedException extends IllegalArgumentException {
      * generated
      */
     private static final long serialVersionUID = -8407441370711369840L;
-
+    
     /**
      * Constructs an <code>EntityProgramInterruptedException</code> with no detail message.
      */
@@ -34,7 +34,7 @@ public class UncheckedInterruptedException extends IllegalArgumentException {
      * @param s
      *     the detail message.
      */
-    public UncheckedInterruptedException(String s) {
+    public UncheckedInterruptedException(final String s) {
         super(s);
     }
     
@@ -52,7 +52,7 @@ public class UncheckedInterruptedException extends IllegalArgumentException {
      *     value is permitted, and indicates that the cause is nonexistent or unknown.)
      * @since 1.5
      */
-    public UncheckedInterruptedException(String message, Throwable cause) {
+    public UncheckedInterruptedException(final String message, final Throwable cause) {
         super(message, cause);
     }
     
@@ -67,7 +67,7 @@ public class UncheckedInterruptedException extends IllegalArgumentException {
      *     value is permitted, and indicates that the cause is nonexistent or unknown.)
      * @since 1.5
      */
-    public UncheckedInterruptedException(Throwable cause) {
+    public UncheckedInterruptedException(final Throwable cause) {
         super(cause);
     }
 }

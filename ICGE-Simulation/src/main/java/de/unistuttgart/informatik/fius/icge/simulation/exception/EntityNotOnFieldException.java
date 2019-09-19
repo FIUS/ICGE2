@@ -35,7 +35,7 @@ public class EntityNotOnFieldException extends SimulationExcpetion {
      * @param message
      *     the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
      */
-    public EntityNotOnFieldException(String message) {
+    public EntityNotOnFieldException(final String message) {
         super(message);
     }
     
@@ -49,7 +49,7 @@ public class EntityNotOnFieldException extends SimulationExcpetion {
      *     permitted, and indicates that the cause is nonexistent or unknown.)
      * @since 1.4
      */
-    public EntityNotOnFieldException(String message, Throwable cause) {
+    public EntityNotOnFieldException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

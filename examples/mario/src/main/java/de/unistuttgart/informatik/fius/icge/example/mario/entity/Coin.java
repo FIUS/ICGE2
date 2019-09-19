@@ -10,24 +10,25 @@
 package de.unistuttgart.informatik.fius.icge.example.mario.entity;
 
 import de.unistuttgart.informatik.fius.icge.example.mario.Texture;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.GreedyEntity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.BasicEntity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.CollectableEntity;
 
 
 /**
- * The mario entity
+ * A coin
  * 
  * @author Tim Neumann
  */
-public class Mario extends GreedyEntity {
+public class Coin extends BasicEntity implements CollectableEntity {
     
     @Override
     protected String getTextureHandle() {
-        return Texture.MARIO.getHandle(this.getLookingDirection());
+        return Texture.COIN.getHandle();
     }
     
     @Override
     protected int getZPosition() {
-        return 10;
+        return 2;
     }
     
 }

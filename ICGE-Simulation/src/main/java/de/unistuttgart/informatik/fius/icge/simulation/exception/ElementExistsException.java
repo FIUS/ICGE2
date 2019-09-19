@@ -34,7 +34,7 @@ public class ElementExistsException extends IllegalArgumentException {
      * @param s
      *     the detail message.
      */
-    public ElementExistsException(String s) {
+    public ElementExistsException(final String s) {
         super(s);
     }
 }

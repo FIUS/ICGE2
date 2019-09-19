@@ -21,7 +21,7 @@ public class Solution1 extends Task1 {
     
     @Override
     public void solve() {
-        String walkingProgramName = "Walking";
+        final String walkingProgramName = "Walking";
         
         this.sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName, new WalkingProgram());
         

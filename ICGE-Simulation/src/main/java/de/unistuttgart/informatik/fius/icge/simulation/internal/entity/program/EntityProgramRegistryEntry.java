@@ -74,11 +74,12 @@ public class EntityProgramRegistryEntry {
      * <p>
      * If this is a info about many programs, calls the get method of the generator.
      * </p>
+     * 
      * @return the program instance
      */
     public EntityProgram getProgram() {
-        if(this.single) return this.program;
-        EntityProgram prog = this.programGenerator.get();
+        if (this.single) return this.program;
+        final EntityProgram prog = this.programGenerator.get();
         if (prog == null) throw new IllegalStateException("Program Generator returned null.");
         return prog;
     }

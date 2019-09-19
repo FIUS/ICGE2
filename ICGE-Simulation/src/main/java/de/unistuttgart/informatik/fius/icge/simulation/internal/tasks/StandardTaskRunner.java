@@ -24,11 +24,11 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRunner;
 public class StandardTaskRunner implements TaskRunner {
     
     @Override
-    public boolean runTask(Class<? extends Task> taskToRun, Simulation sim) {
-        if (taskToRun == null || sim == null) throw new IllegalArgumentException("Argument is null.");
+    public boolean runTask(final Class<? extends Task> taskToRun, final Simulation sim) {
+        if ((taskToRun == null) || (sim == null)) throw new IllegalArgumentException("Argument is null.");
         
         try {
-            Task task = taskToRun.getDeclaredConstructor().newInstance();
+            final Task task = taskToRun.getDeclaredConstructor().newInstance();
             task.prepare(sim);
             task.solve();
             return task.verify();
