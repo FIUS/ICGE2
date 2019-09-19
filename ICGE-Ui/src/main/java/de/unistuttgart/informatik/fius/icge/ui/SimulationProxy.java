@@ -117,15 +117,38 @@ public interface SimulationProxy {
     // Toolbar - Task
     //
     
+    /**
+     * The TaskSelectorListener allows the simulation to talk to the task selector
+     */
     public interface TaskSelectorListener {
 
+        /**
+         * Getter function for the currently selected element
+         * 
+         * @return returns the selected element
+         */
         String getSelectedElement();
 
+        /**
+         * Setter function for all available elements. Use null to clear.
+         * 
+         * @param elements The set of new selectable values
+         */
         void setElements(Set<String> elements);
     }
 
+    /**
+     * This function is used to set the one task selector listener
+     * 
+     * @param listener the listener to store
+     */
     void setTaskSelectorListener(TaskSelectorListener listener);
 
+    /**
+     * This function gets called if the selected task changes
+     * 
+     * @param element contains the newly selected element
+     */
     void selectedTaskChange(String element);
 
     //
