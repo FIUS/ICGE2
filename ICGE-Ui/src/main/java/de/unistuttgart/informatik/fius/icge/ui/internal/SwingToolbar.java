@@ -9,7 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Hashtable;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,7 +28,9 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListen
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ClockButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ControlButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.TaskSelectorListener;
 import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector.DropdownEntry;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 
 
@@ -158,9 +163,38 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         this.addSeparator();
         this.taskSelect = new DropdownSelector(this.textureRegistry, "Task");
+        this.taskSelect.addSelectionListener(new ItemListener(){
+        
+            @Override
+            public void itemStateChanged(ItemEvent arg0) {
+                if (arg0.getStateChange() == ItemEvent.SELECTED) {
+                    SwingToolbar.this.simulationProxy.selectedTaskChange(
+                            ((DropdownEntry) arg0.getItem()).displayName
+                    );
+                }
+            }
+        });
         this.add(this.taskSelect);
         this.addSeparator();
         
+        this.simulationProxy.setTaskSelectorListener(new TaskSelectorListener() {
+        
+            @Override
+            public void setElements(Set<String> elements) {
+                SwingToolbar.this.taskSelect.removeAllEntries();
+
+                for (String element : elements)
+                SwingToolbar.this.taskSelect.addEntry(
+                    SwingToolbar.this.taskSelect.new DropdownEntry(element)
+                );
+            }
+        
+            @Override
+            public String getSelectedElement() {
+                return SwingToolbar.this.taskSelect.getCurrentEntry().displayName;
+            }
+        });
+
         //
         // add visual separator
         //

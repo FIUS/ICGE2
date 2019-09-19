@@ -9,6 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector;
 
+import java.awt.event.ItemListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -122,5 +124,21 @@ public class DropdownSelector extends JPanel {
     public void addEntry(DropdownEntry ... entries) {
         for (DropdownEntry entry : entries)
             this.model.addElement(entry);
+    }
+
+    /**
+     * This function removes all entries from the dropdown menu
+     */
+    public void removeAllEntries() {
+        this.model.removeAllElements();
+    }
+
+    /**
+     * Adds a listener which reacts to the selection and deselection of items
+     * 
+     * @param listener The listener which is added
+     */
+    public void addSelectionListener(ItemListener listener) {
+        this.comboBox.addItemListener(listener);
     }
 }

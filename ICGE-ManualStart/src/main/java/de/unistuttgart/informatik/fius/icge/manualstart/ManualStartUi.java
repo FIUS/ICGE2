@@ -51,6 +51,18 @@ public class ManualStartUi {
             public void buttonPressed(final ButtonType type) {
                 // TODO Auto-generated method stub
             }
+            
+            @Override
+            public void setTaskSelectorListener(TaskSelectorListener listener) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void selectedTaskChange(String element) {
+                // TODO Auto-generated method stub
+                
+            }
         });
         
         // load textures

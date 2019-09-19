@@ -53,6 +53,16 @@ class SwingUiManagerUiTest {
             public void simulationSpeedChange(final int value) {
                 // TODO Auto-generated method stub
             }
+            
+            @Override
+            public void setTaskSelectorListener(TaskSelectorListener listener) {
+                // TODO Auto-generated method stub
+            }
+            
+            @Override
+            public void selectedTaskChange(String element) {
+                // TODO Auto-generated method stub
+            }
         }, textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();

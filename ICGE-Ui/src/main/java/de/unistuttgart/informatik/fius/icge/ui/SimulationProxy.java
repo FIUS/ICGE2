@@ -9,6 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+import java.util.Set;
+
 /**
  * The SimulationProxy interface
  *
@@ -18,7 +20,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
 public interface SimulationProxy {
     
     //
-    // Toolbar
+    // Toolbar - Clock
     //
     
     /**
@@ -110,4 +112,23 @@ public interface SimulationProxy {
      *     The new selected speed
      */
     void simulationSpeedChange(int value);
+
+    //
+    // Toolbar - Task
+    //
+    
+    public interface TaskSelectorListener {
+
+        String getSelectedElement();
+
+        void setElements(Set<String> elements);
+    }
+
+    void setTaskSelectorListener(TaskSelectorListener listener);
+
+    void selectedTaskChange(String element);
+
+    //
+    // Toolbar - Controlls
+    //
 }
