@@ -156,7 +156,13 @@ public class StandardSimulationClock implements SimulationClock {
     public synchronized void step() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
         
-        new Thread((Runnable) () -> StandardSimulationClock.this.tick(), "single-step").start();
+        new Thread(
+                () -> {
+                    //FIXME this only executes a graphics tick an not neccessariely
+                    // a simulation tick.
+                    StandardSimulationClock.this.tick();
+                }, "single-step"
+        ).start();
     }
     
     /**
