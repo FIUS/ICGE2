@@ -72,7 +72,7 @@ class EntityItemRenderer extends JPanel implements ListCellRenderer<EntitySelect
             boolean cellHasFocus
     ) {
         if (value == null) {
-            this.labelItem.setText("No Entity available!");
+            this.labelItem.setText("Nothing available!");
         } else {
             this.labelItem.setText(value.displayName);
 

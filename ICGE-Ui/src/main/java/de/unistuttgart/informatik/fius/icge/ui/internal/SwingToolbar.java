@@ -57,6 +57,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     /** A slider to set the simulation time */
     public JSlider simulationTime;
     
+    /** The selector which selects the task which is run in the simulation */
+    public EntitySelector taskSelect;
+
     /** The button to change to view mode */
     public JToggleButton view;
     /** The button to change to entity mode */
@@ -151,6 +154,19 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.add(new JSeparator(SwingConstants.VERTICAL));
         
         //
+        // task selector setup
+        //
+        this.addSeparator();
+        this.taskSelect = new EntitySelector(this.textureRegistry, "Task");
+        this.add(this.taskSelect);
+        this.addSeparator();
+        
+        //
+        // add visual separator
+        //
+        this.add(new JSeparator(SwingConstants.VERTICAL));
+        
+        //
         // view button setup
         //
         this.view = new JToggleButton("View"); // FIXME Replace Text with Icon
@@ -165,7 +181,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.entity.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ENTITY));
         this.entity.setEnabled(false);
         this.add(this.entity);
-        
+
         //
         // button listener setup
         //
@@ -232,7 +248,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // entity selector setup
         //
         this.addSeparator();
-        this.entitySelect = new EntitySelector(this.textureRegistry);
+        this.entitySelect = new EntitySelector(this.textureRegistry, "Entity");
         this.add(this.entitySelect);
     }
     

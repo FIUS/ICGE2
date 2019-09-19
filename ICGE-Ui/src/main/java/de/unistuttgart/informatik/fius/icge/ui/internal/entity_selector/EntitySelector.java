@@ -9,10 +9,17 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal.entity_selector;
 
+import java.awt.Component;
+
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
+
 
 /**
  * The EntitySelector is a JComboBox based drop down menu to select a game entity
@@ -20,12 +27,9 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
  * @author Tobias Wältken
  * @version 1.0
  */
-public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
+public class EntitySelector extends JPanel {
     private static final long serialVersionUID = -3898035206502504991L;
-
-    /** The texture registry */
-    private final SwingTextureRegistry textureRegistry;
-
+    
     /**
      * This class represents a single entry of the selector
      *
@@ -37,7 +41,7 @@ public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
         public String displayName;
         /** The texture id of the icon which is rendert infront of the display name */
         public String textureID;
-
+        
         /**
          * The empty constructor
          */
@@ -45,44 +49,61 @@ public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
             this.displayName = "";
             this.textureID = "";
         }
-
+        
         /**
          * This constructor is used for text only entries
          *
-         * @param name the display name
+         * @param name
+         *     the display name
          */
         public EntityEntry(String name) {
             this.displayName = name;
             this.textureID = "";
         }
-
+        
         /**
          * The default constructor
          *
-         * @param name the display name shown to the user
-         * @param texture the texture id of the icon infront of the display text
+         * @param name
+         *     the display name shown to the user
+         * @param texture
+         *     the texture id of the icon infront of the display text
          */
         public EntityEntry(String name, String texture) {
             this.displayName = name;
             this.textureID = texture;
         }
     }
-
+    
+    /** The texture registry */
+    private final SwingTextureRegistry textureRegistry;
+    
+    private final JLabel                                label;
+    private final JComboBox<EntitySelector.EntityEntry> comboBox;
+    
     /** The data model of the EntitySelector */
-    private DefaultComboBoxModel<EntityEntry> model;
-
+    private final DefaultComboBoxModel<EntityEntry> model;
+    
     /**
      * Constructor of the EntitySelector
      *
-     * @param textureRegistry The texture registry the textures and icons are loaded from
+     * @param textureRegistry
+     *     The texture registry the textures and icons are loaded from
      */
-    public EntitySelector(SwingTextureRegistry textureRegistry) {
+    public EntitySelector(SwingTextureRegistry textureRegistry, String header) {
         this.textureRegistry = textureRegistry;
+        
+        this.label = new JLabel(header + ": ");
+        this.comboBox = new JComboBox<>();
 
         this.model = new DefaultComboBoxModel<>();
-        this.setModel(this.model);
-        this.setRenderer(new EntityItemRenderer(this.textureRegistry));
-        this.setEditor(new EntityItemEditor(this.textureRegistry));
+        this.comboBox.setModel(this.model);
+        this.comboBox.setRenderer(new EntityItemRenderer(this.textureRegistry));
+        this.comboBox.setEditor(new EntityItemEditor(this.textureRegistry));
+
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.add(this.label);
+        this.add(this.comboBox);
     }
 
     /**
@@ -91,7 +112,7 @@ public class EntitySelector extends JComboBox<EntitySelector.EntityEntry> {
      * @return returns the current {@link EntityEntry}
      */
     public EntityEntry getCurrentEntry() {
-        return (EntityEntry)this.getEditor().getItem();
+        return (EntityEntry)this.comboBox.getEditor().getItem();
     }
 
     /**
