@@ -16,14 +16,13 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @version 1.0
  */
 public interface SimulationProxy {
-
+    
     //
     // Toolbar
     //
-
+    
     /**
-     * The clock button state represents the states of the clock buttons in the
-     * ui
+     * The clock button state represents the states of the clock buttons in the ui
      */
     public enum ClockButtonState {
         /** Indicates a running simulation clock */
@@ -35,10 +34,9 @@ public interface SimulationProxy {
         /** Indicates an error or unavailable clock or simulation */
         BLOCKED
     }
-
+    
     /**
-     * The control button state represents the status of the control buttons in
-     * the ui
+     * The control button state represents the status of the control buttons in the ui
      */
     public enum ControlButtonState {
         /** Indicates the user input is in view mode */
@@ -48,34 +46,37 @@ public interface SimulationProxy {
         /** Indicates that the user input is blocked or unavailable */
         BLOCKED
     }
-
+    
     /**
      * The button state listener allows the ui to react to change requests.
      */
     public interface ButtonStateListener {
-
+        
         /**
          * This function changes the enabled state of the clock buttons
          *
-         * @param state the state of the buttons
+         * @param state
+         *     the state of the buttons
          */
-        public void changeButtonState(ClockButtonState state);
+        void changeButtonState(ClockButtonState state);
+        
         /**
          * This function changes the enabled state of the control buttons
          *
-         * @param state the state of the buttons
+         * @param state
+         *     the state of the buttons
          */
-        public void changeButtonState(ControlButtonState state);
+        void changeButtonState(ControlButtonState state);
     }
-
+    
     /**
-     * This function sets the one button state listener and should only be
-     * called by the ui itself
+     * This function sets the one button state listener and should only be called by the ui itself
      *
-     * @param listener The listener to use.
+     * @param listener
+     *     The listener to use.
      */
-    public void setButtonStateListener(ButtonStateListener listener);
-
+    void setButtonStateListener(ButtonStateListener listener);
+    
     /**
      * This is to identify the buttons
      */
@@ -93,18 +94,20 @@ public interface SimulationProxy {
         /** The entity button in the toolbar */
         ENTITY
     }
-
+    
     /**
      * This is called when a button is pressed by the user
      *
-     * @param type The type of the pressed button
+     * @param type
+     *     The type of the pressed button
      */
-    public void buttonPressed(ButtonType type);
-
+    void buttonPressed(ButtonType type);
+    
     /**
      * This is called if the speed slider is changed by the user
      *
-     * @param value The new selected speed
+     * @param value
+     *     The new selected speed
      */
-    public void simulationSpeedChange(int value);
+    void simulationSpeedChange(int value);
 }

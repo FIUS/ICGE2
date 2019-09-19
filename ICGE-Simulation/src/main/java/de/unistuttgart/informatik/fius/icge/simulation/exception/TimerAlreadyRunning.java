@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 
+
 /**
  * This exception if thrown if a {@link SimulationClock} is already running
  *
@@ -19,7 +20,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
  */
 public class TimerAlreadyRunning extends IllegalStateException {
     private static final long serialVersionUID = 1715637086603245424L;
-
+    
     /**
      * Default constructor
      */

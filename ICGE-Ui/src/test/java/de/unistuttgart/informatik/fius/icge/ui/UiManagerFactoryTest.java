@@ -13,33 +13,33 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
-
 /**
  * Test class for {@link UiManagerFactory}.
  *
  * @author Tim Neumann
  */
 class UiManagerFactoryTest {
-
+    
     /**
-     * Test method for {@link de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory#createUiManager(SimulationProxy)}.
+     * Test method for
+     * {@link de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory#createUiManager(SimulationProxy)}.
      */
     @Test
     void testCreateUiManager() {
-        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy(){
-
+        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy() {
+            
             @Override
-            public void setButtonStateListener(ButtonStateListener listener) {
+            public void setButtonStateListener(final ButtonStateListener listener) {
                 // TODO Auto-generated method stub
             }
-
+            
             @Override
-            public void buttonPressed(ButtonType type) {
+            public void buttonPressed(final ButtonType type) {
                 // TODO Auto-generated method stub
             }
-
+            
             @Override
-            public void simulationSpeedChange(int value) {
+            public void simulationSpeedChange(final int value) {
                 // TODO Auto-generated method stub
             }
         });
@@ -48,5 +48,5 @@ class UiManagerFactoryTest {
         Assertions.assertNotNull(manager.getTextureRegistry());
         Assertions.assertNotNull(manager.getToolbar());
     }
-
+    
 }

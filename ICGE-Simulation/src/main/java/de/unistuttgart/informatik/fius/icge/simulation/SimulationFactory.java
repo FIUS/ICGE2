@@ -32,16 +32,16 @@ public class SimulationFactory {
      * @return The new Simulation.
      */
     public static Simulation createSimulation() {
-        StandardSimulationProxy simulationProxy = new StandardSimulationProxy();
-        UiManager uiManager = UiManagerFactory.createUiManager(simulationProxy);
+        final StandardSimulationProxy simulationProxy = new StandardSimulationProxy();
+        final UiManager uiManager = UiManagerFactory.createUiManager(simulationProxy);
         
-        StandardPlayfield playfield = new StandardPlayfield();
-        StandardSimulationClock simulationClock = new StandardSimulationClock();
+        final StandardPlayfield playfield = new StandardPlayfield();
+        final StandardSimulationClock simulationClock = new StandardSimulationClock();
         simulationProxy.setSimulationClock(simulationClock);
         
-        StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
-        StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
-        StandardTaskRunner taskRunner = new StandardTaskRunner();
+        final StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
+        final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
+        final StandardTaskRunner taskRunner = new StandardTaskRunner();
         
         return new StandardSimulation(uiManager, playfield, simulationClock, entityProgramRegistry, entityProgramRunner, taskRunner);
     }

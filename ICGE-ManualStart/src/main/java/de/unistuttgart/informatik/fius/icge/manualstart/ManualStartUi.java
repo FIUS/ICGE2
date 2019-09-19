@@ -26,7 +26,7 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
  * @author Tim Neumann
  */
 public class ManualStartUi {
-
+    
     /**
      * Main entry point of the program
      *
@@ -35,34 +35,34 @@ public class ManualStartUi {
      */
     public static void main(final String[] args) {
         //FIXME add correct simulation proxy
-        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy(){
-
+        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy() {
+            
             @Override
-            public void simulationSpeedChange(int value) {
+            public void simulationSpeedChange(final int value) {
                 // TODO Auto-generated method stub
             }
-
+            
             @Override
-            public void setButtonStateListener(ButtonStateListener listener) {
+            public void setButtonStateListener(final ButtonStateListener listener) {
                 // TODO Auto-generated method stub
             }
-
+            
             @Override
-            public void buttonPressed(ButtonType type) {
+            public void buttonPressed(final ButtonType type) {
                 // TODO Auto-generated method stub
             }
         });
-
+        
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
         final String wallTexture = tr.loadTextureFromResource("textures/wall-default.png", ManualStartUi.class::getResourceAsStream);
-
+        
         // generate playfield
         final ArrayList<Drawable> drawables = new ArrayList<>(
                 List.of(new BasicDrawable(-1, -1, 0, wallTexture), new BasicDrawable(5, 5, 0, wallTexture))
         );
         manager.getPlayfieldDrawer().setDrawables(drawables);
-
+        
         manager.start();
         manager.setWindowTitle("Manual start");
     }

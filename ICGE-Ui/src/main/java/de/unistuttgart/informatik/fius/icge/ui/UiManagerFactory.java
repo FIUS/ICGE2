@@ -9,7 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -27,11 +26,12 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingUIManager;
  * @author Tim Neumann
  */
 public class UiManagerFactory {
-
+    
     /**
      * Creates a new Ui Manager including the initialization of all required submodules.
      *
-     * @param simulationProxy The simulation proxy to create the ui around
+     * @param simulationProxy
+     *     The simulation proxy to create the ui around
      * @return The new Ui Manager.
      */
     public static UiManager createUiManager(final SimulationProxy simulationProxy) {
@@ -41,15 +41,13 @@ public class UiManagerFactory {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             System.err.println("Can't set look and feel because of: " + e.toString());
         }
-
+        
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
         final SwingToolbar toolbar = new SwingToolbar(simulationProxy, textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();
-
-        return new SwingUIManager(
-            textureRegistry, playfieldDrawer, toolbar, entitySidebar, console
-        );
+        
+        return new SwingUIManager(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
     }
 }

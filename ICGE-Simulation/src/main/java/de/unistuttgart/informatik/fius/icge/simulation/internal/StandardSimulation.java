@@ -29,9 +29,9 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  */
 public class StandardSimulation implements Simulation {
     
-    private final UiManager uiManager;
-    private final StandardPlayfield playfield;
-    private final StandardSimulationClock simulationClock;
+    private final UiManager                     uiManager;
+    private final StandardPlayfield             playfield;
+    private final StandardSimulationClock       simulationClock;
     private final StandardEntityProgramRegistry entityProgramRegistry;
     private final StandardEntityProgramRunner   entityProgramRunner;
     private final StandardTaskRunner            taskRunner;
@@ -53,9 +53,9 @@ public class StandardSimulation implements Simulation {
      *     The taskRunner to use
      */
     public StandardSimulation(
-            UiManager uiManager, StandardPlayfield playfield, StandardSimulationClock simulationClock,
-            StandardEntityProgramRegistry entityProgramRegistry, StandardEntityProgramRunner entityProgramRunner,
-            StandardTaskRunner taskRunner
+            final UiManager uiManager, final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
+            final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner,
+            final StandardTaskRunner taskRunner
     ) {
         this.uiManager = uiManager;
         this.playfield = playfield;

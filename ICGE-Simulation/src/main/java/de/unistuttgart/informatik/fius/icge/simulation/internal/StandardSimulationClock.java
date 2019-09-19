@@ -33,23 +33,23 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
  * @version 1.0
  */
 public class StandardSimulationClock implements SimulationClock {
-
+    
     private StandardSimulationProxy simulationProxy;
-
+    
     private PlayfieldDrawer drawer;
-
-    private Object tickListenerLock = new Object();
-
-    private List<Function<Long, Boolean>> tickListeners;
-    private List<Function<Long, Boolean>> postTickListeners;
-
-    private TimerTask task;
-    private Timer     timer;
-
+    
+    private final Object tickListenerLock = new Object();
+    
+    private final List<Function<Long, Boolean>> tickListeners;
+    private final List<Function<Long, Boolean>> postTickListeners;
+    
+    private TimerTask   task;
+    private final Timer timer;
+    
     private volatile long tickCount;
-
+    
     private int period;
-
+    
     /**
      * Default constructor
      */
@@ -58,81 +58,82 @@ public class StandardSimulationClock implements SimulationClock {
         this.postTickListeners = new ArrayList<>();
         this.timer = new Timer("STM-TickTimer");
         this.tickCount = -1;
-        this.period = DEFAULT_RENDER_TICK_PERIOD;
+        this.period = SimulationClock.DEFAULT_RENDER_TICK_PERIOD;
     }
-
+    
     /**
      * Initialize this standard tick manager.
      *
      * @param parent
      *     The simulation for this tick manager
      */
-    public void initialize(Simulation parent) {
+    public void initialize(final Simulation parent) {
         this.drawer = parent.getUiManager().getPlayfieldDrawer();
     }
-
+    
     /**
      * Setter function to set the simulation proxy which is notified about ui changes
      *
-     * @param simulationProxy The proxy to set
+     * @param simulationProxy
+     *     The proxy to set
      */
-    public void setSimulationProxy(StandardSimulationProxy simulationProxy) {
+    public void setSimulationProxy(final StandardSimulationProxy simulationProxy) {
         this.simulationProxy = simulationProxy;
     }
-
+    
     /**
-     * This internal start function actually starts the timer but does not notify
-     * the simulation proxy. If you don't know what you do use
-     * {@link SimulationClock#start()}
+     * This internal start function actually starts the timer but does not notify the simulation proxy. If you don't
+     * know what you do use {@link SimulationClock#start()}
      */
     public synchronized void startInternal() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
-
+        
         this.task = new TimerTask() {
-
+            
             @Override
             public void run() {
-                tick();
+                StandardSimulationClock.this.tick();
             }
         };
         this.timer.schedule(this.task, 0, this.period);
     }
-
+    
     /**
-     * This internal stop function actually stops the timer but does not notify
-     * the simulation proxy. If you don't know what you do use
-     * {@link SimulationClock#stop()}
+     * This internal stop function actually stops the timer but does not notify the simulation proxy. If you don't know
+     * what you do use {@link SimulationClock#stop()}
      */
     public synchronized void stopInternal() {
-        if (this.isRunning()) this.task.cancel();
+        if (this.isRunning()) {
+            this.task.cancel();
+        }
         this.task = null;
     }
-
+    
     @Override
-    public synchronized void setPeriod(int millis) {
+    public synchronized void setPeriod(final int millis) {
         this.period = millis;
-
+        
         if (this.isRunning()) {
             this.stop();
             this.start();
         }
     }
-
+    
     @Override
     public int getRenderTickPeriod() {
         return this.period;
     }
-
+    
     @Override
     public int getGameTickPeriod() {
-        return this.period * RENDER_TICKS_PER_SIMULATION_TICK;
+        return this.period * SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
     }
-
+    
     @Override
     public boolean isRunning() {
         return this.task != null;
     }
-
+    
     @Override
     public synchronized void start() {
         if (this.simulationProxy != null) {
@@ -141,7 +142,7 @@ public class StandardSimulationClock implements SimulationClock {
             this.startInternal();
         }
     }
-
+    
     @Override
     public synchronized void stop() {
         if (this.simulationProxy != null) {
@@ -150,84 +151,77 @@ public class StandardSimulationClock implements SimulationClock {
             this.stopInternal();
         }
     }
-
+    
     @Override
     public synchronized void step() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //FIXME this only executes a graphics tick an not neccessariely
-                // a simulation tick.
-                tick();
-            }
-        }, "single-step").start();
+        
+        new Thread((Runnable) () -> StandardSimulationClock.this.tick(), "single-step").start();
     }
-
+    
     /**
      * Process a tick
      */
     private synchronized void tick() {
         synchronized (this.tickListenerLock) {
             this.tickCount++;
-            if ((this.tickCount % RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
-                tickSimulation(this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK);
+            if ((this.tickCount % SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
+                this.tickSimulation(this.tickCount / SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK);
             }
             this.drawer.draw(this.tickCount);
         }
-
+        
     }
-
+    
     /**
      * Process a simulation tick
      *
      * @param tickNumber
      *     The number of the simulation tick since the start of the clock.
      */
-    private void tickSimulation(long tickNumber) {
-        for (var listener : List.copyOf(this.tickListeners)) {
+    private void tickSimulation(final long tickNumber) {
+        for (final var listener : List.copyOf(this.tickListeners)) {
             if (!listener.apply(tickNumber)) {
                 this.tickListeners.remove(listener);
             }
         }
-
-        for (var listener : List.copyOf(this.postTickListeners)) {
+        
+        for (final var listener : List.copyOf(this.postTickListeners)) {
             if (!listener.apply(tickNumber)) {
                 this.postTickListeners.remove(listener);
             }
         }
     }
-
+    
     @Override
-    public void registerTickListener(Function<Long, Boolean> listener) {
+    public void registerTickListener(final Function<Long, Boolean> listener) {
         synchronized (this.tickListenerLock) {
             this.tickListeners.add(listener);
         }
     }
-
+    
     @Override
-    public void registerPostTickListener(Function<Long, Boolean> listener) {
+    public void registerPostTickListener(final Function<Long, Boolean> listener) {
         synchronized (this.tickListenerLock) {
             this.postTickListeners.add(listener);
         }
     }
-
+    
     @Override
     public long getLastTickNumber() {
         //not rounding is intended here as we'd need floor and casting is the same as floor for positive integers
-        return this.tickCount / RENDER_TICKS_PER_SIMULATION_TICK;
+        return this.tickCount / SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
     }
-
+    
     @Override
-    public void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation) {
-        CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
-        registerTickListener(tickNumber -> {
+    public void scheduleOperationAtTick(final long tick, final CompletableFuture<Void> endOfOperation) {
+        final CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
+        this.registerTickListener(tickNumber -> {
             if (tickNumber >= tick) {
                 startOfOperation.complete(null);
                 try {
                     endOfOperation.get();
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     throw new RuntimeException(e);
                 }
                 return false;
@@ -236,24 +230,22 @@ public class StandardSimulationClock implements SimulationClock {
         });
         try {
             startOfOperation.get();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             throw new UncheckedInterruptedException(e);
-        } catch (ExecutionException e) {
-            Throwable cause = e.getCause().getCause();
-            if (cause instanceof InterruptedException) {
-                throw new UncheckedInterruptedException(cause);
-            }
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause().getCause();
+            if (cause instanceof InterruptedException) throw new UncheckedInterruptedException(cause);
             throw new IllegalStateException("The end of operation completed exceptionally", cause);
         }
     }
-
+    
     @Override
-    public void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation) {
-        scheduleOperationAtTick(getLastTickNumber() + ticks, endOfOperation);
+    public void scheduleOperationInTicks(final long ticks, final CompletableFuture<Void> endOfOperation) {
+        this.scheduleOperationAtTick(this.getLastTickNumber() + ticks, endOfOperation);
     }
-
+    
     @Override
-    public void scheduleOperationAtNextTick(CompletableFuture<Void> endOfOperation) {
-        scheduleOperationInTicks(1, endOfOperation);
+    public void scheduleOperationAtNextTick(final CompletableFuture<Void> endOfOperation) {
+        this.scheduleOperationInTicks(1, endOfOperation);
     }
 }
