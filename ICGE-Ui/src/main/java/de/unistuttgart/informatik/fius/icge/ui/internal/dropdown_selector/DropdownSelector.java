@@ -77,7 +77,7 @@ public class DropdownSelector extends JPanel {
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
     
-    private final JLabel                                label;
+    private final JLabel                                    label;
     private final JComboBox<DropdownSelector.DropdownEntry> comboBox;
     
     /** The data model of the DropdownSelector */
@@ -96,47 +96,49 @@ public class DropdownSelector extends JPanel {
         
         this.label = new JLabel(header + ": ");
         this.comboBox = new JComboBox<>();
-
+        
         this.model = new DefaultComboBoxModel<>();
         this.comboBox.setModel(this.model);
         this.comboBox.setRenderer(new DropdownItemRenderer(this.textureRegistry));
         this.comboBox.setEditor(new DropdownItemEditor(this.textureRegistry));
-
+        
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(this.label);
         this.add(this.comboBox);
     }
-
+    
     /**
      * Getter for the currently selected entry
      *
      * @return returns the current {@link DropdownEntry}
      */
     public DropdownEntry getCurrentEntry() {
-        return (DropdownEntry)this.comboBox.getEditor().getItem();
+        return (DropdownEntry) this.comboBox.getEditor().getItem();
     }
-
+    
     /**
      * This function adds an entry to the selector
      *
-     * @param entries 1 to n entries to be appended
+     * @param entries
+     *     1 to n entries to be appended
      */
-    public void addEntry(DropdownEntry ... entries) {
+    public void addEntry(DropdownEntry... entries) {
         for (DropdownEntry entry : entries)
             this.model.addElement(entry);
     }
-
+    
     /**
      * This function removes all entries from the dropdown menu
      */
     public void removeAllEntries() {
         this.model.removeAllElements();
     }
-
+    
     /**
      * Adds a listener which reacts to the selection and deselection of items
      * 
-     * @param listener The listener which is added
+     * @param listener
+     *     The listener which is added
      */
     public void addSelectionListener(ItemListener listener) {
         this.comboBox.addItemListener(listener);

@@ -9,17 +9,16 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-
 /**
- * The LeafNodeException is thrown when someone tries to add a child node to a
- * leaf node or interact with the child nodes of a leaf node.
+ * The LeafNodeException is thrown when someone tries to add a child node to a leaf node or interact with the child
+ * nodes of a leaf node.
  *
  * @author Tobias Wältken
  * @version 1.0
  */
 public class LeafNodeException extends UnsupportedOperationException {
     private static final long serialVersionUID = 2227365905217962083L;
-
+    
     /**
      * Default constructor
      */

@@ -17,7 +17,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @version 1.0
  */
 public interface Drawable extends Comparable<Drawable> {
-
+    
     /**
      * Get the x coordinate of the drawable.
      *
@@ -26,7 +26,7 @@ public interface Drawable extends Comparable<Drawable> {
      * @return returns the X position as a double
      */
     double getX();
-
+    
     /**
      * Get the y coordinate of the drawable.
      *
@@ -35,7 +35,7 @@ public interface Drawable extends Comparable<Drawable> {
      * @return returns the Y position as a double
      */
     double getY();
-
+    
     /**
      * Get the z value of the drawable.
      *
@@ -44,7 +44,7 @@ public interface Drawable extends Comparable<Drawable> {
      * @return returns the Z position as a double
      */
     int getZ();
-
+    
     /**
      * Get the handle of the texture for this drawable.
      *
@@ -53,7 +53,7 @@ public interface Drawable extends Comparable<Drawable> {
      * @return returns the texture handle as a String
      */
     String getTextureHandle();
-
+    
     /**
      * Return wether this Drawable can be drawn tiled if multiple are present in the same cell.
      *
@@ -62,7 +62,7 @@ public interface Drawable extends Comparable<Drawable> {
     default boolean isTilable() {
         return true;
     }
-
+    
     @Override
     default int compareTo(final Drawable o) {
         double compareResult = 0;

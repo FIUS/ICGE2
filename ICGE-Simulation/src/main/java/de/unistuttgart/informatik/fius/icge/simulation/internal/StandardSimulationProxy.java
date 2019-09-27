@@ -31,7 +31,7 @@ public class StandardSimulationProxy implements SimulationProxy {
     private ButtonStateListener buttonStateListener;
     
     private StandardSimulationClock simulationClock;
-
+    
     private TaskSelectorListener taskSelectorListener;
     
     /**

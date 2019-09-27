@@ -16,14 +16,15 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @version 1.0
  */
 public interface EntitySidebar {
-
+    
     /**
      * Setter function to attach a SimulationTree to the entity sidebar.
      *
-     * @param treeNode The root node of the simulation tree.
+     * @param treeNode
+     *     The root node of the simulation tree.
      */
     public void setSimulationTreeRootNode(SimulationTreeNode treeNode);
-
+    
     /**
      * This function should be called if the simulation tree changes.
      */

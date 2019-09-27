@@ -2,5 +2,5 @@ language: java
 jdk:
   - openjdk11
 services:
-  - xvfb
+  - xvfb # for ui tests
 

@@ -21,6 +21,7 @@ import javax.swing.tree.DefaultTreeModel;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
+
 /**
  * A swing implementation of the EntitySidebar
  *
@@ -29,14 +30,14 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
  */
 public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     private static final long serialVersionUID = -4409545257025298208L;
-
+    
     /** The root node of the entity list */
     public SimulationTreeNode rootNode;
     /** The hierarchical list of all entities */
-    public JTree entityList;
+    public JTree              entityList;
     /** The model of the JTree component */
-    public DefaultTreeModel entityListModel;
-
+    public DefaultTreeModel   entityListModel;
+    
     /**
      * The default constructor
      */
@@ -45,48 +46,46 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         this.entityList = new JTree(this.entityListModel);
         this.entityList.setShowsRootHandles(false);
         this.entityList.setRootVisible(true);
-
+        
         //TODO write custom entity renderer for the JTree
-
+        
         JScrollPane pane = new JScrollPane(this.entityList);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         this.setLayout(new BorderLayout());
         this.add(pane, BorderLayout.CENTER);
-
+        
         //TODO write and add entity inspector
     }
-
+    
     @Override
     public void setSimulationTreeRootNode(SimulationTreeNode treeNode) {
         this.rootNode = treeNode;
         this.updateSimulationTree();
     }
-
+    
     @Override
     public void updateSimulationTree() {
         this.entityListModel.setRoot(generateDefaultMutableTreeNodeFromSimulationTreeNode(this.rootNode));
     }
-
+    
     /**
      * Recursively generate a {@link DefaultMutableTreeNode} from a {@link SimulationTreeNode}
      *
-     * @param node The {@link SimulationTreeNode} the Tree structure is generated from
+     * @param node
+     *     The {@link SimulationTreeNode} the Tree structure is generated from
      * @return Returns the corresponding {@link DefaultMutableTreeNode}
      */
     private static DefaultMutableTreeNode generateDefaultMutableTreeNodeFromSimulationTreeNode(SimulationTreeNode node) {
         DefaultMutableTreeNode returnNode = new DefaultMutableTreeNode(
-            new MutableTreeNodeData(
-                node.getElementId(), node.getDisplayText(), node.getTextureId()
-            )
+                new MutableTreeNodeData(node.getElementId(), node.getDisplayText(), node.getTextureId())
         );
-
-        if (node.isLeaf())
-            returnNode.setAllowsChildren(false);
-        else
-            node.forEachChild((SimulationTreeNode childNode) ->
-                    returnNode.add(generateDefaultMutableTreeNodeFromSimulationTreeNode(childNode)));
-
+        
+        if (node.isLeaf()) returnNode.setAllowsChildren(false);
+        else node.forEachChild(
+                (SimulationTreeNode childNode) -> returnNode.add(generateDefaultMutableTreeNodeFromSimulationTreeNode(childNode))
+        );
+        
         return returnNode;
     }
 }

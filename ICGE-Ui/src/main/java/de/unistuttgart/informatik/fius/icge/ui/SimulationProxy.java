@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
 
 import java.util.Set;
 
+
 /**
  * The SimulationProxy interface
  *
@@ -112,7 +113,7 @@ public interface SimulationProxy {
      *     The new selected speed
      */
     void simulationSpeedChange(int value);
-
+    
     //
     // Toolbar - Task
     //
@@ -121,36 +122,39 @@ public interface SimulationProxy {
      * The TaskSelectorListener allows the simulation to talk to the task selector
      */
     public interface TaskSelectorListener {
-
+        
         /**
          * Getter function for the currently selected element
          * 
          * @return returns the selected element
          */
         String getSelectedElement();
-
+        
         /**
          * Setter function for all available elements. Use null to clear.
          * 
-         * @param elements The set of new selectable values
+         * @param elements
+         *     The set of new selectable values
          */
         void setElements(Set<String> elements);
     }
-
+    
     /**
      * This function is used to set the one task selector listener
      * 
-     * @param listener the listener to store
+     * @param listener
+     *     the listener to store
      */
     void setTaskSelectorListener(TaskSelectorListener listener);
-
+    
     /**
      * This function gets called if the selected task changes
      * 
-     * @param element contains the newly selected element
+     * @param element
+     *     contains the newly selected element
      */
     void selectedTaskChange(String element);
-
+    
     //
     // Toolbar - Controlls
     //

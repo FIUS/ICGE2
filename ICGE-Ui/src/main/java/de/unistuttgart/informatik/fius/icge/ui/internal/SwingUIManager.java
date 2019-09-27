@@ -39,28 +39,30 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  */
 public class SwingUIManager extends JFrame implements UiManager {
     private static final long serialVersionUID = -7215617949088643819L;
-
+    
     private final SwingTextureRegistry textureRegistry;
     private final SwingPlayfieldDrawer playfieldDrawer;
-    private final Toolbar toolbar;
-    private final EntitySidebar entitySidebar;
-    private final Console console;
-
+    private final Toolbar              toolbar;
+    private final EntitySidebar        entitySidebar;
+    private final Console              console;
+    
     /**
      * Create a new Swing UI Manager using the given submodules.
      *
-     * @param textureRegistry The {@link TextureRegistry} to use.
-     * @param playfieldDrawer The {@link PlayfieldDrawer} to use.
-     * @param toolbar The {@link Toolbar} to use.
-     * @param entitySidebar The {@link EntitySidebar} to use.
-     * @param console The {@link Console} to use.
+     * @param textureRegistry
+     *     The {@link TextureRegistry} to use.
+     * @param playfieldDrawer
+     *     The {@link PlayfieldDrawer} to use.
+     * @param toolbar
+     *     The {@link Toolbar} to use.
+     * @param entitySidebar
+     *     The {@link EntitySidebar} to use.
+     * @param console
+     *     The {@link Console} to use.
      */
     public SwingUIManager(
-            final SwingTextureRegistry textureRegistry,
-            final SwingPlayfieldDrawer playfieldDrawer,
-            final Toolbar toolbar,
-            final EntitySidebar entitySidebar,
-            final Console console
+            final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final Toolbar toolbar,
+            final EntitySidebar entitySidebar, final Console console
     ) {
         this.textureRegistry = textureRegistry;
         this.playfieldDrawer = playfieldDrawer;
@@ -68,117 +70,98 @@ public class SwingUIManager extends JFrame implements UiManager {
         this.entitySidebar = entitySidebar;
         this.console = console;
     }
-
+    
     @Override
     public TextureRegistry getTextureRegistry() {
         return this.textureRegistry;
     }
-
+    
     @Override
     public PlayfieldDrawer getPlayfieldDrawer() {
         return this.playfieldDrawer;
     }
-
+    
     @Override
     public Toolbar getToolbar() {
         return this.toolbar;
     }
-
+    
     @Override
     public EntitySidebar getEntitySidebar() {
         return this.entitySidebar;
     }
-
+    
     @Override
     public Console getConsole() {
         return this.console;
     }
-
+    
     @Override
     public void setWindowTitle(final String title) {
         this.setTitle(title);
     }
-
+    
     @Override
-    @SuppressWarnings ("unused") // Suppress unused warnings on 'ClassCastException e'
+    @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     public void start() {
         // init jFrame
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.playfieldDrawer.initialize(this);
         this.addTempTestDataToEntitySidebar(); //FIXME Remove
-
+        
         // convert toolbar
         JComponent toolbarComponent;
         try {
             toolbarComponent = (JComponent) this.toolbar;
         } catch (ClassCastException | NullPointerException e) {
-            toolbarComponent = new JLabel(
-                "Toolbar not valid!",
-                UIManager.getIcon("OptionPane.warningIcon"),
-                CENTER
-            );
+            toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), CENTER);
         }
-
+        
         // convert sidebar
         JComponent sidebarComponent;
         try {
             sidebarComponent = (JComponent) this.entitySidebar;
         } catch (ClassCastException | NullPointerException e) {
-            sidebarComponent = new JLabel(
-                UIManager.getIcon("OptionPane.warningIcon"),
-                CENTER
-            );
+            sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), CENTER);
         }
-
+        
         // convert console
         JComponent consoleComponent;
         try {
             consoleComponent = (JComponent) this.console;
         } catch (ClassCastException | NullPointerException e) {
-            consoleComponent = new JLabel(
-                "Console not valid!",
-                UIManager.getIcon("OptionPane.warningIcon"),
-                CENTER
-            );
+            consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), CENTER);
         }
-
+        
         // connect logger to console
         Logger.addSimulationOutputStream(this.console.getSimulationOutputStream());
         Logger.addOutOutputStream(this.console.getSystemOutputStream());
         Logger.addErrorOutputStream(this.console.getSystemOutputStream());
-
+        
         // setup JFrame layout
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
-        JSplitPane jsp1 = new JSplitPane(
-            JSplitPane.VERTICAL_SPLIT,
-            this.playfieldDrawer,
-            consoleComponent
-        );
+        JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, consoleComponent);
         jsp1.setOneTouchExpandable(true);
         jsp1.setResizeWeight(0.8);
-        JSplitPane jsp2 = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT,
-            jsp1,
-            sidebarComponent
-        );
+        JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
         jsp2.setOneTouchExpandable(true);
         this.getContentPane().add(BorderLayout.CENTER, jsp2);
-
+        
         // finalize jFrame
         this.pack();
         this.setVisible(true);
     }
-
+    
     //FIXME remove
     private void addTempTestDataToEntitySidebar() {
         SimulationTreeNode rootNode = new SimulationTreeNode("root", "Simulation", "", false);
-
+        
         SimulationTreeNode players = new SimulationTreeNode("1", "Players", "", false);
         players.appendChild(new SimulationTreeNode("1:0", "Neo", ""));
         players.appendChild(new SimulationTreeNode("1:1", "Trinity", ""));
         players.appendChild(new SimulationTreeNode("1:2", "Morpheus", ""));
         rootNode.appendChild(players);
-
+        
         SimulationTreeNode pills = new SimulationTreeNode("2", "Pills", "", false);
         pills.appendChild(new SimulationTreeNode("2:0", "Red-Pill <2,1>", ""));
         pills.appendChild(new SimulationTreeNode("2:1", "Red-Pill <3,1>", ""));
@@ -190,7 +173,7 @@ public class SwingUIManager extends JFrame implements UiManager {
         pills.appendChild(new SimulationTreeNode("2:7", "Blue-Pill <5,4>", ""));
         pills.appendChild(new SimulationTreeNode("2:8", "Blue-Pill <6,4>", ""));
         rootNode.appendChild(pills);
-
+        
         SimulationTreeNode walls = new SimulationTreeNode("3", "Walls", "", false);
         walls.appendChild(new SimulationTreeNode("3:0", "Wall <0,0>", ""));
         walls.appendChild(new SimulationTreeNode("3:1", "Wall <1,0>", ""));
@@ -218,7 +201,7 @@ public class SwingUIManager extends JFrame implements UiManager {
         walls.appendChild(new SimulationTreeNode("3:23", "Wall <7,4>", ""));
         walls.appendChild(new SimulationTreeNode("3:24", "Wall <7,5>", ""));
         rootNode.appendChild(walls);
-
+        
         this.entitySidebar.setSimulationTreeRootNode(rootNode);
     }
 }
