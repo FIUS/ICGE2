@@ -30,8 +30,8 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.19.1</version>
-                    <!-- newer versions understand modules, which is a problem for white box
-						tests. -->
+                    <!-- newer versions understand modules, which is a problem 
+                        for white box tests. -->
                     <configuration>
                         <includes>
                             <include>**/Test*.java</include>
@@ -73,6 +73,26 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>net.revelc.code.formatter</groupId>
+                    <artifactId>formatter-maven-plugin</artifactId>
+                    <version>2.10.0</version>
+                    <configuration>
+                        <lineEnding>LF</lineEnding>
+                        <configFile>build_tools/eclipse/ICGE-Formatter.xml</configFile>
+                        <overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
+                        <compilerSource>${java.version}</compilerSource>
+                        <compilerCompliance>${java.version}</compilerCompliance>
+                        <compilerTargetPlatform>${java.version}</compilerTargetPlatform>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>de.uni-stuttgart.informatik.fius</groupId>
+                            <artifactId>ICGE-build-tools</artifactId>
+                            <version>${icge.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -119,5 +139,6 @@
         <module>ICGE-Simulation</module>
         <module>ICGE-ManualStart</module>
         <module>ICGE-Log</module>
+        <module>ICGE-build-tools</module>
     </modules>
 </project>
