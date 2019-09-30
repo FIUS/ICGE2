@@ -63,6 +63,15 @@ public interface Drawable extends Comparable<Drawable> {
         return true;
     }
     
+    /**
+     * Return wether the Drawable is animated.
+     * 
+     * @return true iff any property (x, y, z) is animated
+     */
+    default boolean isAnimated() {
+        return false;
+    }
+    
     @Override
     default int compareTo(final Drawable o) {
         double compareResult = 0;

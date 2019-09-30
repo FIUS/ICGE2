@@ -24,6 +24,8 @@ import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
  */
 public class ManualStartSimulation {
     private static String textureHandleWall;
+    private static String textureHandleCoin;
+    private static String animated;
     
     /**
      * @param args
@@ -35,12 +37,19 @@ public class ManualStartSimulation {
         sim.initialize();
         sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
         sim.getSimulationClock().start();
+        while (true) {
+            // FIXME proper fix for garbage collection bug...
+        }
     }
     
     private static void prepareGameWindow(GameWindow window) {
         // load textures
         final TextureRegistry tr = window.getTextureRegistry();
         textureHandleWall = tr.loadTextureFromResource("textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);
+        textureHandleCoin = tr.loadTextureFromResource("textures/coin-default.png", ManualStartSimulation.class::getResourceAsStream);
+        animated = tr.createAnimatedTexture(true);
+        tr.addAnimationFrameToTexture(animated, textureHandleWall, 3);
+        tr.addAnimationFrameToTexture(animated, textureHandleCoin, 3);
         window.setWindowTitle("Manual simulation start");
     }
     
@@ -48,7 +57,7 @@ public class ManualStartSimulation {
         
         @Override
         protected String getTextureHandle() {
-            return textureHandleWall;
+            return animated;
         }
         
         @Override

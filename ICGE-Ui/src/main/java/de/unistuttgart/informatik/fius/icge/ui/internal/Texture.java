@@ -1,7 +1,7 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
  * 
  * This software is available under the MIT license.
@@ -18,32 +18,31 @@ import java.awt.Image;
  * 
  * @author Fabian Bühler
  */
-public class Texture {
-    
-    private final Image texture;
-    
-    /**
-     * Create a new Texture.
-     * 
-     * @param texture
-     *     the image to use as texture.
-     */
-    public Texture(Image texture) {
-        this.texture = texture;
-    }
+public interface Texture {
     
     /**
      * Get the texture image.
      * 
      * @return the image
      */
-    public Image getTexture() {
-        return this.texture;
+    public default Image getTexture() {
+        return this.getTexture(0);
     }
+    
+    /**
+     * Get the texture image.
+     * 
+     * @param frame
+     *     the current frame number
+     * @return the image
+     */
+    public Image getTexture(long frame);
     
     /**
      * Draw the texture onto the screen.
      * 
+     * @param frame
+     *     the current frame number
      * @param g
      *     the graphics object used to draw the image
      * @param x
@@ -53,13 +52,15 @@ public class Texture {
      * @param size
      *     texture size (for quadratic textures)
      */
-    public void drawTexture(Graphics g, int x, int y, int size) {
-        this.drawTexture(g, x, y, size, size);
+    public default void drawTexture(long frame, Graphics g, int x, int y, int size) {
+        this.drawTexture(frame, g, x, y, size, size);
     }
     
     /**
      * Draw the texture onto the screen.
      * 
+     * @param frame
+     *     the current frame number
      * @param g
      *     the graphics object used to draw the image
      * @param x
@@ -71,7 +72,5 @@ public class Texture {
      * @param height
      *     texture height
      */
-    public void drawTexture(Graphics g, int x, int y, int width, int height) {
-        g.drawImage(this.texture, x, y, width, height, null);
-    }
+    public void drawTexture(long frame, Graphics g, int x, int y, int width, int height);
 }

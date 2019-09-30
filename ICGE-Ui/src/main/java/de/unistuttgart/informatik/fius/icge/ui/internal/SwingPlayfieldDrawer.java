@@ -15,6 +15,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -23,6 +24,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
@@ -64,11 +67,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private double offsetY = SwingPlayfieldDrawer.CELL_SIZE;
     private double scale   = 1.0;
     
-    private final int minX = 0;
-    private final int minY = 0;
-    private final int maxX = 10;
-    private final int maxY = 10;
-    
     // mouse events
     private boolean mouseInWindow = false;
     private int     currentMouseX = 0;
@@ -77,7 +75,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private int     mouseStartY   = 0;
     private boolean isDrag        = false;
     
-    private List<Drawable> drawables = List.of();
+    private List<Drawable> drawables         = List.of();
+    private List<Drawable> animatedDrawables = List.of();
+    private boolean        fullRepaintNeeded = true;
+    private Rectangle      lastRedrawArea    = null;
+    private long           currentFrame      = 0;
     
     /**
      * Initialize the PlayfieldDrawer.
@@ -155,11 +157,44 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     public void setDrawables(final List<Drawable> drawables) {
         drawables.sort((a, b) -> a.compareTo(b));
         this.drawables = drawables;
+        this.animatedDrawables = drawables.stream()
+                .filter(d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())).collect(Collectors.toList());
+        this.fullRepaintNeeded = true;
     }
     
     @Override
     public void draw(long tickCount) {
-        repaint();
+        this.currentFrame = tickCount;
+        if (this.fullRepaintNeeded) {
+            repaint(10);
+            this.fullRepaintNeeded = false;
+        } else {
+            this.drawables.sort((a, b) -> a.compareTo(b));
+            if (this.animatedDrawables.size() > 0) {
+                final Rectangle visible = this.getVisibleRect();
+                final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+                final int textureSize = Math.toIntExact(Math.round(cellSize));
+                final Optional<Rectangle> rectToDraw = this.animatedDrawables.stream().map(
+                        d -> this.getScreenPointFromCellCoordinates(d.getX(), d.getY(), cellSize)
+                ).map(p -> getPaintRectFromPoint(p, textureSize)).filter(r -> r.intersects(visible))
+                        .reduce((Rectangle r1, Rectangle r2) -> {
+                            r1.add(r2);
+                            return r1;
+                        }).map(rect -> {
+                            return new Rectangle(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10);
+                        });
+                if (rectToDraw.isPresent()) {
+                    if (this.lastRedrawArea != null) {
+                        this.repaint(this.lastRedrawArea);
+                    }
+                    this.lastRedrawArea = rectToDraw.get();
+                    this.repaint(rectToDraw.get());
+                } else {
+                    this.lastRedrawArea = null;
+                }
+            }
+        }
+        
     }
     
     @Override
@@ -175,6 +210,16 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private int getRowCoordinateFromScreenCoordinate(int y) {
         final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
         return (int) Math.floor((y - this.offsetY) / cellSize);
+    }
+    
+    private Point getScreenPointFromCellCoordinates(double x, double y, double cellSize) {
+        final int screenX = Math.toIntExact(Math.round((x * cellSize) + this.offsetX));
+        final int screenY = Math.toIntExact(Math.round((y * cellSize) + this.offsetY));
+        return new Point(screenX, screenY);
+    }
+    
+    private static Rectangle getPaintRectFromPoint(Point upperLeftCorner, int cellSize) {
+        return new Rectangle(upperLeftCorner.x, upperLeftCorner.y, cellSize, cellSize);
     }
     
     @Override
@@ -225,7 +270,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      *     Drawable b
      * @return Drawables can be grouped
      */
-    private boolean canGroupDrawables(final Drawable a, final Drawable b) {
+    private static boolean canGroupDrawables(final Drawable a, final Drawable b) {
         if ((a == null) || (b == null)) return false;
         if (!a.getTextureHandle().equals(b.getTextureHandle())) return false;
         if (Math.round(a.getX()) != Math.round(b.getX())) return false;
@@ -245,7 +290,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final Drawable next = iter.next();
             currentCount += 1;
             isTilable = isTilable && next.isTilable();
-            boolean groupable = this.canGroupDrawables(last, next);
+            boolean groupable = canGroupDrawables(last, next);
             if (!groupable && last != null) {
                 this.paintDrawable(g, last, currentCount, isTilable);
             }
@@ -271,7 +316,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         }
         if (!isTilable || count <= 1) {
             final Texture texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
-            texture.drawTexture(g, x, y, textureSize, textureSize);
+            texture.drawTexture(this.currentFrame, g, x, y, textureSize, textureSize);
             return;
         }
         if (count <= 4) {
@@ -290,20 +335,21 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
     
     private void paintMultiCountDrawable(
-            final Graphics g, final Drawable drawable, int count, final Double[] xOffsets, final Double[] yOffsets, final Double scaleAdjust
+            final Graphics g, final Drawable drawable, final int count, final Double[] xOffsets, final Double[] yOffsets,
+            final Double scaleAdjust
     ) {
         final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
         final int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
         final Texture texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
         // limit count to available offsets
-        count = Math.min(Math.min(xOffsets.length, yOffsets.length), count);
-        for (int i = 0; i < count; i++) {
+        final int limitedCount = Math.min(Math.min(xOffsets.length, yOffsets.length), count);
+        for (int i = 0; i < limitedCount; i++) {
             // intra cell offsets
             final double offsetX = cellSize * xOffsets[i];
             final double offsetY = cellSize * yOffsets[i];
             final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX + offsetX));
             final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY + offsetY));
-            texture.drawTexture(g, x, y, textureSize, textureSize);
+            texture.drawTexture(this.currentFrame, g, x, y, textureSize, textureSize);
         }
     }
     
