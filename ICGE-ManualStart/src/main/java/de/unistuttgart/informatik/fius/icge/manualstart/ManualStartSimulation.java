@@ -37,11 +37,11 @@ public class ManualStartSimulation {
         sim.getSimulationClock().start();
     }
     
-    private static void prepareGameWindow(GameWindow manager) {
+    private static void prepareGameWindow(GameWindow window) {
         // load textures
-        final TextureRegistry tr = manager.getTextureRegistry();
+        final TextureRegistry tr = window.getTextureRegistry();
         textureHandleWall = tr.loadTextureFromResource("textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);
-        manager.setWindowTitle("Manual simulation start");
+        window.setWindowTitle("Manual simulation start");
     }
     
     private static class Wall extends BasicEntity {

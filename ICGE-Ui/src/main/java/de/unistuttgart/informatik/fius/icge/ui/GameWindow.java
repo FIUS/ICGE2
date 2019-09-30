@@ -18,35 +18,35 @@ public interface GameWindow {
     /**
      * Get the registry, with which to register textures for this game window.
      *
-     * @return The texture registry used by this manager.
+     * @return The texture registry used by this window.
      */
     TextureRegistry getTextureRegistry();
     
     /**
      * Get the drawer responsible for drawing the playfield for this game window.
      *
-     * @return The playfield drawer used by this manager.
+     * @return The playfield drawer used by this window.
      */
     PlayfieldDrawer getPlayfieldDrawer();
     
     /**
      * Get the toolbar for this game window.
      *
-     * @return The toolbar used by this manager.
+     * @return The toolbar used by this window.
      */
     Toolbar getToolbar();
     
     /**
      * Get the entity sidebar for this game window
      *
-     * @return The entity sidebar used by this manager
+     * @return The entity sidebar used by this window
      */
     EntitySidebar getEntitySidebar();
     
     /**
      * Get the console for this game window
      *
-     * @return The console used by thsi manager
+     * @return The console used by thsi window
      */
     Console getConsole();
     

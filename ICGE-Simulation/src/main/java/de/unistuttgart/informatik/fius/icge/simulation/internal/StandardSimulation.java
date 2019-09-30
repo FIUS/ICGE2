@@ -44,7 +44,7 @@ public class StandardSimulation implements Simulation {
      * @param playfield
      *     The playfield to use
      * @param simulationClock
-     *     The tickManager to use
+     *     The simulation clock to use
      * @param entityProgramRegistry
      *     The entityProgramRegistry to use
      * @param entityProgramRunner
