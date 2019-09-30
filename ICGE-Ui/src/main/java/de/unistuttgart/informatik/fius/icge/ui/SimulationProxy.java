@@ -73,7 +73,8 @@ public interface SimulationProxy {
     }
     
     /**
-     * This function sets the one button state listener and should only be called by the ui itself
+     * This function sets the one button state listener and should only be called by the ui itself. The only way to
+     * reset this listener is to explicitly set it to null thus removing the old listener.
      *
      * @param listener
      *     The listener to use.
@@ -105,6 +106,35 @@ public interface SimulationProxy {
      *     The type of the pressed button
      */
     void buttonPressed(ButtonType type);
+    
+    /**
+     * This speed slider listener allows the speed slider to react to requests
+     */
+    public interface SpeedSliderListener {
+        /**
+         * Getter function for the currently selected speed
+         * 
+         * @return Returns the slider position a integer between 0 and 10 (both inclusive)
+         */
+        int getSpeed();
+        
+        /**
+         * Setter for the position of the slider
+         * 
+         * @param speed
+         *     The new position for the slider a integer between 0 and 10 (both inclusive)
+         */
+        void setSpeed(int speed);
+    }
+    
+    /**
+     * This function sets the one speed slider listener and should only be called by the ui itself. The only way to
+     * reset this listener is to explicitly set it to null thus removing the old listener.
+     * 
+     * @param listener
+     *     The listener to use
+     */
+    void setSpeedSliderListener(SpeedSliderListener listener);
     
     /**
      * This is called if the speed slider is changed by the user
@@ -140,7 +170,8 @@ public interface SimulationProxy {
     }
     
     /**
-     * This function is used to set the one task selector listener
+     * This function is used to set the one task selector listener and should only be called by the ui itself. The only
+     * way to reset this listener is to explicitly set it to null thus removing the old listener.
      * 
      * @param listener
      *     the listener to store

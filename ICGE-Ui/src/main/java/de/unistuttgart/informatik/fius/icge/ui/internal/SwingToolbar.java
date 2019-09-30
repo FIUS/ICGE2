@@ -28,6 +28,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListen
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ClockButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ControlButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SpeedSliderListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.TaskSelectorListener;
 import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector;
 import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector.DropdownEntry;
@@ -150,8 +151,28 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 SwingToolbar.this.simulationProxy.simulationSpeedChange(source.getValue());
             }
         });
+        this.simulationTime.setEnabled(false);
         this.add(this.simulationTime);
         this.addSeparator();
+        
+        this.simulationProxy.setSpeedSliderListener(new SpeedSliderListener() {
+            
+            @Override
+            public int getSpeed() {
+                return SwingToolbar.this.simulationTime.getValue();
+            }
+            
+            @Override
+            public void setSpeed(int speed) {
+                if (
+                    speed < 0 || speed > 10
+                ) throw new IllegalArgumentException(
+                        "Simulation Speed Value is out of bounds. Should be between 0 and 10 (both inclusive) but is: " + speed
+                );
+                
+                SwingToolbar.this.simulationTime.setValue(speed);
+            }
+        });
         
         //
         // add visual separator
@@ -224,6 +245,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                         SwingToolbar.this.step.setEnabled(false);
                         SwingToolbar.this.pause.setEnabled(true);
                         SwingToolbar.this.stop.setEnabled(true);
+                        SwingToolbar.this.simulationTime.setEnabled(true);
                         break;
                     
                     case PAUSED:
@@ -231,6 +253,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                         SwingToolbar.this.step.setEnabled(true);
                         SwingToolbar.this.pause.setEnabled(false);
                         SwingToolbar.this.stop.setEnabled(true);
+                        SwingToolbar.this.simulationTime.setEnabled(true);
                         break;
                     
                     case STOPPED:
@@ -238,6 +261,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                         SwingToolbar.this.step.setEnabled(true);
                         SwingToolbar.this.pause.setEnabled(false);
                         SwingToolbar.this.stop.setEnabled(false);
+                        SwingToolbar.this.simulationTime.setEnabled(true);
                         break;
                     
                     case BLOCKED:
@@ -245,6 +269,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                         SwingToolbar.this.step.setEnabled(false);
                         SwingToolbar.this.pause.setEnabled(false);
                         SwingToolbar.this.stop.setEnabled(false);
+                        SwingToolbar.this.simulationTime.setEnabled(false);
                         break;
                     
                     default:
