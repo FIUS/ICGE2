@@ -34,7 +34,7 @@ versionLastPart="${version##*.}"
 eval "versionLastPartIncreased=$versionLastPart + 1"
 newVersion="$versionFirstPart.$versionLastPartIncreased-Snapshot"
 
-mvn deploy -Drepo.login=$REPO_LOGIN -Drepo.pwd=$REPO_PWD
+mvn -s "$dir/m2settings.xml" deploy -Drepo.login=$REPO_LOGIN -Drepo.pwd=$REPO_PWD
 
 git tag "$version"
 
