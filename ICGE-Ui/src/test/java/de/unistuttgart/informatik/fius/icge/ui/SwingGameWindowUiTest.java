@@ -63,7 +63,7 @@ class SwingGameWindowUiTest {
             public void selectedTaskChange(String element) {
                 // TODO Auto-generated method stub
             }
-
+            
             @Override
             public void setSpeedSliderListener(SpeedSliderListener listener) {
                 // TODO Auto-generated method stub

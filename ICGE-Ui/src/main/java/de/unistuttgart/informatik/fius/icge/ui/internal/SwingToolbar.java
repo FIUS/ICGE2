@@ -154,20 +154,22 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.simulationTime.setEnabled(false);
         this.add(this.simulationTime);
         this.addSeparator();
-
-        this.simulationProxy.setSpeedSliderListener(new SpeedSliderListener(){
         
+        this.simulationProxy.setSpeedSliderListener(new SpeedSliderListener() {
+            
             @Override
             public int getSpeed() {
                 return SwingToolbar.this.simulationTime.getValue();
             }
-        
+            
             @Override
             public void setSpeed(int speed) {
-                if (speed < 0 || speed > 10) throw new IllegalArgumentException(
-                        "Simulation Speed Value is out of bounds. Should be between 0 and 10 (both inclusive) but is: "
-                        + speed);
-
+                if (
+                    speed < 0 || speed > 10
+                ) throw new IllegalArgumentException(
+                        "Simulation Speed Value is out of bounds. Should be between 0 and 10 (both inclusive) but is: " + speed
+                );
+                
                 SwingToolbar.this.simulationTime.setValue(speed);
             }
         });
