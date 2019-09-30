@@ -11,17 +11,17 @@ if [ $# -ne 1 ] ; then
   fail "Need the new version" 2
 fi
 
-if [ "$(git status -s)" != "" ] ;then
-  fail "Detected uncomitted changes" 3
-fi
+#if [ "$(git status -s)" != "" ] ;then
+#  fail "Detected uncomitted changes" 3
+#fi
 
-if [ "$(git branch --show-current)" != "master" ] ;then
-  fail "Not on master branch." 4
-fi
+#if [ "$(git branch --show-current)" != "master" ] ;then
+#  fail "Not on master branch." 4
+#fi
 
 branchName="versionBump/$1"
 
-if ! git checkout -b "$branchName" ] ;then
+if ! git checkout -b "$branchName" ;then
   fail "Could not checkout new branch" 5
 fi
 
