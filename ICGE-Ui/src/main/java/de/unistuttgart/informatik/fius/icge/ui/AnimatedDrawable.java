@@ -40,8 +40,8 @@ public class AnimatedDrawable implements Drawable {
      *     start x coordinate
      * @param yStart
      *     start y coordinate
-     * @param tickEnd
-     *     end tick
+     * @param duration
+     *     duration in ticks
      * @param xEnd
      *     end x coordinate
      * @param yEnd
@@ -51,19 +51,19 @@ public class AnimatedDrawable implements Drawable {
      * @param textureHandle
      */
     public AnimatedDrawable(
-            final long tickStart, final double xStart, final double yStart, final long tickEnd, final double xEnd, final double yEnd,
+            final long tickStart, final double xStart, final double yStart, final long duration, final double xEnd, final double yEnd,
             final int z, final String textureHandle
     ) {
-        if (tickEnd < tickStart) {
-            throw new IllegalArgumentException("End tick must be after start tick!");
+        if (duration <= 0)
+            throw new IllegalArgumentException("Animation must not have a negative duration");
         }
         this.tickStart = tickStart;
         this.xStart = xStart;
         this.yStart = yStart;
-        this.tickEnd = tickEnd;
+        this.tickEnd = tickStart + duration;
         this.xEnd = xEnd;
         this.yEnd = yEnd;
-        this.duration = tickEnd - tickStart;
+        this.duration = duration;
         this.z = z;
         this.textureHandle = textureHandle;
     }
