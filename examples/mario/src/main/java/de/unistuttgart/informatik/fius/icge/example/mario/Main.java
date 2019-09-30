@@ -13,7 +13,7 @@ import de.unistuttgart.informatik.fius.icge.example.mario.tasks.Solution1;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.UiManager;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
@@ -31,19 +31,19 @@ public class Main {
      */
     public static void main(final String[] args) {
         final Simulation sim = SimulationFactory.createSimulation();
-        Main.prepareUiManager(sim.getUiManager());
+        Main.prepareGameWindow(sim.getGameWindow());
         
         sim.initialize();
         
         sim.getTaskRunner().runTask(Solution1.class, sim);
     }
     
-    private static void prepareUiManager(final UiManager manager) {
+    private static void prepareGameWindow(final GameWindow window) {
         // load textures
-        final TextureRegistry tr = manager.getTextureRegistry();
+        final TextureRegistry tr = window.getTextureRegistry();
         for (final Texture texture : Texture.values()) {
             texture.load(tr);
         }
-        manager.setWindowTitle("Manual simulation start");
+        window.setWindowTitle("Manual simulation start");
     }
 }

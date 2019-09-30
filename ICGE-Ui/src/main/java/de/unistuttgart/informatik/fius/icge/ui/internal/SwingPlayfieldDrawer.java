@@ -83,9 +83,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      * Initialize the PlayfieldDrawer.
      *
      * @param parent
-     *     the SwingUIManager that contains this PlayfieldDrawer.
+     *     the SwingGameWindow that contains this PlayfieldDrawer.
      */
-    public void initialize(final SwingUIManager parent) {
+    public void initialize(final SwingGameWindow parent) {
         TextureRegistry tr = parent.getTextureRegistry();
         if (!(tr instanceof SwingTextureRegistry)) {
             throw new IllegalArgumentException("Only SwingTextureRegistry is supported!");

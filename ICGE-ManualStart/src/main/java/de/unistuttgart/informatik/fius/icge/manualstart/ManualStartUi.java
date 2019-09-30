@@ -16,8 +16,8 @@ import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.UiManager;
-import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory;
 
 
 /**
@@ -35,7 +35,7 @@ public class ManualStartUi {
      */
     public static void main(final String[] args) {
         //FIXME add correct simulation proxy
-        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy() {
+        final GameWindow manager = GameWindowFactory.createGameWindow(new SimulationProxy() {
             
             @Override
             public void simulationSpeedChange(final int value) {

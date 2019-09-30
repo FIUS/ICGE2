@@ -19,7 +19,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.S
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRunner;
-import de.unistuttgart.informatik.fius.icge.ui.UiManager;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
@@ -29,7 +29,7 @@ import de.unistuttgart.informatik.fius.icge.ui.UiManager;
  */
 public class StandardSimulation implements Simulation {
     
-    private final UiManager                     uiManager;
+    private final GameWindow                    window;
     private final StandardPlayfield             playfield;
     private final StandardSimulationClock       simulationClock;
     private final StandardEntityProgramRegistry entityProgramRegistry;
@@ -39,8 +39,8 @@ public class StandardSimulation implements Simulation {
     /**
      * Creates a new standard simulation with the given parameters.
      * 
-     * @param uiManager
-     *     The uiManager to use
+     * @param window
+     *     The game window to use
      * @param playfield
      *     The playfield to use
      * @param simulationClock
@@ -53,11 +53,11 @@ public class StandardSimulation implements Simulation {
      *     The taskRunner to use
      */
     public StandardSimulation(
-            final UiManager uiManager, final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
+            final GameWindow window, final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
             final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner,
             final StandardTaskRunner taskRunner
     ) {
-        this.uiManager = uiManager;
+        this.window = window;
         this.playfield = playfield;
         this.simulationClock = simulationClock;
         this.entityProgramRegistry = entityProgramRegistry;
@@ -74,15 +74,15 @@ public class StandardSimulation implements Simulation {
     public void initialize() {
         this.playfield.initialize(this);
         this.simulationClock.initialize(this);
-        this.uiManager.start();
+        this.window.start();
     }
     
     /**
-     * @return the UiManager for this simulation
+     * @return the game window for this simulation
      */
     @Override
-    public UiManager getUiManager() {
-        return this.uiManager;
+    public GameWindow getGameWindow() {
+        return this.window;
     }
     
     @Override

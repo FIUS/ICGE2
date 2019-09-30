@@ -14,7 +14,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
  *
  * @author Tim Neumann
  */
-public interface UiManager {
+public interface GameWindow {
     /**
      * Get the registry, with which to register textures for this UI Manager.
      *

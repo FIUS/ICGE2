@@ -14,19 +14,19 @@ import org.junit.jupiter.api.Test;
 
 
 /**
- * Test class for {@link UiManagerFactory}.
+ * Test class for {@link GameWindowFactory}.
  *
  * @author Tim Neumann
  */
-class UiManagerFactoryTest {
+class GameWindowFactoryTest {
     
     /**
      * Test method for
-     * {@link de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory#createUiManager(SimulationProxy)}.
+     * {@link de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory#createGameWindow(SimulationProxy)}.
      */
     @Test
-    void testCreateUiManager() {
-        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy() {
+    void testCreateGameWindow() {
+        final GameWindow window = GameWindowFactory.createGameWindow(new SimulationProxy() {
             
             @Override
             public void setButtonStateListener(final ButtonStateListener listener) {
@@ -55,10 +55,10 @@ class UiManagerFactoryTest {
                 
             }
         });
-        Assertions.assertNotNull(manager);
-        Assertions.assertNotNull(manager.getPlayfieldDrawer());
-        Assertions.assertNotNull(manager.getTextureRegistry());
-        Assertions.assertNotNull(manager.getToolbar());
+        Assertions.assertNotNull(window);
+        Assertions.assertNotNull(window.getPlayfieldDrawer());
+        Assertions.assertNotNull(window.getTextureRegistry());
+        Assertions.assertNotNull(window.getToolbar());
     }
     
 }

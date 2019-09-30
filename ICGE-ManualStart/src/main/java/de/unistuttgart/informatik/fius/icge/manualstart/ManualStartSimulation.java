@@ -14,7 +14,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.BasicEntity;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.UiManager;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
@@ -31,13 +31,13 @@ public class ManualStartSimulation {
      */
     public static void main(final String[] args) {
         final Simulation sim = SimulationFactory.createSimulation();
-        prepareUiManager(sim.getUiManager());
+        prepareGameWindow(sim.getGameWindow());
         sim.initialize();
         sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
         sim.getSimulationClock().start();
     }
     
-    private static void prepareUiManager(UiManager manager) {
+    private static void prepareGameWindow(GameWindow manager) {
         // load textures
         final TextureRegistry tr = manager.getTextureRegistry();
         textureHandleWall = tr.loadTextureFromResource("textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);

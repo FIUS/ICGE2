@@ -68,7 +68,7 @@ public class StandardSimulationClock implements SimulationClock {
      *     The simulation for this tick manager
      */
     public void initialize(final Simulation parent) {
-        this.drawer = parent.getUiManager().getPlayfieldDrawer();
+        this.drawer = parent.getGameWindow().getPlayfieldDrawer();
     }
     
     /**

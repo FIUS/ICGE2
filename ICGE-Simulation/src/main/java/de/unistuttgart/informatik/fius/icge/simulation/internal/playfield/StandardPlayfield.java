@@ -71,7 +71,7 @@ public class StandardPlayfield implements Playfield {
         for (final Entity entity : this.getAllEntities()) {
             drawables.add(entity.getDrawInformation());
         }
-        this.getSimulation().getUiManager().getPlayfieldDrawer().setDrawables(drawables);
+        this.getSimulation().getGameWindow().getPlayfieldDrawer().setDrawables(drawables);
     }
     
     @Override

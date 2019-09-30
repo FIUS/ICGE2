@@ -17,24 +17,24 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingUIManager;
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingGameWindow;
 
 
 /**
- * The factory for creating a UIManager
+ * The factory for creating a game window
  *
  * @author Tim Neumann
  */
-public class UiManagerFactory {
+public class GameWindowFactory {
     
     /**
-     * Creates a new Ui Manager including the initialization of all required submodules.
+     * Creates a new game window including the initialization of all required submodules.
      *
      * @param simulationProxy
      *     The simulation proxy to create the ui around
-     * @return The new Ui Manager.
+     * @return The new game window.
      */
-    public static UiManager createUiManager(final SimulationProxy simulationProxy) {
+    public static GameWindow createGameWindow(final SimulationProxy simulationProxy) {
         // Set window look and feel
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -48,6 +48,6 @@ public class UiManagerFactory {
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();
         
-        return new SwingUIManager(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
+        return new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
     }
 }

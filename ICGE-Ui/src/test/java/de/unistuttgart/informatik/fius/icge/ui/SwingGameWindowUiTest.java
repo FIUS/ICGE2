@@ -18,20 +18,20 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingUIManager;
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingGameWindow;
 
 
 /**
- * Test class for the {@link SwingUIManager}
+ * Test class for the {@link SwingGameWindow}
  *
  * @author Tim Neumann
  */
-class SwingUiManagerUiTest {
+class SwingGameWindowUiTest {
     
-    private SwingUIManager uiManager;
+    private SwingGameWindow window;
     
     /**
-     * Setup the uiManager
+     * Setup the game window
      */
     @BeforeEach
     public void setup() {
@@ -67,15 +67,15 @@ class SwingUiManagerUiTest {
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();
         
-        this.uiManager = new SwingUIManager(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
+        this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
     }
     
     /**
-     * Test {@link SwingUIManager#start()}
+     * Test {@link SwingGameWindow#start()}
      */
     @Test
     void testStart() {
-        this.uiManager.start();
-        Assertions.assertTrue(this.uiManager.isVisible(), "JFrame should be visisble");
+        this.window.start();
+        Assertions.assertTrue(this.window.isVisible(), "JFrame should be visisble");
     }
 }
