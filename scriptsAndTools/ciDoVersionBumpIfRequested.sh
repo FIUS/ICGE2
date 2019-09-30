@@ -15,19 +15,44 @@ if ! which xmlstarlet >/dev/null 2>&1 ;then
   fail "Need program xmlstarlet" 3
 fi
 
-if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-  fail "Not a PR" 3
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  fail "Cannot version bump on a PR" 3
 fi
 
-version="$(xmlstarlet sel -t -v "/_:project/_:version" "../pom.xml")"
+echo "Checking if need to do version bump."
+
+version="$(xmlstarlet sel -t -v "/_:project/_:version" "pom.xml")"
 msg="$(git log -1 --pretty=%B)"
 
-if [ "$version" == "*-Snapshot" ] || [ "$msg" == "Bump version to *" ] ;then
-  #No version bump
-  exit 0
+branchC="true"
+versionC="true"
+msgC="true"
+
+if [[ "$TRAVIS_BRANCH" != "versionBump/"* ]] ;then
+  branchC="false"
+fi
+if [[ "$version" == *"Snapshot" ]] ;then
+  versionC="false"
+fi
+if [[ "$msg" != "Bump version to "* ]] ;then
+  msgC="false"
 fi
 
-echo "Doing version bump."
+if [ "$branchC" == "true" ] && [ "$versionC" == "true" ] &&[ "$msgC" == "true" ] ;then
+  echo "Doing version bump."
+elif [ "$branchC" == "false" ] && [ "$versionC" == "false" ] &&[ "$msgC" == "false" ] ;then
+  echo "Not doing version bump."
+  exit 0
+else
+  echo "Version bump indicators don't match!"
+  echo "Branch name: $TRAVIS_BRANCH"
+  echo "  -> $branchC"
+  echo "Artifact version: $version"
+  echo "  -> $versionC"
+  echo "Last commit msg: $msg"
+  echo "  -> $msgC"
+  fail "Not doing version bump." 5
+fi
 
 versionFirstPart="${version%.*}"
 versionLastPart="${version##*.}"
