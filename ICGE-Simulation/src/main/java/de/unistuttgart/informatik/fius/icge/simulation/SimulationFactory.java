@@ -16,8 +16,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.S
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
-import de.unistuttgart.informatik.fius.icge.ui.UiManager;
-import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory;
 
 
 /**
@@ -33,7 +33,7 @@ public class SimulationFactory {
      */
     public static Simulation createSimulation() {
         final StandardSimulationProxy simulationProxy = new StandardSimulationProxy();
-        final UiManager uiManager = UiManagerFactory.createUiManager(simulationProxy);
+        final GameWindow window = GameWindowFactory.createGameWindow(simulationProxy);
         
         final StandardPlayfield playfield = new StandardPlayfield();
         final StandardSimulationClock simulationClock = new StandardSimulationClock();
@@ -43,6 +43,6 @@ public class SimulationFactory {
         final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
         final StandardTaskRunner taskRunner = new StandardTaskRunner();
         
-        return new StandardSimulation(uiManager, playfield, simulationClock, entityProgramRegistry, entityProgramRunner, taskRunner);
+        return new StandardSimulation(window, playfield, simulationClock, entityProgramRegistry, entityProgramRunner, taskRunner);
     }
 }

@@ -27,17 +27,17 @@ import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
-import de.unistuttgart.informatik.fius.icge.ui.UiManager;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
- * An implementation of {@link UiManager} using java swing.
+ * An implementation of {@link GameWindow} using java swing.
  *
  * @author Tim Neumann
  * @author Tobias Wältken
  * @version 1.0
  */
-public class SwingUIManager extends JFrame implements UiManager {
+public class SwingGameWindow extends JFrame implements GameWindow {
     private static final long serialVersionUID = -7215617949088643819L;
     
     private final SwingTextureRegistry textureRegistry;
@@ -47,7 +47,7 @@ public class SwingUIManager extends JFrame implements UiManager {
     private final Console              console;
     
     /**
-     * Create a new Swing UI Manager using the given submodules.
+     * Create a new Swing game window using the given submodules.
      *
      * @param textureRegistry
      *     The {@link TextureRegistry} to use.
@@ -60,7 +60,7 @@ public class SwingUIManager extends JFrame implements UiManager {
      * @param console
      *     The {@link Console} to use.
      */
-    public SwingUIManager(
+    public SwingGameWindow(
             final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final Toolbar toolbar,
             final EntitySidebar entitySidebar, final Console console
     ) {

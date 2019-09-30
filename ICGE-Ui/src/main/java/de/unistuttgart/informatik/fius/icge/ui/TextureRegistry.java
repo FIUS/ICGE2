@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 
 /**
- * The interface for a texture registry used by a {@link UiManager}.
+ * The interface for a texture registry used by a {@link GameWindow}.
  *
  * @author Tim Neumann
  */

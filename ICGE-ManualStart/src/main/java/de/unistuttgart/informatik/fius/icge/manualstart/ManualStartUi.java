@@ -16,8 +16,8 @@ import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.UiManager;
-import de.unistuttgart.informatik.fius.icge.ui.UiManagerFactory;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory;
 
 
 /**
@@ -35,7 +35,7 @@ public class ManualStartUi {
      */
     public static void main(final String[] args) {
         //FIXME add correct simulation proxy
-        final UiManager manager = UiManagerFactory.createUiManager(new SimulationProxy() {
+        final GameWindow window = GameWindowFactory.createGameWindow(new SimulationProxy() {
             
             @Override
             public void simulationSpeedChange(final int value) {
@@ -66,16 +66,16 @@ public class ManualStartUi {
         });
         
         // load textures
-        final TextureRegistry tr = manager.getTextureRegistry();
+        final TextureRegistry tr = window.getTextureRegistry();
         final String wallTexture = tr.loadTextureFromResource("textures/wall-default.png", ManualStartUi.class::getResourceAsStream);
         
         // generate playfield
         final ArrayList<Drawable> drawables = new ArrayList<>(
                 List.of(new BasicDrawable(-1, -1, 0, wallTexture), new BasicDrawable(5, 5, 0, wallTexture))
         );
-        manager.getPlayfieldDrawer().setDrawables(drawables);
+        window.getPlayfieldDrawer().setDrawables(drawables);
         
-        manager.start();
-        manager.setWindowTitle("Manual start");
+        window.start();
+        window.setWindowTitle("Manual start");
     }
 }

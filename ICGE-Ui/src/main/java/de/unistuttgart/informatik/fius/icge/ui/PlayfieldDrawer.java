@@ -13,7 +13,7 @@ import java.util.List;
 
 
 /**
- * The interface for a playfield drawer used by a {@link UiManager}.
+ * The interface for a playfield drawer used by a {@link GameWindow}.
  *
  * @author Tim Neumann
  */

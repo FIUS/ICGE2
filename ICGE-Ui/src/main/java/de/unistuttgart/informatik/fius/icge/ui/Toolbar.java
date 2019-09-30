@@ -13,7 +13,7 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.Dropdo
 
 
 /**
- * The toolbar manager user by a {@link UiManager} to handle the toolbar.
+ * The toolbar used by a {@link GameWindow} to handle the toolbar.
  *
  * @author Tim Neumann
  * @author Tobias Wältken
