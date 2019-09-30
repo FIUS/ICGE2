@@ -1,0 +1,9 @@
+<settings>
+    <servers>
+        <server>
+            <id>c-hack.internal</id>
+            <username>${repo.login}</username>
+            <password>${repo.pwd}</password>
+        </server>
+    </servers>
+</settings>  

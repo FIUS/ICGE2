@@ -13,6 +13,10 @@ jobs:
       name: "verify format"
       script:
       - scriptsAndTools/verifyFormat.sh
+    - stage: "deploy"
+      name: "versionBumpAndRelease"
+      script: 
+      - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash scriptsAndTools/verifyFormat.sh; fi'
 
 services:
   - xvfb # for ui tests
