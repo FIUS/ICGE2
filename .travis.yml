@@ -13,6 +13,8 @@ jobs:
       name: "verify format"
       script:
       - scriptsAndTools/verifyFormat.sh
+
 services:
   - xvfb # for ui tests
 
+dist: bionic
