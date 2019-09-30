@@ -1,6 +1,24 @@
 language: java
 jdk:
   - openjdk11
-services:
-  - xvfb
+before_install:
+  - scriptsAndTools/installCiRequiredTools.sh
 
+jobs:
+  include:
+    - stage: "test"
+      name: "unit tests"
+      script:
+      - mvn test
+      name: "verify format"
+      script:
+      - scriptsAndTools/verifyFormat.sh
+    - stage: "deploy"
+      name: "versionBumpAndRelease"
+      script: 
+      - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash scriptsAndTools/verifyFormat.sh; fi'
+
+services:
+  - xvfb # for ui tests
+
+dist: bionic

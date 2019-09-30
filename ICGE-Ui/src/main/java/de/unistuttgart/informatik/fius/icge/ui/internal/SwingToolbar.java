@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -64,7 +64,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     /** The selector which selects the task which is run in the simulation */
     public DropdownSelector taskSelect;
-
+    
     /** The button to change to view mode */
     public JToggleButton view;
     /** The button to change to entity mode */
@@ -163,14 +163,12 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         this.addSeparator();
         this.taskSelect = new DropdownSelector(this.textureRegistry, "Task");
-        this.taskSelect.addSelectionListener(new ItemListener(){
-        
+        this.taskSelect.addSelectionListener(new ItemListener() {
+            
             @Override
             public void itemStateChanged(ItemEvent arg0) {
                 if (arg0.getStateChange() == ItemEvent.SELECTED) {
-                    SwingToolbar.this.simulationProxy.selectedTaskChange(
-                            ((DropdownEntry) arg0.getItem()).displayName
-                    );
+                    SwingToolbar.this.simulationProxy.selectedTaskChange(((DropdownEntry) arg0.getItem()).displayName);
                 }
             }
         });
@@ -178,23 +176,21 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.addSeparator();
         
         this.simulationProxy.setTaskSelectorListener(new TaskSelectorListener() {
-        
+            
             @Override
             public void setElements(Set<String> elements) {
                 SwingToolbar.this.taskSelect.removeAllEntries();
-
+                
                 for (String element : elements)
-                SwingToolbar.this.taskSelect.addEntry(
-                    SwingToolbar.this.taskSelect.new DropdownEntry(element)
-                );
+                    SwingToolbar.this.taskSelect.addEntry(SwingToolbar.this.taskSelect.new DropdownEntry(element));
             }
-        
+            
             @Override
             public String getSelectedElement() {
                 return SwingToolbar.this.taskSelect.getCurrentEntry().displayName;
             }
         });
-
+        
         //
         // add visual separator
         //
@@ -215,7 +211,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.entity.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ENTITY));
         this.entity.setEnabled(false);
         this.add(this.entity);
-
+        
         //
         // button listener setup
         //

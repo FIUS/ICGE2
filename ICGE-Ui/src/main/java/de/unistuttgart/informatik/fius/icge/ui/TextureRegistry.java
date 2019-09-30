@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @author Tim Neumann
  */
 public interface TextureRegistry {
-
+    
     /**
      * Load an image from an internal resource as texture and return the handle to the texture.
      *
@@ -39,7 +39,7 @@ public interface TextureRegistry {
      * @throws TextureNotFoundException
      */
     String loadTextureFromResource(String resourceName, final Function<String, InputStream> resourceProvider);
-
+    
     /**
      * Load an image from a file path as texture and return the handle to the texture.
      *

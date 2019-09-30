@@ -1,7 +1,7 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
  * 
  * This software is available under the MIT license.
@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.Graphics;
 import java.awt.Image;
+
 
 /**
  * Class containing a texture image and methods to draw this image.
@@ -24,7 +25,8 @@ public class Texture {
     /**
      * Create a new Texture.
      * 
-     * @param texture the image to use as texture.
+     * @param texture
+     *     the image to use as texture.
      */
     public Texture(Image texture) {
         this.texture = texture;
@@ -40,25 +42,34 @@ public class Texture {
     }
     
     /**
-     * Draw the texture onto the  screen.
+     * Draw the texture onto the screen.
      * 
-     * @param g the graphics object used to draw the image
-     * @param x x coordinate of the image
-     * @param y y coordinate of the image
-     * @param size texture size (for quadratic textures)
+     * @param g
+     *     the graphics object used to draw the image
+     * @param x
+     *     x coordinate of the image
+     * @param y
+     *     y coordinate of the image
+     * @param size
+     *     texture size (for quadratic textures)
      */
     public void drawTexture(Graphics g, int x, int y, int size) {
         this.drawTexture(g, x, y, size, size);
     }
     
     /**
-     * Draw the texture onto the  screen.
+     * Draw the texture onto the screen.
      * 
-     * @param g the graphics object used to draw the image
-     * @param x x coordinate of the image
-     * @param y y coordinate of the image
-     * @param width texture width
-     * @param height texture height
+     * @param g
+     *     the graphics object used to draw the image
+     * @param x
+     *     x coordinate of the image
+     * @param y
+     *     y coordinate of the image
+     * @param width
+     *     texture width
+     * @param height
+     *     texture height
      */
     public void drawTexture(Graphics g, int x, int y, int width, int height) {
         g.drawImage(this.texture, x, y, width, height, null);

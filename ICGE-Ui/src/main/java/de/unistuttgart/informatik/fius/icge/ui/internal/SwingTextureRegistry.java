@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -33,17 +33,17 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
  * @version 1.0
  */
 public class SwingTextureRegistry implements TextureRegistry {
-    private final Map<String, String> resourceToHandle = new HashMap<>();
-    private final Map<String, String> pathToHandle     = new HashMap<>();
-    private final Map<String, Texture>  handleToTexture  = new HashMap<>();
-
+    private final Map<String, String>  resourceToHandle = new HashMap<>();
+    private final Map<String, String>  pathToHandle     = new HashMap<>();
+    private final Map<String, Texture> handleToTexture  = new HashMap<>();
+    
     /**
      * Default constructor
      */
     public SwingTextureRegistry() {
         StaticUiTextures.load(this);
     }
-
+    
     /**
      * Load a texture from a local (ui module) resource.
      *
@@ -55,7 +55,7 @@ public class SwingTextureRegistry implements TextureRegistry {
     public String loadTextureFromResource(final String resourceName) {
         return loadTextureFromResource(resourceName, SwingTextureRegistry.class::getResourceAsStream);
     }
-
+    
     @Override
     public String loadTextureFromResource(final String resourceName, final Function<String, InputStream> resourceProvider) {
         if (this.resourceToHandle.containsKey(resourceName)) return this.resourceToHandle.get(resourceName);
@@ -69,7 +69,7 @@ public class SwingTextureRegistry implements TextureRegistry {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
         }
     }
-
+    
     @Override
     public String loadTextureFromFile(final String filePath) {
         final Path resolvedPath = Path.of(filePath).toAbsolutePath();
@@ -86,7 +86,7 @@ public class SwingTextureRegistry implements TextureRegistry {
         }
         return textureHandle;
     }
-
+    
     /**
      * Get the texture for the given texture handle.
      *
