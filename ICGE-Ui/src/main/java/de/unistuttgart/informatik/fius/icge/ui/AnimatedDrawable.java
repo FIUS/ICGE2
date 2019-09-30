@@ -54,7 +54,7 @@ public class AnimatedDrawable implements Drawable {
             final long tickStart, final double xStart, final double yStart, final long duration, final double xEnd, final double yEnd,
             final int z, final String textureHandle
     ) {
-        if (duration <= 0)
+        if (duration <= 0) {
             throw new IllegalArgumentException("Animation must not have a negative duration");
         }
         this.tickStart = tickStart;
