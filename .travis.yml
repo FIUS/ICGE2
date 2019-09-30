@@ -16,7 +16,7 @@ jobs:
     - stage: "deploy"
       name: "versionBumpAndRelease"
       script: 
-      - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash scriptsAndTools/verifyFormat.sh; fi'
+      - 'if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh; fi'
 
 services:
   - xvfb # for ui tests
