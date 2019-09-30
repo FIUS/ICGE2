@@ -1,6 +1,18 @@
 language: java
 jdk:
   - openjdk11
+before_install:
+  - scriptsAndTools/installCiRequiredTools.sh
+
+jobs:
+  include:
+    - stage: "test"
+      name: "unit tests"
+      script:
+      - mvn test
+      name: "verify format"
+      script:
+      - scriptsAndTools/verifyFormat.sh
 services:
   - xvfb # for ui tests
 
