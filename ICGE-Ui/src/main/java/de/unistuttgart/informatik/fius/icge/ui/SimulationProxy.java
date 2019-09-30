@@ -73,7 +73,8 @@ public interface SimulationProxy {
     }
     
     /**
-     * This function sets the one button state listener and should only be called by the ui itself
+     * This function sets the one button state listener and should only be called by the ui itself.
+     * The only way to reset this listener is to explicitly set it to null thus removing the old listener.
      *
      * @param listener
      *     The listener to use.
@@ -128,7 +129,8 @@ public interface SimulationProxy {
     }
 
     /**
-     * This function sets the one speed slider listener and should only be called by the ui itself
+     * This function sets the one speed slider listener and should only be called by the ui itself.
+     * The only way to reset this listener is to explicitly set it to null thus removing the old listener.
      * 
      * @param listener
      *  The listener to use
@@ -169,7 +171,8 @@ public interface SimulationProxy {
     }
     
     /**
-     * This function is used to set the one task selector listener
+     * This function is used to set the one task selector listener and should only be called by the ui itself.
+     * The only way to reset this listener is to explicitly set it to null thus removing the old listener.
      * 
      * @param listener
      *     the listener to store
