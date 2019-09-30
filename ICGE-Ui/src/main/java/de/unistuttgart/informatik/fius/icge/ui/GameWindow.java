@@ -10,41 +10,41 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 /**
- * The interface for a UI Manager of the ICGE.
+ * The interface for a game window of the ICGE.
  *
  * @author Tim Neumann
  */
 public interface GameWindow {
     /**
-     * Get the registry, with which to register textures for this UI Manager.
+     * Get the registry, with which to register textures for this game window.
      *
      * @return The texture registry used by this manager.
      */
     TextureRegistry getTextureRegistry();
     
     /**
-     * Get the drawer responsible for drawing the playfield for this UI Manager.
+     * Get the drawer responsible for drawing the playfield for this game window.
      *
      * @return The playfield drawer used by this manager.
      */
     PlayfieldDrawer getPlayfieldDrawer();
     
     /**
-     * Get the toolbar for this UI Manager.
+     * Get the toolbar for this game window.
      *
      * @return The toolbar used by this manager.
      */
     Toolbar getToolbar();
     
     /**
-     * Get the entity sidebar for this UI Manager
+     * Get the entity sidebar for this game window
      *
      * @return The entity sidebar used by this manager
      */
     EntitySidebar getEntitySidebar();
     
     /**
-     * Get the console for this UI Manager
+     * Get the console for this game window
      *
      * @return The console used by thsi manager
      */
@@ -59,7 +59,7 @@ public interface GameWindow {
     void setWindowTitle(String title);
     
     /**
-     * Start the UI Manager and all its submodules.
+     * Start the game window and all its submodules.
      */
     void start();
 }

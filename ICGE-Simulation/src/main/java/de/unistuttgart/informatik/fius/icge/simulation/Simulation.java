@@ -29,9 +29,9 @@ public interface Simulation {
     Playfield getPlayfield();
     
     /**
-     * Get the ui manager for this simulation.
+     * Get the game window for this simulation.
      * 
-     * @return the ui manager used by this simulation
+     * @return the game window used by this simulation
      */
     GameWindow getGameWindow();
     

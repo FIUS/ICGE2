@@ -47,7 +47,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     private final Console              console;
     
     /**
-     * Create a new Swing UI Manager using the given submodules.
+     * Create a new Swing game window using the given submodules.
      *
      * @param textureRegistry
      *     The {@link TextureRegistry} to use.
