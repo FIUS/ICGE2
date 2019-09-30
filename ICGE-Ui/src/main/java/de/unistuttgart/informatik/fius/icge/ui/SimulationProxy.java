@@ -107,6 +107,35 @@ public interface SimulationProxy {
     void buttonPressed(ButtonType type);
     
     /**
+     * This speed slider listener allows the speed slider to react to requests
+     */
+    public interface SpeedSliderListener {
+        /**
+         * Getter function for the currently selected speed
+         * 
+         * @return
+         *     Returns the slider position a integer between 0 and 10 (both inclusive)
+         */
+        int getSpeed();
+
+        /**
+         * Setter for the position of the slider
+         * 
+         * @param speed
+         *     The new position for the slider a integer between 0 and 10 (both inclusive)
+         */
+        void setSpeed(int speed);
+    }
+
+    /**
+     * This function sets the one speed slider listener and should only be called by the ui itself
+     * 
+     * @param listener
+     *  The listener to use
+     */
+    void setSpeedSliderListener(SpeedSliderListener listener);
+
+    /**
      * This is called if the speed slider is changed by the user
      *
      * @param value

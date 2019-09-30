@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 
 
@@ -29,6 +30,7 @@ public class StandardSimulationProxy implements SimulationProxy {
     };
     
     private ButtonStateListener buttonStateListener;
+    private SpeedSliderListener speedSliderListener;
     
     private StandardSimulationClock simulationClock;
     
@@ -71,7 +73,7 @@ public class StandardSimulationProxy implements SimulationProxy {
     public void setButtonStateListener(final ButtonStateListener listener) {
         if ((this.buttonStateListener == null) || (listener == null)) {
             this.buttonStateListener = listener;
-        }
+        } else throw new ListenerSetException();
     }
     
     @Override
@@ -125,6 +127,13 @@ public class StandardSimulationProxy implements SimulationProxy {
     }
     
     @Override
+    public void setSpeedSliderListener(SpeedSliderListener listener) {
+        if ((this.speedSliderListener == null) || (listener == null)) {
+            this.speedSliderListener = listener;
+        } else throw new ListenerSetException();
+    }
+    
+    @Override
     public void simulationSpeedChange(final int value) {
         if (this.simulationClock == null) return;
         
@@ -133,8 +142,9 @@ public class StandardSimulationProxy implements SimulationProxy {
     
     @Override
     public void setTaskSelectorListener(TaskSelectorListener listener) {
-        this.taskSelectorListener = listener;
-        
+        if ((this.taskSelectorListener == null) || (listener == null)) {
+            this.taskSelectorListener = listener;
+        } else throw new ListenerSetException();
     }
     
     @Override

@@ -63,6 +63,12 @@ public class ManualStartUi {
                 // TODO Auto-generated method stub
                 
             }
+            
+            @Override
+            public void setSpeedSliderListener(SpeedSliderListener listener) {
+                // TODO Auto-generated method stub
+                
+            }
         });
         
         // load textures
