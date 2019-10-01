@@ -27,6 +27,7 @@ msg="$(git log -1 --pretty=%B)"
 branchC="true"
 versionC="true"
 msgC="true"
+msgF="false"
 
 if [[ "$TRAVIS_BRANCH" != "versionBump/"* ]] ;then
   branchC="false"
@@ -37,11 +38,17 @@ fi
 if [[ "$msg" != "Bump version to "* ]] ;then
   msgC="false"
 fi
+if [[ "$msg" == "Prepare for develoment on"* ]];then
+  msgF="true"
+fi
 
-if [ "$branchC" == "true" ] && [ "$versionC" == "true" ] &&[ "$msgC" == "true" ] ;then
+if [ "$branchC" == "true" ] && [ "$versionC" == "true" ] && [ "$msgC" == "true" ] ;then
   echo "Doing version bump."
-elif [ "$branchC" == "false" ] && [ "$versionC" == "false" ] &&[ "$msgC" == "false" ] ;then
+elif [ "$branchC" == "false" ] && [ "$versionC" == "false" ] && [ "$msgC" == "false" ] ;then
   echo "Not doing version bump."
+  exit 0
+elif [ "$branchC" == "true" ] && [ "$versionC" == "false" ] && [ "$msgF" == "true" ] ;then
+  echo "Detected finished version bump. Not doing it again."
   exit 0
 else
   echo "Version bump indicators don't match!"
@@ -56,7 +63,7 @@ fi
 
 versionFirstPart="${version%.*}"
 versionLastPart="${version##*.}"
-eval "versionLastPartIncreased=$versionLastPart + 1"
+versionLastPartIncreased="$(expr $versionLastPart + 1)"
 newVersion="$versionFirstPart.$versionLastPartIncreased-Snapshot"
 
 mvn -s "$dir/m2settings.xml" deploy -Drepo.login=$REPO_LOGIN -Drepo.pwd=$REPO_PWD
@@ -64,7 +71,9 @@ mvn -s "$dir/m2settings.xml" deploy -Drepo.login=$REPO_LOGIN -Drepo.pwd=$REPO_PW
 git tag "$version"
 
 "$dir/versionBumpLocal.sh" "$newVersion"
-git commit -a -m "Bump version to $newVersion"
+git commit -a -m "Prepare for develoment on $newVersion"
 
 git push origin "HEAD:$TRAVIS_BRANCH"
 git push origin "$version"
+git commit -a -m "Prepare for develoment on $newVersion"
+
