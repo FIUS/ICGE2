@@ -193,10 +193,16 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 }
             }
         });
+        this.taskSelect.setEnabled(false);
         this.add(this.taskSelect);
         this.addSeparator();
         
         this.simulationProxy.setTaskSelectorListener(new TaskSelectorListener() {
+            
+            @Override
+            public String getSelectedElement() {
+                return SwingToolbar.this.taskSelect.getCurrentEntry().displayName;
+            }
             
             @Override
             public void setElements(Set<String> elements) {
@@ -207,8 +213,19 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             }
             
             @Override
-            public String getSelectedElement() {
-                return SwingToolbar.this.taskSelect.getCurrentEntry().displayName;
+            public void setSelectedElement(String element) {
+                SwingToolbar.this.taskSelect.setCurrentEntry(SwingToolbar.this.taskSelect.new DropdownEntry(element));
+            }
+            
+            @Override
+            public void enable() {
+                SwingToolbar.this.taskSelect.setEnabled(true);
+            }
+            
+            @Override
+            public void disable() {
+                SwingToolbar.this.taskSelect.removeAllEntries();
+                SwingToolbar.this.taskSelect.setEnabled(false);
             }
         });
         
@@ -304,6 +321,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         this.addSeparator();
         this.entitySelect = new DropdownSelector(this.textureRegistry, "Entity");
+        this.entitySelect.setEnabled(false);
         this.add(this.entitySelect);
     }
     

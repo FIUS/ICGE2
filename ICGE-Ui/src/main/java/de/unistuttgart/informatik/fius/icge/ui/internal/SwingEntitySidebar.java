@@ -15,10 +15,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SimulationTreeListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
@@ -31,6 +35,11 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     private static final long serialVersionUID = -4409545257025298208L;
     
+    /** The simulation proxy */
+    private final SimulationProxy      simulationProxy;
+    /** The texture registry */
+    private final SwingTextureRegistry textureRegistry;
+    
     /** The root node of the entity list */
     public SimulationTreeNode rootNode;
     /** The hierarchical list of all entities */
@@ -40,15 +49,76 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     /**
      * The default constructor
+     * 
+     * @param simulationProxy
+     *     The simulation proxy to use
+     * @param textureRegistry
+     *     The texture registry the textures and icons are loaded from
      */
-    public SwingEntitySidebar() {
+    public SwingEntitySidebar(final SimulationProxy simulationProxy, final SwingTextureRegistry textureRegistry) {
+        // class setup
+        this.simulationProxy = simulationProxy;
+        this.textureRegistry = textureRegistry;
+        
+        // JTree setup
         this.entityListModel = new DefaultTreeModel(null, true);
         this.entityList = new JTree(this.entityListModel);
         this.entityList.setShowsRootHandles(false);
         this.entityList.setRootVisible(true);
-        
+        this.entityList.setEnabled(false);
         //TODO write custom entity renderer for the JTree
+        this.entityList.addTreeSelectionListener(new TreeSelectionListener() {
+            
+            @Override
+            public void valueChanged(TreeSelectionEvent arg0) {
+                SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(
+                        new InternalSimulationTreeNode(
+                                ((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList
+                                        .getLastSelectedPathComponent()).getUserObject())
+                        )
+                );
+            }
+        });
         
+        // Proxy setup
+        this.simulationProxy.setSimulationTreeListener(new SimulationTreeListener() {
+            
+            @Override
+            public SimulationTreeNode getSelectedElement() {
+                return new InternalSimulationTreeNode(
+                        ((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent())
+                                .getUserObject())
+                );
+            }
+            
+            @Override
+            public void setSelectedElement(SimulationTreeNode node) {
+                //TODO implement
+            }
+            
+            @Override
+            public void setRootNode(SimulationTreeNode rootNode) {
+                SwingEntitySidebar.this.setSimulationTreeRootNode(rootNode);
+            }
+            
+            @Override
+            public void updateSimulationTree() {
+                SwingEntitySidebar.this.updateSimulationTree();
+            }
+            
+            @Override
+            public void enable() {
+                SwingEntitySidebar.this.entityList.setEnabled(true);
+            }
+            
+            @Override
+            public void disable() {
+                SwingEntitySidebar.this.entityList.setEnabled(false);
+                SwingEntitySidebar.this.entityListModel.setRoot(null);
+            }
+        });
+        
+        // Sidebar setup
         JScrollPane pane = new JScrollPane(this.entityList);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -67,6 +137,12 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     @Override
     public void updateSimulationTree() {
         this.entityListModel.setRoot(generateDefaultMutableTreeNodeFromSimulationTreeNode(this.rootNode));
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        this.entityList.setEnabled(enabled);
     }
     
     /**
