@@ -9,12 +9,12 @@ before_install:
 - scriptsAndTools/installCiRequiredTools.sh
 jobs:
   include:
-  - stage: test
-    name: verify format
+  - stage: "test"
+  - name: "Verify format"
     script:
     - scriptsAndTools/verifyFormat.sh
   - stage: deploy
-    name: versionBumpAndRelease
+    name: "Bump version and release"
     script:
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh;
       fi
