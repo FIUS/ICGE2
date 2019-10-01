@@ -164,10 +164,10 @@ public interface SimulationProxy {
          * Setter function for the currently active element
          * 
          * @param element
-         *      The element to select
+         *     The element to select
          */
         void setSelectedElement(String element);
-
+        
         /**
          * Setter function for all available elements. Use null to clear.
          * 
@@ -175,12 +175,12 @@ public interface SimulationProxy {
          *     The set of new selectable values
          */
         void setElements(Set<String> elements);
-
+        
         /**
          * This function enables the task selector
          */
         void enable();
-
+        
         /**
          * This function disables the task selector and clears all elements!
          */
@@ -207,7 +207,7 @@ public interface SimulationProxy {
     //
     // Toolbar - Controlls
     //
-
+    
     //
     // Sidebar - Entity Tree
     //

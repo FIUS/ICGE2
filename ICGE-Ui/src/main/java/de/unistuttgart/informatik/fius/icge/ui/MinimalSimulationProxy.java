@@ -10,8 +10,8 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 /**
- * A MinimalSimulationProxy implementation. This implementation is used if you want to spwan a ui but don't care about
- * a correct proxy. This is only a class designed for testing and not for productivity use. Only use this class if you
+ * A MinimalSimulationProxy implementation. This implementation is used if you want to spwan a ui but don't care about a
+ * correct proxy. This is only a class designed for testing and not for productivity use. Only use this class if you
  * know what you are doing.
  * 
  * The class is deprecated to avoid acidental and uninformed use!

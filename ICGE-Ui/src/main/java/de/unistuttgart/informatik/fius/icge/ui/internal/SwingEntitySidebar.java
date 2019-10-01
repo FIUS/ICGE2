@@ -36,7 +36,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     private final SimulationProxy      simulationProxy;
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
-
+    
     /** The root node of the entity list */
     public SimulationTreeNode rootNode;
     /** The hierarchical list of all entities */
@@ -56,7 +56,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         // class setup
         this.simulationProxy = simulationProxy;
         this.textureRegistry = textureRegistry;
-
+        
         // JTree setup
         this.entityListModel = new DefaultTreeModel(null, true);
         this.entityList = new JTree(this.entityListModel);

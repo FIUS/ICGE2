@@ -115,7 +115,7 @@ public class DropdownSelector extends JPanel {
     public DropdownEntry getCurrentEntry() {
         return (DropdownEntry) this.comboBox.getEditor().getItem();
     }
-
+    
     /**
      * Setter for the currently selected entry
      * 
@@ -155,7 +155,7 @@ public class DropdownSelector extends JPanel {
     public void addSelectionListener(ItemListener listener) {
         this.comboBox.addItemListener(listener);
     }
-
+    
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
