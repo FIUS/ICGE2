@@ -25,14 +25,13 @@ class GameWindowFactoryTest {
      * {@link de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory#createGameWindow(SimulationProxy)}.
      */
     @Test
+    @SuppressWarnings("static-method")
     void testCreateGameWindow() {
         @SuppressWarnings("deprecation")
         final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
         final GameWindow window = GameWindowFactory.createGameWindow(simulationProxy);
         Assertions.assertNotNull(window);
         Assertions.assertNotNull(window.getPlayfieldDrawer());
-        Assertions.assertNotNull(window.getTextureRegistry());
         Assertions.assertNotNull(window.getToolbar());
     }
-    
 }
