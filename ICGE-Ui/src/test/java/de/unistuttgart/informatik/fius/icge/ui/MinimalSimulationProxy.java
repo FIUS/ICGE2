@@ -26,6 +26,9 @@ public class MinimalSimulationProxy implements SimulationProxy {
     /** The task selector listener */
     public TaskSelectorListener taskSelectorListener;
     
+    /** The entity draw listener */
+    public EntityDrawListener entityDrawListener;
+    
     /** The simulation tree listener */
     public SimulationTreeListener simulationTreeListener;
     
@@ -57,6 +60,11 @@ public class MinimalSimulationProxy implements SimulationProxy {
     @Override
     public void selectedTaskChange(String element) {
         // Intentionally left blank
+    }
+    
+    @Override
+    public void setEntityDrawListener(EntityDrawListener listener) {
+        this.entityDrawListener = listener;
     }
     
     @Override

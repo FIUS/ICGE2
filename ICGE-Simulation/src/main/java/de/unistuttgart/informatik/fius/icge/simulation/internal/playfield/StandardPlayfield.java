@@ -24,6 +24,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOn
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
+import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
 
 /**
@@ -37,6 +39,8 @@ public class StandardPlayfield implements Playfield {
     private final Map<Position, PlayfieldCell> cells           = new HashMap<>();
     private final Map<Entity, Position>        entityPositions = new HashMap<>();
     
+    private EntityDrawListener drawer;
+    
     /**
      * Initialize the playfield for the given simulation
      * 
@@ -49,6 +53,21 @@ public class StandardPlayfield implements Playfield {
             this.drawEntities();
             return true;
         });
+    }
+    
+    /**
+     * Set the entity draw listener.
+     * 
+     * @param listener
+     * 
+     * @throws ListenerSetException
+     *     If listener is already set and new listener is not null
+     */
+    public void setEntityDrawListener(EntityDrawListener listener) {
+        if ((this.drawer == null) || (listener == null)) {
+            this.drawer = listener;
+            this.drawEntities();
+        } else throw new ListenerSetException();
     }
     
     /**
@@ -71,7 +90,9 @@ public class StandardPlayfield implements Playfield {
         for (final Entity entity : this.getAllEntities()) {
             drawables.add(entity.getDrawInformation());
         }
-        this.getSimulation().getGameWindow().getPlayfieldDrawer().setDrawables(drawables);
+        if (this.drawer != null) {
+            this.drawer.setDrawables(drawables);
+        }
     }
     
     @Override
@@ -142,6 +163,8 @@ public class StandardPlayfield implements Playfield {
         this.addEntityToCell(pos, entity);
         
         entity.initOnPlayfield(this);
+        
+        this.drawEntities();
     }
     
     @Override
@@ -156,6 +179,8 @@ public class StandardPlayfield implements Playfield {
         this.removeEntityFromCell(oldPos, entity);
         this.addEntityToCell(pos, entity);
         this.entityPositions.put(entity, pos);
+        
+        this.drawEntities();
     }
     
     @Override
@@ -168,6 +193,8 @@ public class StandardPlayfield implements Playfield {
         final Position pos = this.entityPositions.get(entity);
         this.removeEntityFromCell(pos, entity);
         this.entityPositions.remove(entity, pos);
+        
+        this.drawEntities();
     }
     
     @Override

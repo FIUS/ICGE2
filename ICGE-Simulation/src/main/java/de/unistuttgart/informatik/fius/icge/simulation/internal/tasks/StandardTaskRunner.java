@@ -9,34 +9,50 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.tasks;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CompletableFuture;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
-import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRunner;
 
 
 /**
- * The standard implementation of {@link TaskRunner}.
+ * The standard runner for {@link Task} instances.
  * 
  * @author Tim Neumann
  */
-public class StandardTaskRunner implements TaskRunner {
+public class StandardTaskRunner {
     
-    @Override
-    public boolean runTask(final Class<? extends Task> taskToRun, final Simulation sim) {
+    private final Task       taskToRun;
+    private final Simulation sim;
+    
+    /**
+     * Create a new task runner.
+     * 
+     * @param taskToRun
+     *     The Task instance to run
+     * @param sim
+     *     The simulation to run this Task instance with
+     */
+    public StandardTaskRunner(final Task taskToRun, final Simulation sim) {
         if ((taskToRun == null) || (sim == null)) throw new IllegalArgumentException("Argument is null.");
+        this.taskToRun = taskToRun;
+        this.sim = sim;
+    }
+    
+    /**
+     * Run the given task and verify the solution.
+     * 
+     * @return true if the task was completed successfully and the solution could be verified
+     */
+    public CompletableFuture<Boolean> runTask() {
+        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(this::executeTask);
         
-        try {
-            final Task task = taskToRun.getDeclaredConstructor().newInstance();
-            task.prepare(sim);
-            task.solve();
-            return task.verify();
-        } catch (
-                InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e
-        ) {
-            throw new IllegalArgumentException("Failed to instantiate.", e);
-        }
+        return future;
+    }
+    
+    private boolean executeTask() {
+        this.taskToRun.prepare(this.sim);
+        this.taskToRun.solve();
+        return this.taskToRun.verify();
     }
 }

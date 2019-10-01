@@ -9,8 +9,20 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+import java.util.concurrent.CompletableFuture;
+
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRegistry;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
+import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
@@ -20,7 +32,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
  * @author Tobias Wältken
  * @version 1.0
  */
-public class StandardSimulationProxy implements SimulationProxy {
+public class StandardSimulationProxy implements SimulationProxy, SimulationHost {
     
     /** A lookup table for the simulation times */
     public static final int[] SIMULATION_TIMES = {
@@ -30,12 +42,25 @@ public class StandardSimulationProxy implements SimulationProxy {
             // 5000 / (x² + 2x + 5)
     };
     
-    private ButtonStateListener buttonStateListener;
-    private SpeedSliderListener speedSliderListener;
+    // GAME WINDOW
+    private GameWindow gameWindow;
     
+    // REGISTRIES
+    private TextureRegistry      textureRegistry;
+    private StandardTaskRegistry taskRegistry;
+    
+    // CURRENT SIMULATION
     private StandardSimulationClock simulationClock;
     
-    private TaskSelectorListener taskSelectorListener;
+    // LISTENERS
+    private ButtonStateListener buttonStateListener;
+    private SpeedSliderListener speedSliderListener;
+    private EntityDrawListener  entityDrawListener;
+    
+    // CURRENT SIMULATION AND TASKS
+    private String                     currentTaskName    = null;
+    private StandardSimulation         currentSimulation  = null;
+    private CompletableFuture<Boolean> currentRunningTask = null;
     
     private SimulationTreeListener simulationTreeListener;
     
@@ -44,6 +69,27 @@ public class StandardSimulationProxy implements SimulationProxy {
      */
     public StandardSimulationProxy() {
         this.simulationClock = null;
+        this.taskRegistry = new StandardTaskRegistry();
+    }
+    
+    /**
+     * Set the game window associated with this simulation proxy.
+     * 
+     * @param gameWindow
+     */
+    public void setGameWindow(GameWindow gameWindow) {
+        this.gameWindow = gameWindow;
+        this.textureRegistry = gameWindow.getTextureRegistry();
+    }
+    
+    @Override
+    public TaskRegistry getTaskRegistry() {
+        return this.taskRegistry;
+    }
+    
+    @Override
+    public TextureRegistry getTextureRegistry() {
+        return this.textureRegistry;
     }
     
     /**
@@ -113,7 +159,7 @@ public class StandardSimulationProxy implements SimulationProxy {
                 if (this.simulationClock.isRunning()) {
                     this.simulationClock.stopInternal();
                 }
-                //TODO clean simulation
+                this.switchTask(this.currentTaskName);
                 this.buttonStateListener.changeButtonState(ClockButtonState.STOPPED);
                 break;
             
@@ -145,14 +191,60 @@ public class StandardSimulationProxy implements SimulationProxy {
     
     @Override
     public void setTaskSelectorListener(TaskSelectorListener listener) {
-        if ((this.taskSelectorListener == null) || (listener == null)) {
-            this.taskSelectorListener = listener;
-        } else throw new ListenerSetException();
+        this.taskRegistry.setTaskSelectorListener(listener);
     }
     
     @Override
     public void selectedTaskChange(String element) {
-        // Intentionally left blank
+        if (!element.equals(this.currentTaskName)) {
+            this.switchTask(element);
+        }
+    }
+    
+    private synchronized void switchTask(String newTaskName) {
+        
+        final Task task = this.taskRegistry.getTask(newTaskName);
+        
+        // CLEANUP
+        if (this.currentSimulation != null) {
+            this.currentSimulation.setEntityDrawListener(null);
+        }
+        if (this.currentRunningTask != null) {
+            this.currentRunningTask.cancel(true);
+        }
+        
+        // SETUP NEW
+        
+        final StandardPlayfield playfield = new StandardPlayfield();
+        final StandardSimulationClock newSimulationClock = new StandardSimulationClock();
+        
+        final StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
+        final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
+        
+        final StandardSimulation simulation = new StandardSimulation(
+                playfield, newSimulationClock, entityProgramRegistry, entityProgramRunner
+        );
+        final StandardTaskRunner taskRunner = new StandardTaskRunner(task, simulation);
+        
+        simulation.setEntityDrawListener(this.entityDrawListener);
+        
+        // START TASK
+        final CompletableFuture<Boolean> runningTask = taskRunner.runTask();
+        
+        newSimulationClock.step();
+        
+        // REPLACE OLD
+        this.setSimulationClock(newSimulationClock);
+        this.currentTaskName = newTaskName;
+        this.currentSimulation = simulation;
+        this.currentRunningTask = runningTask;
+    }
+    
+    @Override
+    public void setEntityDrawListener(EntityDrawListener listener) {
+        if ((this.entityDrawListener == null) || (listener == null)) {
+            this.entityDrawListener = listener;
+        } else throw new ListenerSetException();
     }
     
     @Override

@@ -37,7 +37,7 @@ class SwingGameWindowUiTest {
     public void setup() {
         final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
-        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
+        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(simulationProxy, textureRegistry);
         final SwingToolbar toolbar = new SwingToolbar(simulationProxy, textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(simulationProxy, textureRegistry);
         final SwingConsole console = new SwingConsole();

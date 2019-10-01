@@ -9,12 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.manualstart;
 
-import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
-import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.BasicEntity;
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationHostFactory;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
@@ -23,6 +20,7 @@ import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
  * @author Tim Neumann
  */
 public class ManualStartSimulation {
+    
     private static String textureHandleWall;
     private static String textureHandleCoin;
     private static String animated;
@@ -32,38 +30,17 @@ public class ManualStartSimulation {
      *     the command line arguments. Not used.
      */
     public static void main(final String[] args) {
-        final Simulation sim = SimulationFactory.createSimulation();
-        prepareGameWindow(sim.getGameWindow());
-        sim.initialize();
-        sim.getPlayfield().addEntity(new Position(3, 4), new Wall());
-        sim.getSimulationClock().start();
-        while (true) {
-            // FIXME proper fix for garbage collection bug...
-        }
+        final SimulationHost host = SimulationHostFactory.createSimulationHost();
+        prepareTextures(host.getTextureRegistry());
+        TestEntity.TEXTURE_HANDLE = animated;
+        host.getTaskRegistry().registerTask("Test Task", new TestTask());
     }
     
-    private static void prepareGameWindow(GameWindow window) {
-        // load textures
-        final TextureRegistry tr = window.getTextureRegistry();
+    private static void prepareTextures(TextureRegistry tr) {
         textureHandleWall = tr.loadTextureFromResource("textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);
         textureHandleCoin = tr.loadTextureFromResource("textures/coin-default.png", ManualStartSimulation.class::getResourceAsStream);
         animated = tr.createAnimatedTexture(true);
         tr.addAnimationFrameToTexture(animated, textureHandleWall, 3);
         tr.addAnimationFrameToTexture(animated, textureHandleCoin, 3);
-        window.setWindowTitle("Manual simulation start");
-    }
-    
-    private static class Wall extends BasicEntity {
-        
-        @Override
-        protected String getTextureHandle() {
-            return animated;
-        }
-        
-        @Override
-        protected int getZPosition() {
-            return 0;
-        }
-        
     }
 }

@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -207,6 +208,41 @@ public interface SimulationProxy {
     //
     // Toolbar - Controlls
     //
+    
+    //
+    // Entity Drawing
+    //
+    
+    /**
+     * The entity draw listener allows the simulation to trigger redraws and set the drawable list.
+     */
+    public interface EntityDrawListener {
+        
+        /**
+         * Set the current list of Drawables to be rendered.
+         *
+         * @param drawables
+         *     the list of Drawables to render
+         */
+        void setDrawables(List<Drawable> drawables);
+        
+        /**
+         * (Re-)Draws the playfield.
+         * 
+         * @param tickCount
+         *     The number of the current tick
+         */
+        void draw(long tickCount);
+    }
+    
+    /**
+     * This function is used to set the one task entity draw listener and should only be called by the ui itself. The
+     * only way to reset this listener is to explicitly set it to null thus removing the old listener.
+     * 
+     * @param listener
+     *     the listener to store
+     */
+    void setEntityDrawListener(EntityDrawListener listener);
     
     //
     // Sidebar - Simulation Tree

@@ -11,8 +11,6 @@ package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
-import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRunner;
-import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
@@ -27,13 +25,6 @@ public interface Simulation {
      * @return The playfield used by this simulation
      */
     Playfield getPlayfield();
-    
-    /**
-     * Get the game window for this simulation.
-     * 
-     * @return the game window used by this simulation
-     */
-    GameWindow getGameWindow();
     
     /**
      * Get the simulation clock for this simulation.
@@ -55,13 +46,6 @@ public interface Simulation {
      * @return the entity program runner used by this simulation
      */
     EntityProgramRunner getEntityProgramRunner();
-    
-    /**
-     * Get the task runner for this simulation.
-     * 
-     * @return the task runner used by this simulation
-     */
-    TaskRunner getTaskRunner();
     
     /**
      * Initialize the simulation and all its submodules.

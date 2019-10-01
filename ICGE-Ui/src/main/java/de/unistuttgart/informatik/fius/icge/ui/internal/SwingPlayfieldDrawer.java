@@ -31,7 +31,8 @@ import javax.swing.JPanel;
 
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
-import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
 
 /**
@@ -82,17 +83,34 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private long           currentFrame      = 0;
     
     /**
-     * Initialize the PlayfieldDrawer.
-     *
-     * @param parent
-     *     the SwingGameWindow that contains this PlayfieldDrawer.
+     * Create a new SwingPlayfieldDrawer.
+     * 
+     * @param simulationProxy
+     *     The simulation proxy this SwingPlayfieldDrawer should subscribe to
+     * @param textureRegistry
+     *     The texture registry
      */
-    public void initialize(final SwingGameWindow parent) {
-        TextureRegistry tr = parent.getTextureRegistry();
-        if (!(tr instanceof SwingTextureRegistry)) {
-            throw new IllegalArgumentException("Only SwingTextureRegistry is supported!");
-        }
-        this.textureRegistry = (SwingTextureRegistry) tr;
+    public SwingPlayfieldDrawer(SimulationProxy simulationProxy, SwingTextureRegistry textureRegistry) {
+        this.textureRegistry = textureRegistry;
+        
+        simulationProxy.setEntityDrawListener(new EntityDrawListener() {
+            
+            @Override
+            public void setDrawables(List<Drawable> drawables) {
+                SwingPlayfieldDrawer.this.setDrawables(drawables);
+            }
+            
+            @Override
+            public void draw(long tickCount) {
+                SwingPlayfieldDrawer.this.draw(tickCount);
+            }
+        });
+    }
+    
+    /**
+     * Initialize the PlayfieldDrawer.
+     */
+    public void initialize() {
         
         this.addMouseListener(new MouseListener() {
             
