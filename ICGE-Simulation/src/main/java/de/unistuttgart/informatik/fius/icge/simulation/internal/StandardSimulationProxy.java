@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
 /**
@@ -35,6 +36,8 @@ public class StandardSimulationProxy implements SimulationProxy {
     private StandardSimulationClock simulationClock;
     
     private TaskSelectorListener taskSelectorListener;
+
+    private SimulationTreeListener simulationTreeListener;
     
     /**
      * Default Constructor
@@ -149,6 +152,18 @@ public class StandardSimulationProxy implements SimulationProxy {
     
     @Override
     public void selectedTaskChange(String element) {
+        // Intentionally left blank
+    }
+    
+    @Override
+    public void setSimulationTreeListener(SimulationTreeListener listener) {
+        if ((this.simulationTreeListener == null) || (listener == null)) {
+            this.simulationTreeListener = listener;
+        } else throw new ListenerSetException();
+    }
+    
+    @Override
+    public void selectedSimulationEntityChange(SimulationTreeNode node) {
         // Intentionally left blank
     }
 }

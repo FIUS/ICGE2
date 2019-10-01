@@ -31,6 +31,9 @@ public class MinimalSimulationProxy implements SimulationProxy {
     /** The task selector listener */
     public TaskSelectorListener taskSelectorListener;
     
+    /** The simulation tree listener */
+    public SimulationTreeListener simulationTreeListener;
+
     @Override
     public void setButtonStateListener(ButtonStateListener listener) {
         this.buttonStateListener = listener;
@@ -58,6 +61,16 @@ public class MinimalSimulationProxy implements SimulationProxy {
     
     @Override
     public void selectedTaskChange(String element) {
+        // Intentionally left blank
+    }
+    
+    @Override
+    public void setSimulationTreeListener(SimulationTreeListener listener) {
+        this.simulationTreeListener = listener;
+    }
+    
+    @Override
+    public void selectedSimulationEntityChange(SimulationTreeNode node) {
         // Intentionally left blank
     }
 }

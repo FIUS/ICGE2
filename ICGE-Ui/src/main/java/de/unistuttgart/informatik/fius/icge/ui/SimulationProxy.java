@@ -209,6 +209,68 @@ public interface SimulationProxy {
     //
     
     //
-    // Sidebar - Entity Tree
+    // Sidebar - Simulation Tree
     //
+
+    /**
+     * The listener class for the simulation tree
+     */
+    public interface SimulationTreeListener {
+
+        /**
+         * Getter function for the currently selected element
+         * 
+         * @return Returns the selected element as {@link SimulationTreeNode}
+         */
+        SimulationTreeNode getSelectedElement();
+
+        /**
+         * This function allows you to set the selected node
+         * 
+         * @param node
+         *     The node to select
+         */
+        void setSelectedElement(SimulationTreeNode node);
+
+        /**
+         * This function allows a complete exchange of the simulation tree. Calls updateSimulationTree implicitly.
+         * 
+         * @param rootNode
+         *     The new root node of the simulation
+         */
+        void setRootNode(SimulationTreeNode rootNode);
+        
+        /**
+         * This function rebuilds the simulation tree and thus updating it if nodes below the rootnode changed where
+         * removed or added.
+         */
+        void updateSimulationTree();
+
+        /**
+         * Enables the simulation tree
+         */
+        void enable();
+
+        /**
+         * Disables the simulation tree
+         */
+        void disable();
+    }
+
+    /**
+     * This function is used to set the one simulation tree listener and should only be called by the ui itself. The
+     * only way to reset this listener is to explicitly set it to null thus removing the old listener.
+     * 
+     * @param listener
+     *     the listener to store
+     */
+    void setSimulationTreeListener(SimulationTreeListener listener);
+
+    /**
+     * This function gets called when the user selects a different node
+     * 
+     * @param node
+     *     The node with was selected
+     */
+    void selectedSimulationEntityChange(SimulationTreeNode node);
 }

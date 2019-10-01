@@ -20,6 +20,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SimulationTreeListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
@@ -62,8 +63,45 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         this.entityList = new JTree(this.entityListModel);
         this.entityList.setShowsRootHandles(false);
         this.entityList.setRootVisible(true);
+        this.entityList.setEnabled(false);
         //TODO write custom entity renderer for the JTree
         
+        // Proxy setup
+        this.simulationProxy.setSimulationTreeListener(new SimulationTreeListener(){
+        
+            @Override
+            public void updateSimulationTree() {
+                SwingEntitySidebar.this.updateSimulationTree();
+            }
+        
+            @Override
+            public void setSelectedElement(SimulationTreeNode node) {
+                //TODO implement
+            }
+        
+            @Override
+            public void setRootNode(SimulationTreeNode rootNode) {
+                SwingEntitySidebar.this.setSimulationTreeRootNode(rootNode);
+            }
+        
+            @Override
+            public SimulationTreeNode getSelectedElement() {
+                //TODO implement
+                return null;
+            }
+        
+            @Override
+            public void enable() {
+                SwingEntitySidebar.this.entityList.setEnabled(true);
+            }
+        
+            @Override
+            public void disable() {
+                SwingEntitySidebar.this.entityList.setEnabled(false);
+                SwingEntitySidebar.this.entityListModel.setRoot(null);
+            }
+        });
+
         // Sidebar setup
         JScrollPane pane = new JScrollPane(this.entityList);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -83,6 +121,12 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     @Override
     public void updateSimulationTree() {
         this.entityListModel.setRoot(generateDefaultMutableTreeNodeFromSimulationTreeNode(this.rootNode));
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        this.entityList.setEnabled(enabled);
     }
     
     /**
