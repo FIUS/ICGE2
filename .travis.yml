@@ -13,6 +13,7 @@ jobs:
   - name: "Verify format"
     script:
     - scriptsAndTools/verifyFormat.sh
+    - git status
   - stage: deploy
     name: "Bump version and release"
     script:
