@@ -75,7 +75,7 @@ git tag "$version"
 "$dir/versionBumpLocal.sh" "$newVersion"
 git commit -a -m "Prepare for develoment on $newVersion"
 
-"$dir/prepareGitForPush.sh"
+source "$dir/prepareGitForPush.sh"
 
 git push origin "HEAD:$TRAVIS_BRANCH"
 git push origin "$version"
