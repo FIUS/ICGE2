@@ -1,7 +1,7 @@
 <settings>
     <servers>
         <server>
-            <id>c-hack.internal</id>
+            <id>c-hack.icge-release</id>
             <username>${repo.login}</username>
             <password>${repo.pwd}</password>
         </server>
