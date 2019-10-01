@@ -10,7 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
 /**
- * This exception indicates that an entity program cannot be run.
+ * This exception indicates that the element already exists.
  * 
  * @author Tim Neumann
  */

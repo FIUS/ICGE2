@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 
@@ -29,18 +30,22 @@ public class StandardSimulationProxy implements SimulationProxy {
             // 5000 / (x² + 2x + 5)
     };
     
-    private ButtonStateListener buttonStateListener;
-    private SpeedSliderListener speedSliderListener;
+    // REGISTRIES
+    private StandardTaskRegistry taskRegistry;
     
+    // CURRENT SIMULATION
     private StandardSimulationClock simulationClock;
     
-    private TaskSelectorListener taskSelectorListener;
+    // LISTENERS
+    private ButtonStateListener buttonStateListener;
+    private SpeedSliderListener speedSliderListener;
     
     /**
      * Default Constructor
      */
     public StandardSimulationProxy() {
         this.simulationClock = null;
+        this.taskRegistry = new StandardTaskRegistry();
     }
     
     /**
@@ -142,9 +147,7 @@ public class StandardSimulationProxy implements SimulationProxy {
     
     @Override
     public void setTaskSelectorListener(TaskSelectorListener listener) {
-        if ((this.taskSelectorListener == null) || (listener == null)) {
-            this.taskSelectorListener = listener;
-        } else throw new ListenerSetException();
+        this.taskRegistry.setTaskSelectorListener(listener);
     }
     
     @Override
