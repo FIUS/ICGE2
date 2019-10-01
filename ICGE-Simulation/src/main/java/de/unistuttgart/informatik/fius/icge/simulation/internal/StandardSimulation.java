@@ -17,8 +17,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProg
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
-import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
+import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
 

@@ -27,10 +27,10 @@ public class AnimatedTexture implements Texture {
     private boolean                    loop;
     
     /**
-     * Create a new Texture.
+     * Create a new animated Texture.
      * 
-     * @param texture
-     *     the image to use as texture.
+     * @param registry
+     *     the texture registry.
      * @param loop
      *     set to true if the animation should loop
      */

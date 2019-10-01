@@ -87,6 +87,8 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      * 
      * @param simulationProxy
      *     The simulation proxy this SwingPlayfieldDrawer should subscribe to
+     * @param textureRegistry
+     *     The texture registry
      */
     public SwingPlayfieldDrawer(SimulationProxy simulationProxy, SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;

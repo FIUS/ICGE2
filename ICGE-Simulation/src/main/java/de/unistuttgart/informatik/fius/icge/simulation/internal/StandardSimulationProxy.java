@@ -10,9 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.FutureTask;
 
-import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
@@ -218,13 +216,13 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         // SETUP NEW
         
         final StandardPlayfield playfield = new StandardPlayfield();
-        final StandardSimulationClock simulationClock = new StandardSimulationClock();
+        final StandardSimulationClock newSimulationClock = new StandardSimulationClock();
         
         final StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
         final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
         
         final StandardSimulation simulation = new StandardSimulation(
-                playfield, simulationClock, entityProgramRegistry, entityProgramRunner
+                playfield, newSimulationClock, entityProgramRegistry, entityProgramRunner
         );
         final StandardTaskRunner taskRunner = new StandardTaskRunner(task, simulation);
         
@@ -233,10 +231,10 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         // START TASK
         final CompletableFuture<Boolean> runningTask = taskRunner.runTask();
         
-        simulationClock.step();
+        newSimulationClock.step();
         
         // REPLACE OLD
-        this.setSimulationClock(simulationClock);
+        this.setSimulationClock(newSimulationClock);
         this.currentTaskName = newTaskName;
         this.currentSimulation = simulation;
         this.currentRunningTask = runningTask;

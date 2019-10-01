@@ -9,16 +9,14 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.tasks;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.FutureTask;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 
 
 /**
- * The standard implementation of {@link TaskRunner}.
+ * The standard runner for {@link Task} instances.
  * 
  * @author Tim Neumann
  */
@@ -27,6 +25,14 @@ public class StandardTaskRunner {
     private final Task       taskToRun;
     private final Simulation sim;
     
+    /**
+     * Create a new task runner.
+     * 
+     * @param taskToRun
+     *     The Task instance to run
+     * @param sim
+     *     The simulation to run this Task instance with
+     */
     public StandardTaskRunner(final Task taskToRun, final Simulation sim) {
         if ((taskToRun == null) || (sim == null)) throw new IllegalArgumentException("Argument is null.");
         this.taskToRun = taskToRun;
@@ -45,7 +51,7 @@ public class StandardTaskRunner {
     }
     
     private boolean executeTask() {
-        this.taskToRun.prepare(sim);
+        this.taskToRun.prepare(this.sim);
         this.taskToRun.solve();
         return this.taskToRun.verify();
     }

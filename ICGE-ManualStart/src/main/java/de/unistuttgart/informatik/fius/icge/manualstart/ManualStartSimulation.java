@@ -9,13 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.manualstart;
 
-import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHostFactory;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.BasicEntity;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
