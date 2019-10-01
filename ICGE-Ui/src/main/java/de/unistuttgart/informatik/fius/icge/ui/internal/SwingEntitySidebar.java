@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -65,13 +67,20 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         this.entityList.setRootVisible(true);
         this.entityList.setEnabled(false);
         //TODO write custom entity renderer for the JTree
+        this.entityList.addTreeSelectionListener(new TreeSelectionListener(){
+        
+            @Override
+            public void valueChanged(TreeSelectionEvent arg0) {
+                SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(new InternalSimulationTreeNode(((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent()).getUserObject())));
+            }
+        });
         
         // Proxy setup
         this.simulationProxy.setSimulationTreeListener(new SimulationTreeListener() {
             
             @Override
-            public void updateSimulationTree() {
-                SwingEntitySidebar.this.updateSimulationTree();
+            public SimulationTreeNode getSelectedElement() {
+                return new InternalSimulationTreeNode(((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent()).getUserObject()));
             }
             
             @Override
@@ -85,9 +94,8 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             }
             
             @Override
-            public SimulationTreeNode getSelectedElement() {
-                //TODO implement
-                return null;
+            public void updateSimulationTree() {
+                SwingEntitySidebar.this.updateSimulationTree();
             }
             
             @Override
