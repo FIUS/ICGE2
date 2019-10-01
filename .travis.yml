@@ -1,24 +1,23 @@
 language: java
+env:
+  global:
+    - REPO_LOGIN=icge-deploy
+    - secure: IWUWy5Q+FnL4CaJuFLNEQbhmJlJY/kaWoiIa7P/MrBzfsTA1qqvhTZr1/ZFYqMGn6hMCuKqSS7EGCcY1cxJeUipnGoXggTuQBD257/AqwJfXdS7HoHoc46bvDaVwv957PM74j7PU8FylSTGpPXImgA1aiwPS7JLxULhlwsWJu/WPrJMdoGKU7WjWVHcsVOO9skXdTSG4Nq2ujUYKGQQtaQk65XjGSk9Jqc27kuys7CX8genR8xTQKzZu789J1/onR4m6h8i2itMNwU1uSDym9yQpR5G8NleqgLyikhQM32x3etEYo5KyimEJgZRyJm759f0syy/WFB+5TykmDz0f4HlhZw76m71xJaDwdm6yKib+GrUqsv3H6hXcvVa1aWaWZOTwRv+AL1/3Yh6fFIFUZhjnphAE8edo4DqAOcGhiu6TgGFwppedZ3F+jV8Zg0afCFUgt6+nExfNsDLUufiwwWOUcoqUcU9WnELmJuPP6sUuQXgJPQEfm1zU1lpqRzInql21cDhUJwf1uQJvQf4vYa8EHOn02sXYYk3qNEs83hm3QlktrJB4uaAvIOTcZ0slxoZwcvb6YOUoRagOKSzmt10oEhrB/bkGsAsWY/gqc23uiii8XBL7C37BnkLGrvaSd7OhhCb8o3DjV5icq0me/aqvk4hzBJQ33Pt713d/lLg=
 jdk:
-  - openjdk11
+- openjdk11
 before_install:
-  - scriptsAndTools/installCiRequiredTools.sh
-
+- scriptsAndTools/installCiRequiredTools.sh
 jobs:
   include:
-    - stage: "test"
-      name: "unit tests"
-      script:
-      - mvn test
-      name: "verify format"
-      script:
-      - scriptsAndTools/verifyFormat.sh
-    - stage: "deploy"
-      name: "versionBumpAndRelease"
-      script: 
-      - 'if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh; fi'
-
+  - stage: "test"
+  - name: "Verify format"
+    script:
+    - scriptsAndTools/verifyFormat.sh
+  - stage: deploy
+    name: "Bump version and release"
+    script:
+    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh;
+      fi
 services:
-  - xvfb # for ui tests
-
+- xvfb
 dist: bionic

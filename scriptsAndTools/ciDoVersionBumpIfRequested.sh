@@ -66,5 +66,5 @@ git tag "$version"
 "$dir/versionBumpLocal.sh" "$newVersion"
 git commit -a -m "Bump version to $newVersion"
 
-git push
-git push "$version"
+git push origin "HEAD:$TRAVIS_BRANCH"
+git push origin "$version"
