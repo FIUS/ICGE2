@@ -12,6 +12,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+
 /**
  * A SimulationTreeNode is a data container used to build the simulation tree which is shown in the entity sidebar to
  * allow the user to see and easily select entities in the simulation.

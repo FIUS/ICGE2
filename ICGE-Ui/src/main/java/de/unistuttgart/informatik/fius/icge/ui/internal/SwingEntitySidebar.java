@@ -67,11 +67,16 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         this.entityList.setRootVisible(true);
         this.entityList.setEnabled(false);
         //TODO write custom entity renderer for the JTree
-        this.entityList.addTreeSelectionListener(new TreeSelectionListener(){
-        
+        this.entityList.addTreeSelectionListener(new TreeSelectionListener() {
+            
             @Override
             public void valueChanged(TreeSelectionEvent arg0) {
-                SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(new InternalSimulationTreeNode(((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent()).getUserObject())));
+                SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(
+                        new InternalSimulationTreeNode(
+                                ((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList
+                                        .getLastSelectedPathComponent()).getUserObject())
+                        )
+                );
             }
         });
         
@@ -80,7 +85,10 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             
             @Override
             public SimulationTreeNode getSelectedElement() {
-                return new InternalSimulationTreeNode(((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent()).getUserObject()));
+                return new InternalSimulationTreeNode(
+                        ((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent())
+                                .getUserObject())
+                );
             }
             
             @Override

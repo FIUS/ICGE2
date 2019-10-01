@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
+
 /**
  * InternalSimulationTreeNode
  * 
@@ -18,7 +19,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
  * @version 1.0
  */
 public class InternalSimulationTreeNode extends SimulationTreeNode {
-
+    
     /**
      * This protected constructor is used to generate SimulationTreeNodes from MutableTreeNodeData. Keep in mind that
      * MutableTreeNodeData contains no child information thus it is ALWAYS treated as a leaf node.
