@@ -12,6 +12,7 @@ package de.unistuttgart.informatik.fius.icge.manualstart;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
+
 /**
  * A MinimalSimulationProxy implementation. This implementation is used if you want to spwan a ui but don't care about a
  * correct proxy. This is only a class designed for testing and not for productivity use. Only use this class if you
