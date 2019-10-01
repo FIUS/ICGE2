@@ -17,7 +17,6 @@ import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory;
-import de.unistuttgart.informatik.fius.icge.ui.MinimalSimulationProxy;
 
 
 /**
@@ -25,7 +24,6 @@ import de.unistuttgart.informatik.fius.icge.ui.MinimalSimulationProxy;
  *
  * @author Tim Neumann
  */
-@SuppressWarnings("deprecation")
 public class ManualStartUi {
     
     /**

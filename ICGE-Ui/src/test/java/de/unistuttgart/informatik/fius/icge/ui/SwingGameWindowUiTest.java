@@ -35,7 +35,6 @@ class SwingGameWindowUiTest {
      */
     @BeforeEach
     public void setup() {
-        @SuppressWarnings("deprecation")
         final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();

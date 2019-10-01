@@ -119,7 +119,7 @@ public class DropdownSelector extends JPanel {
     /**
      * Setter for the currently selected entry
      * 
-     * WARNING: This is not checkt if it is available it can be ANY entry
+     * WARNING: This is not checked if it is available it can be ANY entry
      * 
      * @param entry
      *     The entry to set as selected

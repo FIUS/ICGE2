@@ -27,7 +27,6 @@ class GameWindowFactoryTest {
     @Test
     @SuppressWarnings("static-method")
     void testCreateGameWindow() {
-        @SuppressWarnings("deprecation")
         final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
         final GameWindow window = GameWindowFactory.createGameWindow(simulationProxy);
         Assertions.assertNotNull(window);

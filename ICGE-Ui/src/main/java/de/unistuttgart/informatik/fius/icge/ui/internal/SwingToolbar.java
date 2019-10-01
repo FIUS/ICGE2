@@ -225,7 +225,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             @Override
             public void disable() {
                 SwingToolbar.this.taskSelect.removeAllEntries();
-                SwingToolbar.this.taskSelect.setEnabled(true);
+                SwingToolbar.this.taskSelect.setEnabled(false);
             }
         });
         
