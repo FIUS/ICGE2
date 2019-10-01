@@ -68,12 +68,17 @@ newVersion="$versionFirstPart.$versionLastPartIncreased-Snapshot"
 
 mvn -s "$dir/m2settings.xml" deploy -Drepo.login=$REPO_LOGIN -Drepo.pwd=$REPO_PWD
 
+set -x
+
 git tag "$version"
 
 "$dir/versionBumpLocal.sh" "$newVersion"
 git commit -a -m "Prepare for develoment on $newVersion"
 
+ssh-add -l
+ssh git@github.com
+git fetch
+
 git push origin "HEAD:$TRAVIS_BRANCH"
 git push origin "$version"
-git commit -a -m "Prepare for develoment on $newVersion"
 
