@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 
 import javax.imageio.ImageIO;
@@ -35,6 +38,7 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 public class SwingTextureRegistry implements TextureRegistry {
     private final Map<String, String>  resourceToHandle = new HashMap<>();
     private final Map<String, String>  pathToHandle     = new HashMap<>();
+    private final Set<String>          animatedTextures = new HashSet<>();
     private final Map<String, Texture> handleToTexture  = new HashMap<>();
     
     /**
@@ -42,6 +46,15 @@ public class SwingTextureRegistry implements TextureRegistry {
      */
     public SwingTextureRegistry() {
         StaticUiTextures.load(this);
+    }
+    
+    /**
+     * Generate a new unique texture handle.
+     * 
+     * @return uuid texture handle
+     */
+    private static String generateNewTextureHandle() {
+        return UUID.randomUUID().toString();
     }
     
     /**
@@ -63,7 +76,7 @@ public class SwingTextureRegistry implements TextureRegistry {
             final BufferedImage texture = ImageIO.read(input);
             final String textureHandle = "resource://" + resourceName;
             this.resourceToHandle.put(resourceName, textureHandle);
-            this.handleToTexture.put(textureHandle, new Texture(texture));
+            this.handleToTexture.put(textureHandle, new StaticTexture(texture));
             return textureHandle;
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
@@ -80,11 +93,37 @@ public class SwingTextureRegistry implements TextureRegistry {
             final File textureFile = resolvedPath.toFile();
             final BufferedImage texture = ImageIO.read(textureFile);
             this.pathToHandle.put(fullPath, textureHandle);
-            this.handleToTexture.put(textureHandle, new Texture(texture));
+            this.handleToTexture.put(textureHandle, new StaticTexture(texture));
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested path could not be loaded!", e);
         }
         return textureHandle;
+    }
+    
+    @Override
+    public String createAnimatedTexture(boolean loop) {
+        String textureHandle = SwingTextureRegistry.generateNewTextureHandle();
+        
+        AnimatedTexture animTexture = new AnimatedTexture(this, loop);
+        this.handleToTexture.put(textureHandle, animTexture);
+        this.animatedTextures.add(textureHandle);
+        
+        return textureHandle;
+    }
+    
+    @Override
+    public void addAnimationFrameToTexture(String animatedTexture, String frameTexture, long frames) {
+        try {
+            AnimatedTexture animated = (AnimatedTexture) this.getTextureForHandle(animatedTexture);
+            animated.addAnimationFrame(frameTexture, frames);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("Texture handle was not a handle for an animated texture!", e);
+        }
+    }
+    
+    @Override
+    public boolean isTextureAnimated(String textureHandle) {
+        return this.animatedTextures.contains(textureHandle);
     }
     
     /**
