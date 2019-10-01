@@ -115,6 +115,18 @@ public class DropdownSelector extends JPanel {
     public DropdownEntry getCurrentEntry() {
         return (DropdownEntry) this.comboBox.getEditor().getItem();
     }
+
+    /**
+     * Setter for the currently selected entry
+     * 
+     * WARNING: This is not checkt if it is available it can be ANY entry
+     * 
+     * @param entry
+     *     The entry to set as selected
+     */
+    public void setCurrentEntry(DropdownEntry entry) {
+        this.comboBox.getEditor().setItem(entry);
+    }
     
     /**
      * This function adds an entry to the selector
@@ -142,5 +154,12 @@ public class DropdownSelector extends JPanel {
      */
     public void addSelectionListener(ItemListener listener) {
         this.comboBox.addItemListener(listener);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        this.comboBox.setEnabled(enabled);
+        this.label.setEnabled(enabled);
     }
 }

@@ -161,12 +161,30 @@ public interface SimulationProxy {
         String getSelectedElement();
         
         /**
+         * Setter function for the currently active element
+         * 
+         * @param element
+         *      The element to select
+         */
+        void setSelectedElement(String element);
+
+        /**
          * Setter function for all available elements. Use null to clear.
          * 
          * @param elements
          *     The set of new selectable values
          */
         void setElements(Set<String> elements);
+
+        /**
+         * This function enables the task selector
+         */
+        void enable();
+
+        /**
+         * This function disables the task selector and clears all elements!
+         */
+        void disable();
     }
     
     /**

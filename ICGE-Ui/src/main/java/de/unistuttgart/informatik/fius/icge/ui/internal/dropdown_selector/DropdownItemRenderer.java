@@ -69,7 +69,7 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
             JList<? extends DropdownEntry> list, DropdownEntry value, int index, boolean isSelected, boolean cellHasFocus
     ) {
         if (value == null) {
-            this.labelItem.setText("Nothing available!");
+            this.labelItem.setText("∅");
         } else {
             this.labelItem.setText(value.displayName);
             
