@@ -25,6 +25,7 @@ import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
 /**
@@ -62,6 +63,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     private String                     currentTaskName    = null;
     private StandardSimulation         currentSimulation  = null;
     private CompletableFuture<Boolean> currentRunningTask = null;
+    
+    private SimulationTreeListener simulationTreeListener;
     
     /**
      * Default Constructor
@@ -244,5 +247,17 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         if ((this.entityDrawListener == null) || (listener == null)) {
             this.entityDrawListener = listener;
         } else throw new ListenerSetException();
+    }
+    
+    @Override
+    public void setSimulationTreeListener(SimulationTreeListener listener) {
+        if ((this.simulationTreeListener == null) || (listener == null)) {
+            this.simulationTreeListener = listener;
+        } else throw new ListenerSetException();
+    }
+    
+    @Override
+    public void selectedSimulationEntityChange(SimulationTreeNode node) {
+        // Intentionally left blank
     }
 }

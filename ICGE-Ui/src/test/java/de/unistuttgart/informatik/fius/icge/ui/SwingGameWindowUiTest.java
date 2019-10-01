@@ -35,47 +35,11 @@ class SwingGameWindowUiTest {
      */
     @BeforeEach
     public void setup() {
-        final SimulationProxy simulationProxy = new SimulationProxy() {
-            
-            @Override
-            public void setButtonStateListener(final ButtonStateListener listener) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void buttonPressed(final ButtonType type) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void simulationSpeedChange(final int value) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void setTaskSelectorListener(TaskSelectorListener listener) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void selectedTaskChange(String element) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void setSpeedSliderListener(SpeedSliderListener listener) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void setEntityDrawListener(EntityDrawListener listener) {
-                // TODO Auto-generated method stub
-            }
-        };
+        final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
         final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(simulationProxy, textureRegistry);
         final SwingToolbar toolbar = new SwingToolbar(simulationProxy, textureRegistry);
-        final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
+        final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(simulationProxy, textureRegistry);
         final SwingConsole console = new SwingConsole();
         
         this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);

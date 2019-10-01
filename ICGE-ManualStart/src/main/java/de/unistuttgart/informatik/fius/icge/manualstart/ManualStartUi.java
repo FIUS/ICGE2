@@ -14,7 +14,6 @@ import java.util.List;
 
 import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory;
@@ -34,48 +33,8 @@ public class ManualStartUi {
      *     the command line arguments. Not used.
      */
     public static void main(final String[] args) {
-        //FIXME add correct simulation proxy
-        final GameWindow window = GameWindowFactory.createGameWindow(new SimulationProxy() {
-            
-            @Override
-            public void simulationSpeedChange(final int value) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void setButtonStateListener(final ButtonStateListener listener) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void buttonPressed(final ButtonType type) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void setTaskSelectorListener(TaskSelectorListener listener) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-            @Override
-            public void selectedTaskChange(String element) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-            @Override
-            public void setSpeedSliderListener(SpeedSliderListener listener) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-            @Override
-            public void setEntityDrawListener(EntityDrawListener listener) {
-                // TODO Auto-generated method stub
-                
-            }
-        });
+        final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
+        final GameWindow window = GameWindowFactory.createGameWindow(simulationProxy);
         
         // load textures
         final TextureRegistry tr = window.getTextureRegistry();
