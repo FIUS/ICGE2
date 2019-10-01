@@ -207,4 +207,8 @@ public interface SimulationProxy {
     //
     // Toolbar - Controlls
     //
+
+    //
+    // Sidebar - Entity Tree
+    //
 }

@@ -26,41 +26,9 @@ class GameWindowFactoryTest {
      */
     @Test
     void testCreateGameWindow() {
-        final GameWindow window = GameWindowFactory.createGameWindow(new SimulationProxy() {
-            
-            @Override
-            public void setButtonStateListener(final ButtonStateListener listener) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void buttonPressed(final ButtonType type) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void simulationSpeedChange(final int value) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void setTaskSelectorListener(TaskSelectorListener listener) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-            @Override
-            public void selectedTaskChange(String element) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-            @Override
-            public void setSpeedSliderListener(SpeedSliderListener listener) {
-                // TODO Auto-generated method stub
-                
-            }
-        });
+        @SuppressWarnings("deprecation")
+        final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
+        final GameWindow window = GameWindowFactory.createGameWindow(simulationProxy);
         Assertions.assertNotNull(window);
         Assertions.assertNotNull(window.getPlayfieldDrawer());
         Assertions.assertNotNull(window.getTextureRegistry());
