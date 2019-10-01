@@ -36,7 +36,7 @@ public class StandardSimulationProxy implements SimulationProxy {
     private StandardSimulationClock simulationClock;
     
     private TaskSelectorListener taskSelectorListener;
-
+    
     private SimulationTreeListener simulationTreeListener;
     
     /**

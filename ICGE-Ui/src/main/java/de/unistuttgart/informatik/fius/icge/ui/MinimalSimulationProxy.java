@@ -33,7 +33,7 @@ public class MinimalSimulationProxy implements SimulationProxy {
     
     /** The simulation tree listener */
     public SimulationTreeListener simulationTreeListener;
-
+    
     @Override
     public void setButtonStateListener(ButtonStateListener listener) {
         this.buttonStateListener = listener;
