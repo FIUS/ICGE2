@@ -106,7 +106,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     public void start() {
         // init jFrame
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.playfieldDrawer.initialize(this);
+        this.playfieldDrawer.initialize();
         this.addTempTestDataToEntitySidebar(); //FIXME Remove
         
         // convert toolbar

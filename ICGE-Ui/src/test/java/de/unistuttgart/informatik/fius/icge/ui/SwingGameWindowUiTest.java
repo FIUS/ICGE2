@@ -35,9 +35,7 @@ class SwingGameWindowUiTest {
      */
     @BeforeEach
     public void setup() {
-        final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
-        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer();
-        final SwingToolbar toolbar = new SwingToolbar(new SimulationProxy() {
+        final SimulationProxy simulationProxy = new SimulationProxy() {
             
             @Override
             public void setButtonStateListener(final ButtonStateListener listener) {
@@ -67,9 +65,16 @@ class SwingGameWindowUiTest {
             @Override
             public void setSpeedSliderListener(SpeedSliderListener listener) {
                 // TODO Auto-generated method stub
-                
             }
-        }, textureRegistry);
+            
+            @Override
+            public void setEntityDrawListener(EntityDrawListener listener) {
+                // TODO Auto-generated method stub
+            }
+        };
+        final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
+        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(simulationProxy, textureRegistry);
+        final SwingToolbar toolbar = new SwingToolbar(simulationProxy, textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar();
         final SwingConsole console = new SwingConsole();
         

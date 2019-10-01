@@ -69,6 +69,12 @@ public class ManualStartUi {
                 // TODO Auto-generated method stub
                 
             }
+            
+            @Override
+            public void setEntityDrawListener(EntityDrawListener listener) {
+                // TODO Auto-generated method stub
+                
+            }
         });
         
         // load textures

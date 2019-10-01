@@ -21,8 +21,10 @@ import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.TimerAlreadyRunning;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
+import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
 
 /**
@@ -36,7 +38,7 @@ public class StandardSimulationClock implements SimulationClock {
     
     private StandardSimulationProxy simulationProxy;
     
-    private PlayfieldDrawer drawer;
+    private EntityDrawListener drawer;
     
     private final Object tickListenerLock = new Object();
     
@@ -62,13 +64,22 @@ public class StandardSimulationClock implements SimulationClock {
     }
     
     /**
-     * Initialize this standard simulation clock.
-     *
-     * @param parent
-     *     The simulation for this simulation clock
+     * Set the entity draw listener.
+     * 
+     * @param listener
+     * 
+     * @throws IllegalStateException
+     *     If clock is running
+     * @throws ListenerSetException
+     *     If listener is already set and new listener is not null
      */
-    public void initialize(final Simulation parent) {
-        this.drawer = parent.getGameWindow().getPlayfieldDrawer();
+    public void setEntityDrawListener(EntityDrawListener listener) {
+        if (this.isRunning()) {
+            throw new IllegalStateException("Draw listener can only be set when clock is stopped or paused!");
+        }
+        if ((this.drawer == null) || (listener == null)) {
+            this.drawer = listener;
+        } else throw new ListenerSetException();
     }
     
     /**
@@ -174,7 +185,9 @@ public class StandardSimulationClock implements SimulationClock {
             if ((this.tickCount % SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
                 this.tickSimulation(this.tickCount / SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK);
             }
-            this.drawer.draw(this.tickCount);
+            if (this.drawer != null) {
+                this.drawer.draw(this.tickCount);
+            }
         }
         
     }

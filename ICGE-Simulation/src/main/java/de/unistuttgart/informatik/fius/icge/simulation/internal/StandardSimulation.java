@@ -18,8 +18,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.S
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
-import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRunner;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
 
 /**
@@ -29,18 +29,14 @@ import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
  */
 public class StandardSimulation implements Simulation {
     
-    private final GameWindow                    window;
     private final StandardPlayfield             playfield;
     private final StandardSimulationClock       simulationClock;
     private final StandardEntityProgramRegistry entityProgramRegistry;
     private final StandardEntityProgramRunner   entityProgramRunner;
-    private final StandardTaskRunner            taskRunner;
     
     /**
      * Creates a new standard simulation with the given parameters.
      * 
-     * @param window
-     *     The game window to use
      * @param playfield
      *     The playfield to use
      * @param simulationClock
@@ -49,20 +45,15 @@ public class StandardSimulation implements Simulation {
      *     The entityProgramRegistry to use
      * @param entityProgramRunner
      *     The entityProgramRunner to use
-     * @param taskRunner
-     *     The taskRunner to use
      */
     public StandardSimulation(
-            final GameWindow window, final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
-            final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner,
-            final StandardTaskRunner taskRunner
+            final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
+            final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner
     ) {
-        this.window = window;
         this.playfield = playfield;
         this.simulationClock = simulationClock;
         this.entityProgramRegistry = entityProgramRegistry;
         this.entityProgramRunner = entityProgramRunner;
-        this.taskRunner = taskRunner;
     }
     
     @Override
@@ -73,16 +64,21 @@ public class StandardSimulation implements Simulation {
     @Override
     public void initialize() {
         this.playfield.initialize(this);
-        this.simulationClock.initialize(this);
-        this.window.start();
     }
     
     /**
-     * @return the game window for this simulation
+     * Set the entity draw listener.
+     * 
+     * @param listener
+     * 
+     * @throws IllegalStateException
+     *     If clock is running
+     * @throws ListenerSetException
+     *     If listener is already set and new listener is not null
      */
-    @Override
-    public GameWindow getGameWindow() {
-        return this.window;
+    public void setEntityDrawListener(EntityDrawListener listener) {
+        this.simulationClock.setEntityDrawListener(listener);
+        this.playfield.setEntityDrawListener(listener);
     }
     
     @Override
@@ -98,11 +94,6 @@ public class StandardSimulation implements Simulation {
     @Override
     public EntityProgramRunner getEntityProgramRunner() {
         return this.entityProgramRunner;
-    }
-    
-    @Override
-    public TaskRunner getTaskRunner() {
-        return this.taskRunner;
     }
     
 }

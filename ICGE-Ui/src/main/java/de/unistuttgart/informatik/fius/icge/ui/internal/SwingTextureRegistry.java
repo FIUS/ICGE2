@@ -136,6 +136,10 @@ public class SwingTextureRegistry implements TextureRegistry {
      * @throws NoSuchElementException
      */
     public Texture getTextureForHandle(final String handle) {
-        return this.handleToTexture.get(handle);
+        Texture texture = this.handleToTexture.get(handle);
+        if (texture == null) {
+            throw new NoSuchElementException("No Texture for handle \"" + handle + "\" found!");
+        }
+        return texture;
     }
 }

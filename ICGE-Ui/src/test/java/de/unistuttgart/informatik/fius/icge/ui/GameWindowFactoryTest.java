@@ -60,6 +60,12 @@ class GameWindowFactoryTest {
                 // TODO Auto-generated method stub
                 
             }
+            
+            @Override
+            public void setEntityDrawListener(EntityDrawListener listener) {
+                // TODO Auto-generated method stub
+                
+            }
         });
         Assertions.assertNotNull(window);
         Assertions.assertNotNull(window.getPlayfieldDrawer());
