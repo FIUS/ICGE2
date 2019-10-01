@@ -124,9 +124,9 @@
     </dependencyManagement>
     <distributionManagement>
         <repository>
-            <id>c-hack.internal</id>
-            <name>C-Hack Repositroy</name>
-            <url>https://maven.c-hack.de/repository/internal/</url>
+            <id>c-hack.icge-release</id>
+            <name>C-Hack ICGE-Release Repo</name>
+            <url>https://maven.c-hack.de/repository/icge-release/</url>
         </repository>
         <snapshotRepository>
             <id>c-hack.snapshot</id>
