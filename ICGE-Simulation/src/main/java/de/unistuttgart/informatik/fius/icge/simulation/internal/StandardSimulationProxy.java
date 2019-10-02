@@ -47,7 +47,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     // REGISTRIES
     private TextureRegistry      textureRegistry;
-    private StandardTaskRegistry taskRegistry;
+    private final StandardTaskRegistry taskRegistry;
     
     // CURRENT SIMULATION
     private StandardSimulationClock simulationClock;
