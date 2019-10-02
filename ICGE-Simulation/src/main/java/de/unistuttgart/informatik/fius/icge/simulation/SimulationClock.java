@@ -108,6 +108,11 @@ public interface SimulationClock {
     long getLastTickNumber();
     
     /**
+     * @return the number of the last render tick
+     */
+    long getLastRenderTickNumber();
+    
+    /**
      * Schedule an operation, to happen during the given tick. This method will block until that tick. Then the tick
      * processing will halt until the given end of operation is completed.
      * <p>
