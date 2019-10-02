@@ -72,6 +72,7 @@ public class StandardTaskRegistry implements TaskRegistry {
     public void setTaskSelectorListener(TaskSelectorListener listener) {
         if ((this.changeListener == null) || (listener == null)) {
             this.changeListener = listener;
+            this.changeListener.enable();
         } else throw new ListenerSetException();
     }
     
