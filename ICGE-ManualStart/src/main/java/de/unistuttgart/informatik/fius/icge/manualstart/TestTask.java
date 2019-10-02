@@ -24,7 +24,6 @@ public class TestTask implements Task {
     @Override
     public void prepare(Simulation sim) {
         this.sim = sim;
-        sim.initialize();
         sim.getPlayfield().addEntity(new Position(3, 4), new TestEntity());
     }
     
