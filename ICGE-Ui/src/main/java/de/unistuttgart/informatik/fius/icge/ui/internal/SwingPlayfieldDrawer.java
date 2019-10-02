@@ -228,6 +228,13 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
     
     @Override
+    public void resetZoomAndPan() {
+        this.scale = 1.0;
+        this.offsetX = SwingPlayfieldDrawer.CELL_SIZE;
+        this.offsetY = SwingPlayfieldDrawer.CELL_SIZE;
+    }
+    
+    @Override
     public Dimension getPreferredSize() {
         return new Dimension(800, 600);
     }

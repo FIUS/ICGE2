@@ -36,4 +36,9 @@ public interface PlayfieldDrawer {
      *     The number of the current tick
      */
     void draw(long tickCount);
+    
+    /**
+     * Reset Zoom and Pan applied by the user to the default values.
+     */
+    public void resetZoomAndPan();
 }

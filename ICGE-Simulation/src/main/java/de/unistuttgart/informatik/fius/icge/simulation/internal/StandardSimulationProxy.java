@@ -197,6 +197,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     @Override
     public void selectedTaskChange(String element) {
         if (!element.equals(this.currentTaskName)) {
+            this.gameWindow.getPlayfieldDrawer().resetZoomAndPan();
             this.switchTask(element);
         }
     }
