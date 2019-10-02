@@ -14,9 +14,10 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
+import javax.swing.RepaintManager;
 
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
@@ -61,7 +63,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
     );
     
-    private SwingTextureRegistry textureRegistry;
+    private final RepaintManager repaintManager;
+    
+    private final SwingTextureRegistry textureRegistry;
     
     // current display offset and zoom
     private double offsetX = SwingPlayfieldDrawer.CELL_SIZE;
@@ -105,6 +109,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 SwingPlayfieldDrawer.this.draw(tickCount);
             }
         });
+        
+        this.setOpaque(true);
+        this.repaintManager = RepaintManager.currentManager(this);
     }
     
     /**
@@ -173,8 +180,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     @Override
     public void setDrawables(final List<Drawable> drawables) {
-        drawables.sort((a, b) -> a.compareTo(b));
-        this.drawables = drawables;
+        this.drawables = drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
         this.animatedDrawables = drawables.stream()
                 .filter(d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())).collect(Collectors.toList());
         this.fullRepaintNeeded = true;
@@ -183,11 +189,14 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     @Override
     public void draw(long tickCount) {
         this.currentFrame = tickCount;
+        boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
+        this.repaintManager.setDoubleBufferingEnabled(false);
         if (this.fullRepaintNeeded) {
-            repaint(10);
+            final Rectangle visible = this.getVisibleRect();
+            this.paintImmediately(visible);
             this.fullRepaintNeeded = false;
         } else {
-            this.drawables.sort((a, b) -> a.compareTo(b));
+            this.drawables = this.drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
             if (this.animatedDrawables.size() > 0) {
                 final Rectangle visible = this.getVisibleRect();
                 final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
@@ -203,16 +212,19 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                         });
                 if (rectToDraw.isPresent()) {
                     if (this.lastRedrawArea != null) {
-                        this.repaint(this.lastRedrawArea);
+                        this.paintImmediately(this.lastRedrawArea);
                     }
                     this.lastRedrawArea = rectToDraw.get();
-                    this.repaint(rectToDraw.get());
+                    Rectangle toDraw = rectToDraw.get();
+                    this.paintImmediately(toDraw);
                 } else {
                     this.lastRedrawArea = null;
                 }
             }
         }
-        
+        // flush drawing changes to screen (improves render latency when mouse is not in window)
+        Toolkit.getDefaultToolkit().sync();
+        this.repaintManager.setDoubleBufferingEnabled(bufferEnabled);
     }
     
     @Override
