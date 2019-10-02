@@ -52,7 +52,13 @@ public class StandardTaskRunner {
     
     private boolean executeTask() {
         this.taskToRun.prepare(this.sim);
-        this.taskToRun.solve();
+        try {
+            this.taskToRun.solve();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // any uncaught exception will lead to a failed task!
+            return false;
+        }
         return this.taskToRun.verify();
     }
 }
