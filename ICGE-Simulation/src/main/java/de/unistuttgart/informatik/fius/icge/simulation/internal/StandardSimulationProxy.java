@@ -224,6 +224,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         final StandardSimulation simulation = new StandardSimulation(
                 playfield, newSimulationClock, entityProgramRegistry, entityProgramRunner
         );
+        simulation.initialize();
         final StandardTaskRunner taskRunner = new StandardTaskRunner(task, simulation);
         
         simulation.setEntityDrawListener(this.entityDrawListener);
@@ -238,6 +239,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         this.currentTaskName = newTaskName;
         this.currentSimulation = simulation;
         this.currentRunningTask = runningTask;
+        this.gameWindow.setWindowTitle("Task: " + newTaskName);
     }
     
     @Override
