@@ -10,10 +10,9 @@
 package de.unistuttgart.informatik.fius.icge.example.mario;
 
 import de.unistuttgart.informatik.fius.icge.example.mario.tasks.Solution1;
-import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
-import de.unistuttgart.informatik.fius.icge.simulation.SimulationFactory;
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
+import de.unistuttgart.informatik.fius.icge.simulation.SimulationHostFactory;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 
 
 /**
@@ -30,20 +29,16 @@ public class Main {
      *     the command line args; not used
      */
     public static void main(final String[] args) {
-        final Simulation sim = SimulationFactory.createSimulation();
-        Main.prepareGameWindow(sim.getGameWindow());
+        final SimulationHost host = SimulationHostFactory.createSimulationHost();
+        prepareTextures(host.getTextureRegistry());
         
-        sim.initialize();
-        
-        sim.getTaskRunner().runTask(Solution1.class, sim);
+        host.getTaskRegistry().registerTask("Solution 1", new Solution1());
     }
     
-    private static void prepareGameWindow(final GameWindow window) {
+    private static void prepareTextures(final TextureRegistry tr) {
         // load textures
-        final TextureRegistry tr = window.getTextureRegistry();
         for (final Texture texture : Texture.values()) {
             texture.load(tr);
         }
-        window.setWindowTitle("Manual simulation start");
     }
 }

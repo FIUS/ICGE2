@@ -40,6 +40,7 @@ public abstract class Task1 implements Task {
     @Override
     public void prepare(final Simulation sim) {
         this.sim = sim;
+        sim.initialize();
         sim.getPlayfield().addEntity(new Position(-3, -1), new Wall());
         sim.getPlayfield().addEntity(new Position(-3, 0), new Wall());
         sim.getPlayfield().addEntity(new Position(-3, 1), new Wall());
