@@ -13,10 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
+import java.util.concurrent.ForkJoinWorkerThread;
 
 import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramState;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.RunningProgramInfo;
@@ -33,8 +36,23 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     
     private final StandardEntityProgramRegistry registry;
     
+    private final ExecutorService executor;
+    
     private final Map<String, EntityProgramRunningInfo> singlePrograms = new HashMap<>();
     private final Map<Entity, EntityProgramRunningInfo> entityPrograms = new HashMap<>();
+    
+    private ExecutorService createExecutor() {
+        final ForkJoinWorkerThreadFactory factory = new ForkJoinWorkerThreadFactory() {
+            @Override
+            public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
+                final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+                worker.setName("EntityProgramRunnerThread-" + worker.getPoolIndex());
+                return worker;
+            }
+        };
+        
+        return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
+    }
     
     /**
      * Create a new StandardEntityProgramRunner.
@@ -44,6 +62,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
      */
     public StandardEntityProgramRunner(final StandardEntityProgramRegistry registry) {
         this.registry = registry;
+        this.executor = createExecutor();
     }
     
     private EntityProgramRunningInfo getSingleInstanceProgramInfo(final String programName) {
@@ -110,9 +129,6 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
         
         if (!this.canRunProgramOn(info, entity)) throw new CannotRunProgramException();
         
-        // TODO set thread name
-        final String threadName = "EntityProgramRunner" + "_" + program + "_on_" + entity.toString();
-        
         CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
             try {
                 info.getProgram().run(entity);
@@ -128,7 +144,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
                 info.setState(EntityProgramState.KILLED);
             }
             return null;
-        });
+        }, this.executor);
         
         info.setFuture(future);
         info.setState(EntityProgramState.RUNNING);
