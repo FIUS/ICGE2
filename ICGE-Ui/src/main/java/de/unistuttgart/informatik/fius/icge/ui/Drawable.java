@@ -72,6 +72,16 @@ public interface Drawable extends Comparable<Drawable> {
         return false;
     }
     
+    /**
+     * Set the current render tick for animated drawables.
+     * 
+     * @param renderTick
+     *     The current render tick
+     */
+    default void setCurrentTick(long renderTick) {
+        return; // default to noop
+    }
+    
     @Override
     default int compareTo(final Drawable o) {
         double compareResult = 0;

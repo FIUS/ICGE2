@@ -231,6 +231,11 @@ public class StandardSimulationClock implements SimulationClock {
     }
     
     @Override
+    public long getLastRenderTickNumber() {
+        return this.tickCount;
+    }
+    
+    @Override
     public void scheduleOperationAtTick(final long tick, final CompletableFuture<Void> endOfOperation) {
         final CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
         this.registerTickListener(tickNumber -> {

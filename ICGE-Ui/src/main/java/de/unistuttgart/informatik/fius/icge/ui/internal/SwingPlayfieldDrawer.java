@@ -181,22 +181,26 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     @Override
     public void setDrawables(final List<Drawable> drawables) {
         this.drawables = drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
-        this.animatedDrawables = drawables.stream()
-                .filter(d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())).collect(Collectors.toList());
+        this.animatedDrawables = drawables.stream().filter(
+                d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
+        ).collect(Collectors.toUnmodifiableList());
         this.fullRepaintNeeded = true;
     }
     
     @Override
-    public void draw(long tickCount) {
+    public void draw(final long tickCount) {
         this.currentFrame = tickCount;
         boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
         this.repaintManager.setDoubleBufferingEnabled(false);
+        this.animatedDrawables.forEach(d -> d.setCurrentTick(tickCount));
+        if (this.animatedDrawables.size() > 0) {
+            this.drawables = this.drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
+        }
         if (this.fullRepaintNeeded) {
             final Rectangle visible = this.getVisibleRect();
             this.paintImmediately(visible);
             this.fullRepaintNeeded = false;
         } else {
-            this.drawables = this.drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
             if (this.animatedDrawables.size() > 0) {
                 final Rectangle visible = this.getVisibleRect();
                 final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
@@ -225,6 +229,10 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         // flush drawing changes to screen (improves render latency when mouse is not in window)
         Toolkit.getDefaultToolkit().sync();
         this.repaintManager.setDoubleBufferingEnabled(bufferEnabled);
+        // filter out finished animations
+        this.animatedDrawables = this.drawables.stream().filter(
+                d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
+        ).collect(Collectors.toUnmodifiableList());
     }
     
     @Override

@@ -69,6 +69,11 @@ public class AnimatedDrawable implements Drawable {
     }
     
     @Override
+    public void setCurrentTick(long renderTick) {
+        this.currentTick = renderTick;
+    }
+    
+    @Override
     public double getX() {
         if (this.currentTick <= this.tickStart) {
             return this.xStart;
