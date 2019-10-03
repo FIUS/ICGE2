@@ -116,4 +116,9 @@ public abstract class BasicEntity implements Entity {
         return this.getPlayfield().getSimulation();
     }
     
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+    }
+    
 }

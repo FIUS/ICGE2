@@ -11,6 +11,8 @@ package de.unistuttgart.informatik.fius.icge.simulation;
 
 import java.util.List;
 
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityMoveAction;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTeleportAction;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
@@ -94,6 +96,9 @@ public interface Playfield {
     
     /**
      * Move a entity of this simulation to a given position on this playfield.
+     * <p>
+     * This causes a {@link EntityTeleportAction}.
+     * </p>
      * 
      * @param entity
      *     The entity to move; <b>must</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
@@ -105,6 +110,24 @@ public interface Playfield {
      *     if the given pos or entity is null
      */
     void moveEntity(Entity entity, Position pos);
+    
+    /**
+     * Move a entity of this simulation to a given position on this playfield.
+     * 
+     * @param entity
+     *     The entity to move; <b>must</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
+     * @param pos
+     *     The position to move the entity to; must <b>not</b> be <b>null</b>
+     * @param action
+     *     An action describing this move; will be logged by this method; if null causes a {@link EntityTeleportAction}
+     * @throws EntityNotOnFieldException
+     *     if the given entity is not in this playfield
+     * @throws IllegalArgumentException
+     *     if the given pos or entity is null
+     * @throws IllegalArgumentException
+     *     if the given action match with the other arguments
+     */
+    void moveEntity(Entity entity, Position pos, EntityMoveAction action);
     
     /**
      * Remove a entity of this simulation from this playfield.

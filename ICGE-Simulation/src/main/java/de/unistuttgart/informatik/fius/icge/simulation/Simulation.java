@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
 
@@ -46,6 +47,13 @@ public interface Simulation {
      * @return the entity program runner used by this simulation
      */
     EntityProgramRunner getEntityProgramRunner();
+    
+    /**
+     * Get the action log for this simulation.
+     * 
+     * @return the action log used by this siumulation
+     */
+    ActionLog getActionLog();
     
     /**
      * Initialize the simulation and all its submodules.

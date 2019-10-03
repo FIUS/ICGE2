@@ -96,4 +96,9 @@ public class Position {
         final int[] numbers = { this.x, this.y };
         return Arrays.hashCode(numbers);
     }
+    
+    @Override
+    public String toString() {
+        return "(x=" + this.x + ", y=" + this.y + ")";
+    }
 }

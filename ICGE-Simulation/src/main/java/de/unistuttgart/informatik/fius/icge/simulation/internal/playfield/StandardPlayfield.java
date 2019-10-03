@@ -18,6 +18,10 @@ import java.util.Map;
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityDespawnAction;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityMoveAction;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntitySpawnAction;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTeleportAction;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.SolidEntity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
@@ -164,6 +168,9 @@ public class StandardPlayfield implements Playfield {
         
         this.addEntityToCell(pos, entity);
         
+        this.getSimulation().getActionLog()
+                .logAction(new EntitySpawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this, pos));
+        
         entity.initOnPlayfield(this);
         
         this.drawEntities();
@@ -171,16 +178,36 @@ public class StandardPlayfield implements Playfield {
     
     @Override
     public void moveEntity(final Entity entity, final Position pos) {
+        this.moveEntity(entity, pos, null);
+    }
+    
+    @Override
+    public void moveEntity(Entity entity, Position pos, EntityMoveAction action) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         if (
             !this.entityPositions.containsKey(entity)
         ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
         
+        EntityMoveAction actionToLog = action;
+        
         final Position oldPos = this.entityPositions.get(entity);
+        
+        if (actionToLog == null) {
+            actionToLog = new EntityTeleportAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, oldPos, pos);
+        } else {
+            if (!actionToLog.getEntity().equals(entity)) throw new IllegalArgumentException("Given action wasn't caused by given entity.");
+            if (
+                !actionToLog.from().equals(oldPos)
+            ) throw new IllegalArgumentException("Given action does not start at current position of given entity.");
+            if (!actionToLog.to().equals(pos)) throw new IllegalArgumentException("Given action does not end at given pos.");
+        }
+        
         this.removeEntityFromCell(oldPos, entity);
         this.addEntityToCell(pos, entity);
         this.entityPositions.put(entity, pos);
+        
+        this.getSimulation().getActionLog().logAction(actionToLog);
         
         this.drawEntities();
     }
@@ -195,6 +222,9 @@ public class StandardPlayfield implements Playfield {
         final Position pos = this.entityPositions.get(entity);
         this.removeEntityFromCell(pos, entity);
         this.entityPositions.remove(entity, pos);
+        
+        this.getSimulation().getActionLog()
+                .logAction(new EntityDespawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this));
         
         this.drawEntities();
     }
@@ -220,5 +250,10 @@ public class StandardPlayfield implements Playfield {
             if (entity.isCurrentlySolid()) return true;
         }
         return false;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
     }
 }

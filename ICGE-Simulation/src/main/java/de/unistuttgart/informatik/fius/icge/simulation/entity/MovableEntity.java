@@ -14,6 +14,9 @@ import java.util.concurrent.CompletableFuture;
 import de.unistuttgart.informatik.fius.icge.simulation.Direction;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityMoveAction;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityStepAction;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTurnAction;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.IllegalMoveException;
 import de.unistuttgart.informatik.fius.icge.ui.AnimatedDrawable;
@@ -46,7 +49,10 @@ public abstract class MovableEntity extends BasicEntity {
     public void turnClockWise() {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
+        Direction oldLookingDirection = this.lookingDirection;
         this.lookingDirection = this.lookingDirection.clockWiseNext();
+        long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
+        this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
         endOfOperation.complete(null);
     }
     
@@ -83,7 +89,10 @@ public abstract class MovableEntity extends BasicEntity {
         );
         clock.scheduleOperationInTicks(duration, endOfOperation);
         if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
-        this.getPlayfield().moveEntity(this, nextPos);
+        EntityMoveAction action = new EntityStepAction(
+                this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
+        );
+        this.getPlayfield().moveEntity(this, nextPos, action);
         this.movingDrawable = null;
         endOfOperation.complete(null);
     }
