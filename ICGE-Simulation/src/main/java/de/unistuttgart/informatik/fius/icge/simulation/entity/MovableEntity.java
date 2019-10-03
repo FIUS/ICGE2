@@ -75,17 +75,17 @@ public abstract class MovableEntity extends BasicEntity {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         final SimulationClock clock = this.getSimulation().getSimulationClock();
         final long currentTick = clock.getLastRenderTickNumber();
-        clock.scheduleOperationInTicks(duration, endOfOperation);
         final Position currentPos = this.getPosition();
         final Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
-        if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
-        this.getPlayfield().moveEntity(this, nextPos);
         this.movingDrawable = new AnimatedDrawable(
                 currentTick, currentPos.getX(), currentPos.getY(), renderTickDuration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
                 this.getTextureHandle()
         );
-        endOfOperation.complete(null);
+        clock.scheduleOperationInTicks(duration, endOfOperation);
+        if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
+        this.getPlayfield().moveEntity(this, nextPos);
         this.movingDrawable = null;
+        endOfOperation.complete(null);
     }
     
     /**
