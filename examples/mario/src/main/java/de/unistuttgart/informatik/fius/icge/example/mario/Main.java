@@ -10,6 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.example.mario;
 
 import de.unistuttgart.informatik.fius.icge.example.mario.tasks.Solution1;
+import de.unistuttgart.informatik.fius.icge.example.mario.tasks.Solution2;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHostFactory;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
@@ -33,6 +34,7 @@ public class Main {
         prepareTextures(host.getTextureRegistry());
         
         host.getTaskRegistry().registerTask("Solution 1", new Solution1());
+        host.getTaskRegistry().registerTask("Solution 2", new Solution2());
     }
     
     private static void prepareTextures(final TextureRegistry tr) {

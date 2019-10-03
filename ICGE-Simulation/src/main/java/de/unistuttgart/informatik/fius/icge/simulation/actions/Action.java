@@ -10,18 +10,38 @@
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
 /**
- * A action which happens during the execution of a simulation.
+ * An action which happens during the execution of a simulation.
  * 
  * @author Tim Neumann
  */
-public interface Action {
+public abstract class Action {
+    
+    private final long tickNumber;
+    
+    /**
+     * Create an action.
+     * 
+     * @param tickNumber
+     *     the tick the action happened at
+     */
+    public Action(long tickNumber) {
+        this.tickNumber = tickNumber;
+    }
+    
     /**
      * @return the description of this action
      */
-    String getDescription();
+    public abstract String getDescription();
     
     /**
-     * @return the number of the tick the action happened
+     * @return the number of the simulation tick the action happened
      */
-    int getTickNumber();
+    public long getTickNumber() {
+        return this.tickNumber;
+    }
+    
+    @Override
+    public String toString() {
+        return this.getDescription();
+    }
 }

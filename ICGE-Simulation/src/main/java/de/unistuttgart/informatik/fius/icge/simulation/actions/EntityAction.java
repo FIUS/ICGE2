@@ -13,13 +13,31 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 
 /**
- * A action originating from an entity.
+ * An action originating from an entity.
  * 
  * @author Tim Neumann
  */
-public interface EntityAction extends Action {
+public abstract class EntityAction extends Action {
+    
+    private final Entity entity;
+    
+    /**
+     * Create an entity action.
+     * 
+     * @param tickNumber
+     *     the tick the action happened at
+     * @param entity
+     *     the entity that caused the action
+     */
+    public EntityAction(long tickNumber, Entity entity) {
+        super(tickNumber);
+        this.entity = entity;
+    }
+    
     /**
      * @return the entity that caused this action.
      */
-    Entity getEntity();
+    public Entity getEntity() {
+        return this.entity;
+    }
 }

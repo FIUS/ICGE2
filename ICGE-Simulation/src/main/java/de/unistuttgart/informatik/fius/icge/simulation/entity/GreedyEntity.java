@@ -12,6 +12,9 @@ package de.unistuttgart.informatik.fius.icge.simulation.entity;
 import java.util.List;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.Action;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityCollectAction;
+import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityDropAction;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotCollectEntityException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotDropEntityException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
@@ -69,6 +72,11 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
         
         this.getSimulation().getPlayfield().removeEntity(entity);
         this.getInventory().add(entity);
+        
+        Action action = new EntityCollectAction(
+                this.getSimulation().getSimulationClock().getLastTickNumber(), this, entity, myPos, otherPos
+        );
+        this.getSimulation().getActionLog().logAction(action);
     }
     
     /**
@@ -100,6 +108,9 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
         
         this.getInventory().remove(entity);
         this.getPlayfield().addEntity(pos, entity);
+        
+        Action action = new EntityDropAction(this.getSimulation().getSimulationClock().getLastTickNumber(), this, entity, myPos, pos);
+        this.getSimulation().getActionLog().logAction(action);
     }
     
     /**

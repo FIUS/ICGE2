@@ -12,6 +12,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal;
 import java.util.concurrent.CompletableFuture;
 
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
@@ -223,8 +224,10 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         final StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
         final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
         
+        final StandardActionLog actionLog = new StandardActionLog();
+        
         final StandardSimulation simulation = new StandardSimulation(
-                playfield, newSimulationClock, entityProgramRegistry, entityProgramRunner
+                playfield, newSimulationClock, entityProgramRegistry, entityProgramRunner, actionLog
         );
         simulation.initialize();
         final StandardTaskRunner taskRunner = new StandardTaskRunner(task, simulation);
