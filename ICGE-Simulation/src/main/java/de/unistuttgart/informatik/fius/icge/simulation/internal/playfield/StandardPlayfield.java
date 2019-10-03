@@ -66,7 +66,9 @@ public class StandardPlayfield implements Playfield {
     public void setEntityDrawListener(EntityDrawListener listener) {
         if ((this.drawer == null) || (listener == null)) {
             this.drawer = listener;
-            this.drawEntities();
+            if (listener != null) {
+                this.drawEntities();
+            }
         } else throw new ListenerSetException();
     }
     

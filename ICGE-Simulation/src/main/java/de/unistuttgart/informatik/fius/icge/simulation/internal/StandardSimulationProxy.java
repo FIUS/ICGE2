@@ -208,6 +208,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         
         // CLEANUP
         if (this.currentSimulation != null) {
+            this.currentSimulation.getSimulationClock().stop();
             this.currentSimulation.setEntityDrawListener(null);
         }
         if (this.currentRunningTask != null) {

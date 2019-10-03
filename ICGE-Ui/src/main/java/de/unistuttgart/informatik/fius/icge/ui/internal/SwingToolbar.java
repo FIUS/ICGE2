@@ -11,7 +11,9 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
@@ -30,9 +32,9 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ClockButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ControlButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SpeedSliderListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.TaskSelectorListener;
+import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector;
 import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector.DropdownEntry;
-import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 
 
 /**
@@ -201,15 +203,26 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             
             @Override
             public String getSelectedElement() {
-                return SwingToolbar.this.taskSelect.getCurrentEntry().displayName;
+                DropdownEntry currentEntry = SwingToolbar.this.taskSelect.getCurrentEntry();
+                if (currentEntry == null) return "";
+                return currentEntry.displayName;
             }
             
             @Override
             public void setElements(Set<String> elements) {
+                String selected = getSelectedElement();
                 SwingToolbar.this.taskSelect.removeAllEntries();
                 
-                for (String element : elements)
+                List<String> elementList = new ArrayList<>(elements);
+                
+                elementList.sort(null);
+                
+                for (String element : elementList)
                     SwingToolbar.this.taskSelect.addEntry(SwingToolbar.this.taskSelect.new DropdownEntry(element));
+                
+                if (elementList.contains(selected)) {
+                    setSelectedElement(selected);
+                }
             }
             
             @Override
