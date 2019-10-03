@@ -22,8 +22,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
-import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
+import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 
 
 /**
@@ -232,8 +232,6 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         
         // START TASK
         final CompletableFuture<Boolean> runningTask = taskRunner.runTask();
-        
-        newSimulationClock.step();
         
         // REPLACE OLD
         this.setSimulationClock(newSimulationClock);
