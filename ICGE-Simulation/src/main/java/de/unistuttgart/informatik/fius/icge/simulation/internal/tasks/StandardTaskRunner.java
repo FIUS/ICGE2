@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal.tasks;
 
 import java.util.concurrent.CompletableFuture;
 
+import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 
@@ -55,10 +56,23 @@ public class StandardTaskRunner {
         try {
             this.taskToRun.solve();
         } catch (Exception e) {
-            e.printStackTrace();
-            // any uncaught exception will lead to a failed task!
+            Logger.simulation.println("----------------------------------------------");
+            Logger.simulation.println("The following exception caused a task failure:");
+            e.printStackTrace(Logger.simulation);
+            Logger.simulation.println("----------------------------------------------");
             return false;
         }
-        return this.taskToRun.verify();
+        
+        boolean verified = this.taskToRun.verify();
+        if (verified) {
+            Logger.simulation.println("----------------------------------------------");
+            Logger.simulation.println("Task completed successfully");
+            Logger.simulation.println("----------------------------------------------");
+        } else {
+            Logger.simulation.println("----------------------------------------------");
+            Logger.simulation.println("Task failed");
+            Logger.simulation.println("----------------------------------------------");
+        }
+        return verified;
     }
 }

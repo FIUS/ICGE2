@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.example.mario.tasks;
 
 import de.unistuttgart.informatik.fius.icge.example.mario.entity.Coin;
 import de.unistuttgart.informatik.fius.icge.example.mario.entity.Mario;
+import de.unistuttgart.informatik.fius.icge.example.mario.entity.Wall;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
@@ -39,12 +40,12 @@ public abstract class Task1 implements Task {
     @Override
     public void prepare(final Simulation sim) {
         this.sim = sim;
-//        sim.getPlayfield().addEntity(new Position(-3, -1), new Wall());
-//        sim.getPlayfield().addEntity(new Position(-3, 0), new Wall());
-//        sim.getPlayfield().addEntity(new Position(-3, 1), new Wall());
-//        sim.getPlayfield().addEntity(new Position(3, -1), new Wall());
-//        sim.getPlayfield().addEntity(new Position(3, 0), new Wall());
-//        sim.getPlayfield().addEntity(new Position(3, 1), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, -1), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, 0), new Wall());
+        sim.getPlayfield().addEntity(new Position(-3, 1), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, -1), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, 0), new Wall());
+        sim.getPlayfield().addEntity(new Position(3, 1), new Wall());
         
         this.walkingMario = new Mario();
         this.walkingMario.getInventory().add(new Coin());
