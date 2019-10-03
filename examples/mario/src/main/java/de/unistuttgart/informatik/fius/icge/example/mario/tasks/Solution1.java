@@ -21,20 +21,10 @@ public class Solution1 extends Task1 {
     
     @Override
     public void solve() {
-        final String walkingProgramName1 = "Walking1";
-        final String walkingProgramName2 = "Walking2";
-        final String walkingProgramName3 = "Walking3";
-        final String walkingProgramName4 = "Walking4";
+        final String walkingProgramName = "Walking";
         
-        this.sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName1, new WalkingProgram());
-        this.sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName2, new WalkingProgram());
-        this.sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName3, new WalkingProgram());
-        this.sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName4, new WalkingProgram());
-        
-        this.sim.getEntityProgramRunner().run(walkingProgramName1, this.walkingMario);
-        this.sim.getEntityProgramRunner().run(walkingProgramName2, this.walkingMario);
-        this.sim.getEntityProgramRunner().run(walkingProgramName3, this.walkingMario);
-        this.sim.getEntityProgramRunner().run(walkingProgramName4, this.walkingMario);
+        this.sim.getEntityProgramRegistry().registerEntityProgram(walkingProgramName, new WalkingProgram());
+        this.sim.getEntityProgramRunner().run(walkingProgramName, this.walkingMario);
         
         while (true) {
             this.spinningMario.turnClockWise();

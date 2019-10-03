@@ -33,4 +33,9 @@ public interface Console {
      * @return Returns a output stream
      */
     OutputStream getSystemOutputStream();
+    
+    /**
+     * Clears the simulation console in the ui.
+     */
+    void clearSimulationConsole();
 }

@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+import java.awt.Dimension;
 import java.io.OutputStream;
 
 import javax.swing.JScrollPane;
@@ -69,5 +70,15 @@ public class SwingConsole extends JTabbedPane implements Console {
     @Override
     public OutputStream getSystemOutputStream() {
         return this.systemOutputStream;
+    }
+    
+    @Override
+    public void clearSimulationConsole() {
+        this.simulationConsole.setText("");
+    }
+    
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(400, 200);
     }
 }

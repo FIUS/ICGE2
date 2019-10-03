@@ -216,6 +216,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
             this.currentRunningTask.cancel(true);
         }
         
+        this.gameWindow.getConsole().clearSimulationConsole();
+        
         // SETUP NEW
         
         final StandardPlayfield playfield = new StandardPlayfield();
