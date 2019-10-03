@@ -52,7 +52,8 @@ public interface EntityProgramRunner {
     /**
      * Check whether the given program can be run to the given entity.
      * <p>
-     * First checks {@link #canRunProgram(String)} and then {@link EntityProgram#canRunOn(Entity)}.
+     * First checks {@link #canRunProgram(String)} and then {@link EntityProgram#canRunOn(Entity)}. If the entity was
+     * running a program also checks if that program finished succesfully.
      * </p>
      * 
      * @param program
@@ -85,6 +86,19 @@ public interface EntityProgramRunner {
      *     if an exception occurred in the entity program
      */
     void run(String program, Entity entity);
+    
+    /**
+     * Get the running program of a given entity.
+     * 
+     * @param entity
+     *     The entity to run the program on
+     * @return the information object for the running program
+     * @throws IllegalArgumentException
+     *     if an argument is null
+     * @throws NoSuchElementException
+     *     if no running program is found for the entity
+     */
+    RunningProgramInfo getRunningProgramInfo(Entity entity);
     
     /**
      * Force stop all running entity programs.
