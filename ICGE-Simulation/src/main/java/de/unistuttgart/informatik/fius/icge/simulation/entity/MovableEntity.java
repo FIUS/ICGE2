@@ -89,10 +89,12 @@ public abstract class MovableEntity extends BasicEntity {
         );
         clock.scheduleOperationInTicks(duration, endOfOperation);
         if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
-        EntityMoveAction action = new EntityStepAction(this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos);
+        EntityMoveAction action = new EntityStepAction(
+                this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
+        );
         this.getPlayfield().moveEntity(this, nextPos, action);
-	this.movingDrawable = null;        
-	endOfOperation.complete(null);
+        this.movingDrawable = null;
+        endOfOperation.complete(null);
     }
     
     /**

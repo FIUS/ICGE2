@@ -1,7 +1,7 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
  * 
  * This software is available under the MIT license.
@@ -61,7 +61,6 @@ public class EntityDropAction extends EntityAction {
         return this.dropppedPos;
     }
     
-
     /**
      * @return the position the dropper was at while dropping
      */

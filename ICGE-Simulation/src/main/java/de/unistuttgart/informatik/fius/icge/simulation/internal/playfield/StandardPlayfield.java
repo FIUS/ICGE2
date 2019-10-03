@@ -193,9 +193,8 @@ public class StandardPlayfield implements Playfield {
         
         final Position oldPos = this.entityPositions.get(entity);
         
-        if(actionToLog == null) {
-            actionToLog =
-                    new EntityTeleportAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, oldPos, pos);
+        if (actionToLog == null) {
+            actionToLog = new EntityTeleportAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, oldPos, pos);
         } else {
             if (!actionToLog.getEntity().equals(entity)) throw new IllegalArgumentException("Given action wasn't caused by given entity.");
             if (
