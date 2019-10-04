@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 
@@ -33,4 +34,11 @@ public interface SimulationHost {
      * @return The texture registry
      */
     public TextureRegistry getTextureRegistry();
+    
+    /**
+     * Get the entity type registry associated with the simulation host.
+     * 
+     * @return The entity type registry
+     */
+    public EntityTypeRegistry getEntityTypeRegistry();
 }
