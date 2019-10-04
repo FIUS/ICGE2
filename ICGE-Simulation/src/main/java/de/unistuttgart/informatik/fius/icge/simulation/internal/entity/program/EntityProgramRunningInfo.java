@@ -9,8 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program;
 
+import java.util.concurrent.CompletableFuture;
+
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgram;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramState;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.RunningProgramInfo;
 
 
 /**
@@ -18,10 +21,11 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProg
  * 
  * @author Tim Neumann
  */
-public class EntityProgramRunningInfo {
-    private EntityProgramState  state;
-    private final EntityProgram program;
-    private Thread              thread;
+public class EntityProgramRunningInfo implements RunningProgramInfo {
+    
+    private EntityProgramState      state;
+    private final EntityProgram     program;
+    private CompletableFuture<Void> future;
     
     /**
      * Initialize
@@ -38,9 +42,7 @@ public class EntityProgramRunningInfo {
         this.state = EntityProgramState.NEW;
     }
     
-    /**
-     * @return the state of this object; cannot be null
-     */
+    @Override
     public EntityProgramState getState() {
         return this.state;
     }
@@ -67,23 +69,17 @@ public class EntityProgramRunningInfo {
         return this.program;
     }
     
-    /**
-     * Get the thread of this object
-     * 
-     * @return the thread of this object; can be null
-     */
-    public Thread getThread() {
-        return this.thread;
+    @Override
+    public CompletableFuture<Void> getFuture() {
+        return this.future;
     }
     
     /**
-     * Set the thread of this object
-     * 
-     * @param thread
-     *     the new thread; may be null
+     * @param future
+     *     the future to set; may be null
      */
-    public void setThread(final Thread thread) {
-        this.thread = thread;
+    public void setFuture(CompletableFuture<Void> future) {
+        this.future = future;
     }
     
 }

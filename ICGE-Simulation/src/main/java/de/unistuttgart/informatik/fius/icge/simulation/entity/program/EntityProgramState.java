@@ -15,6 +15,8 @@ package de.unistuttgart.informatik.fius.icge.simulation.entity.program;
  * @author Tim Neumann
  */
 public enum EntityProgramState {
+    /** When the program has a program factory that creates new instances of this program. */
+    IS_FACTORY,
     /** When the entity program is new and was not started yet. */
     NEW,
     /** When the entity program is currently running. */

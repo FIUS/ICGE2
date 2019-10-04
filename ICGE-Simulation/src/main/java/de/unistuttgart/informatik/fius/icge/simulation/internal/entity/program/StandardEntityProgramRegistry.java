@@ -67,4 +67,17 @@ public class StandardEntityProgramRegistry implements EntityProgramRegistry {
         return this.programs.get(name).getProgram();
     }
     
+    /**
+     * Get the full program entry.
+     * 
+     * @param name
+     *     the program name
+     * @return iff the program has a factory to create new instances
+     */
+    public boolean checkIfProgramHasFactory(final String name) {
+        if (name == null) throw new IllegalArgumentException("An argument is null.");
+        if (!this.programs.containsKey(name)) throw new NoSuchElementException();
+        return !this.programs.get(name).isSingle();
+    }
+    
 }
