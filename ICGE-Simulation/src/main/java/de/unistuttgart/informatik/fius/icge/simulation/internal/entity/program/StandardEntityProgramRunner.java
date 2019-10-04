@@ -75,8 +75,8 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     }
     
     private EntityProgramRunningInfo getProgramInfo(final String programName) {
-        EntityProgramRunningInfo programInfo = this.getSingleInstanceProgramInfo(programName);
-        if (programInfo != null) return this.singlePrograms.get(programName);
+        final EntityProgramRunningInfo programInfo = this.getSingleInstanceProgramInfo(programName);
+        if (programInfo != null) return programInfo;
         if (this.registry.checkIfProgramHasFactory(programName)) {
             return new EntityProgramRunningInfo(this.registry.getEntityProgram(programName));
         }
