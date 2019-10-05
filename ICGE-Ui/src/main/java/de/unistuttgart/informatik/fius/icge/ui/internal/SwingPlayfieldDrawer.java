@@ -25,6 +25,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,9 @@ import javax.swing.JPanel;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ControlButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ToolStateListener;
 
 
 /**
@@ -54,9 +57,10 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private static final int INFO_BAR_HEIGHT = 25;
     
     // Colors
-    private static final Color BACKGROUND_COLOR = new Color(255, 255, 255);
-    private static final Color GRID_COLOR       = new Color(46, 52, 54);
-    private static final Color OVERLAY_COLOR    = new Color(0, 40, 255, 50);
+    private static final Color BACKGROUND_COLOR             = new Color(255, 255, 255);
+    private static final Color BACKGROUND_COLOR_TRANSPARENT = new Color(255, 255, 255, 230);
+    private static final Color GRID_COLOR                   = new Color(46, 52, 54);
+    private static final Color OVERLAY_COLOR                = new Color(0, 40, 255, 50);
     
     private static final RenderingHints RENDERING_HINTS = new RenderingHints(
             RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
@@ -77,6 +81,12 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private int     mouseStartY   = 0;
     private boolean isDrag        = false;
     
+    // current tool state
+    private ControlButtonState activeTool            = ControlButtonState.BLOCKED;
+    private String             selectedEntityType    = null;
+    private String             selectedEntityTexture = null;
+    private SimulationProxy    simulationProxy;
+    
     private List<Drawable> drawables         = List.of();
     private List<Drawable> animatedDrawables = List.of();
     private boolean        fullRepaintNeeded = true;
@@ -94,6 +104,8 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     public SwingPlayfieldDrawer(SimulationProxy simulationProxy, SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
         
+        this.simulationProxy = simulationProxy;
+        
         simulationProxy.setEntityDrawListener(new EntityDrawListener() {
             
             @Override
@@ -104,6 +116,20 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             @Override
             public void draw(long tickCount) {
                 SwingPlayfieldDrawer.this.draw(tickCount);
+            }
+        });
+        
+        simulationProxy.setToolStateListener(new ToolStateListener() {
+            
+            @Override
+            public void setSelectedTool(ControlButtonState selectedTool) {
+                SwingPlayfieldDrawer.this.activeTool = selectedTool;
+            }
+            
+            @Override
+            public void setSelectedEntityType(String typeName, String textureHandle) {
+                SwingPlayfieldDrawer.this.selectedEntityType = typeName;
+                SwingPlayfieldDrawer.this.selectedEntityTexture = textureHandle;
             }
         });
         
@@ -404,11 +430,28 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         final int screenX = Math.toIntExact(Math.round(this.offsetX + (currentCellX * cellSize)));
         final int screenY = Math.toIntExact(Math.round(this.offsetY + (currentCellY * cellSize)));
         
+        // draw cell highlight
         if (this.mouseInWindow && g.hitClip(screenX, screenY, roundedCellSize, roundedCellSize)) {
+            // draw current tool texture
+            if (this.activeTool == ControlButtonState.ADD && this.selectedEntityTexture != null) {
+                try {
+                    Texture texture = this.textureRegistry.getTextureForHandle(this.selectedEntityTexture);
+                    texture.drawTexture(this.currentFrame, g, screenX, screenY, roundedCellSize);
+                } catch (@SuppressWarnings("unused") NoSuchElementException e) {
+                    // cannot draw texture
+                }
+            }
+            if (this.activeTool == ControlButtonState.SUB) {
+                // redraw background to simulate empty field
+                g.setColor(SwingPlayfieldDrawer.BACKGROUND_COLOR_TRANSPARENT);
+                g.fillRect(screenX, screenY, roundedCellSize, roundedCellSize);
+            }
+            // draw cell highlight
             g.setColor(SwingPlayfieldDrawer.OVERLAY_COLOR);
             g.fillRect(screenX, screenY, roundedCellSize, roundedCellSize);
         }
         
+        // draw info bar
         if (
             this.mouseInWindow && g.hitClip(0, height - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, width, SwingPlayfieldDrawer.INFO_BAR_HEIGHT)
         ) {
@@ -445,7 +488,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
     
     private void mouseClick(int x, int y) {
-        // TODO
+        // TODO spawn entity here
         this.repaint();
     }
     

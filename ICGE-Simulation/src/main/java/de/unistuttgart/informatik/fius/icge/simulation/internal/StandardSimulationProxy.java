@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
@@ -57,19 +58,18 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     private StandardSimulationClock simulationClock;
     
     // LISTENERS
-    private ButtonStateListener buttonStateListener;
-    private EntitySelectorListener entitySelectorListener;
-    private SpeedSliderListener speedSliderListener;
-    private EntityDrawListener  entityDrawListener;
+    private ButtonStateListener     buttonStateListener;
+    private EntitySelectorListener  entitySelectorListener;
+    private SpeedSliderListener     speedSliderListener;
+    private EntityDrawListener      entityDrawListener;
+    private SimulationTreeListener  simulationTreeListener;
+    private EntityInspectorListener entityInspectorListener;
+    private ToolStateListener       toolStateListener;
     
     // CURRENT SIMULATION AND TASKS
     private String                     currentTaskName    = null;
     private StandardSimulation         currentSimulation  = null;
     private CompletableFuture<Boolean> currentRunningTask = null;
-    
-    private SimulationTreeListener simulationTreeListener;
-    
-    private EntityInspectorListener entityInspectorListener;
     
     /**
      * Default Constructor
@@ -122,9 +122,11 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         if (simulationClock == null) {
             this.buttonStateListener.changeButtonState(ClockButtonState.BLOCKED);
         } else {
-            //FIXME check for clean simulation and if unclean either clean it or
-            // make the button state PAUSED.
-            this.buttonStateListener.changeButtonState(ClockButtonState.STOPPED);
+            if (simulationClock.isRunning()) {
+                this.buttonStateListener.changeButtonState(ClockButtonState.PLAYING);
+            } else {
+                this.buttonStateListener.changeButtonState(ClockButtonState.STOPPED);
+            }
         }
         
         this.simulationClock = simulationClock;
@@ -136,6 +138,9 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         if ((this.buttonStateListener == null) || (listener == null)) {
             this.buttonStateListener = listener;
         } else throw new ListenerSetException();
+        if (listener != null && this.toolStateListener != null) {
+            listener.changeButtonState(ControlButtonState.VIEW);
+        }
     }
     
     @Override
@@ -178,16 +183,19 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
             
             case VIEW:
                 this.buttonStateListener.changeButtonState(ControlButtonState.VIEW);
+                this.toolStateListener.setSelectedTool(ControlButtonState.VIEW);
                 break;
             
             case ADD:
                 this.buttonStateListener.changeButtonState(ControlButtonState.ADD);
+                this.toolStateListener.setSelectedTool(ControlButtonState.ADD);
                 break;
             
             case SUB:
                 this.buttonStateListener.changeButtonState(ControlButtonState.SUB);
+                this.toolStateListener.setSelectedTool(ControlButtonState.SUB);
                 break;
-
+            
             default:
         }
     }
@@ -268,16 +276,33 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         if ((this.entitySelectorListener == null) || (listener == null)) {
             this.entitySelectorListener = listener;
         } else throw new ListenerSetException();
-
-        //FIXME check for a better position in the code for this
-        //TODO remove possible source for race condition
-        this.buttonStateListener.changeButtonState(ControlButtonState.VIEW);
-        this.entitySelectorListener.enable();
+        
+        this.entityTypeRegistry.setEntitySelectorListener(listener);
+        
+        if (listener != null) {
+            listener.enable();
+            String typeName = listener.getCurrentEntity();
+            String textureHandle = null;
+            if (typeName != null && !typeName.equals("")) {
+                textureHandle = this.entityTypeRegistry.getTextureHandleOfEntityType(typeName);
+            }
+            try {
+                this.toolStateListener.setSelectedEntityType(typeName, textureHandle);
+            } catch (@SuppressWarnings("unused") NullPointerException e) {
+                // catching exception instead of checking before allows to avoid synchronization here
+            }
+        }
     }
     
     @Override
     public void selectedEntityChanged(String name) {
-        // Intentionally left blank
+        String textureHandle = null;
+        if (name != null && !name.equals("")) {
+            textureHandle = this.entityTypeRegistry.getTextureHandleOfEntityType(name);
+        }
+        if (this.toolStateListener != null) {
+            this.toolStateListener.setSelectedEntityType(name, textureHandle);
+        }
     }
     
     @Override
@@ -285,6 +310,43 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         if ((this.entityDrawListener == null) || (listener == null)) {
             this.entityDrawListener = listener;
         } else throw new ListenerSetException();
+    }
+    
+    @Override
+    public void setToolStateListener(ToolStateListener listener) {
+        if ((this.toolStateListener == null) || (listener == null)) {
+            this.toolStateListener = listener;
+        } else throw new ListenerSetException();
+        
+        if (listener == null) return;
+        
+        try {
+            this.buttonStateListener.changeButtonState(ControlButtonState.VIEW);
+        } catch (@SuppressWarnings("unused") NullPointerException e) {
+            // catching exception instead of checking before allows to avoid synchronization here
+        }
+        try {
+            String typeName = this.entitySelectorListener.getCurrentEntity();
+            String textureHandle = null;
+            if (typeName != null && !typeName.equals("")) {
+                textureHandle = this.entityTypeRegistry.getTextureHandleOfEntityType(typeName);
+            }
+            listener.setSelectedEntityType(typeName, textureHandle);
+        } catch (@SuppressWarnings("unused") NullPointerException e) {
+            // catching exception instead of checking before allows to avoid synchronization here
+        }
+    }
+    
+    @Override
+    public Set<String> getAvailableProgramsForEntityType(String typeName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public void spawnEntityAt(String typeName, int x, int y, String program) {
+        // TODO Auto-generated method stub
+        
     }
     
     @Override

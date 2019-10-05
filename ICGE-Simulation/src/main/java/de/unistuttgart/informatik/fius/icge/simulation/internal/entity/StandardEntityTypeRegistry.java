@@ -19,6 +19,8 @@ import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsException;
+import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntitySelectorListener;
 
 
 /**
@@ -30,6 +32,8 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
     
     private final Map<String, Supplier<? extends Entity>> typeToEntityFactory = new HashMap<>();
     private final Map<String, String>                     typeToTextureHandle = new HashMap<>();
+    
+    private EntitySelectorListener entitySelectorListener;
     
     @Override
     public void registerEntityType(String typeName, String textureHandle, Class<? extends Entity> entityType) {
@@ -50,7 +54,7 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
     }
     
     @Override
-    public void registerEntityType(String typeName, String textureHandle, Supplier<? extends Entity> entityFactory) {
+    public synchronized void registerEntityType(String typeName, String textureHandle, Supplier<? extends Entity> entityFactory) {
         if (typeName == null || typeName.equals("")) throw new IllegalArgumentException("Type name cannot be null or empty!");
         if (
             textureHandle == null || textureHandle.equals("")
@@ -61,8 +65,9 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
         this.typeToEntityFactory.put(typeName, entityFactory);
         this.typeToTextureHandle.put(typeName, textureHandle);
         
-        // TODO inform UI about changes
-        // via simulationProxy.entitySelectorListener.addElement(name, textureid);
+        if (this.entitySelectorListener != null) {
+            this.entitySelectorListener.addElement(typeName, textureHandle);
+        }
     }
     
     @Override
@@ -84,4 +89,22 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
         return entityFactory.get();
     }
     
+    /**
+     * Add entity selector listener that gets informed about all entity types added.
+     * 
+     * @param listener
+     *     the listener to set; use null to remove listener
+     * @throws ListenerSetException
+     *     if the listener is already set and the provided listener is not {@code null}.
+     */
+    public synchronized void setEntitySelectorListener(EntitySelectorListener listener) {
+        if ((this.entitySelectorListener == null) || (listener == null)) {
+            if (listener != null) {
+                this.typeToEntityFactory.keySet().stream().forEachOrdered((typeName) -> {
+                    listener.addElement(typeName, this.typeToTextureHandle.get(typeName));
+                });
+            }
+            this.entitySelectorListener = listener;
+        } else throw new ListenerSetException();
+    }
 }

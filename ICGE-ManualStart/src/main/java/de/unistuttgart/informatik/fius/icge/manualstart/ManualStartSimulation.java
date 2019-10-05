@@ -32,6 +32,9 @@ public class ManualStartSimulation {
     public static void main(final String[] args) {
         final SimulationHost host = SimulationHostFactory.createSimulationHost();
         prepareTextures(host.getTextureRegistry());
+        host.getEntityTypeRegistry().registerEntityType("Coin", textureHandleCoin, () -> new TestEntity());
+        // TODO why does this not work? (A: modules, but how to get it to work??)
+        // host.getEntityTypeRegistry().registerEntityType("Coin", textureHandleCoin, (TestEntity.class);
         TestEntity.TEXTURE_HANDLE = animated;
         host.getTaskRegistry().registerTask("Test Task", new TestTask());
     }
