@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.TreeSelectionEvent;
@@ -23,6 +24,7 @@ import javax.swing.tree.DefaultTreeModel;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SimulationTreeListener;
+import de.unistuttgart.informatik.fius.icge.ui.internal.EntityInspector;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
@@ -46,6 +48,8 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     public JTree              entityList;
     /** The model of the JTree component */
     public DefaultTreeModel   entityListModel;
+    /** The entity inspector in the sidebar */
+    public EntityInspector entityInspector;
     
     /**
      * The default constructor
@@ -117,15 +121,21 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
                 SwingEntitySidebar.this.entityListModel.setRoot(null);
             }
         });
-        
-        // Sidebar setup
+
+        // Entity inspector setup
+        this.entityInspector = new EntityInspector(this.textureRegistry);
+        //TODO connect inspector to proxy
+
+        // Sidebar layout
         JScrollPane pane = new JScrollPane(this.entityList);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        JSplitPane jsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pane, this.entityInspector);
+        jsp.setOneTouchExpandable(true);
+        jsp.setResizeWeight(0.4);
         this.setLayout(new BorderLayout());
-        this.add(pane, BorderLayout.CENTER);
-        
-        //TODO write and add entity inspector
+        this.add(jsp, BorderLayout.CENTER);
     }
     
     @Override
