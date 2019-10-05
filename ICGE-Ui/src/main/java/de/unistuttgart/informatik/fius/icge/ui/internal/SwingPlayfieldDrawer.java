@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
-import javax.swing.RepaintManager;
 
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
@@ -62,8 +61,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private static final RenderingHints RENDERING_HINTS = new RenderingHints(
             RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
     );
-    
-    private final RepaintManager repaintManager;
     
     private final SwingTextureRegistry textureRegistry;
     
@@ -111,7 +108,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         });
         
         this.setOpaque(true);
-        this.repaintManager = RepaintManager.currentManager(this);
     }
     
     /**
@@ -190,8 +186,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     @Override
     public void draw(final long tickCount) {
         this.currentFrame = tickCount;
-        boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
-        this.repaintManager.setDoubleBufferingEnabled(false);
         this.animatedDrawables.forEach(d -> d.setCurrentTick(tickCount));
         if (this.animatedDrawables.size() > 0) {
             this.drawables = this.drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
@@ -228,7 +222,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         }
         // flush drawing changes to screen (improves render latency when mouse is not in window)
         Toolkit.getDefaultToolkit().sync();
-        this.repaintManager.setDoubleBufferingEnabled(bufferEnabled);
         // filter out finished animations
         this.animatedDrawables = this.drawables.stream().filter(
                 d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
@@ -318,8 +311,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private static boolean canGroupDrawables(final Drawable a, final Drawable b) {
         if ((a == null) || (b == null)) return false;
         if (!a.getTextureHandle().equals(b.getTextureHandle())) return false;
-        if (Math.round(a.getX()) != Math.round(b.getX())) return false;
-        if (Math.round(a.getY()) != Math.round(b.getY())) return false;
+        // consider drawables more than 0.1% of the cell width apart from another as different
+        if (Math.abs(a.getX() - b.getX()) > 0.001) return false;
+        if (Math.abs(a.getY() - b.getY()) > 0.001) return false;
         return true;
     }
     
