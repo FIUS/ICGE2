@@ -130,7 +130,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         
             @Override
             public void setName(String name) {
-                //TODO implement
+                SwingEntitySidebar.this.entityInspector.setName(name);
             }
         
             @Override
@@ -140,8 +140,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         
             @Override
             public String getName() {
-                //TODO implement
-                return null;
+                return SwingEntitySidebar.this.entityInspector.getName();
             }
         
             @Override

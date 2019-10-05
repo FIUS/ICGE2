@@ -33,6 +33,9 @@ public class SwingEntityInspector extends JPanel {
 
     private GridBagConstraints gbc;
 
+    /** The name wich is displayed at the top */
+    private String name;
+
     /**
      * Default constructor
      * 
@@ -41,12 +44,32 @@ public class SwingEntityInspector extends JPanel {
      */
     public SwingEntityInspector(final SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
+        this.name = "";
 
         this.setLayout(new GridBagLayout());
         this.gbc = new GridBagConstraints();
         this.gbc.fill = GridBagConstraints.HORIZONTAL;
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
+    }
+
+    /**
+     * Getter for the inspector name wich is displayed at the top
+     * 
+     * @return the name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Setter for the inspector name
+     * 
+     * @param name
+     *     The new name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
