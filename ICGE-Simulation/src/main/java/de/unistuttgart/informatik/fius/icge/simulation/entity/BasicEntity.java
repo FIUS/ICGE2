@@ -121,9 +121,9 @@ public abstract class BasicEntity implements Entity {
      * Pause execution for {@code ticks} simulation ticks.
      * 
      * @param ticks
-     *     numberof simulation ticks to pause; must be > 0
+     *     numberof simulation ticks to pause; must be {@code > 0}
      * @throws IllegalArgumentException
-     *     if ticks is <= 0
+     *     if ticks is {@code <= 0}
      */
     public void sleep(int ticks) {
         if (ticks <= 0) throw new IllegalArgumentException("The number of ticks must be > 0 !");
