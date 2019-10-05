@@ -48,12 +48,15 @@ public abstract class MovableEntity extends BasicEntity {
      */
     public void turnClockWise() {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
-        this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
-        Direction oldLookingDirection = this.lookingDirection;
-        this.lookingDirection = this.lookingDirection.clockWiseNext();
-        long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
-        this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
-        endOfOperation.complete(null);
+        try {
+            this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
+            Direction oldLookingDirection = this.lookingDirection;
+            this.lookingDirection = this.lookingDirection.clockWiseNext();
+            long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
+            this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
+        } finally {
+            endOfOperation.complete(null);
+        }
     }
     
     /**
@@ -88,13 +91,16 @@ public abstract class MovableEntity extends BasicEntity {
                 this.getTextureHandle()
         );
         clock.scheduleOperationInTicks(duration, endOfOperation);
-        if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
-        EntityMoveAction action = new EntityStepAction(
-                this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
-        );
-        this.getPlayfield().moveEntity(this, nextPos, action);
-        this.movingDrawable = null;
-        endOfOperation.complete(null);
+        try {
+            if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
+            EntityMoveAction action = new EntityStepAction(
+                    this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
+            );
+            this.getPlayfield().moveEntity(this, nextPos, action);
+        } finally {
+            endOfOperation.complete(null);
+            this.movingDrawable = null;
+        }
     }
     
     /**
