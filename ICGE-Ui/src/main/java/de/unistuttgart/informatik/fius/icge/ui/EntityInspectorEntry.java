@@ -11,38 +11,39 @@ package de.unistuttgart.informatik.fius.icge.ui;
 
 import java.util.function.Consumer;
 
+
 /**
  * EntityInspectorEntry
  */
 public class EntityInspectorEntry {
-
+    
     private final String name;
-
+    
     private final String type;
-
+    
     private final String value;
-
+    
     private final Consumer<String> callback;
-
+    
     public EntityInspectorEntry(final String name, final String type, final String value, final Consumer<String> callback) {
         this.name = name;
         this.type = type;
         this.value = value;
         this.callback = callback;
     }
-
+    
     public String getName() {
         return this.name;
     }
-
+    
     public String getType() {
         return this.type;
     }
-
+    
     public String getValue() {
         return this.value;
     }
-
+    
     public void runCallback(String value) {
         this.callback.accept(value);
     }

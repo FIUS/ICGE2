@@ -39,7 +39,7 @@ public class MinimalSimulationProxy implements SimulationProxy {
     
     /** The simulation tree listener */
     public SimulationTreeListener simulationTreeListener;
-
+    
     /** The entity inspector listener */
     public EntityInspectorListener entityInspectorListener;
     

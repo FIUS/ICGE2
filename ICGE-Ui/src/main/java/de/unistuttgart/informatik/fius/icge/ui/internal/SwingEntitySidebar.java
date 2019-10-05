@@ -45,11 +45,11 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     private final SwingTextureRegistry textureRegistry;
     
     /** The root node of the entity list */
-    public SimulationTreeNode rootNode;
+    public SimulationTreeNode   rootNode;
     /** The hierarchical list of all entities */
-    public JTree              entityList;
+    public JTree                entityList;
     /** The model of the JTree component */
-    public DefaultTreeModel   entityListModel;
+    public DefaultTreeModel     entityListModel;
     /** The entity inspector in the sidebar */
     public SwingEntityInspector entityInspector;
     
@@ -123,42 +123,42 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
                 SwingEntitySidebar.this.entityListModel.setRoot(null);
             }
         });
-
+        
         // Entity inspector setup
         this.entityInspector = new SwingEntityInspector(this.textureRegistry);
-        this.simulationProxy.setEntityInspectorListener(new EntityInspectorListener(){
-        
+        this.simulationProxy.setEntityInspectorListener(new EntityInspectorListener() {
+            
             @Override
             public void setName(String name) {
                 SwingEntitySidebar.this.entityInspector.setName(name);
             }
-        
+            
             @Override
             public void setEntityEntries(EntityInspectorEntry[] entries) {
                 SwingEntitySidebar.this.setEntityInspectorEntries(entries);
             }
-        
+            
             @Override
             public String getName() {
                 return SwingEntitySidebar.this.entityInspector.getName();
             }
-        
+            
             @Override
             public void enable() {
                 SwingEntitySidebar.this.entityInspector.setEnabled(true);
             }
-        
+            
             @Override
             public void disable() {
                 SwingEntitySidebar.this.entityInspector.setEnabled(false);
             }
         });
-
+        
         // Sidebar layout
         JScrollPane pane = new JScrollPane(this.entityList);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-
+        
         JSplitPane jsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pane, this.entityInspector);
         jsp.setOneTouchExpandable(true);
         jsp.setResizeWeight(0.4);
@@ -182,11 +182,11 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         super.setEnabled(enabled);
         this.entityList.setEnabled(enabled);
     }
-
+    
     @Override
     public void setEntityInspectorEntries(EntityInspectorEntry[] entries) {
         this.entityInspector.clearUIElements();
-
+        
         for (EntityInspectorEntry entry : entries) {
             this.entityInspector.addUIElement(entry.getName(), entry.getType(), entry.getValue(), (id, value) -> {
                 entry.runCallback(value);

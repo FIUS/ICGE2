@@ -26,16 +26,16 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
  * EntityInspector
  */
 public class SwingEntityInspector extends JPanel {
-    private static final long          serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
-
+    
     private GridBagConstraints gbc;
-
+    
     /** The name wich is displayed at the top */
     private String name;
-
+    
     /**
      * Default constructor
      * 
@@ -45,14 +45,14 @@ public class SwingEntityInspector extends JPanel {
     public SwingEntityInspector(final SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
         this.name = "";
-
+        
         this.setLayout(new GridBagLayout());
         this.gbc = new GridBagConstraints();
         this.gbc.fill = GridBagConstraints.HORIZONTAL;
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
     }
-
+    
     /**
      * Getter for the inspector name wich is displayed at the top
      * 
@@ -61,7 +61,7 @@ public class SwingEntityInspector extends JPanel {
     public String getName() {
         return this.name;
     }
-
+    
     /**
      * Setter for the inspector name
      * 
@@ -71,7 +71,7 @@ public class SwingEntityInspector extends JPanel {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     /**
      * Add a entry to the ui editor
      * 
@@ -87,7 +87,7 @@ public class SwingEntityInspector extends JPanel {
     public void addUIElement(String name, String type, String value, BiConsumer<String, String> callback) {
         this.add(new JLabel(name + ": "), this.gbc);
         this.gbc.gridx = 1;
-
+        
         switch (type) {
             case "string":
                 JTextField textField = new JTextField(value);
@@ -106,7 +106,7 @@ public class SwingEntityInspector extends JPanel {
         this.gbc.gridx = 0;
         this.gbc.gridy += 1;
     }
-
+    
     /**
      * Clears the entity editor
      */

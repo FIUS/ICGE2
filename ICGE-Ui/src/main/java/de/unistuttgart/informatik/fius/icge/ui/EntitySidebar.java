@@ -29,7 +29,7 @@ public interface EntitySidebar {
      * This function should be called if the simulation tree changes.
      */
     public void updateSimulationTree();
-
+    
     /**
      * This function deletes all currently created ui elements and creates a new inspector
      * 

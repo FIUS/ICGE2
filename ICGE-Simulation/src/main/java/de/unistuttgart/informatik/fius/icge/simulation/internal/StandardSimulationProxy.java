@@ -66,7 +66,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     private SimulationTreeListener simulationTreeListener;
     
     private EntityInspectorListener entityInspectorListener;
-
+    
     /**
      * Default Constructor
      */
