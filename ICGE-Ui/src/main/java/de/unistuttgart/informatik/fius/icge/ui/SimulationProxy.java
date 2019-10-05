@@ -309,4 +309,60 @@ public interface SimulationProxy {
      *     The node with was selected
      */
     void selectedSimulationEntityChange(SimulationTreeNode node);
+    
+    /**
+     * This interface is used by the entity explorer
+     */
+    public interface EntityInspectorListener {
+        
+        /**
+         * Getter for the current entity name
+         * 
+         * @return
+         */
+        String getName();
+        
+        /**
+         * Setter for the current entity name
+         * 
+         * @param name
+         */
+        void setName(String name);
+        
+        /**
+         * This resets the entity entries, it deletes everything that is there an recreates it
+         * 
+         * @param entries
+         */
+        void setEntityEntries(EntityInspectorEntry[] entries);
+        
+        /**
+         * enables the entity editor
+         */
+        void enable();
+        
+        /**
+         * disables the entity editor
+         */
+        void disable();
+    }
+    
+    /**
+     * This function is used to set the one entity insoecter listener and should only be called by the ui itself. The
+     * only way to reset this listener is to explicitly set it to null thus removing the old listener.
+     * 
+     * @param listener
+     *     the listener to store
+     */
+    void setEntityInspectorListener(EntityInspectorListener listener);
+    
+    /**
+     * This function gets called when a user changes a value or fires a function in the ui
+     * 
+     * @param name
+     *     The name of the setting
+     * @param value
+     *     The new user selected value
+     */
+    void entityValueChange(String name, String value);
 }

@@ -32,6 +32,9 @@ public class MinimalSimulationProxy implements SimulationProxy {
     /** The simulation tree listener */
     public SimulationTreeListener simulationTreeListener;
     
+    /** The entity inspector listener */
+    public EntityInspectorListener entityInspectorListener;
+    
     @Override
     public void setButtonStateListener(ButtonStateListener listener) {
         this.buttonStateListener = listener;
@@ -74,6 +77,16 @@ public class MinimalSimulationProxy implements SimulationProxy {
     
     @Override
     public void selectedSimulationEntityChange(SimulationTreeNode node) {
+        // Intentionally left blank
+    }
+    
+    @Override
+    public void setEntityInspectorListener(EntityInspectorListener listener) {
+        this.entityInspectorListener = listener;
+    }
+    
+    @Override
+    public void entityValueChange(String name, String value) {
         // Intentionally left blank
     }
 }
