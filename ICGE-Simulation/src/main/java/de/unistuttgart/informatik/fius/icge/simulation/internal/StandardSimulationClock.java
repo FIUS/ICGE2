@@ -54,6 +54,18 @@ public class StandardSimulationClock implements SimulationClock {
     
     private volatile long tickCount;
     
+    /**
+     * Setting this to true will signal the clock that it is in shutdown mode.
+     * <p>
+     * This causes tick processing to abort at appropriate points.
+     * </p>
+     * <p>
+     * This causes most methods to return immediately without throwing an exception. This decision was made because due
+     * to concurrency some methods may still be called after a shutdown without the caller doing anything wrong or
+     * having any sensible to reaction to this.
+     * </p>
+     * 
+     */
     private volatile boolean shuttingDown;
     
     private int period;
@@ -136,15 +148,19 @@ public class StandardSimulationClock implements SimulationClock {
      * the completion of running ones.
      * </p>
      * <p>
-     * Most other methods will just return immediately after this method is called.
+     * Most methods of this clock will just return immediately after this method is called. This includes register
+     * listener methods, scheduleOperation methods and all methods controlling the state of the clock except for
+     * stopInternal.
      * </p>
+     * 
+     * @see #shuttingDown <b>shuttingDown</b> for more information and the reason for all methods returning
      */
     public synchronized void shutdown() {
         if (this.shuttingDown) return;
         this.shuttingDown = true;
         stop();
         for (var boundary : Set.copyOf(this.operationBoundaries)) {
-            boundary.cancel(false);
+            boundary.cancel(true);
         }
     }
     
@@ -208,11 +224,13 @@ public class StandardSimulationClock implements SimulationClock {
      */
     private void tick() {
         synchronized (this.tickListenerLock) {
+            //Don't process tick when shutting down.
             if (this.shuttingDown) return;
             this.tickCount++;
             if ((this.tickCount % SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
                 this.tickSimulation(this.tickCount / SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK);
             }
+            //Don't continue to process tick when shutting down.
             if (this.shuttingDown) return;
             if (this.drawer != null) {
                 this.drawer.draw(this.tickCount);
@@ -228,6 +246,7 @@ public class StandardSimulationClock implements SimulationClock {
      */
     private void tickSimulation(final long tickNumber) {
         for (final var listener : List.copyOf(this.tickListeners)) {
+            //Don't continue to process tick when shutting down.
             if (this.shuttingDown) return;
             if (!listener.apply(tickNumber)) {
                 this.tickListeners.remove(listener);
@@ -235,6 +254,7 @@ public class StandardSimulationClock implements SimulationClock {
         }
         
         for (final var listener : List.copyOf(this.postTickListeners)) {
+            //Don't continue to process tick when shutting down.
             if (this.shuttingDown) return;
             if (!listener.apply(tickNumber)) {
                 this.postTickListeners.remove(listener);

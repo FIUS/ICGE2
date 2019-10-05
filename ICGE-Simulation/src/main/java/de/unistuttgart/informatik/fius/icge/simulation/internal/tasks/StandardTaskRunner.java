@@ -60,6 +60,7 @@ public class StandardTaskRunner {
             //Simulation was stopped before completion of the task.
             //Log would be printed into log panel of new task because of concurrency.
             //I won't bother fixing this now, because log would get cleared immediately anyway.
+            //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
             return false;
         } catch (Exception e) {
             Logger.simulation.println("----------------------------------------------");

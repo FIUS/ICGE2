@@ -140,6 +140,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
                 //Simulation was stopped.
                 //Log would be printed into log panel of new task because of concurrency.
                 //I won't bother fixing this now, because log would get cleared immediately anyway.
+                //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
                 info.setState(EntityProgramState.KILLED);
             } catch (Exception e) {
                 Logger.simulation.println("----------------------------------------------");

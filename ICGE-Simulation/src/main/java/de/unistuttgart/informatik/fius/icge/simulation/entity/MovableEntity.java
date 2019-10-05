@@ -81,7 +81,6 @@ public abstract class MovableEntity extends BasicEntity {
     public void move() {
         final int duration = 4;
         final int renderTickDuration = duration * SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
-        final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         final SimulationClock clock = this.getSimulation().getSimulationClock();
         final long currentTick = clock.getLastRenderTickNumber();
         final Position currentPos = this.getPosition();
@@ -90,8 +89,10 @@ public abstract class MovableEntity extends BasicEntity {
                 currentTick, currentPos.getX(), currentPos.getY(), renderTickDuration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
                 this.getTextureHandle()
         );
-        clock.scheduleOperationInTicks(duration, endOfOperation);
+        
+        final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         try {
+            clock.scheduleOperationInTicks(duration, endOfOperation);
             if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
             EntityMoveAction action = new EntityStepAction(
                     this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
