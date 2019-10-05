@@ -45,8 +45,10 @@ public interface SimulationProxy {
     public enum ControlButtonState {
         /** Indicates the user input is in view mode */
         VIEW,
-        /** Indicates the user input is in entity mode */
-        ENTITY,
+        /** Indicates the user input is in add mode */
+        ADD,
+        /** Indicates the user input is in sub mode */
+        SUB,
         /** Indicates that the user input is blocked or unavailable */
         BLOCKED
     }
@@ -96,8 +98,10 @@ public interface SimulationProxy {
         STOP,
         /** The view button in the toolbar */
         VIEW,
-        /** The entity button in the toolbar */
-        ENTITY
+        /** The add button in the toolbar */
+        ADD,
+        /** The sub button in the toolbar */
+        SUB
     }
     
     /**
@@ -206,8 +210,66 @@ public interface SimulationProxy {
     void selectedTaskChange(String element);
     
     //
-    // Toolbar - Controlls
+    // Toolbar - entity select
     //
+
+    /**
+     * The entity selector listener
+     */
+    public interface EntitySelectorListener {
+
+        /**
+         * Getter for the current entity
+         * 
+         * @return The entity name
+         */
+        String getCurrentEntity();
+
+        /**
+         * set the current entity. Caution this is unchecked and selected even if it does not exist.
+         * 
+         * @param entity
+         *     The entity to select
+         */
+        void setCurrentEntity(String entity);
+
+        /**
+         * Add a element to the drop down menu
+         * 
+         * @param name
+         *     The name of the entity to add
+         * @param textureId
+         *     The texture id of the entity
+         */
+        void addElement(String name, String textureId);
+
+        /**
+         * This function enables the entity selector
+         */
+        void enable();
+        
+        /**
+         * This function disables the entity selector and clears all elements!
+         */
+        void disable();
+    }
+
+    /**
+     * This function is used to set the one entity selector listener and should only be called by the ui itself. The only
+     * way to reset this listener is to explicitly set it to null thus removing the old listener.
+     * 
+     * @param listener
+     *     the listener to store
+     */
+    void setEntitySelectorListener(EntitySelectorListener listener);
+
+    /**
+     * This gets called when the user changes the selected element
+     * 
+     * @param name
+     *     The name of the selected element
+     */
+    void selectedEntityChanged(String name);
     
     //
     // Entity Drawing

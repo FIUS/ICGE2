@@ -58,6 +58,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     // LISTENERS
     private ButtonStateListener buttonStateListener;
+    private EntitySelectorListener entitySelectorListener;
     private SpeedSliderListener speedSliderListener;
     private EntityDrawListener  entityDrawListener;
     
@@ -176,13 +177,17 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
                 break;
             
             case VIEW:
-                //TODO implement
+                this.buttonStateListener.changeButtonState(ControlButtonState.VIEW);
                 break;
             
-            case ENTITY:
-                //TODO implement
+            case ADD:
+                this.buttonStateListener.changeButtonState(ControlButtonState.ADD);
                 break;
             
+            case SUB:
+                this.buttonStateListener.changeButtonState(ControlButtonState.SUB);
+                break;
+
             default:
         }
     }
@@ -256,6 +261,23 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         this.currentSimulation = simulation;
         this.currentRunningTask = runningTask;
         this.gameWindow.setWindowTitle("Task: " + newTaskName);
+    }
+    
+    @Override
+    public void setEntitySelectorListener(EntitySelectorListener listener) {
+        if ((this.entitySelectorListener == null) || (listener == null)) {
+            this.entitySelectorListener = listener;
+        } else throw new ListenerSetException();
+
+        //FIXME check for a better position in the code for this
+        //TODO remove possible source for race condition
+        this.buttonStateListener.changeButtonState(ControlButtonState.VIEW);
+        this.entitySelectorListener.enable();
+    }
+    
+    @Override
+    public void selectedEntityChanged(String name) {
+        // Intentionally left blank
     }
     
     @Override

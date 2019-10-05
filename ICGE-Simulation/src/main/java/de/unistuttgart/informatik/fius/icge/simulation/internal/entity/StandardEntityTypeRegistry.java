@@ -62,6 +62,7 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
         this.typeToTextureHandle.put(typeName, textureHandle);
         
         // TODO inform UI about changes
+        // via simulationProxy.entitySelectorListener.addElement(name, textureid);
     }
     
     @Override
