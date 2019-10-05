@@ -22,7 +22,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProg
  */
 public class EntityProgramRegistryEntry {
     private final String                  name;
-    private final boolean                 single;
+    private final boolean                 isSingleInstance;
     private final EntityProgram           program;
     private final Supplier<EntityProgram> programGenerator;
     
@@ -39,7 +39,7 @@ public class EntityProgramRegistryEntry {
     public EntityProgramRegistryEntry(final String name, final EntityProgram program) {
         if ((name == null) || (program == null)) throw new IllegalArgumentException("Argument cannot be null.");
         this.name = name;
-        this.single = true;
+        this.isSingleInstance = true;
         this.program = program;
         this.programGenerator = null;
     }
@@ -57,7 +57,7 @@ public class EntityProgramRegistryEntry {
     public EntityProgramRegistryEntry(final String name, final Supplier<EntityProgram> programGenerator) {
         if ((name == null) || (programGenerator == null)) throw new IllegalArgumentException("Argument cannot be null.");
         this.name = name;
-        this.single = false;
+        this.isSingleInstance = false;
         this.program = null;
         this.programGenerator = programGenerator;
     }
@@ -70,6 +70,13 @@ public class EntityProgramRegistryEntry {
     }
     
     /**
+     * @return false iff the program has a factory to create new instances
+     */
+    public boolean isSingle() {
+        return this.isSingleInstance;
+    }
+    
+    /**
      * Get the program instance of this info.
      * <p>
      * If this is a info about many programs, calls the get method of the generator.
@@ -78,7 +85,7 @@ public class EntityProgramRegistryEntry {
      * @return the program instance
      */
     public EntityProgram getProgram() {
-        if (this.single) return this.program;
+        if (this.isSingleInstance) return this.program;
         final EntityProgram prog = this.programGenerator.get();
         if (prog == null) throw new IllegalStateException("Program Generator returned null.");
         return prog;
@@ -86,7 +93,7 @@ public class EntityProgramRegistryEntry {
     
     @Override
     public int hashCode() {
-        if (this.single) return this.name.hashCode() + this.program.hashCode();
+        if (this.isSingleInstance) return this.name.hashCode() + this.program.hashCode();
         return this.name.hashCode() + this.programGenerator.hashCode();
     }
     
@@ -94,9 +101,9 @@ public class EntityProgramRegistryEntry {
     public boolean equals(final Object obj) {
         if (!(obj instanceof EntityProgramRegistryEntry)) return false;
         final EntityProgramRegistryEntry other = (EntityProgramRegistryEntry) obj;
-        if (this.single != other.single) return false;
+        if (this.isSingleInstance != other.isSingleInstance) return false;
         if (!this.name.equals(other.name)) return false;
-        if (this.single) return this.program.equals(other.program);
+        if (this.isSingleInstance) return this.program.equals(other.program);
         return this.programGenerator.equals(other.programGenerator);
     }
     

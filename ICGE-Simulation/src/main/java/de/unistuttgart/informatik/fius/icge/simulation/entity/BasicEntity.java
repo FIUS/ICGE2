@@ -10,6 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.CompletableFuture;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
@@ -114,6 +115,24 @@ public abstract class BasicEntity implements Entity {
      */
     protected Simulation getSimulation() {
         return this.getPlayfield().getSimulation();
+    }
+    
+    /**
+     * Pause execution for {@code ticks} simulation ticks.
+     * 
+     * @param ticks
+     *     numberof simulation ticks to pause; must be > 0
+     * @throws IllegalArgumentException
+     *     if ticks is <= 0
+     */
+    public void sleep(int ticks) {
+        if (ticks <= 0) throw new IllegalArgumentException("The number of ticks must be > 0 !");
+        final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
+        try {
+            this.getSimulation().getSimulationClock().scheduleOperationInTicks(ticks, endOfOperation);
+        } finally {
+            endOfOperation.complete(null);
+        }
     }
     
     @Override

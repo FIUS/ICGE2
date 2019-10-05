@@ -12,7 +12,9 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal;
 import java.util.concurrent.CompletableFuture;
 
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
@@ -47,8 +49,9 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     private GameWindow gameWindow;
     
     // REGISTRIES
-    private TextureRegistry            textureRegistry;
-    private final StandardTaskRegistry taskRegistry;
+    private TextureRegistry                  textureRegistry;
+    private final StandardTaskRegistry       taskRegistry;
+    private final StandardEntityTypeRegistry entityTypeRegistry;
     
     // CURRENT SIMULATION
     private StandardSimulationClock simulationClock;
@@ -73,6 +76,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     public StandardSimulationProxy() {
         this.simulationClock = null;
         this.taskRegistry = new StandardTaskRegistry();
+        this.entityTypeRegistry = new StandardEntityTypeRegistry();
     }
     
     /**
@@ -93,6 +97,11 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     @Override
     public TextureRegistry getTextureRegistry() {
         return this.textureRegistry;
+    }
+    
+    @Override
+    public EntityTypeRegistry getEntityTypeRegistry() {
+        return this.entityTypeRegistry;
     }
     
     /**
