@@ -21,10 +21,12 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SimulationTreeListener;
-import de.unistuttgart.informatik.fius.icge.ui.internal.EntityInspector;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityInspectorListener;
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntityInspector;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
@@ -49,7 +51,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     /** The model of the JTree component */
     public DefaultTreeModel   entityListModel;
     /** The entity inspector in the sidebar */
-    public EntityInspector entityInspector;
+    public SwingEntityInspector entityInspector;
     
     /**
      * The default constructor
@@ -123,8 +125,35 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         });
 
         // Entity inspector setup
-        this.entityInspector = new EntityInspector(this.textureRegistry);
-        //TODO connect inspector to proxy
+        this.entityInspector = new SwingEntityInspector(this.textureRegistry);
+        this.simulationProxy.setEntityInspectorListener(new EntityInspectorListener(){
+        
+            @Override
+            public void setName(String name) {
+                //TODO implement
+            }
+        
+            @Override
+            public void setEntityEntries(EntityInspectorEntry[] entries) {
+                SwingEntitySidebar.this.setEntityInspectorEntries(entries);
+            }
+        
+            @Override
+            public String getName() {
+                //TODO implement
+                return null;
+            }
+        
+            @Override
+            public void enable() {
+                SwingEntitySidebar.this.entityInspector.setEnabled(true);
+            }
+        
+            @Override
+            public void disable() {
+                SwingEntitySidebar.this.entityInspector.setEnabled(false);
+            }
+        });
 
         // Sidebar layout
         JScrollPane pane = new JScrollPane(this.entityList);
@@ -153,6 +182,18 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         this.entityList.setEnabled(enabled);
+    }
+
+    @Override
+    public void setEntityInspectorEntries(EntityInspectorEntry[] entries) {
+        this.entityInspector.clearUIElements();
+
+        for (EntityInspectorEntry entry : entries) {
+            this.entityInspector.addUIElement(entry.getName(), entry.getType(), entry.getValue(), (id, value) -> {
+                entry.runCallback(value);
+                this.simulationProxy.entityValueChange(id, value);
+            });
+        }
     }
     
     /**
