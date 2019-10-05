@@ -9,7 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * EntityInspectorEntry
@@ -22,9 +22,9 @@ public class EntityInspectorEntry {
 
     private final String value;
 
-    private final BiConsumer<String, String> callback;
+    private final Consumer<String> callback;
 
-    public EntityInspectorEntry(final String name, final String type, final String value, final BiConsumer<String, String> callback) {
+    public EntityInspectorEntry(final String name, final String type, final String value, final Consumer<String> callback) {
         this.name = name;
         this.type = type;
         this.value = value;
@@ -43,7 +43,7 @@ public class EntityInspectorEntry {
         return this.value;
     }
 
-    public void runCallback(String id, String value) {
-        this.callback.accept(id, value);
+    public void runCallback(String value) {
+        this.callback.accept(value);
     }
 }
