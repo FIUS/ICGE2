@@ -10,9 +10,13 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -43,10 +47,14 @@ public class StandardSimulationClock implements SimulationClock {
     private final List<Function<Long, Boolean>> tickListeners;
     private final List<Function<Long, Boolean>> postTickListeners;
     
+    private final Set<CompletableFuture<Void>> operationBoundaries;
+    
     private TimerTask   task;
     private final Timer timer;
     
     private volatile long tickCount;
+    
+    private volatile boolean shuttingDown;
     
     private int period;
     
@@ -59,6 +67,8 @@ public class StandardSimulationClock implements SimulationClock {
         this.timer = new Timer("STM-TickTimer");
         this.tickCount = -1;
         this.period = SimulationClock.DEFAULT_RENDER_TICK_PERIOD;
+        this.shuttingDown = false;
+        this.operationBoundaries = Collections.synchronizedSet(new HashSet<>());
     }
     
     /**
@@ -96,6 +106,7 @@ public class StandardSimulationClock implements SimulationClock {
      */
     public synchronized void startInternal() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
+        if (this.shuttingDown) return;
         
         this.task = new TimerTask() {
             
@@ -116,6 +127,25 @@ public class StandardSimulationClock implements SimulationClock {
             this.task.cancel();
         }
         this.task = null;
+    }
+    
+    /**
+     * Shuts down this clock.
+     * <p>
+     * Shutting down includes stopping the clock and canceling all scheduled operations as well as stopping to wait for
+     * the completion of running ones.
+     * </p>
+     * <p>
+     * Most other methods will just return immediately after this method is called.
+     * </p>
+     */
+    public synchronized void shutdown() {
+        if (this.shuttingDown) return;
+        this.shuttingDown = true;
+        stop();
+        for (var boundary : Set.copyOf(this.operationBoundaries)) {
+            boundary.cancel(false);
+        }
     }
     
     @Override
@@ -164,6 +194,7 @@ public class StandardSimulationClock implements SimulationClock {
     @Override
     public synchronized void step() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
+        if (this.shuttingDown) return;
         
         new Thread(() -> {
             StandardSimulationClock.this.tickCount = ((StandardSimulationClock.this.tickCount
@@ -175,17 +206,18 @@ public class StandardSimulationClock implements SimulationClock {
     /**
      * Process a tick
      */
-    private synchronized void tick() {
+    private void tick() {
         synchronized (this.tickListenerLock) {
+            if (this.shuttingDown) return;
             this.tickCount++;
             if ((this.tickCount % SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK) == 0) {
                 this.tickSimulation(this.tickCount / SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK);
             }
+            if (this.shuttingDown) return;
             if (this.drawer != null) {
                 this.drawer.draw(this.tickCount);
             }
         }
-        
     }
     
     /**
@@ -196,12 +228,14 @@ public class StandardSimulationClock implements SimulationClock {
      */
     private void tickSimulation(final long tickNumber) {
         for (final var listener : List.copyOf(this.tickListeners)) {
+            if (this.shuttingDown) return;
             if (!listener.apply(tickNumber)) {
                 this.tickListeners.remove(listener);
             }
         }
         
         for (final var listener : List.copyOf(this.postTickListeners)) {
+            if (this.shuttingDown) return;
             if (!listener.apply(tickNumber)) {
                 this.postTickListeners.remove(listener);
             }
@@ -210,6 +244,7 @@ public class StandardSimulationClock implements SimulationClock {
     
     @Override
     public void registerTickListener(final Function<Long, Boolean> listener) {
+        if (this.shuttingDown) return;
         synchronized (this.tickListenerLock) {
             this.tickListeners.add(listener);
         }
@@ -217,6 +252,7 @@ public class StandardSimulationClock implements SimulationClock {
     
     @Override
     public void registerPostTickListener(final Function<Long, Boolean> listener) {
+        if (this.shuttingDown) return;
         synchronized (this.tickListenerLock) {
             this.postTickListeners.add(listener);
         }
@@ -235,14 +271,23 @@ public class StandardSimulationClock implements SimulationClock {
     
     @Override
     public void scheduleOperationAtTick(final long tick, final CompletableFuture<Void> endOfOperation) {
+        if (this.shuttingDown) return;
+        this.operationBoundaries.add(endOfOperation);
         final CompletableFuture<Void> startOfOperation = new CompletableFuture<>();
+        this.operationBoundaries.add(startOfOperation);
         this.registerTickListener(tickNumber -> {
             if (tickNumber >= tick) {
                 startOfOperation.complete(null);
                 try {
                     endOfOperation.get();
-                } catch (final Exception e) {
-                    throw new RuntimeException(e);
+                    this.operationBoundaries.remove(endOfOperation);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                } catch (CancellationException e) {
+                    //When shutting down this is expected
+                    if (!this.shuttingDown) {
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }
@@ -250,12 +295,12 @@ public class StandardSimulationClock implements SimulationClock {
         });
         try {
             startOfOperation.get();
+            this.operationBoundaries.remove(startOfOperation);
         } catch (final InterruptedException e) {
             throw new UncheckedInterruptedException(e);
         } catch (final ExecutionException e) {
-            final Throwable cause = e.getCause().getCause();
-            if (cause instanceof InterruptedException) throw new UncheckedInterruptedException(cause);
-            throw new IllegalStateException("The end of operation completed exceptionally", cause);
+            //Should not happen as this future does never execute but is simply completed manually.
+            e.printStackTrace();
         }
     }
     

@@ -12,6 +12,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
@@ -134,6 +135,11 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
                 info.getProgram().run(entity);
                 info.setState(EntityProgramState.FINISHED);
             } catch (@SuppressWarnings("unused") final UncheckedInterruptedException e) {
+                info.setState(EntityProgramState.KILLED);
+            } catch (@SuppressWarnings("unused") CancellationException e) {
+                //Simulation was stopped.
+                //Log would be printed into log panel of new task because of concurrency.
+                //I won't bother fixing this now, because log would get cleared immediately anyway.
                 info.setState(EntityProgramState.KILLED);
             } catch (Exception e) {
                 Logger.simulation.println("----------------------------------------------");
