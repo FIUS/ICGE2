@@ -94,7 +94,12 @@ public class StandardPlayfield implements Playfield {
     public void drawEntities() {
         final List<Drawable> drawables = new ArrayList<>();
         for (final Entity entity : this.getAllEntities()) {
-            drawables.add(entity.getDrawInformation());
+            try {
+                drawables.add(entity.getDrawInformation());
+            } catch (@SuppressWarnings("unused") EntityNotOnFieldException e) {
+                //Entity has been removed from the field while this loop was running.
+                //Just don't draw it and ignore the exception.
+            }
         }
         if (this.drawer != null) {
             this.drawer.setDrawables(drawables);
