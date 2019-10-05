@@ -47,10 +47,6 @@ public class SwingEntityInspector extends JPanel {
         this.gbc.fill = GridBagConstraints.HORIZONTAL;
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
-
-        addUIElement("Test1", "string", "value", (id, value) -> System.out.println(id + ": " + value));
-        addUIElement("Test2", "string", "value", (id, value) -> System.out.println(id + ": " + value));
-        addUIElement("Test3", "string", "value", (id, value) -> System.out.println(id + ": " + value));
     }
 
     /**
