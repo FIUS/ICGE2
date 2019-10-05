@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.tasks;
 
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 
 import de.unistuttgart.informatik.fius.icge.log.Logger;
@@ -55,6 +56,12 @@ public class StandardTaskRunner {
         this.taskToRun.prepare(this.sim);
         try {
             this.taskToRun.solve();
+        } catch (@SuppressWarnings("unused") CancellationException e) {
+            //Simulation was stopped before completion of the task.
+            //Log would be printed into log panel of new task because of concurrency.
+            //I won't bother fixing this now, because log would get cleared immediately anyway.
+            //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
+            return false;
         } catch (Exception e) {
             Logger.simulation.println("----------------------------------------------");
             Logger.simulation.println("The following exception caused a task failure:");
