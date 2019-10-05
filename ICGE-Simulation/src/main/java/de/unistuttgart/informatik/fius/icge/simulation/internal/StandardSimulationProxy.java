@@ -65,6 +65,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     private SimulationTreeListener simulationTreeListener;
     
+    private EntityInspectorListener entityInspectorListener;
+
     /**
      * Default Constructor
      */
@@ -263,6 +265,18 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     @Override
     public void selectedSimulationEntityChange(SimulationTreeNode node) {
+        // Intentionally left blank
+    }
+    
+    @Override
+    public void setEntityInspectorListener(EntityInspectorListener listener) {
+        if ((this.entityInspectorListener == null) || (listener == null)) {
+            this.entityInspectorListener = listener;
+        } else throw new ListenerSetException();
+    }
+    
+    @Override
+    public void entityValueChange(String name, String type, String value) {
         // Intentionally left blank
     }
 }
