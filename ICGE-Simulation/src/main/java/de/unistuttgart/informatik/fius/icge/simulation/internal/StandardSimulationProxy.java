@@ -276,7 +276,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     }
     
     @Override
-    public void entityValueChange(String name, String type, String value) {
+    public void entityValueChange(String name, String value) {
         // Intentionally left blank
     }
 }

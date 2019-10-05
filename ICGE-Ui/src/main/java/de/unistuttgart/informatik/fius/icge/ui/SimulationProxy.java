@@ -361,10 +361,8 @@ public interface SimulationProxy {
      * 
      * @param name
      *     The name of the setting
-     * @param type
-     *     The type of the setting
      * @param value
      *     The new user selected value
      */
-    void entityValueChange(String name, String type, String value);
+    void entityValueChange(String name, String value);
 }

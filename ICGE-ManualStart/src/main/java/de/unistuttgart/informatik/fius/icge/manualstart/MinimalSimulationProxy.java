@@ -94,7 +94,7 @@ public class MinimalSimulationProxy implements SimulationProxy {
     }
     
     @Override
-    public void entityValueChange(String name, String type, String value) {
+    public void entityValueChange(String name, String value) {
         // Intentionally left blank
     }
 }
