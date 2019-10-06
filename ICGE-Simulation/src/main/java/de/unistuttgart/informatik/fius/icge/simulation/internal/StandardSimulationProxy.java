@@ -49,10 +49,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     /** A lookup table for the simulation times */
     public static final int[] SIMULATION_TIMES = {
-            // 0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10
-            1000, 625, 385, 250, 275, 125, 95, 75, 60, 50, 40
-            // This values approximate the folowing function by haslersn.
-            // 5000 / (x² + 2x + 5)
+            // 0,   1,   2,   3,  4,  5,  6,  7,  8,  9, 10
+            1000, 415, 200, 115, 75, 50, 40, 30, 20, 10, 0
     };
     
     // GAME WINDOW
