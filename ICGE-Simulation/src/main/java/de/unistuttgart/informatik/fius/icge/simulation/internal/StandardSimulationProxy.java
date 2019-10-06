@@ -140,6 +140,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         
         this.simulationClock = simulationClock;
         this.simulationClock.setSimulationProxy(this);
+        this.simulationSpeedChange(this.speedSliderListener.getSpeed());
     }
     
     @Override
