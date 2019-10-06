@@ -7,7 +7,7 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.ui;
+package de.unistuttgart.informatik.fius.icge.ui.exception;
 
 /**
  * Exception thrown when a texture file or resource could not be found.

@@ -12,4 +12,5 @@ module de.unistuttgart.informatik.fius.icge.ui {
     requires de.unistuttgart.informatik.fius.icge.log;
     
     exports de.unistuttgart.informatik.fius.icge.ui;
+    exports de.unistuttgart.informatik.fius.icge.ui.exception;
 }

@@ -33,7 +33,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTa
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
-import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
+import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
@@ -49,10 +49,9 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     /** A lookup table for the simulation times */
     public static final int[] SIMULATION_TIMES = {
-            // 0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10
-            1000, 625, 385, 250, 275, 125, 95, 75, 60, 50, 40
-            // This values approximate the folowing function by haslersn.
-            // 5000 / (x² + 2x + 5)
+            // 0,   1,   2,   3,  4,  5,  6,  7,  8,  9, 10
+            1000, 415, 200, 115, 75, 50, 42, 34, 26, 18, 10
+            // These values are aproximated by two functions originally by haslersn which where modified by waeltkts
     };
     
     // GAME WINDOW
