@@ -131,4 +131,9 @@ public class MinimalSimulationProxy implements SimulationProxy {
     public void spawnEntityAt(String typeName, int x, int y, String program) {
         // Intentionally left blank
     }
+    
+    @Override
+    public void clearCell(int x, int y) {
+        // Intentionally left blank
+    }
 }

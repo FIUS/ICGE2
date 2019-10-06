@@ -9,11 +9,20 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import de.unistuttgart.informatik.fius.icge.log.Logger;
+import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
+import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationHost;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotRunProgramException;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
@@ -339,14 +348,58 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     @Override
     public Set<String> getAvailableProgramsForEntityType(String typeName) {
-        // TODO Auto-generated method stub
-        return null;
+        final Simulation sim = this.currentSimulation;
+        if (sim == null) return new HashSet<>(); // no simulation
+        try {
+            final Entity entity = this.entityTypeRegistry.getNewEntity(typeName);
+            return sim.getEntityProgramRegistry().getProgramsForEntity(entity);
+        } catch (Exception e) {
+            Logger.simulation.println("Could not load program list for entity type " + typeName + ". (See system log for details.)");
+            e.printStackTrace(Logger.error);
+        }
+        return new HashSet<>();
     }
     
     @Override
     public void spawnEntityAt(String typeName, int x, int y, String program) {
-        // TODO Auto-generated method stub
+        final Simulation sim = this.currentSimulation;
+        if (sim == null) return; // no simulation
         
+        final Playfield field = sim.getPlayfield();
+        try {
+            final Entity ent = this.entityTypeRegistry.getNewEntity(typeName);
+            if (ent == null) {
+                Logger.simulation.println("Could not create a new entity of type " + typeName + "!");
+                return;
+            }
+            field.addEntity(new Position(x, y), ent);
+            if (program != null && !program.equals("")) {
+                this.currentSimulation.getEntityProgramRunner().run(program, ent);
+            }
+        } catch (CannotRunProgramException e) {
+            Logger.simulation.println("Could not run program " + program + " for the new entity. (See system log for details.)");
+            e.printStackTrace(Logger.error);
+        } catch (Exception e) {
+            Logger.simulation.println("Something went wrong while creating new entity. (See system log for details.)");
+            e.printStackTrace(Logger.error);
+        }
+    }
+    
+    @Override
+    public void clearCell(int x, int y) {
+        final Simulation sim = this.currentSimulation;
+        if (sim == null) return; // no simulation
+        
+        final Playfield field = sim.getPlayfield();
+        final List<Entity> toRemove = field.getEntitiesAt(new Position(x, y));
+        
+        toRemove.forEach(entity -> {
+            try {
+                field.removeEntity(entity);
+            } catch (@SuppressWarnings("unused") IllegalArgumentException | EntityNotOnFieldException e) {
+                // nothing to do because entity was either null or already not on the field
+            }
+        });
     }
     
     @Override

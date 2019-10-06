@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
+import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
@@ -207,6 +208,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
         ).collect(Collectors.toUnmodifiableList());
         this.fullRepaintNeeded = true;
+        this.draw(this.currentFrame);
     }
     
     @Override
@@ -266,14 +268,14 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         return new Dimension(800, 600);
     }
     
-    private int getColumnCoordinateFromScreenCoordinate(int x) {
+    private int getColumnCoordinateFromScreenCoordinate(int screenX) {
         final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
-        return (int) Math.floor((x - this.offsetX) / cellSize);
+        return (int) Math.floor((screenX - this.offsetX) / cellSize);
     }
     
-    private int getRowCoordinateFromScreenCoordinate(int y) {
+    private int getRowCoordinateFromScreenCoordinate(int screenY) {
         final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
-        return (int) Math.floor((y - this.offsetY) / cellSize);
+        return (int) Math.floor((screenY - this.offsetY) / cellSize);
     }
     
     private Point getScreenPointFromCellCoordinates(double x, double y, double cellSize) {
@@ -475,20 +477,45 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         }
     }
     
-    private void mousePressed(int x, int y) {
-        this.mouseStartX = x;
-        this.mouseStartY = y;
+    private void mousePressed(int screenX, int screenY) {
+        this.mouseStartX = screenX;
+        this.mouseStartY = screenY;
         this.isDrag = false;
     }
     
-    private void mouseReleased(int x, int y) {
+    private void mouseReleased(int screenX, int screenY) {
         if (!this.isDrag) {
             this.mouseClick(this.mouseStartX, this.mouseStartY);
         }
     }
     
-    private void mouseClick(int x, int y) {
-        // TODO spawn entity here
+    private void mouseClick(final int screenX, final int screenY) {
+        final int x = this.getColumnCoordinateFromScreenCoordinate(screenX);
+        final int y = this.getRowCoordinateFromScreenCoordinate(screenY);
+        
+        if (this.activeTool == ControlButtonState.ADD) {
+            String type = this.selectedEntityType;
+            if (type == null || type.equals("")) {
+                Logger.simulation.println("Could not spawn entity, no type selected!");
+                return;
+            }
+            try {
+                this.simulationProxy.spawnEntityAt(type, x, y, null);
+            } catch (Exception e) {
+                Logger.simulation.println(
+                        "Error while spawning entity of type " + type + " at (x=" + x + ", y=" + y + "). (See system log for details)"
+                );
+                e.printStackTrace(Logger.error);
+            }
+        }
+        if (this.activeTool == ControlButtonState.SUB) {
+            try {
+                this.simulationProxy.clearCell(x, y);
+            } catch (Exception e) {
+                Logger.simulation.println("Error while clearing the cell (x=" + x + ", y=" + y + "). (See system log for details)");
+                e.printStackTrace(Logger.error);
+            }
+        }
         this.repaint();
     }
     

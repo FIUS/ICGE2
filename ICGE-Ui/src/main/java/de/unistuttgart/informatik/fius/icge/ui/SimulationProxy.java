@@ -366,6 +366,16 @@ public interface SimulationProxy {
      */
     void spawnEntityAt(String typeName, int x, int y, String program);
     
+    /**
+     * Clear all entities in the given cell.
+     * 
+     * @param x
+     *     coordinate
+     * @param y
+     *     coordinate
+     */
+    void clearCell(int x, int y);
+    
     //
     // Sidebar - Simulation Tree
     //
