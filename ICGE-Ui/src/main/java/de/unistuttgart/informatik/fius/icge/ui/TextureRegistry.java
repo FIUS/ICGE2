@@ -12,6 +12,8 @@ package de.unistuttgart.informatik.fius.icge.ui;
 import java.io.InputStream;
 import java.util.function.Function;
 
+import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;
+
 
 /**
  * The interface for a texture registry used by a {@link GameWindow}.

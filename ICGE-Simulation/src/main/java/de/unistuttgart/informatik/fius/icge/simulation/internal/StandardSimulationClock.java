@@ -24,7 +24,7 @@ import java.util.function.Function;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.TimerAlreadyRunning;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
-import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
+import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
