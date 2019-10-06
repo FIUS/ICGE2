@@ -30,6 +30,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulati
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
 /**
@@ -45,6 +46,10 @@ public class StandardPlayfield implements Playfield {
     
     private EntityDrawListener drawer;
     
+    private SimulationTreeNode simualtionTreeRootNode;
+    
+    private Runnable simulationTreeChnagedListener;
+    
     /**
      * Initialize the playfield for the given simulation
      * 
@@ -57,6 +62,8 @@ public class StandardPlayfield implements Playfield {
             this.drawEntities();
             return true;
         });
+        
+        this.simualtionTreeRootNode = new SimulationTreeNode("root", "Entities", "", false);
     }
     
     /**
@@ -178,7 +185,46 @@ public class StandardPlayfield implements Playfield {
         
         entity.initOnPlayfield(this);
         
+        addEntityToSimulationTree(entity);
         this.drawEntities();
+    }
+    
+    private SimulationTreeNode findNodeForEntity(Entity entity, boolean create) {
+        List<Class<?>> classHiera = new ArrayList<>();
+        {
+            Class<?> clazz = entity.getClass();
+            do {
+                classHiera.add(0, clazz);
+                clazz = clazz.getSuperclass();
+            } while (Entity.class.isAssignableFrom(clazz));
+        }
+        SimulationTreeNode node = this.simualtionTreeRootNode;
+        
+        hieraLoop: for (Class<?> clazz : classHiera) {
+            for (SimulationTreeNode child : node.getChildren()) {
+                if (child.getElementId().equals(clazz.getName())) {
+                    node = child;
+                    continue hieraLoop;
+                }
+            }
+            if (create) {
+                //TODO: get texture from EntityTypeRegistry
+                SimulationTreeNode child = new SimulationTreeNode(clazz.getName(), clazz.getSimpleName(), "", false);
+                node.appendChild(child);
+                node = child;
+            } else {
+                return null;
+            }
+        }
+        return node;
+    }
+    
+    private void addEntityToSimulationTree(Entity entity) {
+        findNodeForEntity(entity, true).appendChild(
+                new SimulationTreeNode(Integer.toHexString(entity.hashCode()), entity.toString(), entity.getDrawInformation().getTextureHandle())
+        );
+        
+        this.simulationTreeChnagedListener.run();
     }
     
     @Override
@@ -217,6 +263,22 @@ public class StandardPlayfield implements Playfield {
         this.drawEntities();
     }
     
+
+    private void removeEntityFromSimulationTree(Entity entity) {
+        SimulationTreeNode node = findNodeForEntity(entity, false);
+        
+        if (node == null) return;
+        
+        
+        for (SimulationTreeNode child : node.getChildren()) {
+            if (child.getElementId().equals(Integer.toHexString(entity.hashCode()))) {
+                node.removeChild(child);
+            }
+        }
+        
+        this.simulationTreeChnagedListener.run();
+    }
+    
     @Override
     public void removeEntity(final Entity entity) {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
@@ -230,6 +292,8 @@ public class StandardPlayfield implements Playfield {
         
         this.getSimulation().getActionLog()
                 .logAction(new EntityDespawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this));
+        
+        removeEntityFromSimulationTree(entity);
         
         this.drawEntities();
     }
@@ -255,6 +319,25 @@ public class StandardPlayfield implements Playfield {
             if (entity.isCurrentlySolid()) return true;
         }
         return false;
+    }
+    
+    /**
+     * @return the root node of the simulation tree
+     */
+    public SimulationTreeNode getSimulationTree() {
+        return this.simualtionTreeRootNode;
+    }
+    
+    /**
+     * Set the listener for when the simulation tree changes.
+     * 
+     * @param listener
+     *     the listener to set.
+     */
+    public void setSimulationTreeChangedListener(Runnable listener) {
+        if ((this.simulationTreeChnagedListener == null) || (listener == null)) {
+            this.simulationTreeChnagedListener = listener;
+        } else throw new ListenerSetException();
     }
     
     @Override

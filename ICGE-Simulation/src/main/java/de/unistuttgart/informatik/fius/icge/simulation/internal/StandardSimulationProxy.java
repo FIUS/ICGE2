@@ -271,6 +271,14 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         // reset currentTick in playfield drawer
         this.gameWindow.getPlayfieldDrawer().draw(0);
         
+        if (this.simulationTreeListener != null) {
+            this.simulationTreeListener.setRootNode(playfield.getSimulationTree());
+            this.simulationTreeListener.enable();
+            playfield.setSimulationTreeChangedListener(() -> {
+                this.simulationTreeListener.updateSimulationTree();
+            });
+        }
+        
         // START TASK
         final CompletableFuture<Boolean> runningTask = taskRunner.runTask();
         

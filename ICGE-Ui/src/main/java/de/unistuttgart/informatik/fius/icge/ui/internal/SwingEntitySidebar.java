@@ -24,9 +24,8 @@ import javax.swing.tree.DefaultTreeModel;
 import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SimulationTreeListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityInspectorListener;
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntityInspector;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SimulationTreeListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 
 
@@ -77,6 +76,11 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             
             @Override
             public void valueChanged(TreeSelectionEvent arg0) {
+                if (SwingEntitySidebar.this.entityList.getLastSelectedPathComponent() == null) {
+                    SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(null);
+                    return;
+                }
+                
                 SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(
                         new InternalSimulationTreeNode(
                                 ((MutableTreeNodeData) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList
