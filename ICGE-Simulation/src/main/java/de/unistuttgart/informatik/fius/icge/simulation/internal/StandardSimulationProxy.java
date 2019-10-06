@@ -268,6 +268,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         final StandardTaskRunner taskRunner = new StandardTaskRunner(task, simulation);
         
         simulation.setEntityDrawListener(this.entityDrawListener);
+        // reset currentTick in playfield drawer
+        this.gameWindow.getPlayfieldDrawer().draw(0);
         
         // START TASK
         final CompletableFuture<Boolean> runningTask = taskRunner.runTask();
