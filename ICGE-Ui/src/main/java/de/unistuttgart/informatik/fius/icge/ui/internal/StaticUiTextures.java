@@ -28,6 +28,11 @@ public abstract class StaticUiTextures {
     public static String pauseIcon;
     /** A stop icon */
     public static String stopIcon;
+
+    /** A add icon */
+    public static String addIcon;
+    /** A sub icon */
+    public static String subIcon;
     
     /**
      * This function loads all textures into the given texture registry and stores the icon ids
@@ -40,5 +45,8 @@ public abstract class StaticUiTextures {
         StaticUiTextures.stepIcon = registry.loadTextureFromResource("textures/step.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.pauseIcon = registry.loadTextureFromResource("textures/pause.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.stopIcon = registry.loadTextureFromResource("textures/stop.png", TextureRegistry.class::getResourceAsStream);
+
+        StaticUiTextures.addIcon = registry.loadTextureFromResource("textures/add.png", TextureRegistry.class::getResourceAsStream);
+        StaticUiTextures.subIcon = registry.loadTextureFromResource("textures/sub.png", TextureRegistry.class::getResourceAsStream);
     }
 }
