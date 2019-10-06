@@ -34,6 +34,7 @@ public class SwingEntityInspector extends JPanel {
     private static final long serialVersionUID = 1L;
     
     /** The texture registry */
+    @SuppressWarnings("unused")
     private final SwingTextureRegistry textureRegistry;
     
     private GridBagConstraints gbc;
@@ -82,6 +83,7 @@ public class SwingEntityInspector extends JPanel {
      * 
      * @return the name
      */
+    @Override
     public String getName() {
         return this.title.getText();
     }
@@ -92,6 +94,7 @@ public class SwingEntityInspector extends JPanel {
      * @param name
      *     The new name
      */
+    @Override
     public void setName(String name) {
         this.title.setText(name);
     }
