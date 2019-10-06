@@ -16,7 +16,7 @@ import java.util.Set;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsException;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
+import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.TaskSelectorListener;
 
 
