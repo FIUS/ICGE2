@@ -28,7 +28,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOn
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
-import de.unistuttgart.informatik.fius.icge.ui.ListenerSetException;
+import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
 

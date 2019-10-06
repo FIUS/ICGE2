@@ -24,7 +24,7 @@ import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
-import de.unistuttgart.informatik.fius.icge.ui.TextureNotFoundException;
+import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 
 
