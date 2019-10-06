@@ -273,7 +273,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.sub.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.SUB));
         this.sub.setEnabled(false);
         this.add(this.sub);
-
+        
         //
         // button listener setup
         //
@@ -331,7 +331,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                         SwingToolbar.this.add.setEnabled(false);
                         SwingToolbar.this.sub.setEnabled(true);
                         break;
-
+                    
                     case SUB:
                         SwingToolbar.this.view.setEnabled(true);
                         SwingToolbar.this.add.setEnabled(true);
@@ -365,32 +365,32 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         });
         this.entitySelect.setEnabled(false);
         this.add(this.entitySelect);
-
-        this.simulationProxy.setEntitySelectorListener(new EntitySelectorListener(){
         
+        this.simulationProxy.setEntitySelectorListener(new EntitySelectorListener() {
+            
             @Override
             public String getCurrentEntity() {
                 DropdownEntry currentEntry = SwingToolbar.this.entitySelect.getCurrentEntry();
                 if (currentEntry == null) return "";
                 return currentEntry.displayName;
             }
-        
+            
             @Override
             public void setCurrentEntity(String entity) {
                 SwingToolbar.this.entitySelect.setCurrentEntry(SwingToolbar.this.taskSelect.new DropdownEntry(entity));
             }
-        
+            
             @Override
             public void enable() {
                 SwingToolbar.this.entitySelect.setEnabled(true);
             }
-        
+            
             @Override
             public void disable() {
                 SwingToolbar.this.entitySelect.removeAllEntries();
                 SwingToolbar.this.entitySelect.setEnabled(false);
             }
-        
+            
             @Override
             public void addElement(String name, String textureId) {
                 SwingToolbar.this.entitySelect.addEntry(SwingToolbar.this.entitySelect.new DropdownEntry(name, textureId));
