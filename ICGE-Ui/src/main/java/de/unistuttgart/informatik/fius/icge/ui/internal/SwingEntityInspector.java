@@ -40,16 +40,16 @@ public class SwingEntityInspector extends JPanel {
     private final SwingTextureRegistry textureRegistry;
     
     private GridBagConstraints gbc;
-
+    
     /** The name at the top */
     private JLabel title;
-
+    
     /** The JPanel containing all the ui elements */
     private JPanel inspector;
     
     /** The user warning at the bottom */
     private JLabel warning;
-
+    
     /**
      * Default constructor
      * 
@@ -62,20 +62,20 @@ public class SwingEntityInspector extends JPanel {
         
         this.title = new JLabel("Empty");
         this.add(this.title, BorderLayout.PAGE_START);
-
+        
         this.inspector = new JPanel();
         this.inspector.setLayout(new GridBagLayout());
         this.add(this.inspector, BorderLayout.CENTER);
-
+        
         this.warning = new JLabel("Pause the simulation to modify an entity!");
         this.warning.setVisible(false);
         this.add(this.warning, BorderLayout.PAGE_END);
-
+        
         this.gbc = new GridBagConstraints();
         this.gbc.fill = GridBagConstraints.HORIZONTAL;
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
-
+        
         this.setEnabled(false);
         this.warning.setVisible(false);
     }
@@ -116,36 +116,33 @@ public class SwingEntityInspector extends JPanel {
         this.gbc.gridx = 1;
         
         switch (type) {
-            case "integer":
-                {
-                    NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
-                    formatter.setValueClass(Integer.class);
-                    formatter.setMinimum(Integer.MIN_VALUE);
-                    formatter.setMaximum(Integer.MAX_VALUE);
-                    formatter.setAllowsInvalid(false);
-                    JFormattedTextField field = new JFormattedTextField(formatter);
-                    field.addActionListener(ae -> callback.accept(name, field.getText()));
-                    this.inspector.add(field, this.gbc);
-                }
+            case "integer": {
+                NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
+                formatter.setValueClass(Integer.class);
+                formatter.setMinimum(Integer.MIN_VALUE);
+                formatter.setMaximum(Integer.MAX_VALUE);
+                formatter.setAllowsInvalid(false);
+                JFormattedTextField field = new JFormattedTextField(formatter);
+                field.addActionListener(ae -> callback.accept(name, field.getText()));
+                this.inspector.add(field, this.gbc);
+            }
                 break;
-            case "long":
-                {
-                    NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
-                    formatter.setValueClass(Long.class);
-                    formatter.setMinimum(Long.MIN_VALUE);
-                    formatter.setMaximum(Long.MAX_VALUE);
-                    formatter.setAllowsInvalid(false);
-                    JFormattedTextField field = new JFormattedTextField(formatter);
-                    field.addActionListener(ae -> callback.accept(name, field.getText()));
-                    this.inspector.add(field, this.gbc);
-                }
+            case "long": {
+                NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
+                formatter.setValueClass(Long.class);
+                formatter.setMinimum(Long.MIN_VALUE);
+                formatter.setMaximum(Long.MAX_VALUE);
+                formatter.setAllowsInvalid(false);
+                JFormattedTextField field = new JFormattedTextField(formatter);
+                field.addActionListener(ae -> callback.accept(name, field.getText()));
+                this.inspector.add(field, this.gbc);
+            }
                 break;
-            case "string":
-                {
-                    JTextField field = new JTextField(value);
-                    field.addActionListener(ae -> callback.accept(name, field.getText()));
-                    this.inspector.add(field, this.gbc);
-                }
+            case "string": {
+                JTextField field = new JTextField(value);
+                field.addActionListener(ae -> callback.accept(name, field.getText()));
+                this.inspector.add(field, this.gbc);
+            }
                 break;
             case "function":
                 JButton button = new JButton("call");
@@ -158,7 +155,7 @@ public class SwingEntityInspector extends JPanel {
         
         this.gbc.gridx = 0;
         this.gbc.gridy += 1;
-
+        
         this.revalidate();
         this.repaint();
     }
@@ -171,23 +168,23 @@ public class SwingEntityInspector extends JPanel {
         this.inspector = new JPanel();
         this.inspector.setLayout(new GridBagLayout());
         this.add(this.inspector, BorderLayout.CENTER);
-
+        
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
-
+        
         this.revalidate();
         this.repaint();
     }
-
+    
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-
+        
         this.title.setEnabled(enabled);
         SwingEntityInspector.setEnabledState(this.inspector, enabled);
         this.warning.setVisible(!enabled);
     }
-
+    
     /**
      * Recursive method to enable and disable a JPanel and its children
      * 
@@ -198,7 +195,7 @@ public class SwingEntityInspector extends JPanel {
      */
     public static void setEnabledState(JPanel panel, boolean state) {
         panel.setEnabled(state);
-
+        
         for (Component component : panel.getComponents()) {
             if (component instanceof JPanel) {
                 SwingEntityInspector.setEnabledState((JPanel) component, state);
