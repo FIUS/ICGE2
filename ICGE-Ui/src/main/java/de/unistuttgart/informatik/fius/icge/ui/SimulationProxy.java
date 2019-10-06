@@ -450,7 +450,7 @@ public interface SimulationProxy {
         /**
          * Getter for the current entity name
          * 
-         * @return
+         * @return returns the name
          */
         String getName();
         
