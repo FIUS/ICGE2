@@ -12,15 +12,12 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import java.util.function.BiConsumer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.text.NumberFormat;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
