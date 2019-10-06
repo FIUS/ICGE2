@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+import java.awt.Font;
 import java.awt.Dimension;
 import java.io.OutputStream;
 
@@ -44,6 +45,7 @@ public class SwingConsole extends JTabbedPane implements Console {
         {   // Setup simulation console
             this.simulationConsole = new JTextArea();
             this.simulationConsole.setEditable(false);
+            this.simulationConsole.setFont(new Font("monospaced", Font.PLAIN, 12));
             final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
             this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole);
@@ -51,6 +53,7 @@ public class SwingConsole extends JTabbedPane implements Console {
         {   // Setup system console
             this.systemConsole = new JTextArea();
             this.systemConsole.setEditable(false);
+            this.systemConsole.setFont(new Font("monospaced", Font.PLAIN, 12));
             final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
             this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole);
