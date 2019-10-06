@@ -16,6 +16,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
+import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionAttribute;
 import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 
@@ -33,6 +34,7 @@ public abstract class BasicEntity implements Entity {
      * @throws EntityNotOnFieldException
      *     if this entity is not on a playfield
      */
+    @InspectionAttribute(readOnly = true)
     @Override
     public Position getPosition() {
         return this.getPlayfield().getEntityPosition(this);

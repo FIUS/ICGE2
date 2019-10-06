@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import de.unistuttgart.informatik.fius.icge.ui.exception.LeafNodeException;
@@ -162,5 +163,16 @@ public class SimulationTreeNode {
         for (SimulationTreeNode child : this.children) {
             lamda.accept(child);
         }
+    }
+    
+    @Override
+    public int hashCode() {
+        return elementId.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SimulationTreeNode)) return false;
+        return Objects.equals(elementId, ((SimulationTreeNode) obj).elementId);
     }
 }

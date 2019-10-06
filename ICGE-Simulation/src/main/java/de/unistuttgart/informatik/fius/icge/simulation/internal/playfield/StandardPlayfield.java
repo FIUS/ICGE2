@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
@@ -48,7 +50,8 @@ public class StandardPlayfield implements Playfield {
     
     private SimulationTreeNode simualtionTreeRootNode;
     
-    private Runnable simulationTreeChnagedListener;
+    private BiConsumer<SimulationTreeNode, Entity> simulationTreeEntityAddedListener;
+    private Consumer<SimulationTreeNode>           simulationTreeEntityRemovedListener;
     
     /**
      * Initialize the playfield for the given simulation
@@ -220,11 +223,10 @@ public class StandardPlayfield implements Playfield {
     }
     
     private void addEntityToSimulationTree(Entity entity) {
-        findNodeForEntity(entity, true).appendChild(
-                new SimulationTreeNode(Integer.toHexString(entity.hashCode()), entity.toString(), entity.getDrawInformation().getTextureHandle())
-        );
+        SimulationTreeNode newNode = new SimulationTreeNode(Integer.toHexString(entity.hashCode()), entity.toString(), entity.getDrawInformation().getTextureHandle()); 
+        findNodeForEntity(entity, true).appendChild(newNode);
         
-        this.simulationTreeChnagedListener.run();
+        this.simulationTreeEntityAddedListener.accept(newNode, entity);
     }
     
     @Override
@@ -269,14 +271,12 @@ public class StandardPlayfield implements Playfield {
         
         if (node == null) return;
         
-        
         for (SimulationTreeNode child : node.getChildren()) {
             if (child.getElementId().equals(Integer.toHexString(entity.hashCode()))) {
                 node.removeChild(child);
+                this.simulationTreeEntityRemovedListener.accept(child);
             }
         }
-        
-        this.simulationTreeChnagedListener.run();
     }
     
     @Override
@@ -329,14 +329,26 @@ public class StandardPlayfield implements Playfield {
     }
     
     /**
-     * Set the listener for when the simulation tree changes.
+     * Set the listener for when an entity is added to the simulation tree.
      * 
      * @param listener
-     *     the listener to set.
+     *     the listener to set
      */
-    public void setSimulationTreeChangedListener(Runnable listener) {
-        if ((this.simulationTreeChnagedListener == null) || (listener == null)) {
-            this.simulationTreeChnagedListener = listener;
+    public void setSimulationTreeEntityAddedListener(BiConsumer<SimulationTreeNode, Entity> listener) {
+        if ((this.simulationTreeEntityAddedListener == null) || (listener == null)) {
+            this.simulationTreeEntityAddedListener = listener;
+        } else throw new ListenerSetException();
+    }
+    
+    /**
+     * Set the listener for when an entity is removed from the simulation tree.
+     * 
+     * @param listener
+     *     the listener to set
+     */
+    public void setSimulationTreeEntityRemovedListener(Consumer<SimulationTreeNode> listener) {
+        if ((this.simulationTreeEntityRemovedListener == null) || (listener == null)) {
+            this.simulationTreeEntityRemovedListener = listener;
         } else throw new ListenerSetException();
     }
     
