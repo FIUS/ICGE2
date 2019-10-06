@@ -16,13 +16,16 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
+import java.text.NumberFormat;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.NumberFormatter;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 
@@ -113,10 +116,36 @@ public class SwingEntityInspector extends JPanel {
         this.gbc.gridx = 1;
         
         switch (type) {
+            case "integer":
+                {
+                    NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
+                    formatter.setValueClass(Integer.class);
+                    formatter.setMinimum(Integer.MIN_VALUE);
+                    formatter.setMaximum(Integer.MAX_VALUE);
+                    formatter.setAllowsInvalid(false);
+                    JFormattedTextField field = new JFormattedTextField(formatter);
+                    field.addActionListener(ae -> callback.accept(name, field.getText()));
+                    this.inspector.add(field, this.gbc);
+                }
+                break;
+            case "long":
+                {
+                    NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
+                    formatter.setValueClass(Long.class);
+                    formatter.setMinimum(Long.MIN_VALUE);
+                    formatter.setMaximum(Long.MAX_VALUE);
+                    formatter.setAllowsInvalid(false);
+                    JFormattedTextField field = new JFormattedTextField(formatter);
+                    field.addActionListener(ae -> callback.accept(name, field.getText()));
+                    this.inspector.add(field, this.gbc);
+                }
+                break;
             case "string":
-                JTextField textField = new JTextField(value);
-                textField.addActionListener(ae -> callback.accept(name, textField.getText()));
-                this.inspector.add(textField, this.gbc);
+                {
+                    JTextField field = new JTextField(value);
+                    field.addActionListener(ae -> callback.accept(name, field.getText()));
+                    this.inspector.add(field, this.gbc);
+                }
                 break;
             case "function":
                 JButton button = new JButton("call");
