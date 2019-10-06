@@ -45,8 +45,10 @@ public interface SimulationProxy {
     public enum ControlButtonState {
         /** Indicates the user input is in view mode */
         VIEW,
-        /** Indicates the user input is in entity mode */
-        ENTITY,
+        /** Indicates the user input is in add mode */
+        ADD,
+        /** Indicates the user input is in sub mode */
+        SUB,
         /** Indicates that the user input is blocked or unavailable */
         BLOCKED
     }
@@ -96,8 +98,10 @@ public interface SimulationProxy {
         STOP,
         /** The view button in the toolbar */
         VIEW,
-        /** The entity button in the toolbar */
-        ENTITY
+        /** The add button in the toolbar */
+        ADD,
+        /** The sub button in the toolbar */
+        SUB
     }
     
     /**
@@ -206,8 +210,66 @@ public interface SimulationProxy {
     void selectedTaskChange(String element);
     
     //
-    // Toolbar - Controlls
+    // Toolbar - entity select
     //
+    
+    /**
+     * The entity selector listener
+     */
+    public interface EntitySelectorListener {
+        
+        /**
+         * Getter for the current entity
+         * 
+         * @return The entity name
+         */
+        String getCurrentEntity();
+        
+        /**
+         * set the current entity. Caution this is unchecked and selected even if it does not exist.
+         * 
+         * @param entity
+         *     The entity to select
+         */
+        void setCurrentEntity(String entity);
+        
+        /**
+         * Add a element to the drop down menu
+         * 
+         * @param name
+         *     The name of the entity to add
+         * @param textureId
+         *     The texture id of the entity
+         */
+        void addElement(String name, String textureId);
+        
+        /**
+         * This function enables the entity selector
+         */
+        void enable();
+        
+        /**
+         * This function disables the entity selector and clears all elements!
+         */
+        void disable();
+    }
+    
+    /**
+     * This function is used to set the one entity selector listener and should only be called by the ui itself. The
+     * only way to reset this listener is to explicitly set it to null thus removing the old listener.
+     * 
+     * @param listener
+     *     the listener to store
+     */
+    void setEntitySelectorListener(EntitySelectorListener listener);
+    
+    /**
+     * This gets called when the user changes the selected element
+     * 
+     * @param name
+     *     The name of the selected element
+     */
+    void selectedEntityChanged(String name);
     
     //
     // Entity Drawing
@@ -236,13 +298,83 @@ public interface SimulationProxy {
     }
     
     /**
-     * This function is used to set the one task entity draw listener and should only be called by the ui itself. The
-     * only way to reset this listener is to explicitly set it to null thus removing the old listener.
+     * This function is used to set the one entity draw listener and should only be called by the ui itself. The only
+     * way to reset this listener is to explicitly set it to null thus removing the old listener.
      * 
      * @param listener
      *     the listener to store
      */
     void setEntityDrawListener(EntityDrawListener listener);
+    
+    //
+    // Entity placing
+    //
+    
+    /**
+     * The tool state listener allows the playfield to get informed about the currently active tool adn selected entity.
+     */
+    public interface ToolStateListener {
+        
+        /**
+         * Set the currently active tool.
+         *
+         * @param selectedTool
+         *     the currently selected tool
+         */
+        void setSelectedTool(ControlButtonState selectedTool);
+        
+        /**
+         * Set the selected entity type.
+         * 
+         * @param typeName
+         *     The selected type name
+         * @param textureHandle
+         *     The texture handle for the selected type name
+         */
+        void setSelectedEntityType(String typeName, String textureHandle);
+    }
+    
+    /**
+     * This function is used to set the one tool state listener and should only be called by the ui itself. The only way
+     * to reset this listener is to explicitly set it to null thus removing the old listener.
+     * 
+     * @param listener
+     *     the listener to store
+     */
+    void setToolStateListener(ToolStateListener listener);
+    
+    /**
+     * Get a set of registered programs that can be used with an entity of the given type.
+     * 
+     * @param typeName
+     *     the name of the entity type
+     * @return the set of program identifiers
+     */
+    Set<String> getAvailableProgramsForEntityType(String typeName);
+    
+    /**
+     * Spawn a new entity of the given type at the given position and bind the program to this entity.
+     * 
+     * @param typeName
+     *     the entity type to instantiate
+     * @param x
+     *     coordinate
+     * @param y
+     *     coordinate
+     * @param program
+     *     program name; use {@code null} to not set a program
+     */
+    void spawnEntityAt(String typeName, int x, int y, String program);
+    
+    /**
+     * Clear all entities in the given cell.
+     * 
+     * @param x
+     *     coordinate
+     * @param y
+     *     coordinate
+     */
+    void clearCell(int x, int y);
     
     //
     // Sidebar - Simulation Tree

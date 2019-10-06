@@ -7,6 +7,6 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-module de.unistuttgart.informatik.fius.icge.manualstart {
+open module de.unistuttgart.informatik.fius.icge.manualstart {
     requires de.unistuttgart.informatik.fius.icge.simulation;
 }

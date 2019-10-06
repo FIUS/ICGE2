@@ -30,6 +30,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonStateListen
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ClockButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ControlButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntitySelectorListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.SpeedSliderListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.TaskSelectorListener;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
@@ -70,8 +71,10 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     /** The button to change to view mode */
     public JToggleButton view;
-    /** The button to change to entity mode */
-    public JToggleButton entity;
+    /** The button to change to add mode */
+    public JToggleButton add;
+    /** The button to change to sub mode */
+    public JToggleButton sub;
     
     /** The selector which selects the entity for the user to place */
     public DropdownSelector entitySelect;
@@ -256,12 +259,20 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.add(this.view);
         
         //
-        // entity button setup
+        // add button setup
         //
-        this.entity = new JToggleButton("Entity"); // FIXME Replace Text with Icon
-        this.entity.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ENTITY));
-        this.entity.setEnabled(false);
-        this.add(this.entity);
+        this.add = new JToggleButton("Add"); // FIXME Replace Text with Icon
+        this.add.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ADD));
+        this.add.setEnabled(false);
+        this.add(this.add);
+        
+        //
+        // add button setup
+        //
+        this.sub = new JToggleButton("sub"); // FIXME Replace Text with Icon
+        this.sub.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.SUB));
+        this.sub.setEnabled(false);
+        this.add(this.sub);
         
         //
         // button listener setup
@@ -311,17 +322,26 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 switch (state) {
                     case VIEW:
                         SwingToolbar.this.view.setEnabled(false);
-                        SwingToolbar.this.entity.setEnabled(true);
+                        SwingToolbar.this.add.setEnabled(true);
+                        SwingToolbar.this.sub.setEnabled(true);
                         break;
                     
-                    case ENTITY:
+                    case ADD:
                         SwingToolbar.this.view.setEnabled(true);
-                        SwingToolbar.this.entity.setEnabled(false);
+                        SwingToolbar.this.add.setEnabled(false);
+                        SwingToolbar.this.sub.setEnabled(true);
+                        break;
+                    
+                    case SUB:
+                        SwingToolbar.this.view.setEnabled(true);
+                        SwingToolbar.this.add.setEnabled(true);
+                        SwingToolbar.this.sub.setEnabled(false);
                         break;
                     
                     case BLOCKED:
                         SwingToolbar.this.view.setEnabled(false);
-                        SwingToolbar.this.entity.setEnabled(false);
+                        SwingToolbar.this.add.setEnabled(false);
+                        SwingToolbar.this.sub.setEnabled(false);
                         break;
                     
                     default:
@@ -334,8 +354,48 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         this.addSeparator();
         this.entitySelect = new DropdownSelector(this.textureRegistry, "Entity");
+        this.entitySelect.addSelectionListener(new ItemListener() {
+            
+            @Override
+            public void itemStateChanged(ItemEvent arg0) {
+                if (arg0.getStateChange() == ItemEvent.SELECTED) {
+                    SwingToolbar.this.simulationProxy.selectedEntityChanged(((DropdownEntry) arg0.getItem()).displayName);
+                }
+            }
+        });
         this.entitySelect.setEnabled(false);
         this.add(this.entitySelect);
+        
+        this.simulationProxy.setEntitySelectorListener(new EntitySelectorListener() {
+            
+            @Override
+            public String getCurrentEntity() {
+                DropdownEntry currentEntry = SwingToolbar.this.entitySelect.getCurrentEntry();
+                if (currentEntry == null) return "";
+                return currentEntry.displayName;
+            }
+            
+            @Override
+            public void setCurrentEntity(String entity) {
+                SwingToolbar.this.entitySelect.setCurrentEntry(SwingToolbar.this.taskSelect.new DropdownEntry(entity));
+            }
+            
+            @Override
+            public void enable() {
+                SwingToolbar.this.entitySelect.setEnabled(true);
+            }
+            
+            @Override
+            public void disable() {
+                SwingToolbar.this.entitySelect.removeAllEntries();
+                SwingToolbar.this.entitySelect.setEnabled(false);
+            }
+            
+            @Override
+            public void addElement(String name, String textureId) {
+                SwingToolbar.this.entitySelect.addEntry(SwingToolbar.this.entitySelect.new DropdownEntry(name, textureId));
+            }
+        });
     }
     
     @Override
