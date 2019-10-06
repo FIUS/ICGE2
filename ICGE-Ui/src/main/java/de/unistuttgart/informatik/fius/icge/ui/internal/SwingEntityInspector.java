@@ -9,12 +9,17 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.util.ArrayList;
 import java.util.function.BiConsumer;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -32,10 +37,16 @@ public class SwingEntityInspector extends JPanel {
     private final SwingTextureRegistry textureRegistry;
     
     private GridBagConstraints gbc;
+
+    /** The name at the top */
+    private JLabel title;
+
+    /** The JPanel containing all the ui elements */
+    private JPanel inspector;
     
-    /** The name wich is displayed at the top */
-    private String name;
-    
+    /** The user warning at the bottom */
+    private JLabel warning;
+
     /**
      * Default constructor
      * 
@@ -44,13 +55,26 @@ public class SwingEntityInspector extends JPanel {
      */
     public SwingEntityInspector(final SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
-        this.name = "";
+        this.setLayout(new BorderLayout());
         
-        this.setLayout(new GridBagLayout());
+        this.title = new JLabel("Empty");
+        this.add(this.title, BorderLayout.PAGE_START);
+
+        this.inspector = new JPanel();
+        this.inspector.setLayout(new GridBagLayout());
+        this.add(this.inspector, BorderLayout.CENTER);
+
+        this.warning = new JLabel("Pause the simulation to modify an entity!");
+        this.warning.setVisible(false);
+        this.add(this.warning, BorderLayout.PAGE_END);
+
         this.gbc = new GridBagConstraints();
         this.gbc.fill = GridBagConstraints.HORIZONTAL;
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
+
+        this.setEnabled(false);
+        this.warning.setVisible(false);
     }
     
     /**
@@ -59,7 +83,7 @@ public class SwingEntityInspector extends JPanel {
      * @return the name
      */
     public String getName() {
-        return this.name;
+        return this.title.getText();
     }
     
     /**
@@ -69,7 +93,7 @@ public class SwingEntityInspector extends JPanel {
      *     The new name
      */
     public void setName(String name) {
-        this.name = name;
+        this.title.setText(name);
     }
     
     /**
@@ -85,32 +109,72 @@ public class SwingEntityInspector extends JPanel {
      *     The callback run on value change
      */
     public void addUIElement(String name, String type, String value, BiConsumer<String, String> callback) {
-        this.add(new JLabel(name + ": "), this.gbc);
+        this.inspector.add(new JLabel(name + ": "), this.gbc);
         this.gbc.gridx = 1;
         
         switch (type) {
             case "string":
                 JTextField textField = new JTextField(value);
                 textField.addActionListener(ae -> callback.accept(name, textField.getText()));
-                this.add(textField, this.gbc);
+                this.inspector.add(textField, this.gbc);
                 break;
             case "function":
                 JButton button = new JButton("call");
                 button.addActionListener(ae -> callback.accept(name, ""));
-                this.add(button, this.gbc);
+                this.inspector.add(button, this.gbc);
                 break;
             default:
-                this.add(new JLabel(value), this.gbc);
+                this.inspector.add(new JLabel(value), this.gbc);
         }
         
         this.gbc.gridx = 0;
         this.gbc.gridy += 1;
+
+        this.revalidate();
+        this.repaint();
     }
     
     /**
      * Clears the entity editor
      */
     public void clearUIElements() {
-        //TODO implement
+        this.remove(this.inspector);
+        this.inspector = new JPanel();
+        this.inspector.setLayout(new GridBagLayout());
+        this.add(this.inspector, BorderLayout.CENTER);
+
+        this.gbc.gridx = 0;
+        this.gbc.gridy = 0;
+
+        this.revalidate();
+        this.repaint();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        this.title.setEnabled(enabled);
+        SwingEntityInspector.setEnabledState(this.inspector, enabled);
+        this.warning.setVisible(!enabled);
+    }
+
+    /**
+     * Recursive method to enable and disable a JPanel and its children
+     * 
+     * @param panel
+     *     The panel to traverse
+     * @param state
+     *     The state to set its enabled state to
+     */
+    public static void setEnabledState(JPanel panel, boolean state) {
+        panel.setEnabled(state);
+
+        for (Component component : panel.getComponents()) {
+            if (component instanceof JPanel) {
+                SwingEntityInspector.setEnabledState((JPanel) component, state);
+            }
+            component.setEnabled(state);
+        }
     }
 }
