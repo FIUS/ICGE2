@@ -30,7 +30,7 @@ public interface SimulationClock {
     /**
      * The render period, that is set by default.
      */
-    int DEFAULT_RENDER_TICK_PERIOD = 125;
+    int DEFAULT_RENDER_TICK_PERIOD = 50;
     
     /**
      * Set the period of the render ticks. The game ticks will have this period times
