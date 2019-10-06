@@ -29,6 +29,8 @@ public abstract class StaticUiTextures {
     /** A stop icon */
     public static String stopIcon;
     
+    /** A arrow icon */
+    public static String arrowIcon;
     /** A add icon */
     public static String addIcon;
     /** A sub icon */
@@ -46,6 +48,7 @@ public abstract class StaticUiTextures {
         StaticUiTextures.pauseIcon = registry.loadTextureFromResource("textures/pause.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.stopIcon = registry.loadTextureFromResource("textures/stop.png", TextureRegistry.class::getResourceAsStream);
         
+        StaticUiTextures.arrowIcon = registry.loadTextureFromResource("textures/arrow.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.addIcon = registry.loadTextureFromResource("textures/add.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.subIcon = registry.loadTextureFromResource("textures/sub.png", TextureRegistry.class::getResourceAsStream);
     }

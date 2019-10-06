@@ -253,7 +253,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // view button setup
         //
-        this.view = new JToggleButton("View"); // FIXME Replace Text with Icon
+        this.view = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.arrowIcon).getTexture()));
         this.view.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.VIEW));
         this.view.setEnabled(false);
         this.add(this.view);
