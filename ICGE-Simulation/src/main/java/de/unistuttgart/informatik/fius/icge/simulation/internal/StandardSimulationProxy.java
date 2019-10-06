@@ -50,7 +50,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     /** A lookup table for the simulation times */
     public static final int[] SIMULATION_TIMES = {
             // 0,   1,   2,   3,  4,  5,  6,  7,  8,  9, 10
-            1000, 415, 200, 115, 75, 50, 40, 30, 20, 10, 1
+            1000, 415, 200, 115, 75, 50, 42, 34, 26, 18, 10
     };
     
     // GAME WINDOW
