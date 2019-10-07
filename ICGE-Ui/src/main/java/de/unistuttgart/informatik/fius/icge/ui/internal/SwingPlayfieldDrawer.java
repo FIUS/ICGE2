@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
+import javax.swing.RepaintManager;
 
 import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
@@ -94,6 +95,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private Rectangle      lastRedrawArea    = null;
     private long           currentFrame      = 0;
     
+    // current graphic settings
+    private final RepaintManager repaintManager;
+    private boolean              useDoubleBuffer = true;
+    private boolean              syncToscreen    = true;
+    
     /**
      * Create a new SwingPlayfieldDrawer.
      * 
@@ -135,6 +141,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         });
         
         this.setOpaque(true);
+        this.repaintManager = RepaintManager.currentManager(this);
     }
     
     /**
@@ -218,6 +225,8 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         if (this.animatedDrawables.size() > 0) {
             this.drawables = this.drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
         }
+        boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
+        this.repaintManager.setDoubleBufferingEnabled(this.useDoubleBuffer);
         if (this.fullRepaintNeeded) {
             final Rectangle visible = this.getVisibleRect();
             this.paintImmediately(visible);
@@ -248,8 +257,12 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 }
             }
         }
-        // flush drawing changes to screen (improves render latency when mouse is not in window)
-        Toolkit.getDefaultToolkit().sync();
+        // reset setting after draw
+        this.repaintManager.setDoubleBufferingEnabled(bufferEnabled);
+        if (this.syncToscreen) {
+            // flush drawing changes to screen (improves render latency when mouse is not in window)
+            Toolkit.getDefaultToolkit().sync();
+        }
         // filter out finished animations
         this.animatedDrawables = this.drawables.stream().filter(
                 d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
@@ -261,6 +274,16 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.scale = 1.0;
         this.offsetX = SwingPlayfieldDrawer.CELL_SIZE;
         this.offsetY = SwingPlayfieldDrawer.CELL_SIZE;
+    }
+    
+    @Override
+    public void setDoubleBuffering(boolean useDoubleBuffering) {
+        this.useDoubleBuffer = useDoubleBuffering;
+    }
+    
+    @Override
+    public void setSyncToScreen(boolean syncToScreen) {
+        this.syncToscreen = syncToScreen;
     }
     
     @Override

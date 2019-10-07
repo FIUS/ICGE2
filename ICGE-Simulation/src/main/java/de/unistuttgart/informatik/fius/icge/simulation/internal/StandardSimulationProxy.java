@@ -38,6 +38,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
+import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
@@ -124,6 +125,13 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     @Override
     public EntityTypeRegistry getEntityTypeRegistry() {
         return this.entityTypeRegistry;
+    }
+    
+    @Override
+    public void updateGraphicsSettings(boolean useDoubleBuffering, boolean syncToScreen) {
+        PlayfieldDrawer field = this.gameWindow.getPlayfieldDrawer();
+        field.setDoubleBuffering(useDoubleBuffering);
+        field.setSyncToScreen(syncToScreen);
     }
     
     /**
