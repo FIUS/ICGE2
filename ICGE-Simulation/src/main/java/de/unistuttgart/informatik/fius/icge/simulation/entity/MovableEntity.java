@@ -34,7 +34,9 @@ public abstract class MovableEntity extends BasicEntity {
     
     private Direction lookingDirection = Direction.EAST;
     
-    private Drawable movingDrawable = null;
+    private AnimatedDrawable movingDrawable = null;
+    
+    private Direction directionOfAlmostArrivedMove;
     
     @Override
     public Drawable getDrawInformation() {
@@ -58,12 +60,40 @@ public abstract class MovableEntity extends BasicEntity {
         }
     }
     
-    @InspectionMethod(name = "turnClockwise")
     private void turnClockWiseInternal() {
         Direction oldLookingDirection = this.lookingDirection;
         this.lookingDirection = this.lookingDirection.clockWiseNext();
         long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
         this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
+    }
+    
+    @InspectionMethod(name = "turnClockwise")
+    private void turnClockWiseInspector() {
+        turnClockWiseInternal();
+        recalculateAnimationAfterInspector();
+    }
+    
+    private void recalculateAnimationAfterInspector() {
+        if (this.movingDrawable != null) {
+            
+            long tickStart = this.movingDrawable.getTickStart();
+            long duration = this.movingDrawable.getDuration();
+            
+            Direction movingDir;
+            if (this.directionOfAlmostArrivedMove == null) {
+                movingDir = this.lookingDirection;
+            } else {
+                movingDir = this.directionOfAlmostArrivedMove;
+            }
+            
+            Position currentPos = this.getPosition();
+            Position nextPos = currentPos.adjacentPosition(movingDir);
+            
+            this.movingDrawable = new AnimatedDrawable(
+                    tickStart, currentPos.getX(), currentPos.getY(), duration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
+                    this.getTextureHandle()
+            );
+        }
     }
     
     /**
@@ -80,10 +110,14 @@ public abstract class MovableEntity extends BasicEntity {
      *     the name of the new direction
      */
     @InspectionAttribute(name = "LookingDirection")
-    public void setLookingDirectionByString(String direction) {
+    private void setLookingDirectionByString(String direction) {
         this.lookingDirection = Direction.valueOf(direction.toUpperCase());
+        recalculateAnimationAfterInspector();
     }
     
+    /**
+     * @return the looking direction as a string
+     */
     @InspectionAttribute(name = "LookingDirection")
     public String getLookingDirectionString() {
         return getLookingDirection().toString();
@@ -106,29 +140,43 @@ public abstract class MovableEntity extends BasicEntity {
         final int renderTickDuration = duration * SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
         final SimulationClock clock = this.getSimulation().getSimulationClock();
         final long currentTick = clock.getLastRenderTickNumber();
-        final Position currentPos = this.getPosition();
-        final Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
-        final AnimatedDrawable animation = new AnimatedDrawable(
+        this.directionOfAlmostArrivedMove = null;
+        Position currentPos = this.getPosition();
+        Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
+        this.movingDrawable = new AnimatedDrawable(
                 currentTick, currentPos.getX(), currentPos.getY(), renderTickDuration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
                 this.getTextureHandle()
         );
         
-        final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
+        final CompletableFuture<Void> endOfOperation1 = new CompletableFuture<>();
         try {
-            clock.scheduleOperationInTicks(duration, endOfOperation);
-            this.movingDrawable = animation;
+            clock.scheduleOperationInTicks(duration / 2, endOfOperation1);
+            //Check if really still going this direction. Maybe we were turned by inspector in the mean time.
+            //Later turns are not changing destination.
+            this.directionOfAlmostArrivedMove = this.lookingDirection;
+        } finally {
+            endOfOperation1.complete(null);
+        }
+        
+        final CompletableFuture<Void> endOfOperation2 = new CompletableFuture<>();
+        try {
+            clock.scheduleOperationInTicks(duration / 2, endOfOperation2);
+            currentPos = this.getPosition();
+            nextPos = currentPos.adjacentPosition(this.directionOfAlmostArrivedMove);
             internalMove(currentPos, nextPos);
         } finally {
-            endOfOperation.complete(null);
+            endOfOperation2.complete(null);
             this.movingDrawable = null;
         }
     }
     
     @InspectionMethod(name = "move")
-    private void internalMove() {
-        final Position currentPos = this.getPosition();
-        final Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
+    private void moveInspector() {
+        Position currentPos = this.getPosition();
+        Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
+        
         internalMove(currentPos, nextPos);
+        recalculateAnimationAfterInspector();
     }
     
     private void internalMove(Position currentPos, Position nextPos) {
