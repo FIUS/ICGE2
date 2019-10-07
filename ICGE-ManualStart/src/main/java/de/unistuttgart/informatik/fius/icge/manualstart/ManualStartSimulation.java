@@ -31,6 +31,7 @@ public class ManualStartSimulation {
      */
     public static void main(final String[] args) {
         final SimulationHost host = SimulationHostFactory.createSimulationHost();
+        host.updateGraphicsSettings(false, true);
         prepareTextures(host.getTextureRegistry());
         host.getEntityTypeRegistry().registerEntityType("Coin", textureHandleCoin, TestEntity.class);
         TestEntity.TEXTURE_HANDLE = animated;

@@ -41,4 +41,17 @@ public interface PlayfieldDrawer {
      * Reset Zoom and Pan applied by the user to the default values.
      */
     public void resetZoomAndPan();
+    
+    /**
+     * @param useDoubleBuffering
+     *     true (default) uses doubleBuffering when rendering changes on the playfield.
+     */
+    public void setDoubleBuffering(boolean useDoubleBuffering);
+    
+    /**
+     * @param syncToScreen
+     *     true (default) actively tries to sync the updated graphics to the screen after rendering changes on the
+     *     playfield.
+     */
+    public void setSyncToScreen(boolean syncToScreen);
 }
