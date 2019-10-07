@@ -27,7 +27,7 @@ public class AnimatedDrawable implements Drawable {
     
     private final long   tickStart;
     private final long   tickEnd;
-    private final double duration;
+    private final long duration;
     
     private long currentTick = 0;
     
@@ -81,7 +81,7 @@ public class AnimatedDrawable implements Drawable {
         if (this.currentTick >= this.tickEnd) {
             return this.xEnd;
         }
-        double completion = (this.currentTick - this.tickStart) / this.duration;
+        double completion = (this.currentTick - this.tickStart) / (double) this.duration;
         return (this.xEnd - this.xStart) * completion + this.xStart;
     }
     
@@ -93,7 +93,7 @@ public class AnimatedDrawable implements Drawable {
         if (this.currentTick >= this.tickEnd) {
             return this.yEnd;
         }
-        double completion = (this.currentTick - this.tickStart) / this.duration;
+        double completion = (this.currentTick - this.tickStart) / (double) this.duration;
         return (this.yEnd - this.yStart) * completion + this.yStart;
     }
     
@@ -115,5 +115,68 @@ public class AnimatedDrawable implements Drawable {
     @Override
     public boolean isAnimated() {
         return this.currentTick <= this.tickEnd;
+    }
+    
+    /**
+     * Get's {@link #xStart xStart}
+     * 
+     * @return xStart
+     */
+    public double getxStart() {
+        return this.xStart;
+    }
+    
+    /**
+     * Get's {@link #yStart yStart}
+     * 
+     * @return yStart
+     */
+    public double getyStart() {
+        return this.yStart;
+    }
+    
+    /**
+     * Get's {@link #xEnd xEnd}
+     * 
+     * @return xEnd
+     */
+    public double getxEnd() {
+        return this.xEnd;
+    }
+    
+    /**
+     * Get's {@link #yEnd yEnd}
+     * 
+     * @return yEnd
+     */
+    public double getyEnd() {
+        return this.yEnd;
+    }
+    
+    /**
+     * Get's {@link #tickStart tickStart}
+     * 
+     * @return tickStart
+     */
+    public long getTickStart() {
+        return this.tickStart;
+    }
+    
+    /**
+     * Get's {@link #tickEnd tickEnd}
+     * 
+     * @return tickEnd
+     */
+    public long getTickEnd() {
+        return this.tickEnd;
+    }
+    
+    /**
+     * Get's {@link #duration duration}
+     * 
+     * @return duration
+     */
+    public long getDuration() {
+        return this.duration;
     }
 }
