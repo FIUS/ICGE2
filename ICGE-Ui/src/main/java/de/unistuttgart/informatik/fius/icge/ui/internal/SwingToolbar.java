@@ -253,7 +253,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // view button setup
         //
-        this.view = new JToggleButton("View"); // FIXME Replace Text with Icon
+        this.view = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.arrowIcon).getTexture()));
         this.view.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.VIEW));
         this.view.setEnabled(false);
         this.add(this.view);
@@ -261,7 +261,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // add button setup
         //
-        this.add = new JToggleButton("Add"); // FIXME Replace Text with Icon
+        this.add = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.addIcon).getTexture()));
         this.add.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ADD));
         this.add.setEnabled(false);
         this.add(this.add);
@@ -269,7 +269,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // add button setup
         //
-        this.sub = new JToggleButton("sub"); // FIXME Replace Text with Icon
+        this.sub = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.subIcon).getTexture()));
         this.sub.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.SUB));
         this.sub.setEnabled(false);
         this.add(this.sub);
