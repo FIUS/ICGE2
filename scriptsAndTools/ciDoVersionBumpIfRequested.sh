@@ -38,7 +38,7 @@ fi
 if [[ "$msg" != "Bump version to "* ]] ;then
   msgC="false"
 fi
-if [[ "$msg" == "Prepare for develoment on"* ]];then
+if [[ "$msg" == "Prepare for development on"* ]];then
   finished="true"
 fi
 if [[ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]] ;then

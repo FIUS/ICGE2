@@ -20,9 +20,8 @@ jobs:
   - stage: deploy
     name: "Bump version and release"
     script:
-    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh;
-      fi
-    if: branch =~ /^versionBump\/.*$/ AND type = push AND fork = false AND tag IS blank
+    - scriptsAndTools/ciDoVersionBumpIfRequested.sh
+    if: branch =~ /^versionBump\/.*$/ AND type = push AND fork = false AND tag IS blank AND commit_message =~ /^Bump version to .*$/
   - stage: deploy
     name: "Deploy javadoc"
     script:
