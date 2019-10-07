@@ -201,7 +201,7 @@ public class SwingEntityInspector extends JPanel {
             component.setEnabled(state);
         }
     }
-
+    
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(300, 300);
