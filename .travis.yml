@@ -14,11 +14,20 @@ jobs:
     script:
     - scriptsAndTools/verifyFormat.sh
     - git status
+  - name: "Check javadoc"
+    script:
+    - mvn compile javadoc:javadoc
   - stage: deploy
     name: "Bump version and release"
     script:
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh;
       fi
+    if: branch =~ /^versionBump\/*$/ AND type = push AND fork = false AND tag IS blank
+  - stage: deploy
+    name: "Deploy javadoc"
+    script:
+    - scriptsAndTools/deployGhPages.sh
+    if: branch = master AND type = push AND fork = false
 services:
 - xvfb
 dist: bionic
