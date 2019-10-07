@@ -300,6 +300,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
                 this.simulationTreeListener.updateSimulationTree();
             });
         }
+        this.entityInspectorListener.disable();
         
         newSimulationClock.registerPostTickListener(unused -> {
             updateEntityInspector();
@@ -497,6 +498,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
             this.entityInspectorListener.setName(this.entityToInspect.toString());
             this.entityInspectorListener.setEntityEntries(getEntries(this.entityToInspect));
         } else {
+            this.entityInspectorListener.setName("");
+            this.entityInspectorListener.setEntityEntries(new EntityInspectorEntry[0]);
             this.entityInspectorListener.disable();
         }
     }

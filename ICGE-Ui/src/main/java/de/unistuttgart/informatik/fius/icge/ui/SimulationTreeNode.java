@@ -175,4 +175,9 @@ public class SimulationTreeNode {
         if (!(obj instanceof SimulationTreeNode)) return false;
         return Objects.equals(elementId, ((SimulationTreeNode) obj).elementId);
     }
+    
+    @Override
+    public String toString() {
+        return getDisplayText();
+    }
 }
