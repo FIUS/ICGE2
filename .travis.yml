@@ -22,7 +22,7 @@ jobs:
     script:
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh;
       fi
-    if: branch =~ /^versionBump\/*$/ AND type = push AND fork = false AND tag IS blank
+    if: branch =~ /^versionBump\/.*$/ AND type = push AND fork = false AND tag IS blank
   - stage: deploy
     name: "Deploy javadoc"
     script:
