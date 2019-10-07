@@ -1,10 +1,12 @@
 /*
  * This source file is part of the FIUS ICGE project.
- * For more information see github.com/neumantm/ICGE
+ * For more information see github.com/FIUS/ICGE2
  * 
- * Copyright (c) 2018 the ICGE project authors.
+ * Copyright (c) 2019 the ICGE project authors.
+ * 
+ * This software is available under the MIT license.
+ * SPDX-License-Identifier:    MIT
  */
-
 package de.unistuttgart.informatik.fius.icge.simulation.inspection;
 
 import java.io.File;
@@ -18,6 +20,7 @@ import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+
 /**
  * A class for finding classes in the class loader
  * 
@@ -27,22 +30,22 @@ public class ClassFinder {
     private ClassFinder() {
         //hide constructor
     }
-
+    
     /**
      * Get all classes in the current context class loader, which match the filter.
      * 
      * @param filter
-     *            The filter to check each class against.
+     *     The filter to check each class against.
      * @return A list of classes
      * @throws IOException
-     *             When an IO Error occurs.
+     *     When an IO Error occurs.
      */
     public static List<Class<?>> getClassesInClassLoader(Predicate<Class<?>> filter) throws IOException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         List<URL> urls = Collections.list(loader.getResources("de"));
-
+        
         List<Class<?>> classes = new ArrayList<>();
-
+        
         for (URL url : urls) {
             if (url.getProtocol().equals("jar")) {
                 loadClassesFromJar(url, filter, classes);
@@ -50,12 +53,11 @@ public class ClassFinder {
                 loadClassesFromFS(url, filter, classes, loader);
             }
         }
-
+        
         return classes;
     }
-
-    private static void loadClassesFromJar(URL url, Predicate<Class<?>> filter, List<Class<?>> classes)
-            throws IOException {
+    
+    private static void loadClassesFromJar(URL url, Predicate<Class<?>> filter, List<Class<?>> classes) throws IOException {
         String urlS = url.getPath();
         String outerUrl = urlS.substring(0, urlS.indexOf('!'));
         String innerUrl = urlS.substring(urlS.indexOf('!') + 2);
@@ -78,7 +80,7 @@ public class ClassFinder {
             throw new IOException(e2);
         }
     }
-
+    
     private static void loadClassesFromFS(URL url, Predicate<Class<?>> filter, List<Class<?>> classes, ClassLoader loader)
             throws IOException {
         try {
@@ -88,9 +90,9 @@ public class ClassFinder {
             throw new IOException(e);
         }
     }
-
-    private static void loadClassInFile(File file, List<Class<?>> classes, ClassLoader loader, String rootDir,
-            Predicate<Class<?>> filter) throws ClassNotFoundException {
+    
+    private static void loadClassInFile(File file, List<Class<?>> classes, ClassLoader loader, String rootDir, Predicate<Class<?>> filter)
+            throws ClassNotFoundException {
         if (!file.exists()) throw new IllegalArgumentException("File does not exist.");
         if (file.isDirectory()) {
             for (File f : file.listFiles()) {
@@ -109,7 +111,7 @@ public class ClassFinder {
             }
         }
     }
-
+    
     private static String convertPathToClassName(String path, String rootDir) {
         if (!path.startsWith(rootDir)) throw new IllegalStateException("File not starting with root dir!");
         String[] fileSeps = new String[] { System.getProperty("file.separator"), "/" };
@@ -121,6 +123,6 @@ public class ClassFinder {
             relPath = relPath.replace(fileSep, ".");
         }
         return relPath;
-
+        
     }
 }

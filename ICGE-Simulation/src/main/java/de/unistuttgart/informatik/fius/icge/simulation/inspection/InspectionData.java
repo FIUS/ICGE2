@@ -1,10 +1,12 @@
 /*
  * This source file is part of the FIUS ICGE project.
- * For more information see github.com/neumantm/ICGE
+ * For more information see github.com/FIUS/ICGE2
  * 
- * Copyright (c) 2018 the ICGE project authors.
+ * Copyright (c) 2019 the ICGE project authors.
+ * 
+ * This software is available under the MIT license.
+ * SPDX-License-Identifier:    MIT
  */
-
 package de.unistuttgart.informatik.fius.icge.simulation.inspection;
 
 import java.lang.reflect.Field;
@@ -12,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
+
 
 /**
  * Represents all data available for the inspection for a class
@@ -22,13 +25,13 @@ public class InspectionData {
     private final Class<?> c;
     
     private final Map<String, AttributeInspectionPoint> inspectableAttributes;
-    private final Map<String, Method> inspectableMethods;
+    private final Map<String, Method>                   inspectableMethods;
     
     /**
      * Creates a new inspection data object for the given class
      * 
      * @param cls
-     *            The class to create a inspection data object for.
+     *     The class to create a inspection data object for.
      */
     public InspectionData(Class<?> cls) {
         this.c = cls;
@@ -42,9 +45,9 @@ public class InspectionData {
      * Get the value of the attribute with the given name from the given object.
      * 
      * @param obj
-     *            The object to get the value from
+     *     The object to get the value from
      * @param name
-     *            The name of the attribute to get the value from
+     *     The name of the attribute to get the value from
      * @return The value
      */
     public Object getAttributeValue(Object obj, String name) {
@@ -63,11 +66,11 @@ public class InspectionData {
      * Set's the value of the attribute with the given name for the given object
      * 
      * @param obj
-     *            The object to set the value in.
+     *     The object to set the value in.
      * @param name
-     *            The name of the attribute to set.
+     *     The name of the attribute to set.
      * @param value
-     *            The value to set.
+     *     The value to set.
      * @return Whether it worked.
      */
     public boolean setAttributeValue(Object obj, String name, Object value) {
@@ -96,7 +99,7 @@ public class InspectionData {
      * Get the type of the attribute with the given name.
      * 
      * @param attributeName
-     *            The name of the attribute
+     *     The name of the attribute
      * @return The type of the attribute.
      */
     public Class<?> getAttributeType(String attributeName) {
@@ -109,7 +112,7 @@ public class InspectionData {
      * Check whether the attribute with the given name is read only.
      * 
      * @param attributeName
-     *            The name of the attribute.
+     *     The name of the attribute.
      * @return Whether the attribute is read only.
      */
     public boolean isAttributeReadOnly(String attributeName) {
@@ -138,7 +141,7 @@ public class InspectionData {
      * Get the method detail for the method with the given name
      * 
      * @param methodName
-     *            The name of the method to get the detail for
+     *     The name of the method to get the detail for
      * @return The method detail.
      */
     public Method getMethodByName(String methodName) {
@@ -149,11 +152,11 @@ public class InspectionData {
      * Invoke the method with the given name in the given object, using the given arguments
      * 
      * @param obj
-     *            The object to call the method on
+     *     The object to call the method on
      * @param methodName
-     *            The name of the method to call
+     *     The name of the method to call
      * @param args
-     *            The arguments to use
+     *     The arguments to use
      * @return The return value.
      */
     public Object invokeMethod(Object obj, String methodName, Object... args) {
@@ -195,8 +198,7 @@ public class InspectionData {
                 getters.put(this.getDisplayNameForMethod(m, "get"), m);
             } else if (this.isSetter(m)) {
                 setters.put(this.getDisplayNameForMethod(m, "set"), m);
-            } else
-                throw new InspectionPointException("Method is neither a getter nor a setter! : " + m.getName());
+            } else throw new InspectionPointException("Method is neither a getter nor a setter! : " + m.getName());
         }
         
         for (Entry<String, Method> entry : getters.entrySet()) {
@@ -205,8 +207,7 @@ public class InspectionData {
             Method getter = entry.getValue();
             boolean readOnly = getter.getAnnotation(InspectionAttribute.class).readOnly();
             if (readOnly || setter == null) {
-                if (setter != null)
-                    throw new InspectionPointException("Getter specifies read only, but setter found! : " + name);
+                if (setter != null) throw new InspectionPointException("Getter specifies read only, but setter found! : " + name);
                 this.validateReadOnlyGetter(getter);
                 getter.setAccessible(true);
                 this.inspectableAttributes.put(name, new AttributeInspectionPoint(getter));
@@ -220,8 +221,7 @@ public class InspectionData {
             
         }
         
-        if (setters.size() > 0)
-            throw new InspectionPointException("No getter for setter! : " + setters.values().iterator().next());
+        if (setters.size() > 0) throw new InspectionPointException("No getter for setter! : " + setters.values().iterator().next());
         
     }
     
@@ -238,28 +238,32 @@ public class InspectionData {
         
         if (type.equals(Void.TYPE)) throw new InspectionPointException("Getter should return something! : " + getter.getName());
         
-        if (getter.getParameterTypes().length != 0)
-            throw new InspectionPointException("Getter should not have parameters! : " + getter.getName());
+        if (
+            getter.getParameterTypes().length != 0
+        ) throw new InspectionPointException("Getter should not have parameters! : " + getter.getName());
         
-        if (!setter.getReturnType().equals(Void.TYPE))
-            throw new InspectionPointException("Setter should not be return type null. : " + setter.getName());
+        if (
+            !setter.getReturnType().equals(Void.TYPE)
+        ) throw new InspectionPointException("Setter should not be return type null. : " + setter.getName());
         
         Class<?>[] setterParas = setter.getParameterTypes();
         
-        if (setterParas.length != 1)
-            throw new InspectionPointException("Setter should have exactly one parameter! : " + setter.getName());
+        if (setterParas.length != 1) throw new InspectionPointException("Setter should have exactly one parameter! : " + setter.getName());
         
-        if (!setterParas[0].equals(type))
-            throw new InspectionPointException("Getter parameter is not the same type as getter return value");
+        if (
+            !setterParas[0].equals(type)
+        ) throw new InspectionPointException("Getter parameter is not the same type as getter return value");
         
     }
     
     private void validateReadOnlyGetter(Method getter) {
-        if (getter.getReturnType().equals(Void.TYPE))
-            throw new InspectionPointException("Getter should return something! : " + getter.getName());
+        if (
+            getter.getReturnType().equals(Void.TYPE)
+        ) throw new InspectionPointException("Getter should return something! : " + getter.getName());
         
-        if (getter.getParameterTypes().length != 0)
-            throw new InspectionPointException("Getter should not have parameters! : " + getter.getName());
+        if (
+            getter.getParameterTypes().length != 0
+        ) throw new InspectionPointException("Getter should not have parameters! : " + getter.getName());
     }
     
     private String getDisplayNameForField(Field f) {
@@ -309,18 +313,18 @@ public class InspectionData {
             primitiveToWrapperMap.put(Boolean.TYPE, Boolean.class);
             primitiveToWrapperMap.put(Void.TYPE, Void.class);
         }
-        private final boolean usesField;
-        private final Field f;
-        private final Method getter;
-        private final Method setter;
+        private final boolean  usesField;
+        private final Field    f;
+        private final Method   getter;
+        private final Method   setter;
         private final Class<?> type;
-        private final boolean readOnly;
+        private final boolean  readOnly;
         
         /**
          * Creates a new attribute inspection point for a field
          * 
          * @param field
-         *            The field for the inspection point.
+         *     The field for the inspection point.
          */
         public AttributeInspectionPoint(Field field) {
             this.usesField = true;
@@ -359,11 +363,9 @@ public class InspectionData {
             return this.getter.invoke(obj);
         }
         
-        public void setValue(Object obj, Object value)
-                throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        public void setValue(Object obj, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             if (this.readOnly) throw new InspectionPointException("Attribute is read only.");
-            if (!this.type.isAssignableFrom(value.getClass()))
-                throw new IllegalArgumentException("Not the correct attribute type.");
+            if (!this.type.isAssignableFrom(value.getClass())) throw new IllegalArgumentException("Not the correct attribute type.");
             if (this.usesField) {
                 this.f.set(obj, value);
             } else {
@@ -402,43 +404,35 @@ public class InspectionData {
         private static final long serialVersionUID = 6324656121971704376L;
         
         /**
-         * Constructs a new runtime exception with {@code null} as its
-         * detail message. The cause is not initialized, and may subsequently be
-         * initialized by a call to {@link #initCause}.
+         * Constructs a new runtime exception with {@code null} as its detail message. The cause is not initialized, and
+         * may subsequently be initialized by a call to {@link #initCause}.
          */
         public InspectionPointException() {
             super();
         }
         
         /**
-         * Constructs a new runtime exception with the specified detail message.
-         * The cause is not initialized, and may subsequently be initialized by a
-         * call to {@link #initCause}.
+         * Constructs a new runtime exception with the specified detail message. The cause is not initialized, and may
+         * subsequently be initialized by a call to {@link #initCause}.
          *
          * @param message
-         *            the detail message. The detail message is saved for
-         *            later retrieval by the {@link #getMessage()} method.
+         *     the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
          */
         public InspectionPointException(String message) {
             super(message);
         }
         
         /**
-         * Constructs a new runtime exception with the specified detail message and
-         * cause.
+         * Constructs a new runtime exception with the specified detail message and cause.
          * <p>
-         * Note that the detail message associated with
-         * {@code cause} is <i>not</i> automatically incorporated in
-         * this runtime exception's detail message.
+         * Note that the detail message associated with {@code cause} is <i>not</i> automatically incorporated in this
+         * runtime exception's detail message.
          *
          * @param message
-         *            the detail message (which is saved for later retrieval
-         *            by the {@link #getMessage()} method).
+         *     the detail message (which is saved for later retrieval by the {@link #getMessage()} method).
          * @param cause
-         *            the cause (which is saved for later retrieval by the
-         *            {@link #getCause()} method). (A <tt>null</tt> value is
-         *            permitted, and indicates that the cause is nonexistent or
-         *            unknown.)
+         *     the cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt> value
+         *     is permitted, and indicates that the cause is nonexistent or unknown.)
          * @since 1.4
          */
         public InspectionPointException(String message, Throwable cause) {
@@ -446,17 +440,14 @@ public class InspectionData {
         }
         
         /**
-         * Constructs a new runtime exception with the specified cause and a
-         * detail message of <tt>(cause==null ? null : cause.toString())</tt>
-         * (which typically contains the class and detail message of
-         * <tt>cause</tt>). This constructor is useful for runtime exceptions
-         * that are little more than wrappers for other throwables.
+         * Constructs a new runtime exception with the specified cause and a detail message of
+         * <tt>(cause==null ? null : cause.toString())</tt> (which typically contains the class and detail message of
+         * <tt>cause</tt>). This constructor is useful for runtime exceptions that are little more than wrappers for
+         * other throwables.
          *
          * @param cause
-         *            the cause (which is saved for later retrieval by the
-         *            {@link #getCause()} method). (A <tt>null</tt> value is
-         *            permitted, and indicates that the cause is nonexistent or
-         *            unknown.)
+         *     the cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt> value
+         *     is permitted, and indicates that the cause is nonexistent or unknown.)
          * @since 1.4
          */
         public InspectionPointException(Throwable cause) {
@@ -464,26 +455,21 @@ public class InspectionData {
         }
         
         /**
-         * Constructs a new runtime exception with the specified detail
-         * message, cause, suppression enabled or disabled, and writable
-         * stack trace enabled or disabled.
+         * Constructs a new runtime exception with the specified detail message, cause, suppression enabled or disabled,
+         * and writable stack trace enabled or disabled.
          *
          * @param message
-         *            the detail message.
+         *     the detail message.
          * @param cause
-         *            the cause. (A {@code null} value is permitted,
-         *            and indicates that the cause is nonexistent or unknown.)
+         *     the cause. (A {@code null} value is permitted, and indicates that the cause is nonexistent or unknown.)
          * @param enableSuppression
-         *            whether or not suppression is enabled
-         *            or disabled
+         *     whether or not suppression is enabled or disabled
          * @param writableStackTrace
-         *            whether or not the stack trace should
-         *            be writable
+         *     whether or not the stack trace should be writable
          *
          * @since 1.7
          */
-        protected InspectionPointException(String message, Throwable cause, boolean enableSuppression,
-                boolean writableStackTrace) {
+        protected InspectionPointException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
             super(message, cause, enableSuppression, writableStackTrace);
         }
     }

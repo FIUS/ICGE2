@@ -32,7 +32,6 @@ import de.unistuttgart.informatik.fius.icge.ui.Drawable;
  */
 public abstract class MovableEntity extends BasicEntity {
     
-
     private Direction lookingDirection = Direction.EAST;
     
     private Drawable movingDrawable = null;

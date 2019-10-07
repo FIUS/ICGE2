@@ -1,10 +1,12 @@
 /*
  * This source file is part of the FIUS ICGE project.
- * For more information see github.com/neumantm/ICGE
+ * For more information see github.com/FIUS/ICGE2
  * 
- * Copyright (c) 2018 the ICGE project authors.
+ * Copyright (c) 2019 the ICGE project authors.
+ * 
+ * This software is available under the MIT license.
+ * SPDX-License-Identifier:    MIT
  */
-
 package de.unistuttgart.informatik.fius.icge.simulation.inspection;
 
 import java.io.IOException;
@@ -48,7 +50,7 @@ public class InspectionManager {
      * Get's all attribute names of the given entity.
      * 
      * @param entity
-     *            The entity to get the names for
+     *     The entity to get the names for
      * @return A List of attribute names.
      */
     public List<String> getAttributeNamesOfEntity(Entity entity) {
@@ -61,7 +63,7 @@ public class InspectionManager {
      * Get's all method names of the given entity.
      * 
      * @param entity
-     *            The entity to get the names for
+     *     The entity to get the names for
      * @return A List of method names.
      */
     public List<String> getMethodNamesOfEntity(Entity entity) {
@@ -74,9 +76,9 @@ public class InspectionManager {
      * Checks whether the attribute with the given name in the given entity is writable.
      * 
      * @param entity
-     *            The entity.
+     *     The entity.
      * @param attributeName
-     *            The name of the attribute
+     *     The name of the attribute
      * @return Whether the attribute is writable.
      */
     public boolean isAttributeEditable(Entity entity, String attributeName) {
@@ -89,9 +91,9 @@ public class InspectionManager {
      * Get's the type of the attribute with the given name in the given entity.
      * 
      * @param entity
-     *            The entity.
+     *     The entity.
      * @param attributeName
-     *            The name of the attribute
+     *     The name of the attribute
      * @return The type of the attribute.
      */
     public Class<?> getAttributeType(Entity entity, String attributeName) {
@@ -104,9 +106,9 @@ public class InspectionManager {
      * Get the value of the attribute with the given name from the given entity
      * 
      * @param entity
-     *            The entity to get the value from
+     *     The entity to get the value from
      * @param attributeName
-     *            The name of the attribute to get the value from
+     *     The name of the attribute to get the value from
      * @return The value or null if it didn't work.
      */
     public Object getAttributeValue(Entity entity, String attributeName) {
@@ -119,11 +121,11 @@ public class InspectionManager {
      * Set the value of the attribute with the given name in the given entity
      * 
      * @param entity
-     *            The entity to set the value in
+     *     The entity to set the value in
      * @param attributeName
-     *            The name of the attribute to set the value for.
+     *     The name of the attribute to set the value for.
      * @param value
-     *            The value to set.
+     *     The value to set.
      * @return Whether it worked.
      */
     public boolean setAttributeValue(Entity entity, String attributeName, Object value) {
@@ -136,9 +138,9 @@ public class InspectionManager {
      * Get the detail of the method with the given name of the given name.
      * 
      * @param entity
-     *            The entity to get the method of.
+     *     The entity to get the method of.
      * @param methodName
-     *            The name of the method to get.
+     *     The name of the method to get.
      * @return The method detail.
      */
     public Method getMethodDetail(Entity entity, String methodName) {
@@ -148,18 +150,17 @@ public class InspectionManager {
     }
     
     /**
-     * Invokes the method with the given name on the given entity.
-     * Uses the given arguments.
+     * Invokes the method with the given name on the given entity. Uses the given arguments.
      * 
      * @param entity
-     *            The entity to invoke the method in.
+     *     The entity to invoke the method in.
      * @param methodName
-     *            The name of the method to invoke.
+     *     The name of the method to invoke.
      * @param args
-     *            The arguments for the method invocation.
+     *     The arguments for the method invocation.
      * @return The return value of the method.
      * @throws IllegalStateException
-     *             When anything goes wrong.
+     *     When anything goes wrong.
      */
     public Object invokeMethod(Entity entity, String methodName, Object... args) {
         InspectionData d = this.inspectableClasses.get(entity.getClass());

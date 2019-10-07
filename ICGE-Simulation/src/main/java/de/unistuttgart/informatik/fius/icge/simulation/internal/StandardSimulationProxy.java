@@ -71,7 +71,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     private final InspectionManager inspectionManager;
     
     // CURRENT SIMULATION
-    private StandardSimulationClock simulationClock;
+    private StandardSimulationClock         simulationClock;
     private Map<SimulationTreeNode, Entity> simualtionSidebarMap;
     private Entity                          entityToInspect;
     private StandardPlayfield               currentPlayfield;
@@ -307,7 +307,6 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
             return true;
         });
         
-        
         // START TASK
         final CompletableFuture<Boolean> runningTask = taskRunner.runTask();
         
@@ -454,7 +453,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         
         for (String name : this.inspectionManager.getAttributeNamesOfEntity(e)) {
             String type = "string";
-            if(! this.inspectionManager.isAttributeEditable(e, name)) {
+            if (!this.inspectionManager.isAttributeEditable(e, name)) {
                 type = "readonly_string";
             }
             //TODO: this.inspectionManager.getAttributeType(e, name)

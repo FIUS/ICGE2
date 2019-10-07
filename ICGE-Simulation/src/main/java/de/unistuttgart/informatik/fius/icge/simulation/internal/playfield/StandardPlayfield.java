@@ -223,7 +223,9 @@ public class StandardPlayfield implements Playfield {
     }
     
     private void addEntityToSimulationTree(Entity entity) {
-        SimulationTreeNode newNode = new SimulationTreeNode(Integer.toHexString(entity.hashCode()), entity.toString(), entity.getDrawInformation().getTextureHandle()); 
+        SimulationTreeNode newNode = new SimulationTreeNode(
+                Integer.toHexString(entity.hashCode()), entity.toString(), entity.getDrawInformation().getTextureHandle()
+        );
         findNodeForEntity(entity, true).appendChild(newNode);
         
         this.simulationTreeEntityAddedListener.accept(newNode, entity);
@@ -265,7 +267,6 @@ public class StandardPlayfield implements Playfield {
         this.drawEntities();
     }
     
-
     private void removeEntityFromSimulationTree(Entity entity) {
         SimulationTreeNode node = findNodeForEntity(entity, false);
         

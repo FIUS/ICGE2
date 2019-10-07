@@ -102,7 +102,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             
             @Override
             public SimulationTreeNode getSelectedElement() {
-                return       (SimulationTreeNode) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent())
+                return (SimulationTreeNode) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent())
                         .getUserObject();
             }
             
