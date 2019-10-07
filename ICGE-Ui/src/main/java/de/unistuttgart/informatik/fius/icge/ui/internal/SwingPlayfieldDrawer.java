@@ -356,11 +356,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         while (iter.hasNext()) {
             final Drawable next = iter.next();
             currentCount += 1;
-            isTilable = isTilable && next.isTilable();
             boolean groupable = canGroupDrawables(last, next);
             if (!groupable && last != null) {
                 this.paintDrawable(g, last, currentCount, isTilable);
             }
+            isTilable = isTilable && next.isTilable();
             last = next;
             if (!groupable) {
                 currentCount = 0;
