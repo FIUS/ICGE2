@@ -17,4 +17,5 @@ module de.unistuttgart.informatik.fius.icge.simulation {
     exports de.unistuttgart.informatik.fius.icge.simulation.exception;
     exports de.unistuttgart.informatik.fius.icge.simulation.tasks;
     exports de.unistuttgart.informatik.fius.icge.simulation.actions;
+    exports de.unistuttgart.informatik.fius.icge.simulation.inspection;
 }
