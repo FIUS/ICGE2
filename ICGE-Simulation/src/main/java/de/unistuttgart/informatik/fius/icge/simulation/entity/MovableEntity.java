@@ -117,15 +117,26 @@ public abstract class MovableEntity extends BasicEntity {
         try {
             clock.scheduleOperationInTicks(duration, endOfOperation);
             this.movingDrawable = animation;
-            if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
-            EntityMoveAction action = new EntityStepAction(
-                    this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
-            );
-            this.getPlayfield().moveEntity(this, nextPos, action);
+            internalMove(currentPos, nextPos);
         } finally {
             endOfOperation.complete(null);
             this.movingDrawable = null;
         }
+    }
+    
+    @InspectionMethod(name = "move")
+    private void internalMove() {
+        final Position currentPos = this.getPosition();
+        final Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
+        internalMove(currentPos, nextPos);
+    }
+    
+    private void internalMove(Position currentPos, Position nextPos) {
+        if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
+        EntityMoveAction action = new EntityStepAction(
+                this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
+        );
+        this.getPlayfield().moveEntity(this, nextPos, action);
     }
     
     /**
