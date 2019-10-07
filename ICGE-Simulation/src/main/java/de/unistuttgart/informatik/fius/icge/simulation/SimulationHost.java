@@ -41,4 +41,16 @@ public interface SimulationHost {
      * @return The entity type registry
      */
     public EntityTypeRegistry getEntityTypeRegistry();
+    
+    /**
+     * Update the graphics settings of the playfield drawer.
+     * 
+     * @param useDoubleBuffering
+     *     true (default) uses doubleBuffering when rendering changes on the playfield.
+     * @param syncToScreen
+     *     true (default) actively tries to sync the updated graphics to the screen after rendering changes on the
+     *     playfield.
+     */
+    public void updateGraphicsSettings(boolean useDoubleBuffering, boolean syncToScreen);
+    
 }
