@@ -74,10 +74,10 @@ public class EntityInspectorEntry {
     /**
      * This function runs the callback of the item
      * 
-     * @param value
+     * @param arg
      *     The argument of the callback
      */
-    public void runCallback(String value) {
-        this.callback.accept(value);
+    public void runCallback(String arg) {
+        this.callback.accept(arg);
     }
 }
