@@ -23,7 +23,8 @@ jobs:
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then bash scriptsAndTools/ciDoVersionBumpIfRequested.sh;
       fi
     if: branch =~ /^versionBump\/*$/ AND type = push AND fork = false AND tag IS blank
-  - name: "Deploy javadoc"
+  - stage: deploy
+    name: "Deploy javadoc"
     script:
     - scriptsAndTools/deployGhPages.sh
     if: branch = master AND type = push AND fork = false
