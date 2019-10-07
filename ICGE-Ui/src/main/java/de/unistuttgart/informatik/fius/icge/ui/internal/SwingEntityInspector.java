@@ -9,13 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.util.function.BiConsumer;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.NumberFormat;
-import java.awt.GridBagConstraints;
+import java.util.function.BiConsumer;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -23,8 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.NumberFormatter;
-
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 
 
 /**
@@ -202,5 +200,10 @@ public class SwingEntityInspector extends JPanel {
             }
             component.setEnabled(state);
         }
+    }
+    
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(300, 300);
     }
 }

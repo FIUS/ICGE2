@@ -9,10 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
@@ -23,6 +26,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotRunProgramException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
+import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
@@ -32,6 +36,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTa
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
+import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
@@ -62,8 +67,14 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     private final StandardTaskRegistry       taskRegistry;
     private final StandardEntityTypeRegistry entityTypeRegistry;
     
+    // MANAGERS
+    private final InspectionManager inspectionManager;
+    
     // CURRENT SIMULATION
-    private StandardSimulationClock simulationClock;
+    private StandardSimulationClock         simulationClock;
+    private Map<SimulationTreeNode, Entity> simualtionSidebarMap;
+    private Entity                          entityToInspect;
+    private StandardPlayfield               currentPlayfield;
     
     // LISTENERS
     private ButtonStateListener     buttonStateListener;
@@ -86,6 +97,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         this.simulationClock = null;
         this.taskRegistry = new StandardTaskRegistry();
         this.entityTypeRegistry = new StandardEntityTypeRegistry();
+        this.inspectionManager = new InspectionManager();
+        this.simualtionSidebarMap = new ConcurrentHashMap<>();
     }
     
     /**
@@ -251,6 +264,10 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         
         this.gameWindow.getConsole().clearSimulationConsole();
         
+        this.simualtionSidebarMap = new ConcurrentHashMap<>();
+        this.entityToInspect = null;
+        this.currentPlayfield = null;
+        
         // SETUP NEW
         
         final StandardPlayfield playfield = new StandardPlayfield();
@@ -271,6 +288,25 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         // reset currentTick in playfield drawer
         this.gameWindow.getPlayfieldDrawer().draw(0);
         
+        if (this.simulationTreeListener != null) {
+            this.simulationTreeListener.setRootNode(playfield.getSimulationTree());
+            this.simulationTreeListener.enable();
+            playfield.setSimulationTreeEntityAddedListener((node, entity) -> {
+                this.simualtionSidebarMap.put(node, entity);
+                this.simulationTreeListener.updateSimulationTree();
+            });
+            playfield.setSimulationTreeEntityRemovedListener(node -> {
+                this.simualtionSidebarMap.remove(node);
+                this.simulationTreeListener.updateSimulationTree();
+            });
+        }
+        this.entityInspectorListener.disable();
+        
+        newSimulationClock.registerPostTickListener(unused -> {
+            updateEntityInspector();
+            return true;
+        });
+        
         // START TASK
         final CompletableFuture<Boolean> runningTask = taskRunner.runTask();
         
@@ -279,6 +315,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         this.currentTaskName = newTaskName;
         this.currentSimulation = simulation;
         this.currentRunningTask = runningTask;
+        this.currentPlayfield = playfield;
         this.gameWindow.setWindowTitle("Task: " + newTaskName);
     }
     
@@ -411,9 +448,59 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         } else throw new ListenerSetException();
     }
     
+    private EntityInspectorEntry[] getEntries(Entity e) {
+        List<EntityInspectorEntry> result = new ArrayList<>();
+        
+        for (String name : this.inspectionManager.getAttributeNamesOfEntity(e)) {
+            String type = "string";
+            if (!this.inspectionManager.isAttributeEditable(e, name)) {
+                type = "readonly_string";
+            }
+            //TODO: this.inspectionManager.getAttributeType(e, name)
+            String value = this.inspectionManager.getAttributeValue(e, name).toString();
+            result.add(new EntityInspectorEntry(name, type, value, newValue -> {
+                this.inspectionManager.setAttributeValue(e, name, newValue);
+                this.currentPlayfield.drawEntities();
+                this.gameWindow.getPlayfieldDrawer().draw(this.simulationClock.getLastRenderTickNumber());
+                updateEntityInspector();
+            }));
+        }
+        
+        for (String name : this.inspectionManager.getMethodNamesOfEntity(e)) {
+            String type = "function";
+            result.add(new EntityInspectorEntry(name, type, "", unused -> {
+                this.inspectionManager.invokeMethod(e, name);
+                this.currentPlayfield.drawEntities();
+                this.gameWindow.getPlayfieldDrawer().draw(this.simulationClock.getLastRenderTickNumber());
+                updateEntityInspector();
+            }));
+        }
+        return result.toArray(new EntityInspectorEntry[result.size()]);
+    }
+    
+    private void updateEntityInspector() {
+        if (this.entityInspectorListener != null && this.entityToInspect != null) {
+            this.entityInspectorListener.setEntityEntries(getEntries(this.entityToInspect));
+        }
+    }
+    
     @Override
     public void selectedSimulationEntityChange(SimulationTreeNode node) {
-        // Intentionally left blank
+        if (node == null) {
+            this.entityToInspect = null;
+        } else {
+            this.entityToInspect = this.simualtionSidebarMap.get(node);
+        }
+        
+        if (this.entityToInspect != null) {
+            this.entityInspectorListener.enable();
+            this.entityInspectorListener.setName(this.entityToInspect.toString());
+            this.entityInspectorListener.setEntityEntries(getEntries(this.entityToInspect));
+        } else {
+            this.entityInspectorListener.setName("");
+            this.entityInspectorListener.setEntityEntries(new EntityInspectorEntry[0]);
+            this.entityInspectorListener.disable();
+        }
     }
     
     @Override
@@ -421,6 +508,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         if ((this.entityInspectorListener == null) || (listener == null)) {
             this.entityInspectorListener = listener;
         } else throw new ListenerSetException();
+        
     }
     
     @Override
