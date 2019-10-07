@@ -19,6 +19,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityStepAction;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTurnAction;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.IllegalMoveException;
+import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionAttribute;
+import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionMethod;
 import de.unistuttgart.informatik.fius.icge.ui.AnimatedDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 
@@ -50,13 +52,18 @@ public abstract class MovableEntity extends BasicEntity {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         try {
             this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
-            Direction oldLookingDirection = this.lookingDirection;
-            this.lookingDirection = this.lookingDirection.clockWiseNext();
-            long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
-            this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
+            turnClockWiseInternal();
         } finally {
             endOfOperation.complete(null);
         }
+    }
+    
+    @InspectionMethod(name = "turnClockwise")
+    private void turnClockWiseInternal() {
+        Direction oldLookingDirection = this.lookingDirection;
+        this.lookingDirection = this.lookingDirection.clockWiseNext();
+        long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
+        this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
     }
     
     /**
@@ -64,6 +71,22 @@ public abstract class MovableEntity extends BasicEntity {
      */
     public Direction getLookingDirection() {
         return this.lookingDirection;
+    }
+    
+    /**
+     * Set the looking direction
+     * 
+     * @param direction
+     *     the name of the new direction
+     */
+    @InspectionAttribute(name = "LookingDirection")
+    public void setLookingDirectionByString(String direction) {
+        this.lookingDirection = Direction.valueOf(direction.toUpperCase());
+    }
+    
+    @InspectionAttribute(name = "LookingDirection")
+    public String getLookingDirectionString() {
+        return getLookingDirection().toString();
     }
     
     private boolean isSolidEntityAt(final Position pos) {
@@ -85,7 +108,7 @@ public abstract class MovableEntity extends BasicEntity {
         final long currentTick = clock.getLastRenderTickNumber();
         final Position currentPos = this.getPosition();
         final Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
-        this.movingDrawable = new AnimatedDrawable(
+        final AnimatedDrawable animation = new AnimatedDrawable(
                 currentTick, currentPos.getX(), currentPos.getY(), renderTickDuration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
                 this.getTextureHandle()
         );
@@ -93,6 +116,7 @@ public abstract class MovableEntity extends BasicEntity {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         try {
             clock.scheduleOperationInTicks(duration, endOfOperation);
+            this.movingDrawable = animation;
             if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
             EntityMoveAction action = new EntityStepAction(
                     this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos

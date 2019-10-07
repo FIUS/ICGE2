@@ -10,6 +10,8 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import de.unistuttgart.informatik.fius.icge.ui.exception.LeafNodeException;
@@ -130,6 +132,26 @@ public class SimulationTreeNode {
     }
     
     /**
+     * Removes a child node from this node
+     *
+     * @param node
+     *     The node to remove
+     * @return Returns true if the given node was a child node
+     */
+    public boolean removeChild(SimulationTreeNode node) {
+        if (this.isLeaf) throw new LeafNodeException();
+        
+        return this.children.remove(node);
+    }
+    
+    /**
+     * @return a list of all children
+     */
+    public List<SimulationTreeNode> getChildren() {
+        return List.copyOf(this.children);
+    }
+    
+    /**
      * Runs a function for each added child node with the child node as a parameter
      *
      * @param lamda
@@ -141,5 +163,21 @@ public class SimulationTreeNode {
         for (SimulationTreeNode child : this.children) {
             lamda.accept(child);
         }
+    }
+    
+    @Override
+    public int hashCode() {
+        return elementId.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SimulationTreeNode)) return false;
+        return Objects.equals(elementId, ((SimulationTreeNode) obj).elementId);
+    }
+    
+    @Override
+    public String toString() {
+        return getDisplayText();
     }
 }
