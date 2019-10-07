@@ -27,7 +27,7 @@ msg="$(git log -1 --pretty=%B)"
 branchC="true"
 versionC="true"
 msgC="true"
-msgF="false"
+finished="false"
 
 if [[ "$TRAVIS_BRANCH" != "versionBump/"* ]] ;then
   branchC="false"
@@ -39,15 +39,19 @@ if [[ "$msg" != "Bump version to "* ]] ;then
   msgC="false"
 fi
 if [[ "$msg" == "Prepare for develoment on"* ]];then
-  msgF="true"
+  finished="true"
 fi
+if [[ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]] ;then
+  finished="true"
+fi
+
 
 if [ "$branchC" == "true" ] && [ "$versionC" == "true" ] && [ "$msgC" == "true" ] ;then
   echo "Doing version bump."
 elif [ "$branchC" == "false" ] && [ "$versionC" == "false" ] && [ "$msgC" == "false" ] ;then
   echo "Not doing version bump."
   exit 0
-elif [ "$branchC" == "true" ] && [ "$versionC" == "false" ] && [ "$msgF" == "true" ] ;then
+elif [ "$finished" == "true" ] ;then
   echo "Detected finished version bump. Not doing it again."
   exit 0
 else
@@ -73,7 +77,7 @@ set -x
 git tag "$version"
 
 "$dir/versionBumpLocal.sh" "$newVersion"
-git commit -a -m "Prepare for develoment on $newVersion"
+git commit -a -m "Prepare for development on $newVersion"
 
 source "$dir/prepareGitForPush.sh"
 
