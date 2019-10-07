@@ -246,12 +246,15 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                             return new Rectangle(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10);
                         });
                 if (rectToDraw.isPresent()) {
-                    if (this.lastRedrawArea != null) {
-                        this.paintImmediately(this.lastRedrawArea);
+                    Rectangle lastRedraw = this.lastRedrawArea;
+                    if (lastRedraw != null) {
+                        this.paintImmediately(lastRedraw);
                     }
-                    this.lastRedrawArea = rectToDraw.get();
                     Rectangle toDraw = rectToDraw.get();
-                    this.paintImmediately(toDraw);
+                    this.lastRedrawArea = toDraw;
+                    if (toDraw != null) {
+                        this.paintImmediately(toDraw);
+                    }
                 } else {
                     this.lastRedrawArea = null;
                 }
