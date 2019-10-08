@@ -143,11 +143,11 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
                 //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
                 info.setState(EntityProgramState.KILLED);
             } catch (Exception e) {
-                Logger.simulation.println("----------------------------------------------");
-                Logger.simulation
+                Logger.simout.println("----------------------------------------------");
+                Logger.simout
                         .println("The following exception happened in program " + program + " running on entity " + entity.toString());
-                e.printStackTrace(Logger.simulation);
-                Logger.simulation.println("----------------------------------------------");
+                e.printStackTrace(Logger.simout);
+                Logger.simout.println("----------------------------------------------");
                 info.setState(EntityProgramState.KILLED);
             }
             return null;

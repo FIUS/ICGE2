@@ -401,7 +401,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
             final Entity entity = this.entityTypeRegistry.getNewEntity(typeName);
             return sim.getEntityProgramRegistry().getProgramsForEntity(entity);
         } catch (Exception e) {
-            Logger.simulation.println("Could not load program list for entity type " + typeName + ". (See system log for details.)");
+            Logger.simout.println("Could not load program list for entity type " + typeName + ". (See system log for details.)");
             e.printStackTrace(Logger.error);
         }
         return new HashSet<>();
@@ -416,7 +416,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         try {
             final Entity ent = this.entityTypeRegistry.getNewEntity(typeName);
             if (ent == null) {
-                Logger.simulation.println("Could not create a new entity of type " + typeName + "!");
+                Logger.simout.println("Could not create a new entity of type " + typeName + "!");
                 return;
             }
             field.addEntity(new Position(x, y), ent);
@@ -424,10 +424,10 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
                 this.currentSimulation.getEntityProgramRunner().run(program, ent);
             }
         } catch (CannotRunProgramException e) {
-            Logger.simulation.println("Could not run program " + program + " for the new entity. (See system log for details.)");
+            Logger.simout.println("Could not run program " + program + " for the new entity. (See system log for details.)");
             e.printStackTrace(Logger.error);
         } catch (Exception e) {
-            Logger.simulation.println("Something went wrong while creating new entity. (See system log for details.)");
+            Logger.simout.println("Something went wrong while creating new entity. (See system log for details.)");
             e.printStackTrace(Logger.error);
         }
     }

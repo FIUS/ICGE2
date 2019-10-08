@@ -68,7 +68,7 @@ public class StandardActionLog implements ActionLog {
             this.entityActions.get(entity).add(entityAction);
         }
         this.actions.add(actionToLog);
-        Logger.simulation.println(actionToLog.getDescription());
+        Logger.simout.println(actionToLog.getDescription());
     }
     
 }

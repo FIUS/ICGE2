@@ -23,29 +23,36 @@ import java.io.PrintStream;
 public abstract class Logger {
     
     /** The logger for the simulation */
-    public static PrintStream simulation;
+    public static PrintStream simout;
+    /** The error logger of the simulaiton */
+    public static PrintStream simerror;
     /** The main logger printing to {@link System#out} */
     public static PrintStream out;
     /** The error logger printing to {@link System#err} */
     public static PrintStream error;
     
-    private static OutputStreamMultiplier simulationStream;
+    private static OutputStreamMultiplier simoutStream;
+    private static OutputStreamMultiplier simerrorStream;
     private static OutputStreamMultiplier outStream;
     private static OutputStreamMultiplier errorStream;
     
     // This block setups all the loggers and intercepts {@link System.out} and {@link System.err}
     static {
-        Logger.simulationStream = new OutputStreamMultiplier();
-        Logger.simulation = new PrintStream(Logger.simulationStream);
+        Logger.simoutStream = new OutputStreamMultiplier();
+        Logger.simout = new PrintStream(Logger.simoutStream);
         
+        Logger.simerrorStream = new OutputStreamMultiplier();
+        Logger.simerrorStream.addOutputStream(System.err);
+        Logger.simerror = new PrintStream(Logger.simerrorStream);
+
         Logger.outStream = new OutputStreamMultiplier();
-        Logger.out = new PrintStream(Logger.outStream);
         Logger.outStream.addOutputStream(System.out);
+        Logger.out = new PrintStream(Logger.outStream);
         System.setOut(Logger.out);
         
         Logger.errorStream = new OutputStreamMultiplier();
-        Logger.error = new PrintStream(Logger.errorStream);
         Logger.errorStream.addOutputStream(System.err);
+        Logger.error = new PrintStream(Logger.errorStream);
         System.setErr(Logger.error);
     }
     
@@ -58,7 +65,7 @@ public abstract class Logger {
      * @see OutputStreamMultiplier#addOutputStream(OutputStream)
      */
     public static boolean addSimulationOutputStream(final OutputStream stream) {
-        return Logger.simulationStream.addOutputStream(stream);
+        return Logger.simoutStream.addOutputStream(stream);
     }
     
     /**
@@ -70,7 +77,7 @@ public abstract class Logger {
      * @see OutputStreamMultiplier#removeOutputStream(OutputStream)
      */
     public static boolean removeSimulationOutputStream(final OutputStream stream) {
-        return Logger.simulationStream.removeOutputStream(stream);
+        return Logger.simoutStream.removeOutputStream(stream);
     }
     
     /**
@@ -79,7 +86,40 @@ public abstract class Logger {
      * @see OutputStreamMultiplier#clearOutputStreams()
      */
     public static void clearSimulationOutputStream() {
-        Logger.simulationStream.clearOutputStreams();
+        Logger.simoutStream.clearOutputStreams();
+    }
+
+    /**
+     * Function to add a {@link OutputStream} to the simulation error logger
+     *
+     * @param stream
+     *     The {@link OutputStream} to add
+     * @return Returns true if successfull
+     * @see OutputStreamMultiplier#addOutputStream(OutputStream)
+     */
+    public static boolean addSimulationErrorStream(final OutputStream stream) {
+        return Logger.simerrorStream.addOutputStream(stream);
+    }
+    
+    /**
+     * Function to remove a {@link OutputStream} from the simulation error logger
+     *
+     * @param stream
+     *     The {@link OutputStream} to remove
+     * @return Returns true if successfull
+     * @see OutputStreamMultiplier#removeOutputStream(OutputStream)
+     */
+    public static boolean removeSimulationErrorStream(final OutputStream stream) {
+        return Logger.simerrorStream.removeOutputStream(stream);
+    }
+    
+    /**
+     * Clears the simulation error OutputStreams
+     *
+     * @see OutputStreamMultiplier#clearOutputStreams()
+     */
+    public static void clearSimulationErrorStream() {
+        Logger.simerrorStream.clearOutputStreams();
     }
     
     /**

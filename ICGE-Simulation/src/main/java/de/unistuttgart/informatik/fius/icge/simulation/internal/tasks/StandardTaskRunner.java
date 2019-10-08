@@ -63,22 +63,22 @@ public class StandardTaskRunner {
             //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
             return false;
         } catch (Exception e) {
-            Logger.simulation.println("----------------------------------------------");
-            Logger.simulation.println("The following exception caused a task failure:");
-            e.printStackTrace(Logger.simulation);
-            Logger.simulation.println("----------------------------------------------");
+            Logger.simout.println("----------------------------------------------");
+            Logger.simout.println("The following exception caused a task failure:");
+            e.printStackTrace(Logger.simout);
+            Logger.simout.println("----------------------------------------------");
             return false;
         }
         
         boolean verified = this.taskToRun.verify();
         if (verified) {
-            Logger.simulation.println("----------------------------------------------");
-            Logger.simulation.println("Task completed successfully");
-            Logger.simulation.println("----------------------------------------------");
+            Logger.simout.println("----------------------------------------------");
+            Logger.simout.println("Task completed successfully");
+            Logger.simout.println("----------------------------------------------");
         } else {
-            Logger.simulation.println("----------------------------------------------");
-            Logger.simulation.println("Task failed");
-            Logger.simulation.println("----------------------------------------------");
+            Logger.simout.println("----------------------------------------------");
+            Logger.simout.println("Task failed");
+            Logger.simout.println("----------------------------------------------");
         }
         return verified;
     }
