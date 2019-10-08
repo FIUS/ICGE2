@@ -65,7 +65,7 @@ public class StandardTaskRunner {
         } catch (Exception e) {
             Logger.simout.println("----------------------------------------------");
             Logger.simout.println("The following exception caused a task failure:");
-            e.printStackTrace(Logger.simout);
+            e.printStackTrace(Logger.simerror);
             Logger.simout.println("----------------------------------------------");
             return false;
         }
