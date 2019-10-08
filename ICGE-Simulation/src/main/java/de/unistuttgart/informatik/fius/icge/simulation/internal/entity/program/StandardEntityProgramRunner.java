@@ -145,7 +145,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
             } catch (Exception e) {
                 Logger.simout.println("----------------------------------------------");
                 Logger.simout.println("The following exception happened in program " + program + " running on entity " + entity.toString());
-                e.printStackTrace(Logger.simout);
+                e.printStackTrace(Logger.simerror);
                 Logger.simout.println("----------------------------------------------");
                 info.setState(EntityProgramState.KILLED);
             }
