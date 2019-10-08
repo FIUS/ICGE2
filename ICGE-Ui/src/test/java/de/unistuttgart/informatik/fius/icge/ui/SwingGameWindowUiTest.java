@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
@@ -48,6 +49,7 @@ class SwingGameWindowUiTest {
     /**
      * Test {@link SwingGameWindow#start()}
      */
+    @Disabled
     @Test
     void testStart() {
         this.window.start();
