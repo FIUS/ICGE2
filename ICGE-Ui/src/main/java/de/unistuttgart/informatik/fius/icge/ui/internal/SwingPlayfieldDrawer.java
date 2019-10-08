@@ -544,13 +544,13 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         if (this.activeTool == ControlButtonState.ADD) {
             String type = this.selectedEntityType;
             if (type == null || type.equals("")) {
-                Logger.simulation.println("Could not spawn entity, no type selected!");
+                Logger.simout.println("Could not spawn entity, no type selected!");
                 return;
             }
             try {
                 this.simulationProxy.spawnEntityAt(type, x, y, null);
             } catch (Exception e) {
-                Logger.simulation.println(
+                Logger.simout.println(
                         "Error while spawning entity of type " + type + " at (x=" + x + ", y=" + y + "). (See system log for details)"
                 );
                 e.printStackTrace(Logger.error);
@@ -560,7 +560,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             try {
                 this.simulationProxy.clearCell(x, y);
             } catch (Exception e) {
-                Logger.simulation.println("Error while clearing the cell (x=" + x + ", y=" + y + "). (See system log for details)");
+                Logger.simout.println("Error while clearing the cell (x=" + x + ", y=" + y + "). (See system log for details)");
                 e.printStackTrace(Logger.error);
             }
         }
