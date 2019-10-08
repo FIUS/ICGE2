@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.uni-stuttgart.informatik.fius</groupId>
     <artifactId>ICGE</artifactId>
-    <version>2.2.3</version>
+    <version>2.2.4-Snapshot</version>
     <name>Introduction Course Game Engine</name>
     <description>The game engine for the java intoduction course of FIUS</description>
     <url>https://fius.github.io/ICGE2</url>
@@ -12,7 +12,7 @@
         <java.version>11</java.version>
         <junit.jupiter.version>5.3.1</junit.jupiter.version>
         <junit.platform.version>1.1.0</junit.platform.version>
-        <icge.version>2.2.3</icge.version>
+        <icge.version>2.2.4-Snapshot</icge.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
