@@ -23,6 +23,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
 
 import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
@@ -226,60 +228,65 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             this.drawables = this.drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
         }
         
-        synchronized (this) {
-            // synchronize this to fix possible null pointer when setting double buffer setting
-            
-            boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
-            if (!this.useDoubleBuffer) {
-                // only  change strategy to false since true should already be default
-                this.repaintManager.setDoubleBufferingEnabled(this.useDoubleBuffer);
-            }
-            
-            if (this.fullRepaintNeeded) {
-                Rectangle visible = this.getVisibleRect();
-                if (visible == null) {
-                    visible = new Rectangle(0, 0, this.getWidth(), this.getHeight());
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                // synchronize this to fix possible null pointer when setting double buffer setting
+                
+                boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
+                if (!this.useDoubleBuffer) {
+                    // only  change strategy to false since true should already be default
+                    this.repaintManager.setDoubleBufferingEnabled(this.useDoubleBuffer);
                 }
-                this.paintImmediately(visible);
-                this.fullRepaintNeeded = false;
-            } else {
-                if (this.animatedDrawables.size() > 0) {
-                    final Rectangle visible = this.getVisibleRect();
-                    final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
-                    final int textureSize = Math.toIntExact(Math.round(cellSize));
-                    final Optional<Rectangle> rectToDraw = this.animatedDrawables.stream().map(
-                            d -> this.getScreenPointFromCellCoordinates(d.getX(), d.getY(), cellSize)
-                    ).map(p -> getPaintRectFromPoint(p, textureSize)).filter(r -> r.intersects(visible))
-                            .reduce((Rectangle r1, Rectangle r2) -> {
-                                r1.add(r2);
-                                return r1;
-                            }).map(rect -> {
-                                return new Rectangle(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10);
-                            });
-                    if (rectToDraw.isPresent()) {
-                        Rectangle lastRedraw = this.lastRedrawArea;
-                        if (lastRedraw != null) {
-                            this.paintImmediately(lastRedraw);
+                
+                if (this.fullRepaintNeeded) {
+                    Rectangle visible = this.getVisibleRect();
+                    if (visible == null) {
+                        visible = new Rectangle(0, 0, this.getWidth(), this.getHeight());
+                    }
+                    this.paintImmediately(visible);
+                    this.fullRepaintNeeded = false;
+                } else {
+                    if (this.animatedDrawables.size() > 0) {
+                        final Rectangle visible = this.getVisibleRect();
+                        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+                        final int textureSize = Math.toIntExact(Math.round(cellSize));
+                        final Optional<Rectangle> rectToDraw = this.animatedDrawables.stream().map(
+                                d -> this.getScreenPointFromCellCoordinates(d.getX(), d.getY(), cellSize)
+                        ).map(p -> getPaintRectFromPoint(p, textureSize)).filter(r -> r.intersects(visible))
+                                .reduce((Rectangle r1, Rectangle r2) -> {
+                                    r1.add(r2);
+                                    return r1;
+                                }).map(rect -> {
+                                    return new Rectangle(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10);
+                                });
+                        if (rectToDraw.isPresent()) {
+                            Rectangle lastRedraw = this.lastRedrawArea;
+                            if (lastRedraw != null) {
+                                this.paintImmediately(lastRedraw);
+                            }
+                            Rectangle toDraw = rectToDraw.get();
+                            this.lastRedrawArea = toDraw;
+                            if (toDraw != null) {
+                                this.paintImmediately(toDraw);
+                            }
+                        } else {
+                            this.lastRedrawArea = null;
                         }
-                        Rectangle toDraw = rectToDraw.get();
-                        this.lastRedrawArea = toDraw;
-                        if (toDraw != null) {
-                            this.paintImmediately(toDraw);
-                        }
-                    } else {
-                        this.lastRedrawArea = null;
                     }
                 }
-            }
-            // reset setting after draw
-            if (!this.useDoubleBuffer) {
-                // only  change strategy to false since true should already be default
-                this.repaintManager.setDoubleBufferingEnabled(bufferEnabled);
-            }
-            if (this.syncToscreen) {
-                // flush drawing changes to screen (improves render latency when mouse is not in window)
-                Toolkit.getDefaultToolkit().sync();
-            }
+                if (this.syncToscreen) {
+                    // flush drawing changes to screen (improves render latency when mouse is not in window)
+                    Toolkit.getDefaultToolkit().sync();
+                }
+                // reset setting after draw
+                if (!this.useDoubleBuffer) {
+                    // only  change strategy to false since true should already be default
+                    this.repaintManager.setDoubleBufferingEnabled(bufferEnabled);
+                }
+            });
+        } catch (InvocationTargetException | InterruptedException e) {
+            // render error, just log to system error
+            e.printStackTrace(Logger.error);
         }
         // filter out finished animations
         this.animatedDrawables = this.drawables.stream().filter(
