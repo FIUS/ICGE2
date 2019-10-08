@@ -228,7 +228,10 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
         this.repaintManager.setDoubleBufferingEnabled(this.useDoubleBuffer);
         if (this.fullRepaintNeeded) {
-            final Rectangle visible = this.getVisibleRect();
+            Rectangle visible = this.getVisibleRect();
+            if (visible == null) {
+                visible = new Rectangle(0, 0, this.getWidth(), this.getHeight());
+            }
             this.paintImmediately(visible);
             this.fullRepaintNeeded = false;
         } else {
