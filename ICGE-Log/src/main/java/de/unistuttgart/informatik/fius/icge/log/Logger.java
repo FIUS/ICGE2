@@ -44,7 +44,7 @@ public abstract class Logger {
         Logger.simerrorStream = new OutputStreamMultiplier();
         Logger.simerrorStream.addOutputStream(System.err);
         Logger.simerror = new PrintStream(Logger.simerrorStream);
-
+        
         Logger.outStream = new OutputStreamMultiplier();
         Logger.outStream.addOutputStream(System.out);
         Logger.out = new PrintStream(Logger.outStream);
@@ -88,7 +88,7 @@ public abstract class Logger {
     public static void clearSimulationOutputStream() {
         Logger.simoutStream.clearOutputStreams();
     }
-
+    
     /**
      * Function to add a {@link OutputStream} to the simulation error logger
      *
