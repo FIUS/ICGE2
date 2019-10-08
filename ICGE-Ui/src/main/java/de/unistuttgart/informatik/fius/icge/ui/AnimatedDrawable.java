@@ -25,8 +25,8 @@ public class AnimatedDrawable implements Drawable {
     
     private final String textureHandle;
     
-    private final long   tickStart;
-    private final long   tickEnd;
+    private final long tickStart;
+    private final long tickEnd;
     private final long duration;
     
     private long currentTick = 0;
