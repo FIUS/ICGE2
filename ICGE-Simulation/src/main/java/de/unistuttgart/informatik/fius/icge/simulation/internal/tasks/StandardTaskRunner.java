@@ -53,9 +53,21 @@ public class StandardTaskRunner {
     }
     
     private boolean executeTask() {
-        this.taskToRun.prepare(this.sim);
         try {
+            this.taskToRun.prepare(this.sim);
             this.taskToRun.solve();
+            
+            boolean verified = this.taskToRun.verify();
+            if (verified) {
+                Logger.simout.println("----------------------------------------------");
+                Logger.simout.println("Task completed successfully");
+                Logger.simout.println("----------------------------------------------");
+            } else {
+                Logger.simout.println("----------------------------------------------");
+                Logger.simout.println("Task failed");
+                Logger.simout.println("----------------------------------------------");
+            }
+            return verified;
         } catch (@SuppressWarnings("unused") CancellationException e) {
             //Simulation was stopped before completion of the task.
             //Log would be printed into log panel of new task because of concurrency.
@@ -69,17 +81,5 @@ public class StandardTaskRunner {
             Logger.simout.println("----------------------------------------------");
             return false;
         }
-        
-        boolean verified = this.taskToRun.verify();
-        if (verified) {
-            Logger.simout.println("----------------------------------------------");
-            Logger.simout.println("Task completed successfully");
-            Logger.simout.println("----------------------------------------------");
-        } else {
-            Logger.simout.println("----------------------------------------------");
-            Logger.simout.println("Task failed");
-            Logger.simout.println("----------------------------------------------");
-        }
-        return verified;
     }
 }
