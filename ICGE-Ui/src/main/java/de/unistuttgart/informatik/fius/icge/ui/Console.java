@@ -28,12 +28,25 @@ public interface Console {
     OutputStream getSimulationOutputStream();
     
     /**
+     * Getter for the errpr stream of the simulation console
+     * @return
+     */
+    OutputStream getSimulationErrorStream();
+
+    /**
      * Getter for the output stream of the system console
      *
      * @return Returns a output stream
      */
     OutputStream getSystemOutputStream();
     
+    /**
+     * Getter for the error stream of the system console
+     *
+     * @return Returns a error stream
+     */
+    OutputStream getSystemErrorStream();
+
     /**
      * Clears the simulation console in the ui.
      */
