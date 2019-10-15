@@ -133,9 +133,9 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         
         // connect logger to console
         Logger.addSimulationOutputStream(this.console.getSimulationOutputStream());
-        Logger.addSimulationErrorStream(this.console.getSimulationOutputStream());
+        Logger.addSimulationErrorStream(this.console.getSimulationErrorStream());
         Logger.addOutOutputStream(this.console.getSystemOutputStream());
-        Logger.addErrorOutputStream(this.console.getSystemOutputStream());
+        Logger.addErrorOutputStream(this.console.getSystemErrorStream());
         
         // setup JFrame layout
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);

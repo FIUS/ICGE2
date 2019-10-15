@@ -84,9 +84,19 @@ public class SwingConsole extends JTabbedPane implements Console {
     public OutputStream getSimulationOutputStream() {
         return this.simulationOutputStream;
     }
+
+    @Override
+    public OutputStream getSimulationErrorStream() {
+        return this.simulationOutputStream;
+    }
     
     @Override
     public OutputStream getSystemOutputStream() {
+        return this.systemOutputStream;
+    }
+
+    @Override
+    public OutputStream getSystemErrorStream() {
         return this.systemOutputStream;
     }
     
