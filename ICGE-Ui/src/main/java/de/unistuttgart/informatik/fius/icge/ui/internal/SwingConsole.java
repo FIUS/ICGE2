@@ -9,15 +9,22 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.awt.Font;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.io.OutputStream;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 
@@ -31,7 +38,8 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
 public class SwingConsole extends JTabbedPane implements Console {
     private static final long serialVersionUID = 5100186594058483257L;
     
-    private JTextArea simulationConsole;
+    private JTextPane simulationConsole;
+    private StyledDocument simulationDocument;
     private JTextArea systemConsole;
     
     private ConsoleBufferedOutputStream simulationOutputStream;
@@ -42,27 +50,34 @@ public class SwingConsole extends JTabbedPane implements Console {
      */
     public SwingConsole() {
         super(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        Font standadFont = new Font("monospaced", Font.PLAIN, 12);
         {   // Setup simulation console
-            this.simulationConsole = new JTextArea();
+            this.simulationDocument = new DefaultStyledDocument();
+            this.simulationConsole = new JTextPane(simulationDocument);
             this.simulationConsole.setEditable(false);
-            this.simulationConsole.setFont(new Font("monospaced", Font.PLAIN, 12));
+            this.simulationConsole.setFont(standadFont);
             final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole);
+            //this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole);
         }
         {   // Setup system console
             this.systemConsole = new JTextArea();
             this.systemConsole.setEditable(false);
-            this.systemConsole.setFont(new Font("monospaced", Font.PLAIN, 12));
+            this.systemConsole.setFont(standadFont);
             final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
             this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole);
         }
-        
         // Add consoles to the TabbedPane
         this.addTab("Simulation", new JScrollPane(this.simulationConsole));
         this.addTab("System", new JScrollPane(this.systemConsole));
         this.addTab("Notes", new JScrollPane(new JTextArea("Your place for non permanent notes!\n")));
+        StyleContext context = new StyleContext();
+        Style style = context.addStyle("test", null);
+        Style styleRed = context.addStyle("red", style);
+        StyleConstants.setForeground(styleRed,Color.red);
+        
     }
     
     @Override
