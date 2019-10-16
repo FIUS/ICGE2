@@ -24,7 +24,7 @@ import javax.swing.text.StyledDocument;
  * @author Tobias Wältken
  * @version 1.0
  */
-public class ConsoleBufferedOutputStream extends OutputStream {
+public class ConsoleBufferedErrorStream extends OutputStream {
     
     private final JTextPane textPane;
     private final StyledDocument document;
@@ -36,7 +36,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      * @param textPane
      *     The text pane to place the stream data into
      */
-    public ConsoleBufferedOutputStream(final JTextPane textPane) {
+    public ConsoleBufferedErrorStream(final JTextPane textPane) {
         this.textPane = textPane;
         this.document = textPane.getStyledDocument();
     }
@@ -49,7 +49,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     @Override
     public void write(final int character) throws IOException {
         try{
-            Style style = this.document.getStyle("normal");
+            Style style =this.document.getStyle("error");
             this.document.insertString(this.document.getLength(),""+ (char) character,style);
         }
         catch(BadLocationException e){

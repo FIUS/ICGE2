@@ -40,11 +40,14 @@ public class SwingConsole extends JTabbedPane implements Console {
     
     private JTextPane simulationConsole;
     private StyledDocument simulationDocument;
-    private JTextArea systemConsole;
+    private JTextPane systemConsole;
+    private StyledDocument systemDocument;
     
     private ConsoleBufferedOutputStream simulationOutputStream;
+    private ConsoleBufferedErrorStream simulationErrorStream;
     private ConsoleBufferedOutputStream systemOutputStream;
-    
+    private ConsoleBufferedErrorStream systemErrorStream;
+
     /**
      * Default constructor
      */
@@ -59,24 +62,31 @@ public class SwingConsole extends JTabbedPane implements Console {
             this.simulationConsole.setFont(standadFont);
             final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            //this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole);
+            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole);
+            this.simulationErrorStream = new ConsoleBufferedErrorStream(this.simulationConsole);
         }
         {   // Setup system console
-            this.systemConsole = new JTextArea();
+            this.systemDocument = new DefaultStyledDocument();
+            this.systemConsole = new JTextPane(systemDocument);
             this.systemConsole.setEditable(false);
             this.systemConsole.setFont(standadFont);
             final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
             this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole);
+            this.systemErrorStream = new ConsoleBufferedErrorStream(this.systemConsole);
         }
         // Add consoles to the TabbedPane
         this.addTab("Simulation", new JScrollPane(this.simulationConsole));
         this.addTab("System", new JScrollPane(this.systemConsole));
         this.addTab("Notes", new JScrollPane(new JTextArea("Your place for non permanent notes!\n")));
         StyleContext context = new StyleContext();
-        Style style = context.addStyle("test", null);
-        Style styleRed = context.addStyle("red", style);
-        StyleConstants.setForeground(styleRed,Color.red);
+        Style style = context.addStyle("normal", null);
+        Style styleError = context.addStyle("error", style);
+        StyleConstants.setForeground(styleError,Color.red);
+        this.simulationDocument.addStyle("normal", style);
+        this.simulationDocument.addStyle("error", styleError);
+        this.systemDocument.addStyle("normal", style);
+        this.systemDocument.addStyle("error", styleError);
         
     }
     
@@ -87,7 +97,7 @@ public class SwingConsole extends JTabbedPane implements Console {
 
     @Override
     public OutputStream getSimulationErrorStream() {
-        return this.simulationOutputStream;
+        return this.simulationErrorStream;
     }
     
     @Override
@@ -97,7 +107,7 @@ public class SwingConsole extends JTabbedPane implements Console {
 
     @Override
     public OutputStream getSystemErrorStream() {
-        return this.systemOutputStream;
+        return this.systemErrorStream;
     }
     
     @Override
