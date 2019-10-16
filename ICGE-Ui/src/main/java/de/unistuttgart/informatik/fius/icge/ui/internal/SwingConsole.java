@@ -21,9 +21,6 @@ import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 
@@ -31,12 +28,12 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
 /**
  * The SwingConsole allows the user to see text output from the system or the simulation itself.
  *
- * @author Tobias Wältken David Ruff
+ * @author Tobias Wältken
+ * @author David Ruff
  * @version 1.0
  */
 public class SwingConsole extends JTabbedPane implements Console {
-    private static final long   serialVersionUID = 5100186594058483257L;
-    private static final String NORMAL           = "normal";
+    private static final long serialVersionUID = 5100186594058483257L;
     
     private JTextPane simulationConsole;
     private JTextPane systemConsole;
@@ -59,8 +56,8 @@ public class SwingConsole extends JTabbedPane implements Console {
             this.simulationConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.standard);
-            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.error);
+            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.STANDARD);
+            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.ERROR);
         }
         {   // Setup system console
             this.systemConsole = new JTextPane(new DefaultStyledDocument());
@@ -68,8 +65,8 @@ public class SwingConsole extends JTabbedPane implements Console {
             this.systemConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.standard);
-            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.error);
+            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.STANDARD);
+            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.ERROR);
             
         }
         // Add consoles to the TabbedPane
