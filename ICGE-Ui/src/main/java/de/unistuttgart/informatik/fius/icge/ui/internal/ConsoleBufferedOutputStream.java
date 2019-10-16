@@ -46,9 +46,9 @@ public class ConsoleBufferedOutputStream extends OutputStream {
         this.style = this.textPane.addStyle(style.toString(), null);
         
         switch (style) {
-            case standard:
+            case STANDARD:
                 break;
-            case error:
+            case ERROR:
                 StyleConstants.setForeground(this.style, Color.red);
                 break;
             default:
