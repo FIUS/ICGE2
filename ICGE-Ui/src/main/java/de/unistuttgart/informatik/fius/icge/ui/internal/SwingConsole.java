@@ -32,7 +32,7 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
 /**
  * The SwingConsole allows the user to see text output from the system or the simulation itself.
  *
- * @author Tobias Wältken
+ * @author Tobias Wältken David Ruff
  * @version 1.0
  */
 public class SwingConsole extends JTabbedPane implements Console {

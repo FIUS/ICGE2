@@ -21,7 +21,7 @@ import javax.swing.text.StyledDocument;
 /**
  * The ConsoleBufferedOutputStream allows other streams and classes to write text into a {@link JTextArea}
  *
- * @author Tobias Wältken
+ * @author Tobias Wältken David Ruff
  * @version 1.0
  */
 public class ConsoleBufferedErrorStream extends OutputStream {
