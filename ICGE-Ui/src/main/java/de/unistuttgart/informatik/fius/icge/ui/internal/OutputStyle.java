@@ -8,11 +8,13 @@
  * SPDX-License-Identifier:    MIT
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
+
 /**
  * Enum to identify different standard styles for the ConsoleBufferedOutputStream
+ * 
  * @author David Ruff
  */
-public enum OutputStyle{
+public enum OutputStyle {
     /**
      * Standard Style for normal text without any purpos (Black)
      */

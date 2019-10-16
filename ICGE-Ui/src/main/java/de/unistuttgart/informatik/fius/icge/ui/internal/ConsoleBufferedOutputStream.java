@@ -20,7 +20,6 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 
 
-
 /**
  * The ConsoleBufferedOutputStream allows other streams and classes to write text into a {@link JTextPane}
  *
@@ -29,10 +28,10 @@ import javax.swing.text.StyleConstants;
  * @version 1.0
  */
 public class ConsoleBufferedOutputStream extends OutputStream {
-
+    
     //TODO add actual buffer to avoid overflowing the textarea and cause lag
     private final JTextPane textPane;
-    private final Style style;
+    private final Style     style;
     
     /**
      * Default Constructor
@@ -40,21 +39,21 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      * @param textPane
      *     The text pane to place the stream data into
      * @param style
-     *      The style type to be used for the output
+     *     The style type to be used for the output
      */
-    public ConsoleBufferedOutputStream(final JTextPane textPane,final OutputStyle style) {
+    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
         this.textPane = textPane;
         switch (style) {
             case standard:
-                this.style = this.textPane.addStyle("standard",null);
+                this.style = this.textPane.addStyle("standard", null);
                 break;
             case error:
-                this.style = this.textPane.addStyle("error",null);
+                this.style = this.textPane.addStyle("error", null);
                 StyleConstants.setForeground(this.style, Color.red);
-            break;
+                break;
             default:
                 this.style = null;
-            break;
+                break;
         }
     }
     
@@ -66,9 +65,10 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     @Override
     public void write(final int character) throws IOException {
         try {
-            this.textPane.getStyledDocument().insertString(this.textPane.getStyledDocument().getLength(), "" + (char) character, this.style);
+            this.textPane.getStyledDocument()
+                    .insertString(this.textPane.getStyledDocument().getLength(), "" + (char) character, this.style);
         } catch (BadLocationException e) {
-            throw new IOException("Bad insert Location: ",e);
+            throw new IOException("Bad insert Location: ", e);
         }
     }
 }
