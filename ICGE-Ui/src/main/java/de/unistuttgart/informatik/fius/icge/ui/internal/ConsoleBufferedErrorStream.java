@@ -26,9 +26,8 @@ import javax.swing.text.StyledDocument;
  */
 public class ConsoleBufferedErrorStream extends OutputStream {
     
-    private final JTextPane textPane;
+    private final JTextPane      textPane;
     private final StyledDocument document;
-    
     
     /**
      * Default Constructor
@@ -48,11 +47,10 @@ public class ConsoleBufferedErrorStream extends OutputStream {
     
     @Override
     public void write(final int character) throws IOException {
-        try{
-            Style style =this.document.getStyle("error");
-            this.document.insertString(this.document.getLength(),""+ (char) character,style);
-        }
-        catch(BadLocationException e){
+        try {
+            Style style = this.document.getStyle("error");
+            this.document.insertString(this.document.getLength(), "" + (char) character, style);
+        } catch (BadLocationException e) {
             throw new IOException("Bad insert Location");
         }
     }

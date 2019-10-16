@@ -38,22 +38,22 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
 public class SwingConsole extends JTabbedPane implements Console {
     private static final long serialVersionUID = 5100186594058483257L;
     
-    private JTextPane simulationConsole;
+    private JTextPane      simulationConsole;
     private StyledDocument simulationDocument;
-    private JTextPane systemConsole;
+    private JTextPane      systemConsole;
     private StyledDocument systemDocument;
     
     private ConsoleBufferedOutputStream simulationOutputStream;
-    private ConsoleBufferedErrorStream simulationErrorStream;
+    private ConsoleBufferedErrorStream  simulationErrorStream;
     private ConsoleBufferedOutputStream systemOutputStream;
-    private ConsoleBufferedErrorStream systemErrorStream;
-
+    private ConsoleBufferedErrorStream  systemErrorStream;
+    
     /**
      * Default constructor
      */
     public SwingConsole() {
         super(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-
+        
         Font standadFont = new Font("monospaced", Font.PLAIN, 12);
         {   // Setup simulation console
             this.simulationDocument = new DefaultStyledDocument();
@@ -82,7 +82,7 @@ public class SwingConsole extends JTabbedPane implements Console {
         StyleContext context = new StyleContext();
         Style style = context.addStyle("normal", null);
         Style styleError = context.addStyle("error", style);
-        StyleConstants.setForeground(styleError,Color.red);
+        StyleConstants.setForeground(styleError, Color.red);
         this.simulationDocument.addStyle("normal", style);
         this.simulationDocument.addStyle("error", styleError);
         this.systemDocument.addStyle("normal", style);
@@ -94,7 +94,7 @@ public class SwingConsole extends JTabbedPane implements Console {
     public OutputStream getSimulationOutputStream() {
         return this.simulationOutputStream;
     }
-
+    
     @Override
     public OutputStream getSimulationErrorStream() {
         return this.simulationErrorStream;
@@ -104,7 +104,7 @@ public class SwingConsole extends JTabbedPane implements Console {
     public OutputStream getSystemOutputStream() {
         return this.systemOutputStream;
     }
-
+    
     @Override
     public OutputStream getSystemErrorStream() {
         return this.systemErrorStream;
