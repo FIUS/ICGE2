@@ -43,17 +43,16 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      */
     public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
         this.textPane = textPane;
+        this.style = this.textPane.addStyle(style.toString(), null);
+        
         switch (style) {
             case standard:
-                this.style = this.textPane.addStyle("standard", null);
                 break;
             case error:
-                this.style = this.textPane.addStyle("error", null);
                 StyleConstants.setForeground(this.style, Color.red);
                 break;
             default:
-                this.style = null;
-                break;
+                throw new UnsupportedOperationException("With stye type " + style.toString());
         }
     }
     
