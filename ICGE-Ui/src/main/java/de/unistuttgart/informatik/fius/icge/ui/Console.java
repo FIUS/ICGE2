@@ -28,7 +28,7 @@ public interface Console {
     OutputStream getSimulationOutputStream();
     
     /**
-     * Getter for the errpr stream of the simulation console
+     * Getter for the error stream of the simulation console
      * 
      * @return Returns a output stream
      */

@@ -24,7 +24,6 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
 
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 
@@ -37,16 +36,15 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
  */
 public class SwingConsole extends JTabbedPane implements Console {
     private static final long serialVersionUID = 5100186594058483257L;
-    
-    private JTextPane      simulationConsole;
-    private StyledDocument simulationDocument;
-    private JTextPane      systemConsole;
-    private StyledDocument systemDocument;
+    private static final String NORMAL = "normal";
+
+    private JTextPane simulationConsole;
+    private JTextPane systemConsole;
     
     private ConsoleBufferedOutputStream simulationOutputStream;
-    private ConsoleBufferedErrorStream  simulationErrorStream;
+    private ConsoleBufferedOutputStream  simulationErrorStream;
     private ConsoleBufferedOutputStream systemOutputStream;
-    private ConsoleBufferedErrorStream  systemErrorStream;
+    private ConsoleBufferedOutputStream  systemErrorStream;
     
     /**
      * Default constructor
@@ -54,39 +52,36 @@ public class SwingConsole extends JTabbedPane implements Console {
     public SwingConsole() {
         super(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         
-        Font standadFont = new Font("monospaced", Font.PLAIN, 12);
+        //Setup Style
+        StyleContext context = new StyleContext();
+        Style style = context.addStyle(NORMAL, null);
+        Style styleError = context.addStyle("error", style);
+        StyleConstants.setForeground(styleError, Color.red);
+        
+        Font standardFont = new Font("monospaced", Font.PLAIN, 12);
         {   // Setup simulation console
-            this.simulationDocument = new DefaultStyledDocument();
-            this.simulationConsole = new JTextPane(simulationDocument);
+            this.simulationConsole = new JTextPane(new DefaultStyledDocument());
             this.simulationConsole.setEditable(false);
-            this.simulationConsole.setFont(standadFont);
+            this.simulationConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole);
-            this.simulationErrorStream = new ConsoleBufferedErrorStream(this.simulationConsole);
+            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole,OutputStyle.standard);
+            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole,OutputStyle.error);
         }
         {   // Setup system console
-            this.systemDocument = new DefaultStyledDocument();
-            this.systemConsole = new JTextPane(systemDocument);
+            this.systemConsole = new JTextPane(new DefaultStyledDocument());
             this.systemConsole.setEditable(false);
-            this.systemConsole.setFont(standadFont);
+            this.systemConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole);
-            this.systemErrorStream = new ConsoleBufferedErrorStream(this.systemConsole);
+            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole,OutputStyle.standard);
+            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole,OutputStyle.error);
+            
         }
         // Add consoles to the TabbedPane
         this.addTab("Simulation", new JScrollPane(this.simulationConsole));
         this.addTab("System", new JScrollPane(this.systemConsole));
         this.addTab("Notes", new JScrollPane(new JTextArea("Your place for non permanent notes!\n")));
-        StyleContext context = new StyleContext();
-        Style style = context.addStyle("normal", null);
-        Style styleError = context.addStyle("error", style);
-        StyleConstants.setForeground(styleError, Color.red);
-        this.simulationDocument.addStyle("normal", style);
-        this.simulationDocument.addStyle("error", styleError);
-        this.systemDocument.addStyle("normal", style);
-        this.systemDocument.addStyle("error", styleError);
         
     }
     
