@@ -15,12 +15,10 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
  * @author David Ruff
  */
 public enum OutputStyle {
-    /**
-     * Standard Style for normal text without any purpos (Black)
-     */
-    standard,
-    /**
-     * Style for errors (Red)
-     */
-    error
+    
+    /** Standard Style for normal text without any purpos (Black) */
+    STANDARD,
+    
+    /** Style for errors (Red) */
+    ERROR
 }

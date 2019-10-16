@@ -52,12 +52,6 @@ public class SwingConsole extends JTabbedPane implements Console {
     public SwingConsole() {
         super(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         
-        //Setup Style
-        StyleContext context = new StyleContext();
-        Style style = context.addStyle(NORMAL, null);
-        Style styleError = context.addStyle("error", style);
-        StyleConstants.setForeground(styleError, Color.red);
-        
         Font standardFont = new Font("monospaced", Font.PLAIN, 12);
         {   // Setup simulation console
             this.simulationConsole = new JTextPane(new DefaultStyledDocument());
