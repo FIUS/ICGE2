@@ -9,32 +9,51 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+import java.awt.Color;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 
 
 /**
- * The ConsoleBufferedOutputStream allows other streams and classes to write text into a {@link JTextArea}
+ * The ConsoleBufferedOutputStream allows other streams and classes to write text into a {@link JTextPane}
  *
  * @author Tobias Wältken
+ * @author David Ruff
  * @version 1.0
  */
 public class ConsoleBufferedOutputStream extends OutputStream {
     
-    private final JTextArea textArea;
-    
     //TODO add actual buffer to avoid overflowing the textarea and cause lag
+    private final JTextPane textPane;
+    private final Style     style;
     
     /**
      * Default Constructor
      *
-     * @param textArea
-     *     The text area to place the stream data into
+     * @param textPane
+     *     The text pane to place the stream data into
+     * @param style
+     *     The style type to be used for the output
      */
-    public ConsoleBufferedOutputStream(final JTextArea textArea) {
-        this.textArea = textArea;
+    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
+        this.textPane = textPane;
+        this.style = this.textPane.addStyle(style.toString(), null);
+        
+        switch (style) {
+            case STANDARD:
+                break;
+            case ERROR:
+                StyleConstants.setForeground(this.style, Color.red);
+                break;
+            default:
+                throw new UnsupportedOperationException("With stye type " + style.toString());
+        }
     }
     
     @Override
@@ -43,7 +62,12 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     }
     
     @Override
-    public void write(final int arg0) throws IOException {
-        this.textArea.append("" + (char) arg0);
+    public void write(final int character) throws IOException {
+        try {
+            this.textPane.getStyledDocument()
+                    .insertString(this.textPane.getStyledDocument().getLength(), "" + (char) character, this.style);
+        } catch (BadLocationException e) {
+            throw new IOException("Bad insert Location: ", e);
+        }
     }
 }
