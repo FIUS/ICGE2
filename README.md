@@ -6,7 +6,7 @@
 
 The second version of the introduction course game engine for the Java introduction course which is organized yearly by [FIUS](https://fius.informatik.uni-stuttgart.de/) at the [University Stuttgart](https://www.uni-stuttgart.de/).
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119)
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 
 ## Code format
