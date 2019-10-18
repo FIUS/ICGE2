@@ -25,8 +25,7 @@ Please include a full stacktrace and information to reproduce the error in case 
 ## Contributing
 This project is managed by students part of [FIUS](https://fius.informatik.uni-stuttgart.de/).
 Nevertheless help is always highly appreciated.
-New features and bug fixes can be easily submitted as a pull request.
-But to avoid total chaos there are a few rules a pull request must adhere to.
+New features and bug fixes can be easily submitted as a pull request but there are a few rules a pull request must adhere to.
 
 A pull request …
  -  … should state clearly what it does or fixes.
@@ -36,16 +35,16 @@ A pull request …
  -  … may be reviewed by others.
  -  … may be opened for work which is in progress but this must be opened as a draft.
  -  … should have a reference to all relevant issues.<br>
-    If it fixes them please add `Fixes #xxx` or `Closes #xxx` so that the issue is closed automatically.
+    If it fixes them please add `Fixes #xxx` or `Closes #xxx` so that the issue is closed automatically on merge.
  -  … should state the motivation for this pull request. (Can be a reference to an issue.)
  -  … must adhere to  the following styling guidelines:
-     -  … must use `camel case` for variables and class attributes
-     -  … must use `pascal case` for classes
-     -  … must use `snake case` for packages
-     -  … must use `upper snake case` for constants
- -  … must contain Javadoc on all non private methods and fields.
- -  … should contain Javadoc on all private methods.
- -  … may contain Javadoc on all private fields.
+     -  … must use `camelCase` for variables and class attributes
+     -  … must use `PascalCase` for classes
+     -  … must use `snake_case` for packages
+     -  … must use `UPPER_SNAKE_CASE` for constants
+ -  … must contain Javadoc for all non private methods and fields.
+ -  … should contain Javadoc for all private methods.
+ -  … may contain Javadoc for all private fields.
  -  … should not introduce new eclipse compiler warnings. Unfixable warnings should be suppressed.
 
 ---
