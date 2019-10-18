@@ -9,9 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.swing.JScrollPane;
@@ -19,8 +19,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
 
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 
@@ -43,6 +45,11 @@ public class SwingConsole extends JTabbedPane implements Console {
     private ConsoleBufferedOutputStream systemOutputStream;
     private ConsoleBufferedOutputStream systemErrorStream;
     
+    private StringBuffer simulationInputBuffer;
+    private Style        simulationInputStyle;
+    
+    private final int maxRowCount = 3;
+    
     /**
      * Default constructor
      */
@@ -56,8 +63,8 @@ public class SwingConsole extends JTabbedPane implements Console {
             this.simulationConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.STANDARD);
-            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.ERROR);
+            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.STANDARD,this);
+            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.ERROR,this);
         }
         {   // Setup system console
             this.systemConsole = new JTextPane(new DefaultStyledDocument());
@@ -65,8 +72,8 @@ public class SwingConsole extends JTabbedPane implements Console {
             this.systemConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.STANDARD);
-            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.ERROR);
+            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.STANDARD,this);
+            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.ERROR,this);
             
         }
         // Add consoles to the TabbedPane
@@ -105,4 +112,41 @@ public class SwingConsole extends JTabbedPane implements Console {
     public Dimension getPreferredSize() {
         return new Dimension(400, 200);
     }
+    
+    void write(final char character, Style inputStyle, JTextPane textPane) {
+        StringBuffer inputbuffer;
+        Style bufferStyle;
+        if(textPane == this.simulationConsole){
+            inputbuffer = this.simulationInputBuffer;
+            bufferStyle = this.simulationInputStyle;
+        }else{
+            throw new RuntimeException();
+        } 
+        if (inputbuffer.length() != 0 && bufferStyle != inputStyle) {
+            flush(textPane);
+        }
+        this.simulationInputStyle = inputStyle;
+        if (character != '\r') {
+            inputbuffer.append(character);
+        }
+    }
+    
+    void flush(JTextPane textPane){
+        StringBuffer inputbuffer;
+        Style bufferStyle;
+        if(textPane == this.simulationConsole){
+            inputbuffer = this.simulationInputBuffer;
+            bufferStyle = this.simulationInputStyle;
+        }else{
+            throw new RuntimeException();
+        }
+        try {
+            textPane.getStyledDocument().insertString(textPane.getStyledDocument().getLength(),inputbuffer.toString(), bufferStyle);
+        } catch (BadLocationException e) {
+            throw new RuntimeException("Bad insert Location: ", e);
+        }
+    }
+    
+    
+    
 }

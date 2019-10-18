@@ -32,7 +32,8 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     //TODO add actual buffer to avoid overflowing the textarea and cause lag
     private final JTextPane textPane;
     private final Style     style;
-    
+    private final SwingConsole console;
+
     /**
      * Default Constructor
      *
@@ -41,10 +42,10 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      * @param style
      *     The style type to be used for the output
      */
-    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
+    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style,SwingConsole console) {
         this.textPane = textPane;
         this.style = this.textPane.addStyle(style.toString(), null);
-        
+        this.console = console;
         switch (style) {
             case STANDARD:
                 break;
@@ -59,15 +60,11 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     @Override
     public void flush() throws IOException {
         super.flush();
+        this.console.flush(this.textPane);
     }
     
     @Override
     public void write(final int character) throws IOException {
-        try {
-            this.textPane.getStyledDocument()
-                    .insertString(this.textPane.getStyledDocument().getLength(), "" + (char) character, this.style);
-        } catch (BadLocationException e) {
-            throw new IOException("Bad insert Location: ", e);
-        }
+        this.console.write((char) character, this.style, this.textPane);
     }
 }
