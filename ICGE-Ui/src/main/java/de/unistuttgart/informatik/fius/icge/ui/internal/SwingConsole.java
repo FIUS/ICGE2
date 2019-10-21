@@ -11,7 +11,6 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.swing.JScrollPane;
@@ -45,10 +44,12 @@ public class SwingConsole extends JTabbedPane implements Console {
     private ConsoleBufferedOutputStream systemOutputStream;
     private ConsoleBufferedOutputStream systemErrorStream;
     
-    private StringBuffer simulationInputBuffer;
+    private StringBuffer simulationInputBuffer = new StringBuffer();
     private Style        simulationInputStyle;
+    private StringBuffer systemInputBuffer     = new StringBuffer();
+    private Style        systemInputStyle;
     
-    private final int maxRowCount = 3;
+    private final int maxRowCount = 100;
     
     /**
      * Default constructor
@@ -63,8 +64,8 @@ public class SwingConsole extends JTabbedPane implements Console {
             this.simulationConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.STANDARD,this);
-            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.ERROR,this);
+            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.STANDARD, this);
+            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.ERROR, this);
         }
         {   // Setup system console
             this.systemConsole = new JTextPane(new DefaultStyledDocument());
@@ -72,8 +73,8 @@ public class SwingConsole extends JTabbedPane implements Console {
             this.systemConsole.setFont(standardFont);
             final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.STANDARD,this);
-            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.ERROR,this);
+            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.STANDARD, this);
+            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.ERROR, this);
             
         }
         // Add consoles to the TabbedPane
@@ -116,12 +117,13 @@ public class SwingConsole extends JTabbedPane implements Console {
     void write(final char character, Style inputStyle, JTextPane textPane) {
         StringBuffer inputbuffer;
         Style bufferStyle;
-        if(textPane == this.simulationConsole){
+        if (textPane == this.simulationConsole) {
             inputbuffer = this.simulationInputBuffer;
             bufferStyle = this.simulationInputStyle;
-        }else{
-            throw new RuntimeException();
-        } 
+        } else {
+            inputbuffer = this.systemInputBuffer;
+            bufferStyle = this.systemInputStyle;
+        }
         if (inputbuffer.length() != 0 && bufferStyle != inputStyle) {
             flush(textPane);
         }
@@ -131,22 +133,29 @@ public class SwingConsole extends JTabbedPane implements Console {
         }
     }
     
-    void flush(JTextPane textPane){
+    void flush(JTextPane textPane) {
         StringBuffer inputbuffer;
         Style bufferStyle;
-        if(textPane == this.simulationConsole){
+        if (textPane == this.simulationConsole) {
             inputbuffer = this.simulationInputBuffer;
             bufferStyle = this.simulationInputStyle;
-        }else{
+        } else {
             throw new RuntimeException();
         }
         try {
-            textPane.getStyledDocument().insertString(textPane.getStyledDocument().getLength(),inputbuffer.toString(), bufferStyle);
+            textPane.getStyledDocument().insertString(textPane.getStyledDocument().getLength(), inputbuffer.toString(), bufferStyle);
         } catch (BadLocationException e) {
             throw new RuntimeException("Bad insert Location: ", e);
+        } finally {
+            inputbuffer.delete(0, inputbuffer.length() - 1);
+        }
+        try {
+            for (int rowCount = textPane.getDocument().getDefaultRootElement().getElementCount(); rowCount > this.maxRowCount; rowCount--) {
+                textPane.getDocument().remove(0, textPane.getDocument().getRootElements()[0].getEndOffset());
+            }
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
         }
     }
-    
-    
     
 }

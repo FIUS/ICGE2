@@ -30,10 +30,10 @@ import javax.swing.text.StyleConstants;
 public class ConsoleBufferedOutputStream extends OutputStream {
     
     //TODO add actual buffer to avoid overflowing the textarea and cause lag
-    private final JTextPane textPane;
-    private final Style     style;
+    private final JTextPane    textPane;
+    private final Style        style;
     private final SwingConsole console;
-
+    
     /**
      * Default Constructor
      *
@@ -42,7 +42,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      * @param style
      *     The style type to be used for the output
      */
-    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style,SwingConsole console) {
+    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style, SwingConsole console) {
         this.textPane = textPane;
         this.style = this.textPane.addStyle(style.toString(), null);
         this.console = console;
@@ -66,5 +66,8 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     @Override
     public void write(final int character) throws IOException {
         this.console.write((char) character, this.style, this.textPane);
+        if (character == '\n') {
+            flush();
+        }
     }
 }
