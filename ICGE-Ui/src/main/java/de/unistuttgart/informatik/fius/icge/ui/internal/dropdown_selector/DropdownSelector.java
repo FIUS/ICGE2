@@ -98,6 +98,7 @@ public class DropdownSelector extends JPanel {
         this.comboBox = new JComboBox<>();
         
         this.model = new DefaultComboBoxModel<>();
+        
         this.comboBox.setModel(this.model);
         this.comboBox.setRenderer(new DropdownItemRenderer(this.textureRegistry));
         this.comboBox.setEditor(new DropdownItemEditor(this.textureRegistry));

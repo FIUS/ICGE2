@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 
 import javax.swing.ImageIcon;
@@ -56,7 +57,6 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
         constraints.insets = new Insets(2, 2, 2, 2);
-        
         this.labelItem.setOpaque(true);
         this.labelItem.setHorizontalAlignment(LEFT);
         
@@ -74,7 +74,9 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
             this.labelItem.setText(value.displayName);
             
             if (!value.textureID.equals("")) {
-                this.labelItem.setIcon(new ImageIcon(this.textureRegistry.getTextureForHandle(value.textureID).getTexture()));
+                Image tex = this.textureRegistry.getTextureForHandle(value.textureID).getTexture();
+                tex=tex.getScaledInstance(15, 15, Image.SCALE_FAST);
+                this.labelItem.setIcon(new ImageIcon(tex));
             }
         }
         
