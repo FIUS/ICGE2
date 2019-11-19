@@ -16,25 +16,15 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * A program to be executed by an entity
  * 
  * @author Tim Neumann
+ * @author Clemens Lieb
  */
-public interface EntityProgram {
+public interface EntityProgram<T extends Entity> {
     
     /**
      * Run this program on the given entity.
      * 
      * @param entity
      *     The entity to run this program on
-     * @throws IllegalArgumentException
-     *     if this program cannot run on the given entity
      */
-    void run(Entity entity);
-    
-    /**
-     * Check whether this program could run on the given entity.
-     * 
-     * @param entity
-     *     The entity to check
-     * @return true if this program could run on that entity
-     */
-    boolean canRunOn(Entity entity);
+    void run(T entity);
 }

@@ -10,6 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,6 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFiel
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
@@ -281,13 +280,10 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         final StandardPlayfield playfield = new StandardPlayfield();
         final StandardSimulationClock newSimulationClock = new StandardSimulationClock();
         
-        final StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
-        final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
-        
         final StandardActionLog actionLog = new StandardActionLog();
         
         final StandardSimulation simulation = new StandardSimulation(
-                playfield, newSimulationClock, entityProgramRegistry, entityProgramRunner, actionLog
+                playfield, newSimulationClock, actionLog
         );
         simulation.initialize();
         final StandardTaskRunner taskRunner = new StandardTaskRunner(task, simulation);
@@ -395,16 +391,10 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     
     @Override
     public Set<String> getAvailableProgramsForEntityType(String typeName) {
-        final Simulation sim = this.currentSimulation;
-        if (sim == null) return new HashSet<>(); // no simulation
-        try {
-            final Entity entity = this.entityTypeRegistry.getNewEntity(typeName);
-            return sim.getEntityProgramRegistry().getProgramsForEntity(entity);
-        } catch (Exception e) {
-            Logger.simout.println("Could not load program list for entity type " + typeName + ". (See system log for details.)");
-            e.printStackTrace(Logger.error);
-        }
-        return new HashSet<>();
+        // removed implementation with EntityProgramRegistry.
+        // Method will be removed separately to contain changeset
+        // Running programs from UI is not supported
+        return Collections.emptySet();
     }
     
     @Override
@@ -421,7 +411,8 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
             }
             field.addEntity(new Position(x, y), ent);
             if (program != null && !program.equals("")) {
-                this.currentSimulation.getEntityProgramRunner().run(program, ent);
+                // FIXME run program as attached to the entity
+                // this.currentSimulation.getEntityProgramRunner().run(program, ent);
             }
         } catch (CannotRunProgramException e) {
             Logger.simout.println("Could not run program " + program + " for the new entity. (See system log for details.)");

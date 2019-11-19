@@ -13,11 +13,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
@@ -32,8 +28,6 @@ public class StandardSimulation implements Simulation {
     
     private final StandardPlayfield             playfield;
     private final StandardSimulationClock       simulationClock;
-    private final StandardEntityProgramRegistry entityProgramRegistry;
-    private final StandardEntityProgramRunner   entityProgramRunner;
     private final StandardActionLog             actionLog;
     
     /**
@@ -43,22 +37,15 @@ public class StandardSimulation implements Simulation {
      *     The playfield to use
      * @param simulationClock
      *     The simulation clock to use
-     * @param entityProgramRegistry
-     *     The entityProgramRegistry to use
-     * @param entityProgramRunner
-     *     The entityProgramRunner to use
      * @param actionLog
      *     The actionLog to use
      */
     public StandardSimulation(
             final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
-            final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner,
             final StandardActionLog actionLog
     ) {
         this.playfield = playfield;
         this.simulationClock = simulationClock;
-        this.entityProgramRegistry = entityProgramRegistry;
-        this.entityProgramRunner = entityProgramRunner;
         this.actionLog = actionLog;
     }
     
@@ -90,16 +77,6 @@ public class StandardSimulation implements Simulation {
     @Override
     public SimulationClock getSimulationClock() {
         return this.simulationClock;
-    }
-    
-    @Override
-    public EntityProgramRegistry getEntityProgramRegistry() {
-        return this.entityProgramRegistry;
-    }
-    
-    @Override
-    public EntityProgramRunner getEntityProgramRunner() {
-        return this.entityProgramRunner;
     }
     
     @Override

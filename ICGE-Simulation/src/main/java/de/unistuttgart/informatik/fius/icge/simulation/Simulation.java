@@ -10,8 +10,6 @@
 package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
 
 
 /**
@@ -33,20 +31,6 @@ public interface Simulation {
      * @return the simulation clock used by this simulation
      */
     SimulationClock getSimulationClock();
-    
-    /**
-     * Get the entity program registry for this simulation.
-     * 
-     * @return the entity program registry used by this simulation
-     */
-    EntityProgramRegistry getEntityProgramRegistry();
-    
-    /**
-     * Get the entity program runner for this simulation.
-     * 
-     * @return the entity program runner used by this simulation
-     */
-    EntityProgramRunner getEntityProgramRunner();
     
     /**
      * Get the action log for this simulation.
