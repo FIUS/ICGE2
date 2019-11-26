@@ -13,8 +13,10 @@ import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.ProgramExecutionContext;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.program.StandardProgramExecutionContext;
 import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
@@ -26,9 +28,10 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListene
  */
 public class StandardSimulation implements Simulation {
     
-    private final StandardPlayfield             playfield;
-    private final StandardSimulationClock       simulationClock;
-    private final StandardActionLog             actionLog;
+    private final StandardPlayfield               playfield;
+    private final StandardSimulationClock         simulationClock;
+    private final StandardActionLog               actionLog;
+    private final StandardProgramExecutionContext executionContext;
     
     /**
      * Creates a new standard simulation with the given parameters.
@@ -39,14 +42,17 @@ public class StandardSimulation implements Simulation {
      *     The simulation clock to use
      * @param actionLog
      *     The actionLog to use
+     * @param executionContext
+     *     The executionContext to use
      */
     public StandardSimulation(
-            final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
-            final StandardActionLog actionLog
+            final StandardPlayfield playfield, final StandardSimulationClock simulationClock, final StandardActionLog actionLog,
+            final StandardProgramExecutionContext executionContext
     ) {
         this.playfield = playfield;
         this.simulationClock = simulationClock;
         this.actionLog = actionLog;
+        this.executionContext = executionContext;
     }
     
     @Override
@@ -82,5 +88,10 @@ public class StandardSimulation implements Simulation {
     @Override
     public ActionLog getActionLog() {
         return this.actionLog;
+    }
+    
+    @Override
+    public ProgramExecutionContext getProgramExecutionContext() {
+        return this.executionContext;
     }
 }

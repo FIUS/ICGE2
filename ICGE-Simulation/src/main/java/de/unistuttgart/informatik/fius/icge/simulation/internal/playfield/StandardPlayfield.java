@@ -25,6 +25,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityMoveAction;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntitySpawnAction;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTeleportAction;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.ProgrammableEntity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.SolidEntity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
@@ -293,6 +294,10 @@ public class StandardPlayfield implements Playfield {
         
         this.getSimulation().getActionLog()
                 .logAction(new EntityDespawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this));
+        // FIXME this should not be playfield responsibility
+        if (entity instanceof ProgrammableEntity) {
+            this.getSimulation().getProgramExecutionContext().remove(entity);
+        }
         
         removeEntityFromSimulationTree(entity);
         

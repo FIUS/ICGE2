@@ -10,6 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.ProgramExecutionContext;
 
 
 /**
@@ -38,6 +39,13 @@ public interface Simulation {
      * @return the action log used by this siumulation
      */
     ActionLog getActionLog();
+    
+    /**
+     * Get the program execution context for this simulation.
+     *
+     * @return the program execution context for this simulation
+     */
+    ProgramExecutionContext getProgramExecutionContext();
     
     /**
      * Initialize the simulation and all its submodules.

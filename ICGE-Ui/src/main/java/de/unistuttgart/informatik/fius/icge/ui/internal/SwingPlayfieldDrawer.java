@@ -543,7 +543,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 return;
             }
             try {
-                this.simulationProxy.spawnEntityAt(type, x, y, null);
+                this.simulationProxy.spawnEntityAt(type, x, y);
             } catch (Exception e) {
                 Logger.simout.println(
                         "Error while spawning entity of type " + type + " at (x=" + x + ", y=" + y + "). (See system log for details)"

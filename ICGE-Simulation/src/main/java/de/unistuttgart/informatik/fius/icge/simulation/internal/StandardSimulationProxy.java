@@ -31,6 +31,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionMana
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.program.StandardProgramExecutionContext;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
@@ -279,12 +280,10 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
         
         final StandardPlayfield playfield = new StandardPlayfield();
         final StandardSimulationClock newSimulationClock = new StandardSimulationClock();
-        
         final StandardActionLog actionLog = new StandardActionLog();
+        final StandardProgramExecutionContext executionContext = new StandardProgramExecutionContext();
         
-        final StandardSimulation simulation = new StandardSimulation(
-                playfield, newSimulationClock, actionLog
-        );
+        final StandardSimulation simulation = new StandardSimulation(playfield, newSimulationClock, actionLog, executionContext);
         simulation.initialize();
         final StandardTaskRunner taskRunner = new StandardTaskRunner(task, simulation);
         
@@ -398,7 +397,7 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
     }
     
     @Override
-    public void spawnEntityAt(String typeName, int x, int y, String program) {
+    public void spawnEntityAt(String typeName, int x, int y) {
         final Simulation sim = this.currentSimulation;
         if (sim == null) return; // no simulation
         
@@ -410,13 +409,6 @@ public class StandardSimulationProxy implements SimulationProxy, SimulationHost 
                 return;
             }
             field.addEntity(new Position(x, y), ent);
-            if (program != null && !program.equals("")) {
-                // FIXME run program as attached to the entity
-                // this.currentSimulation.getEntityProgramRunner().run(program, ent);
-            }
-        } catch (CannotRunProgramException e) {
-            Logger.simout.println("Could not run program " + program + " for the new entity. (See system log for details.)");
-            e.printStackTrace(Logger.error);
         } catch (Exception e) {
             Logger.simout.println("Something went wrong while creating new entity. (See system log for details.)");
             e.printStackTrace(Logger.error);

@@ -361,10 +361,8 @@ public interface SimulationProxy {
      *     coordinate
      * @param y
      *     coordinate
-     * @param program
-     *     program name; use {@code null} to not set a program
      */
-    void spawnEntityAt(String typeName, int x, int y, String program);
+    void spawnEntityAt(String typeName, int x, int y);
     
     /**
      * Clear all entities in the given cell.

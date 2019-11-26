@@ -11,12 +11,16 @@ package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
 import java.util.concurrent.CompletableFuture;
 
+import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.Direction;
+import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityMoveAction;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityStepAction;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTurnAction;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgram;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.IllegalMoveException;
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionAttribute;
@@ -30,13 +34,25 @@ import de.unistuttgart.informatik.fius.icge.ui.Drawable;
  * 
  * @author Tim Neumann
  */
-public abstract class MovableEntity extends BasicEntity {
+public abstract class MovableEntity extends BasicEntity implements ProgrammableEntity<MovableEntity> {
     
     private Direction lookingDirection = Direction.EAST;
     
     private AnimatedDrawable movingDrawable = null;
     
     private Direction directionOfAlmostArrivedMove;
+    
+    protected EntityProgram<MovableEntity> program;
+    
+    @Override
+    public EntityProgram<MovableEntity> attachedProgram() {
+        return program;
+    }
+    
+    @Override
+    public void defineProgram(EntityProgram<MovableEntity> program) {
+        this.program = program;
+    }
     
     @Override
     public Drawable getDrawInformation() {
@@ -202,5 +218,18 @@ public abstract class MovableEntity extends BasicEntity {
         if (this.canMove()) {
             this.move();
         }
+    }
+    
+    @Override
+    public void initOnPlayfield(Playfield playfield) {
+        // keep behaviour from supertype and just decorate
+        super.initOnPlayfield(playfield);
+        Simulation sim = playfield.getSimulation();
+        if (sim == null && program != null) {
+            Logger.simerror.println("Could not get simulation for spawned entity! Program can not be run.");
+            return;
+        }
+        // FIXME This should be happening when the simulation is told an entity spawned
+        sim.getProgramExecutionContext().add(this);
     }
 }

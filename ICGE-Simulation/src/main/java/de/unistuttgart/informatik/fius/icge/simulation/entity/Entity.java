@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgram;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 
 

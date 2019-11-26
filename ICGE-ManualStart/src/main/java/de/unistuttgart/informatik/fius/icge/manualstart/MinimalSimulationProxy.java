@@ -128,7 +128,7 @@ public class MinimalSimulationProxy implements SimulationProxy {
     }
     
     @Override
-    public void spawnEntityAt(String typeName, int x, int y, String program) {
+    public void spawnEntityAt(String typeName, int x, int y) {
         // Intentionally left blank
     }
     
