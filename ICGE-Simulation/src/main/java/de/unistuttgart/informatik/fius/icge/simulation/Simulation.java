@@ -13,6 +13,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 
@@ -73,4 +74,6 @@ public interface Simulation {
     SimulationProxy getSimulationProxyForWindow();
 
     void attachToWindow(GameWindow window);
+
+    void runTask(Task taskToRun);
 }

@@ -22,6 +22,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardE
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 
@@ -120,5 +122,10 @@ public class StandardSimulation implements Simulation {
     @Override
     public void attachToWindow(GameWindow window) {
         this.getSimulationProxyForWindow().attachToGameWindow(window);
+    }
+
+    @Override
+    public void runTask(Task taskToRun) {
+        new StandardTaskRunner(taskToRun, this).runTask();
     }
 }

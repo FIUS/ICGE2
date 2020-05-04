@@ -47,6 +47,7 @@ public class ManualStartSimulation {
 
         w.start();
         sim.attachToWindow(w);
+        sim.runTask(new TestTask());
 
     }
 
