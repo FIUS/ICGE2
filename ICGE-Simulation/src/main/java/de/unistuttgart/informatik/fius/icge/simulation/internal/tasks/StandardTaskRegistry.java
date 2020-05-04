@@ -17,8 +17,6 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsEx
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.TaskRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.TaskSelectorListener;
-
 
 /**
  * Standard implementation of the task registry.
@@ -28,9 +26,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.TaskSelectorListe
 public class StandardTaskRegistry implements TaskRegistry {
     
     private Map<String, Task> taskMap = new HashMap<>();
-    
-    private TaskSelectorListener changeListener;
-    
+        
     @Override
     public void registerTask(String name, Task task) {
         if (name == null) {
@@ -43,9 +39,6 @@ public class StandardTaskRegistry implements TaskRegistry {
             throw new ElementExistsException("A task with the name \"" + name + "\" already exists");
         }
         this.taskMap.put(name, task);
-        if (this.changeListener != null) {
-            this.changeListener.setElements(this.getTaskNameSet());
-        }
     }
     
     @Override
@@ -60,20 +53,6 @@ public class StandardTaskRegistry implements TaskRegistry {
         }
         return this.taskMap.get(name);
     }
-    
-    /**
-     * Sets the changeListener.
-     * 
-     * @param listener
-     *     the listener to set; use null to remove listener
-     * @throws ListenerSetException
-     *     if the listener is already set and the provided listener is not {@code null}.
-     */
-    public void setTaskSelectorListener(TaskSelectorListener listener) {
-        if ((this.changeListener == null) || (listener == null)) {
-            this.changeListener = listener;
-            this.changeListener.enable();
-        } else throw new ListenerSetException();
-    }
+   
     
 }
