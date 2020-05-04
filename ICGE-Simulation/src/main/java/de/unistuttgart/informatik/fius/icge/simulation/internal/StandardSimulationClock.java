@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -37,20 +37,20 @@ import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
  */
 public class StandardSimulationClock implements SimulationClock {
     private final Object tickListenerLock = new Object();
-
+    
     private final List<Function<Long, Boolean>> tickListeners;
     private final List<Function<Long, Boolean>> postTickListeners;
-
+    
     private final Set<CompletableFuture<Void>> operationBoundaries;
-
-    private Consumer<Long> animationTickListener;
+    
+    private Consumer<Long>      animationTickListener;
     private StateChangeListener stateChangeListener;
-
+    
     private TimerTask   task;
     private final Timer timer;
-
+    
     private volatile long tickCount;
-
+    
     /**
      * Setting this to true will signal the clock that it is in shutdown mode.
      * <p>
@@ -64,9 +64,9 @@ public class StandardSimulationClock implements SimulationClock {
      *
      */
     private volatile boolean shuttingDown;
-
+    
     private int period;
-
+    
     /**
      * Default constructor
      */
@@ -79,7 +79,7 @@ public class StandardSimulationClock implements SimulationClock {
         this.shuttingDown = false;
         this.operationBoundaries = Collections.synchronizedSet(new HashSet<>());
     }
-
+    
     /**
      * This internal start function actually starts the timer but does not notify the simulation proxy. If you don't
      * know what you do use {@link SimulationClock#start()}
@@ -87,9 +87,9 @@ public class StandardSimulationClock implements SimulationClock {
     public synchronized void startInternal() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
         if (this.shuttingDown) return;
-
+        
         this.task = new TimerTask() {
-
+            
             @Override
             public void run() {
                 StandardSimulationClock.this.tick();
@@ -97,7 +97,7 @@ public class StandardSimulationClock implements SimulationClock {
         };
         this.timer.schedule(this.task, 0, this.period);
     }
-
+    
     /**
      * This internal stop function actually stops the timer but does not notify the simulation proxy. If you don't know
      * what you do use {@link SimulationClock#stop()}
@@ -108,7 +108,7 @@ public class StandardSimulationClock implements SimulationClock {
         }
         this.task = null;
     }
-
+    
     /**
      * Shuts down this clock.
      * <p>
@@ -126,67 +126,67 @@ public class StandardSimulationClock implements SimulationClock {
     public synchronized void shutdown() {
         if (this.shuttingDown) return;
         this.shuttingDown = true;
-        stop();
-        for (var boundary : Set.copyOf(this.operationBoundaries)) {
+        this.stop();
+        for (final var boundary : Set.copyOf(this.operationBoundaries)) {
             boundary.cancel(true);
         }
     }
-
+    
     @Override
     public synchronized void setPeriod(final int millis) {
         this.period = millis;
-
+        
         if (this.isRunning()) {
             this.stop();
             this.start();
         }
     }
-
+    
     @Override
     public int getRenderTickPeriod() {
         return this.period;
     }
-
+    
     @Override
     public int getGameTickPeriod() {
         return this.period * SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
     }
-
+    
     @Override
     public boolean isRunning() {
         return this.task != null;
     }
-
+    
     @Override
     public synchronized void start() {
         if (this.stateChangeListener != null) {
             this.stateChangeListener.clockStarted();
         }
-
+        
         this.startInternal();
     }
-
+    
     @Override
     public synchronized void stop() {
         if (this.stateChangeListener != null) {
             this.stateChangeListener.clockPaused();
         }
-
+        
         this.stopInternal();
     }
-
+    
     @Override
     public synchronized void step() {
         if (this.isRunning()) throw new TimerAlreadyRunning();
         if (this.shuttingDown) return;
-
+        
         new Thread(() -> {
             StandardSimulationClock.this.tickCount = ((StandardSimulationClock.this.tickCount
                     - (StandardSimulationClock.this.tickCount % 8)) + 7);
             StandardSimulationClock.this.tick();
         }, "single-step").start();
     }
-
+    
     /**
      * Process a tick
      */
@@ -200,12 +200,12 @@ public class StandardSimulationClock implements SimulationClock {
             }
             //Don't continue to process tick when shutting down.
             if (this.shuttingDown) return;
-            if(this.animationTickListener != null) {
+            if (this.animationTickListener != null) {
                 this.animationTickListener.accept(this.tickCount);
             }
         }
     }
-
+    
     /**
      * Process a simulation tick
      *
@@ -220,7 +220,7 @@ public class StandardSimulationClock implements SimulationClock {
                 this.tickListeners.remove(listener);
             }
         }
-
+        
         for (final var listener : List.copyOf(this.postTickListeners)) {
             //Don't continue to process tick when shutting down.
             if (this.shuttingDown) return;
@@ -229,7 +229,7 @@ public class StandardSimulationClock implements SimulationClock {
             }
         }
     }
-
+    
     /**
      * Set the animation tick listener, that gets called every animation tick and is responsible for informing the UI.
      *
@@ -238,26 +238,27 @@ public class StandardSimulationClock implements SimulationClock {
      * @throws ListenerSetException
      *     if the listener is already set and the provided listener is not {@code null}.
      */
-    public void setAnimationTickListener(Consumer<Long> listener) {
+    public void setAnimationTickListener(final Consumer<Long> listener) {
         if ((this.animationTickListener == null) || (listener == null)) {
             this.animationTickListener = listener;
         } else throw new ListenerSetException();
     }
-
+    
     /**
-     * Set the state change listener, that gets called when the clock get's started or paused through public API and is responsible for informing the UI.
+     * Set the state change listener, that gets called when the clock get's started or paused through public API and is
+     * responsible for informing the UI.
      *
      * @param listener
      *     the listener to set; use null to remove listener
      * @throws ListenerSetException
      *     if the listener is already set and the provided listener is not {@code null}.
      */
-    public void setStateChangeListener(StateChangeListener listener) {
+    public void setStateChangeListener(final StateChangeListener listener) {
         if ((this.stateChangeListener == null) || (listener == null)) {
             this.stateChangeListener = listener;
         } else throw new ListenerSetException();
     }
-
+    
     @Override
     public void registerTickListener(final Function<Long, Boolean> listener) {
         if (this.shuttingDown) return;
@@ -265,7 +266,7 @@ public class StandardSimulationClock implements SimulationClock {
             this.tickListeners.add(listener);
         }
     }
-
+    
     @Override
     public void registerPostTickListener(final Function<Long, Boolean> listener) {
         if (this.shuttingDown) return;
@@ -273,18 +274,18 @@ public class StandardSimulationClock implements SimulationClock {
             this.postTickListeners.add(listener);
         }
     }
-
+    
     @Override
     public long getLastTickNumber() {
         //not rounding is intended here as we'd need floor and casting is the same as floor for positive integers
         return this.tickCount / SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
     }
-
+    
     @Override
     public long getLastRenderTickNumber() {
         return this.tickCount;
     }
-
+    
     @Override
     public void scheduleOperationAtTick(final long tick, final CompletableFuture<Void> endOfOperation) {
         if (this.shuttingDown) return;
@@ -299,7 +300,7 @@ public class StandardSimulationClock implements SimulationClock {
                     this.operationBoundaries.remove(endOfOperation);
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
-                } catch (CancellationException e) {
+                } catch (final CancellationException e) {
                     //When shutting down this is expected
                     if (!this.shuttingDown) {
                         e.printStackTrace();
@@ -319,26 +320,27 @@ public class StandardSimulationClock implements SimulationClock {
             e.printStackTrace();
         }
     }
-
+    
     @Override
     public void scheduleOperationInTicks(final long ticks, final CompletableFuture<Void> endOfOperation) {
         this.scheduleOperationAtTick(this.getLastTickNumber() + ticks, endOfOperation);
     }
-
+    
     @Override
     public void scheduleOperationAtNextTick(final CompletableFuture<Void> endOfOperation) {
         this.scheduleOperationInTicks(1, endOfOperation);
     }
-
+    
     /**
-     * The interface for a listener listening for simulation clock starts and stops.
-     * The listener is only informed when the state change is caused from the public API, not from UI interaction.
+     * The interface for a listener listening for simulation clock starts and stops. The listener is only informed when
+     * the state change is caused from the public API, not from UI interaction.
      */
     public interface StateChangeListener {
         /**
          * The clock was started.
          */
         void clockStarted();
+        
         /**
          * The clock was paused/stopped.
          */

@@ -35,7 +35,7 @@ public class EntityTurnAction extends EntityAction {
      * @param to
      *     the direction the entity is facing after the turn
      */
-    public EntityTurnAction(long tickNumber, Entity entity, Direction from, Direction to) {
+    public EntityTurnAction(final long tickNumber, final Entity entity, final Direction from, final Direction to) {
         super(tickNumber, entity);
         this.from = from;
         this.to = to;

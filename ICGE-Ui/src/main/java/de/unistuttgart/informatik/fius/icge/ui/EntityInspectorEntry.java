@@ -77,7 +77,7 @@ public class EntityInspectorEntry {
      * @param arg
      *     The argument of the callback
      */
-    public void runCallback(String arg) {
+    public void runCallback(final String arg) {
         this.callback.accept(arg);
     }
 }

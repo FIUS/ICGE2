@@ -127,7 +127,7 @@ public abstract class BasicEntity implements Entity {
      * @throws IllegalArgumentException
      *     if ticks is {@code <= 0}
      */
-    public void sleep(int ticks) {
+    public void sleep(final int ticks) {
         if (ticks <= 0) throw new IllegalArgumentException("The number of ticks must be > 0 !");
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         try {
@@ -139,7 +139,7 @@ public abstract class BasicEntity implements Entity {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+        return this.getClass().getSimpleName() + "@" + Integer.toHexString(this.hashCode());
     }
     
 }

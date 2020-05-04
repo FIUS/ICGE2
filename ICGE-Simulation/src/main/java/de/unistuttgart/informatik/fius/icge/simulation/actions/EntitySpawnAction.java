@@ -36,7 +36,7 @@ public class EntitySpawnAction extends EntityAction {
      * @param position
      *     the position the entity was added at
      */
-    public EntitySpawnAction(long tickNumber, Entity entity, Playfield playfield, Position position) {
+    public EntitySpawnAction(final long tickNumber, final Entity entity, final Playfield playfield, final Position position) {
         super(tickNumber, entity);
         this.playfield = playfield;
         this.position = position;

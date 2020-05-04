@@ -35,19 +35,19 @@ public class AnnotationReader {
      *     The type of annotation all returned methods need to have.
      * @return A list of methods with the given annotation.
      */
-    public static List<Method> getAllMethodsWithAnnotationRecursively(Class<?> cls, Class<? extends Annotation> annotation) {
-        Method[] methods = cls.getDeclaredMethods();
-        List<Method> ret = new ArrayList<>();
+    public static List<Method> getAllMethodsWithAnnotationRecursively(final Class<?> cls, final Class<? extends Annotation> annotation) {
+        final Method[] methods = cls.getDeclaredMethods();
+        final List<Method> ret = new ArrayList<>();
         
-        for (Method m : methods) {
+        for (final Method m : methods) {
             if (m.isAnnotationPresent(annotation)) {
                 ret.add(m);
             }
         }
         
-        Class<?> superCls = cls.getSuperclass();
+        final Class<?> superCls = cls.getSuperclass();
         if (superCls != null) {
-            ret.addAll(getAllMethodsWithAnnotationRecursively(superCls, annotation));
+            ret.addAll(AnnotationReader.getAllMethodsWithAnnotationRecursively(superCls, annotation));
         }
         return ret;
     }
@@ -61,19 +61,19 @@ public class AnnotationReader {
      *     The type of annotation all returned attributes need to have.
      * @return A list of attributes with the given annotation.
      */
-    public static List<Field> getAllAttributesWithAnnotationRecursively(Class<?> cls, Class<? extends Annotation> annotation) {
-        Field[] fields = cls.getDeclaredFields();
-        List<Field> ret = new ArrayList<>();
+    public static List<Field> getAllAttributesWithAnnotationRecursively(final Class<?> cls, final Class<? extends Annotation> annotation) {
+        final Field[] fields = cls.getDeclaredFields();
+        final List<Field> ret = new ArrayList<>();
         
-        for (Field f : fields) {
+        for (final Field f : fields) {
             if (f.isAnnotationPresent(annotation)) {
                 ret.add(f);
             }
         }
         
-        Class<?> superCls = cls.getSuperclass();
+        final Class<?> superCls = cls.getSuperclass();
         if (superCls != null) {
-            ret.addAll(getAllAttributesWithAnnotationRecursively(superCls, annotation));
+            ret.addAll(AnnotationReader.getAllAttributesWithAnnotationRecursively(superCls, annotation));
         }
         return ret;
     }

@@ -37,7 +37,7 @@ public abstract class EntityMoveAction extends EntityAction {
      * @param to
      *     the position the entity is after the move
      */
-    public EntityMoveAction(long tickNumber, Entity entity, Position from, Position to) {
+    public EntityMoveAction(final long tickNumber, final Entity entity, final Position from, final Position to) {
         super(tickNumber, entity);
         this.from = from;
         this.to = to;

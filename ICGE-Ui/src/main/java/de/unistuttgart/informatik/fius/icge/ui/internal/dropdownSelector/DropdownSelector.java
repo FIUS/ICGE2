@@ -7,7 +7,7 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector;
+package de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector;
 
 import java.awt.event.ItemListener;
 
@@ -55,7 +55,7 @@ public class DropdownSelector extends JPanel {
          * @param name
          *     the display name
          */
-        public DropdownEntry(String name) {
+        public DropdownEntry(final String name) {
             this.displayName = name;
             this.textureID = "";
         }
@@ -68,7 +68,7 @@ public class DropdownSelector extends JPanel {
          * @param texture
          *     the texture id of the icon infront of the display text
          */
-        public DropdownEntry(String name, String texture) {
+        public DropdownEntry(final String name, final String texture) {
             this.displayName = name;
             this.textureID = texture;
         }
@@ -91,7 +91,7 @@ public class DropdownSelector extends JPanel {
      * @param header
      *     The header text which is displayed above the combobox
      */
-    public DropdownSelector(SwingTextureRegistry textureRegistry, String header) {
+    public DropdownSelector(final SwingTextureRegistry textureRegistry, final String header) {
         this.textureRegistry = textureRegistry;
         
         this.label = new JLabel(header + ": ");
@@ -124,7 +124,7 @@ public class DropdownSelector extends JPanel {
      * @param entry
      *     The entry to set as selected
      */
-    public void setCurrentEntry(DropdownEntry entry) {
+    public void setCurrentEntry(final DropdownEntry entry) {
         this.comboBox.getEditor().setItem(entry);
     }
     
@@ -134,9 +134,10 @@ public class DropdownSelector extends JPanel {
      * @param entries
      *     1 to n entries to be appended
      */
-    public void addEntry(DropdownEntry... entries) {
-        for (DropdownEntry entry : entries)
+    public void addEntry(final DropdownEntry... entries) {
+        for (final DropdownEntry entry : entries) {
             this.model.addElement(entry);
+        }
     }
     
     /**
@@ -152,12 +153,12 @@ public class DropdownSelector extends JPanel {
      * @param listener
      *     The listener which is added
      */
-    public void addSelectionListener(ItemListener listener) {
+    public void addSelectionListener(final ItemListener listener) {
         this.comboBox.addItemListener(listener);
     }
     
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
         this.comboBox.setEnabled(enabled);
         this.label.setEnabled(enabled);

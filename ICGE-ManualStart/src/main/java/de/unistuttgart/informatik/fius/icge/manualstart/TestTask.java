@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -18,11 +18,10 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
  * Test task for manual start.
  */
 public class TestTask implements Task {
-
-
+    
     @Override
-    public void run(Simulation sim) {
-        TestEntity tE = new TestEntity();
+    public void run(final Simulation sim) {
+        final TestEntity tE = new TestEntity();
         sim.getPlayfield().addEntity(new Position(3, 4), tE);
         try {
             while (true) {
@@ -30,7 +29,7 @@ public class TestTask implements Task {
                 tE.move();
                 tE.turnClockWise();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
     }
 }

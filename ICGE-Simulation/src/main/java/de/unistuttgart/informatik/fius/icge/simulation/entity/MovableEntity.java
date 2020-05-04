@@ -40,9 +40,7 @@ public abstract class MovableEntity extends BasicEntity {
     
     @Override
     public Drawable getDrawInformation() {
-        if (this.movingDrawable != null) {
-            return this.movingDrawable;
-        }
+        if (this.movingDrawable != null) return this.movingDrawable;
         final Position pos = this.getPosition();
         return new UntilableDrawable(pos.getX(), pos.getY(), this.getZPosition(), this.getTextureHandle());
     }
@@ -54,30 +52,30 @@ public abstract class MovableEntity extends BasicEntity {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         try {
             this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
-            turnClockWiseInternal();
+            this.turnClockWiseInternal();
         } finally {
             endOfOperation.complete(null);
         }
     }
     
     private void turnClockWiseInternal() {
-        Direction oldLookingDirection = this.lookingDirection;
+        final Direction oldLookingDirection = this.lookingDirection;
         this.lookingDirection = this.lookingDirection.clockWiseNext();
-        long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
+        final long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
         this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
     }
     
     @InspectionMethod(name = "turnClockwise")
     private void turnClockWiseInspector() {
-        turnClockWiseInternal();
-        recalculateAnimationAfterInspector();
+        this.turnClockWiseInternal();
+        this.recalculateAnimationAfterInspector();
     }
     
     private void recalculateAnimationAfterInspector() {
         if (this.movingDrawable != null) {
             
-            long tickStart = this.movingDrawable.getTickStart();
-            long duration = this.movingDrawable.getDuration();
+            final long tickStart = this.movingDrawable.getTickStart();
+            final long duration = this.movingDrawable.getDuration();
             
             Direction movingDir;
             if (this.directionOfAlmostArrivedMove == null) {
@@ -86,8 +84,8 @@ public abstract class MovableEntity extends BasicEntity {
                 movingDir = this.directionOfAlmostArrivedMove;
             }
             
-            Position currentPos = this.getPosition();
-            Position nextPos = currentPos.adjacentPosition(movingDir);
+            final Position currentPos = this.getPosition();
+            final Position nextPos = currentPos.adjacentPosition(movingDir);
             
             this.movingDrawable = new AnimatedDrawable(
                     tickStart, currentPos.getX(), currentPos.getY(), duration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
@@ -110,9 +108,9 @@ public abstract class MovableEntity extends BasicEntity {
      *     the name of the new direction
      */
     @InspectionAttribute(name = "LookingDirection")
-    private void setLookingDirectionByString(String direction) {
+    private void setLookingDirectionByString(final String direction) {
         this.lookingDirection = Direction.valueOf(direction.toUpperCase());
-        recalculateAnimationAfterInspector();
+        this.recalculateAnimationAfterInspector();
     }
     
     /**
@@ -120,7 +118,7 @@ public abstract class MovableEntity extends BasicEntity {
      */
     @InspectionAttribute(name = "LookingDirection")
     public String getLookingDirectionString() {
-        return getLookingDirection().toString();
+        return this.getLookingDirection().toString();
     }
     
     private boolean isSolidEntityAt(final Position pos) {
@@ -163,7 +161,7 @@ public abstract class MovableEntity extends BasicEntity {
             clock.scheduleOperationInTicks(duration / 2, endOfOperation2);
             currentPos = this.getPosition();
             nextPos = currentPos.adjacentPosition(this.directionOfAlmostArrivedMove);
-            internalMove(currentPos, nextPos);
+            this.internalMove(currentPos, nextPos);
         } finally {
             endOfOperation2.complete(null);
             this.movingDrawable = null;
@@ -172,16 +170,16 @@ public abstract class MovableEntity extends BasicEntity {
     
     @InspectionMethod(name = "move")
     private void moveInspector() {
-        Position currentPos = this.getPosition();
-        Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
+        final Position currentPos = this.getPosition();
+        final Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
         
-        internalMove(currentPos, nextPos);
-        recalculateAnimationAfterInspector();
+        this.internalMove(currentPos, nextPos);
+        this.recalculateAnimationAfterInspector();
     }
     
-    private void internalMove(Position currentPos, Position nextPos) {
+    private void internalMove(final Position currentPos, final Position nextPos) {
         if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
-        EntityMoveAction action = new EntityStepAction(
+        final EntityMoveAction action = new EntityStepAction(
                 this.getSimulation().getSimulationClock().getLastTickNumber(), this, currentPos, nextPos
         );
         this.getPlayfield().moveEntity(this, nextPos, action);

@@ -24,7 +24,7 @@ public abstract class Action {
      * @param tickNumber
      *     the tick the action happened at
      */
-    public Action(long tickNumber) {
+    public Action(final long tickNumber) {
         this.tickNumber = tickNumber;
     }
     

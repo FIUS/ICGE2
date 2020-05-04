@@ -33,15 +33,15 @@ public class InspectionManager {
      */
     public InspectionManager() {
         try {
-            List<Class<?>> classes = ClassFinder.getClassesInClassLoader(c -> true);
+            final List<Class<?>> classes = ClassFinder.getClassesInClassLoader(c -> true);
             
-            for (Class<?> cls : classes) {
-                InspectionData d = new InspectionData(cls);
+            for (final Class<?> cls : classes) {
+                final InspectionData d = new InspectionData(cls);
                 if (d.hasAnyInspectableElements()) {
                     this.inspectableClasses.put(cls, d);
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -53,8 +53,8 @@ public class InspectionManager {
      *     The entity to get the names for
      * @return A List of attribute names.
      */
-    public List<String> getAttributeNamesOfEntity(Entity entity) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public List<String> getAttributeNamesOfEntity(final Entity entity) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return Collections.emptyList();
         return d.getAttributeNames();
     }
@@ -66,8 +66,8 @@ public class InspectionManager {
      *     The entity to get the names for
      * @return A List of method names.
      */
-    public List<String> getMethodNamesOfEntity(Entity entity) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public List<String> getMethodNamesOfEntity(final Entity entity) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return Collections.emptyList();
         return d.getMethodNames();
     }
@@ -81,8 +81,8 @@ public class InspectionManager {
      *     The name of the attribute
      * @return Whether the attribute is writable.
      */
-    public boolean isAttributeEditable(Entity entity, String attributeName) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public boolean isAttributeEditable(final Entity entity, final String attributeName) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return false;
         return !d.isAttributeReadOnly(attributeName);
     }
@@ -96,8 +96,8 @@ public class InspectionManager {
      *     The name of the attribute
      * @return The type of the attribute.
      */
-    public Class<?> getAttributeType(Entity entity, String attributeName) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public Class<?> getAttributeType(final Entity entity, final String attributeName) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return null;
         return d.getAttributeType(attributeName);
     }
@@ -111,8 +111,8 @@ public class InspectionManager {
      *     The name of the attribute to get the value from
      * @return The value or null if it didn't work.
      */
-    public Object getAttributeValue(Entity entity, String attributeName) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public Object getAttributeValue(final Entity entity, final String attributeName) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return null;
         return d.getAttributeValue(entity, attributeName);
     }
@@ -128,8 +128,8 @@ public class InspectionManager {
      *     The value to set.
      * @return Whether it worked.
      */
-    public boolean setAttributeValue(Entity entity, String attributeName, Object value) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public boolean setAttributeValue(final Entity entity, final String attributeName, final Object value) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return false;
         return d.setAttributeValue(entity, attributeName, value);
     }
@@ -143,8 +143,8 @@ public class InspectionManager {
      *     The name of the method to get.
      * @return The method detail.
      */
-    public Method getMethodDetail(Entity entity, String methodName) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public Method getMethodDetail(final Entity entity, final String methodName) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return null;
         return d.getMethodByName(methodName);
     }
@@ -162,8 +162,8 @@ public class InspectionManager {
      * @throws IllegalStateException
      *     When anything goes wrong.
      */
-    public Object invokeMethod(Entity entity, String methodName, Object... args) {
-        InspectionData d = this.inspectableClasses.get(entity.getClass());
+    public Object invokeMethod(final Entity entity, final String methodName, final Object... args) {
+        final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) throw new IllegalStateException("Not a known inspectable class");
         return d.invokeMethod(entity, methodName, args);
     }

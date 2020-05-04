@@ -24,14 +24,14 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 /**
  * The standard implementation of {@link ActionLog}.
- * 
+ *
  * @author Tim Neumann
  */
 public class StandardActionLog implements ActionLog {
     
-    private MultiTypedList<Action> actions = new MultiTypedList<>();
+    private final MultiTypedList<Action> actions = new MultiTypedList<>();
     
-    private Map<Entity, MultiTypedList<EntityAction>> entityActions = new HashMap<>();
+    private final Map<Entity, MultiTypedList<EntityAction>> entityActions = new HashMap<>();
     
     @Override
     public List<Action> getAllActions() {
@@ -39,29 +39,31 @@ public class StandardActionLog implements ActionLog {
     }
     
     @Override
-    public <T extends Action> List<T> getActionsOfType(Class<? extends T> type, boolean includeSubclasses) {
+    public <T extends Action> List<T> getActionsOfType(final Class<? extends T> type, final boolean includeSubclasses) {
         return this.actions.get(type, includeSubclasses);
     }
     
     @Override
-    public List<EntityAction> getAllActionsOfEntity(Entity entity) {
-        MultiTypedList<EntityAction> list = this.entityActions.get(entity);
+    public List<EntityAction> getAllActionsOfEntity(final Entity entity) {
+        final MultiTypedList<EntityAction> list = this.entityActions.get(entity);
         if (list == null) return Collections.emptyList();
         return list.get(EntityAction.class, true);
     }
     
     @Override
-    public <T extends EntityAction> List<T> getActionsOfTypeOfEntity(Entity entity, Class<? extends T> type, boolean includeSubclasses) {
-        MultiTypedList<EntityAction> list = this.entityActions.get(entity);
+    public <T extends EntityAction> List<T> getActionsOfTypeOfEntity(
+            final Entity entity, final Class<? extends T> type, final boolean includeSubclasses
+    ) {
+        final MultiTypedList<EntityAction> list = this.entityActions.get(entity);
         if (list == null) return Collections.emptyList();
         return list.get(type, includeSubclasses);
     }
     
     @Override
-    public void logAction(Action actionToLog) {
+    public void logAction(final Action actionToLog) {
         if (actionToLog instanceof EntityAction) {
-            EntityAction entityAction = ((EntityAction) actionToLog);
-            Entity entity = entityAction.getEntity();
+            final EntityAction entityAction = ((EntityAction) actionToLog);
+            final Entity entity = entityAction.getEntity();
             if (!this.entityActions.containsKey(entity)) {
                 this.entityActions.put(entity, new MultiTypedList<>());
             }

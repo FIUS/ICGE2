@@ -31,20 +31,16 @@ import javax.swing.text.NumberFormatter;
 public class SwingEntityInspector extends JPanel {
     private static final long serialVersionUID = 1L;
     
-    /** The texture registry */
-    @SuppressWarnings("unused")
-    private final SwingTextureRegistry textureRegistry;
-    
-    private GridBagConstraints gbc;
+    private final GridBagConstraints gbc;
     
     /** The name at the top */
-    private JLabel title;
+    private final JLabel title;
     
     /** The JPanel containing all the ui elements */
     private JPanel inspector;
     
     /** The user warning at the bottom */
-    private JLabel warning;
+    private final JLabel warning;
     
     /**
      * Default constructor
@@ -53,7 +49,6 @@ public class SwingEntityInspector extends JPanel {
      *     The texture registry to get the images from
      */
     public SwingEntityInspector(final SwingTextureRegistry textureRegistry) {
-        this.textureRegistry = textureRegistry;
         this.setLayout(new BorderLayout());
         
         this.title = new JLabel("Empty");
@@ -93,7 +88,7 @@ public class SwingEntityInspector extends JPanel {
      *     The new name
      */
     @Override
-    public void setName(String name) {
+    public void setName(final String name) {
         this.title.setText(name);
     }
     
@@ -109,41 +104,41 @@ public class SwingEntityInspector extends JPanel {
      * @param callback
      *     The callback run on value change
      */
-    public void addUIElement(String name, String type, String value, BiConsumer<String, String> callback) {
+    public void addUIElement(final String name, final String type, final String value, final BiConsumer<String, String> callback) {
         this.inspector.add(new JLabel(name + ": "), this.gbc);
         this.gbc.gridx = 1;
         
         switch (type) {
             case "integer": {
-                NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
+                final NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
                 formatter.setValueClass(Integer.class);
                 formatter.setMinimum(Integer.MIN_VALUE);
                 formatter.setMaximum(Integer.MAX_VALUE);
                 formatter.setAllowsInvalid(false);
-                JFormattedTextField field = new JFormattedTextField(formatter);
+                final JFormattedTextField field = new JFormattedTextField(formatter);
                 field.addActionListener(ae -> callback.accept(name, field.getText()));
                 this.inspector.add(field, this.gbc);
             }
                 break;
             case "long": {
-                NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
+                final NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
                 formatter.setValueClass(Long.class);
                 formatter.setMinimum(Long.MIN_VALUE);
                 formatter.setMaximum(Long.MAX_VALUE);
                 formatter.setAllowsInvalid(false);
-                JFormattedTextField field = new JFormattedTextField(formatter);
+                final JFormattedTextField field = new JFormattedTextField(formatter);
                 field.addActionListener(ae -> callback.accept(name, field.getText()));
                 this.inspector.add(field, this.gbc);
             }
                 break;
             case "string": {
-                JTextField field = new JTextField(value);
+                final JTextField field = new JTextField(value);
                 field.addActionListener(ae -> callback.accept(name, field.getText()));
                 this.inspector.add(field, this.gbc);
             }
                 break;
             case "function":
-                JButton button = new JButton("call");
+                final JButton button = new JButton("call");
                 button.addActionListener(ae -> callback.accept(name, ""));
                 this.inspector.add(button, this.gbc);
                 break;
@@ -175,7 +170,7 @@ public class SwingEntityInspector extends JPanel {
     }
     
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
         
         this.title.setEnabled(enabled);
@@ -191,10 +186,10 @@ public class SwingEntityInspector extends JPanel {
      * @param state
      *     The state to set its enabled state to
      */
-    public static void setEnabledState(JPanel panel, boolean state) {
+    public static void setEnabledState(final JPanel panel, final boolean state) {
         panel.setEnabled(state);
         
-        for (Component component : panel.getComponents()) {
+        for (final Component component : panel.getComponents()) {
             if (component instanceof JPanel) {
                 SwingEntityInspector.setEnabledState((JPanel) component, state);
             }

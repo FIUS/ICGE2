@@ -42,7 +42,7 @@ public interface ActionLog {
      *     Whether to include the subclasses of the given type
      * @return A list of all matching actions
      */
-    public <T extends Action> List<T> getActionsOfType(final Class<? extends T> type, final boolean includeSubclasses);
+    <T extends Action> List<T> getActionsOfType(final Class<? extends T> type, final boolean includeSubclasses);
     
     /**
      * Get all actions which were logged and were caused by the given entity.
@@ -66,7 +66,7 @@ public interface ActionLog {
      *     Whether to include the subclasses of the given type
      * @return A list of all matching actions
      */
-    public <T extends EntityAction> List<T> getActionsOfTypeOfEntity(
+    <T extends EntityAction> List<T> getActionsOfTypeOfEntity(
             Entity entity, final Class<? extends T> type, final boolean includeSubclasses
     );
     

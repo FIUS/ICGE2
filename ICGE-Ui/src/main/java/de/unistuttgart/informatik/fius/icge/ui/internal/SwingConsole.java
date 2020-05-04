@@ -13,8 +13,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.OutputStream;
 
-import javax.swing.JScrollPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
@@ -44,7 +44,7 @@ public class SwingConsole extends JPanel implements Console {
      * Default constructor
      */
     public SwingConsole() {
-        Font standardFont = new Font("monospaced", Font.PLAIN, 12);
+        final Font standardFont = new Font("monospaced", Font.PLAIN, 12);
         {   // Setup simulation console
             this.simulationConsole = new JTextPane(new DefaultStyledDocument());
             this.simulationConsole.setEditable(false);

@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -25,7 +25,6 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFiel
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock.StateChangeListener;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry.EntityRegisteredListener;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
@@ -46,33 +45,48 @@ import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;
  * @version 1.0
  */
 public class StandardSimulationProxy implements SimulationProxy {
-
+    
     /** A lookup table for the simulation times */
     public static final int[] SIMULATION_TIMES = {
             // 0,   1,   2,   3,  4,  5,  6,  7,  8,  9, 10
             1000, 415, 200, 115, 75, 50, 42, 34, 26, 18, 10
             // These values are aproximated by two functions originally by haslersn which where modified by waeltkts
     };
-
+    
     // GAME WINDOW
     private GameWindow gameWindow;
-
+    
     // MANAGERS
     private final InspectionManager inspectionManager;
-
+    
     // CURRENT SIMULATION
     private final StandardEntityTypeRegistry      entityTypeRegistry;
     private final StandardSimulationClock         simulationClock;
     private final StandardPlayfield               playfield;
     private final StandardEntityProgramRegistry   entityProgramRegistry;
     private final Map<SimulationTreeNode, Entity> simualtionSidebarMap;
-
+    
     private Entity entityToInspect;
-
+    
     /**
-     * Default Constructor
+     * Create a new standard simulation proxy
+     *
+     * @param simulationClock
+     *     The simulation clock to use
+     * @param inspectionManager
+     *     The inspection manager to use
+     * @param entityTypeRegistry
+     *     The entity type registry to use
+     * @param playfield
+     *     The playfield to use
+     * @param entityProgramRegistry
+     *     the entity program registry
      */
-    public StandardSimulationProxy(StandardSimulationClock simulationClock, InspectionManager inspectionManager, StandardEntityTypeRegistry entityTypeRegistry, StandardPlayfield playfield, StandardEntityProgramRegistry entityProgramRegistry) {
+    public StandardSimulationProxy(
+            final StandardSimulationClock simulationClock, final InspectionManager inspectionManager,
+            final StandardEntityTypeRegistry entityTypeRegistry, final StandardPlayfield playfield,
+            final StandardEntityProgramRegistry entityProgramRegistry
+    ) {
         this.simulationClock = simulationClock;
         this.inspectionManager = inspectionManager;
         this.entityTypeRegistry = entityTypeRegistry;
@@ -80,19 +94,12 @@ public class StandardSimulationProxy implements SimulationProxy {
         this.entityProgramRegistry = entityProgramRegistry;
         this.simualtionSidebarMap = new ConcurrentHashMap<>();
     }
-
-    /**
-     * Set the game window associated with this simulation proxy.
-     *
-     * @param gameWindow
-     */
+    
     @Override
-    public void attachToGameWindow(GameWindow gameWindow) {
-        if(this.gameWindow != null) {
-            throw new IllegalStateException("Already attached to a window!");
-        }
-        this.gameWindow = gameWindow;
-
+    public void attachToGameWindow(final GameWindow window) {
+        if (this.gameWindow != null) throw new IllegalStateException("Already attached to a window!");
+        this.gameWindow = window;
+        
         //Simulation Clock
         if (this.simulationClock.isRunning()) {
             this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
@@ -100,56 +107,53 @@ public class StandardSimulationProxy implements SimulationProxy {
             this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
         }
         this.simulationSpeedChange(this.gameWindow.getToolbar().getSpeedSliderPosition());
-
+        
         this.simulationClock.setStateChangeListener(new StateChangeListener() {
             @Override
             public void clockStarted() {
                 StandardSimulationProxy.this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
             }
-
+            
             @Override
             public void clockPaused() {
                 StandardSimulationProxy.this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
             }
         });
-
+        
         //EntityDrawing
         this.simulationClock.setAnimationTickListener(new Consumer<Long>() {
             @Override
-            public void accept(Long tickCount) {
+            public void accept(final Long tickCount) {
                 StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().draw(tickCount);
             }
         });
-
+        
         this.playfield.setDrawablesChangedListener(new Consumer<List<Drawable>>() {
             @Override
-            public void accept(List<Drawable> drawables) {
+            public void accept(final List<Drawable> drawables) {
                 StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().setDrawables(drawables);
             }
         });
-
+        
         //ControlButtonState
         this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.VIEW);
-
+        
         //EntitySelection
-        this.entityTypeRegistry.setEntityRegisteredListener(new EntityRegisteredListener() {
-            @Override
-            public void entityWasRegistered(String entityName, String textureHandle) {
-                StandardSimulationProxy.this.gameWindow.getToolbar().addEntity(entityName, textureHandle);
-            }
-        });
+        this.entityTypeRegistry.setEntityRegisteredListener(
+                (entityName, textureHandle) -> StandardSimulationProxy.this.gameWindow.getToolbar().addEntity(entityName, textureHandle)
+        );
         this.gameWindow.getToolbar().enableEntitySelector();
-        String typeName = this.gameWindow.getToolbar().getCurrentEntity();
+        final String typeName = this.gameWindow.getToolbar().getCurrentEntity();
         String textureHandle = null;
-        if (typeName != null && !typeName.equals("")) {
+        if ((typeName != null) && !typeName.equals("")) {
             textureHandle = this.entityTypeRegistry.getTextureHandleOfEntityType(typeName);
         }
         try {
             this.gameWindow.getPlayfieldDrawer().setSelectedEntityType(typeName, textureHandle);
-        } catch (@SuppressWarnings("unused") NullPointerException e) {
+        } catch (@SuppressWarnings("unused") final NullPointerException e) {
             // catching exception instead of checking before allows to avoid synchronization here
         }
-
+        
         this.gameWindow.getEntitySidebar().setSimulationTreeRootNode(this.playfield.getSimulationTree());
         this.gameWindow.getEntitySidebar().enableSimulationTree();
         this.playfield.setSimulationTreeEntityAddedListener((node, entity) -> {
@@ -160,18 +164,17 @@ public class StandardSimulationProxy implements SimulationProxy {
             this.simualtionSidebarMap.remove(node);
             this.gameWindow.getEntitySidebar().updateSimulationTree();
         });
-
+        
         this.gameWindow.getEntitySidebar().disableEntityInspector();
-
+        
         this.simulationClock.registerPostTickListener(unused -> {
             updateEntityInspector();
             return true;
         });
-
+        
         this.gameWindow.setSimulationProxy(this);
     }
-
-
+    
     @Override
     public void buttonPressed(final ButtonType type) {
         switch (type) {
@@ -181,7 +184,7 @@ public class StandardSimulationProxy implements SimulationProxy {
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
                 break;
-
+            
             case STEP:
                 if (!this.simulationClock.isRunning()) {
                     this.simulationClock.step();
@@ -190,62 +193,62 @@ public class StandardSimulationProxy implements SimulationProxy {
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
                 break;
-
+            
             case PAUSE:
                 if (this.simulationClock.isRunning()) {
                     this.simulationClock.stopInternal();
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
                 break;
-
+            
             case VIEW:
                 this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.VIEW);
                 this.gameWindow.getPlayfieldDrawer().setSelectedTool(ControlButtonState.VIEW);
                 break;
-
+            
             case ADD:
                 this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.ADD);
                 this.gameWindow.getPlayfieldDrawer().setSelectedTool(ControlButtonState.ADD);
                 break;
-
+            
             case SUB:
                 this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.SUB);
                 this.gameWindow.getPlayfieldDrawer().setSelectedTool(ControlButtonState.SUB);
                 break;
-
+            
             default:
         }
     }
-
+    
     @Override
     public void simulationSpeedChange(final int value) {
         this.simulationClock.setPeriod(StandardSimulationProxy.SIMULATION_TIMES[value]);
     }
-
+    
     @Override
-    public void selectedEntityChanged(String name) {
+    public void selectedEntityChanged(final String name) {
         String textureHandle = null;
-        if (name != null && !name.equals("")) {
+        if ((name != null) && !name.equals("")) {
             textureHandle = this.entityTypeRegistry.getTextureHandleOfEntityType(name);
         }
-
+        
         this.gameWindow.getPlayfieldDrawer().setSelectedEntityType(name, textureHandle);
     }
-
+    
     @Override
-    public Set<String> getAvailableProgramsForEntityType(String typeName) {
+    public Set<String> getAvailableProgramsForEntityType(final String typeName) {
         try {
             final Entity entity = this.entityTypeRegistry.getNewEntity(typeName);
             return this.entityProgramRegistry.getProgramsForEntity(entity);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Logger.simout.println("Could not load program list for entity type " + typeName + ". (See system log for details.)");
             e.printStackTrace(Logger.error);
         }
         return new HashSet<>();
     }
-
+    
     @Override
-    public void spawnEntityAt(String typeName, int x, int y, String program) {
+    public void spawnEntityAt(final String typeName, final int x, final int y, final String program) {
         try {
             final Entity ent = this.entityTypeRegistry.getNewEntity(typeName);
             if (ent == null) {
@@ -254,19 +257,19 @@ public class StandardSimulationProxy implements SimulationProxy {
             }
             this.playfield.addEntity(new Position(x, y), ent);
             //TODO: Run program or remove that feature.
-        } catch (CannotRunProgramException e) {
+        } catch (final CannotRunProgramException e) {
             Logger.simout.println("Could not run program " + program + " for the new entity. (See system log for details.)");
             e.printStackTrace(Logger.error);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Logger.simout.println("Something went wrong while creating new entity. (See system log for details.)");
             e.printStackTrace(Logger.error);
         }
     }
-
+    
     @Override
-    public void clearCell(int x, int y) {
+    public void clearCell(final int x, final int y) {
         final List<Entity> toRemove = this.playfield.getEntitiesAt(new Position(x, y));
-
+        
         toRemove.forEach(entity -> {
             try {
                 this.playfield.removeEntity(entity);
@@ -275,64 +278,64 @@ public class StandardSimulationProxy implements SimulationProxy {
             }
         });
     }
-
-    private EntityInspectorEntry[] getEntries(Entity e) {
-        List<EntityInspectorEntry> result = new ArrayList<>();
-
-        for (String name : this.inspectionManager.getAttributeNamesOfEntity(e)) {
+    
+    private EntityInspectorEntry[] getEntries(final Entity e) {
+        final List<EntityInspectorEntry> result = new ArrayList<>();
+        
+        for (final String name : this.inspectionManager.getAttributeNamesOfEntity(e)) {
             String type = "string";
             if (!this.inspectionManager.isAttributeEditable(e, name)) {
                 type = "readonly_string";
             }
             //TODO: this.inspectionManager.getAttributeType(e, name)
-            String value = this.inspectionManager.getAttributeValue(e, name).toString();
+            final String value = this.inspectionManager.getAttributeValue(e, name).toString();
             result.add(new EntityInspectorEntry(name, type, value, newValue -> {
                 this.inspectionManager.setAttributeValue(e, name, newValue);
                 this.playfield.drawEntities();
                 this.gameWindow.getPlayfieldDrawer().draw(this.simulationClock.getLastRenderTickNumber());
-                updateEntityInspector();
+                this.updateEntityInspector();
             }));
         }
-
-        for (String name : this.inspectionManager.getMethodNamesOfEntity(e)) {
-            String type = "function";
+        
+        for (final String name : this.inspectionManager.getMethodNamesOfEntity(e)) {
+            final String type = "function";
             result.add(new EntityInspectorEntry(name, type, "", unused -> {
                 this.inspectionManager.invokeMethod(e, name);
                 this.playfield.drawEntities();
                 this.gameWindow.getPlayfieldDrawer().draw(this.simulationClock.getLastRenderTickNumber());
-                updateEntityInspector();
+                this.updateEntityInspector();
             }));
         }
         return result.toArray(new EntityInspectorEntry[result.size()]);
     }
-
+    
     private void updateEntityInspector() {
         if (this.entityToInspect != null) {
-            this.gameWindow.getEntitySidebar().setEntityInspectorEntries(getEntries(this.entityToInspect));
+            this.gameWindow.getEntitySidebar().setEntityInspectorEntries(this.getEntries(this.entityToInspect));
         }
     }
-
+    
     @Override
-    public void selectedSimulationEntityChange(SimulationTreeNode node) {
+    public void selectedSimulationEntityChange(final SimulationTreeNode node) {
         if (node == null) {
             this.entityToInspect = null;
         } else {
             this.entityToInspect = this.simualtionSidebarMap.get(node);
         }
-
+        
         if (this.entityToInspect != null) {
             this.gameWindow.getEntitySidebar().enableEntityInspector();
             this.gameWindow.getEntitySidebar().setEntityInspectorName(this.entityToInspect.toString());
-            this.gameWindow.getEntitySidebar().setEntityInspectorEntries(getEntries(this.entityToInspect));
+            this.gameWindow.getEntitySidebar().setEntityInspectorEntries(this.getEntries(this.entityToInspect));
         } else {
             this.gameWindow.getEntitySidebar().setEntityInspectorName("");
             this.gameWindow.getEntitySidebar().setEntityInspectorEntries(new EntityInspectorEntry[0]);
             this.gameWindow.getEntitySidebar().disableEntityInspector();
         }
     }
-
+    
     @Override
-    public void entityValueChange(String name, String value) {
+    public void entityValueChange(final String name, final String value) {
         // Intentionally left blank
     }
 }

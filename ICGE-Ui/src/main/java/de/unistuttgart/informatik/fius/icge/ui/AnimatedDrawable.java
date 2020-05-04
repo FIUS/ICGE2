@@ -54,9 +54,7 @@ public class AnimatedDrawable implements Drawable {
             final long tickStart, final double xStart, final double yStart, final long duration, final double xEnd, final double yEnd,
             final int z, final String textureHandle
     ) {
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Animation must not have a negative duration");
-        }
+        if (duration <= 0) throw new IllegalArgumentException("Animation must not have a negative duration");
         this.tickStart = tickStart;
         this.xStart = xStart;
         this.yStart = yStart;
@@ -69,32 +67,24 @@ public class AnimatedDrawable implements Drawable {
     }
     
     @Override
-    public void setCurrentTick(long renderTick) {
+    public void setCurrentTick(final long renderTick) {
         this.currentTick = renderTick;
     }
     
     @Override
     public double getX() {
-        if (this.currentTick <= this.tickStart) {
-            return this.xStart;
-        }
-        if (this.currentTick >= this.tickEnd) {
-            return this.xEnd;
-        }
-        double completion = (this.currentTick - this.tickStart) / (double) this.duration;
-        return (this.xEnd - this.xStart) * completion + this.xStart;
+        if (this.currentTick <= this.tickStart) return this.xStart;
+        if (this.currentTick >= this.tickEnd) return this.xEnd;
+        final double completion = (this.currentTick - this.tickStart) / (double) this.duration;
+        return ((this.xEnd - this.xStart) * completion) + this.xStart;
     }
     
     @Override
     public double getY() {
-        if (this.currentTick <= this.tickStart) {
-            return this.yStart;
-        }
-        if (this.currentTick >= this.tickEnd) {
-            return this.yEnd;
-        }
-        double completion = (this.currentTick - this.tickStart) / (double) this.duration;
-        return (this.yEnd - this.yStart) * completion + this.yStart;
+        if (this.currentTick <= this.tickStart) return this.yStart;
+        if (this.currentTick >= this.tickEnd) return this.yEnd;
+        final double completion = (this.currentTick - this.tickStart) / (double) this.duration;
+        return ((this.yEnd - this.yStart) * completion) + this.yStart;
     }
     
     @Override

@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- *
+ * 
  * Copyright (c) 2019 the ICGE project authors.
- *
+ * 
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -34,16 +34,15 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
  * @author Tim Neumann
  */
 public class StandardSimulation implements Simulation {
-
+    
     private final StandardPlayfield             playfield;
     private final StandardSimulationClock       simulationClock;
     private final StandardEntityProgramRegistry entityProgramRegistry;
     private final StandardEntityProgramRunner   entityProgramRunner;
     private final StandardActionLog             actionLog;
     private final StandardEntityTypeRegistry    entityTypeRegistry;
-    private final InspectionManager             inspectionManager;
     private final StandardSimulationProxy       simulationProxy;
-
+    
     /**
      * Creates a new standard simulation with the given parameters.
      *
@@ -59,12 +58,14 @@ public class StandardSimulation implements Simulation {
      *     The entityProgramRunner to use
      * @param actionLog
      *     The actionLog to use
+     * @param inspectionManager
+     *     The inspection manager to use
      */
     public StandardSimulation(
             final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
-            final StandardEntityTypeRegistry entityTypeRegistry,
-            final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner,
-            final StandardActionLog actionLog, final InspectionManager inspectionManager
+            final StandardEntityTypeRegistry entityTypeRegistry, final StandardEntityProgramRegistry entityProgramRegistry,
+            final StandardEntityProgramRunner entityProgramRunner, final StandardActionLog actionLog,
+            final InspectionManager inspectionManager
     ) {
         this.playfield = playfield;
         this.simulationClock = simulationClock;
@@ -72,60 +73,56 @@ public class StandardSimulation implements Simulation {
         this.entityProgramRunner = entityProgramRunner;
         this.actionLog = actionLog;
         this.entityTypeRegistry = entityTypeRegistry;
-        this.inspectionManager = inspectionManager;
-
+        
         this.playfield.initialize(this);
-
-        this.simulationProxy = new StandardSimulationProxy(simulationClock, inspectionManager, entityTypeRegistry, playfield, entityProgramRegistry);
+        
+        this.simulationProxy = new StandardSimulationProxy(
+                simulationClock, inspectionManager, entityTypeRegistry, playfield, entityProgramRegistry
+        );
     }
-
+    
     @Override
     public Playfield getPlayfield() {
         return this.playfield;
     }
-
-    @Override
-    public void initialize() {
-        //TODO: remvoe
-    }
-
+    
     @Override
     public SimulationClock getSimulationClock() {
         return this.simulationClock;
     }
-
+    
     @Override
     public EntityProgramRegistry getEntityProgramRegistry() {
         return this.entityProgramRegistry;
     }
-
+    
     @Override
     public EntityProgramRunner getEntityProgramRunner() {
         return this.entityProgramRunner;
     }
-
+    
     @Override
     public ActionLog getActionLog() {
         return this.actionLog;
     }
-
+    
     @Override
     public EntityTypeRegistry getEntityTypeRegistry() {
         return this.entityTypeRegistry;
     }
-
+    
     @Override
     public SimulationProxy getSimulationProxyForWindow() {
         return this.simulationProxy;
     }
-
+    
     @Override
-    public void attachToWindow(GameWindow window) {
+    public void attachToWindow(final GameWindow window) {
         this.getSimulationProxyForWindow().attachToGameWindow(window);
     }
-
+    
     @Override
-    public void runTask(Task taskToRun) {
+    public void runTask(final Task taskToRun) {
         new StandardTaskRunner(taskToRun, this).runTask();
     }
 }
