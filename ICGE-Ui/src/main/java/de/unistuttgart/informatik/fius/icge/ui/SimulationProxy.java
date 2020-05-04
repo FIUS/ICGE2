@@ -9,17 +9,28 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import java.util.List;
 import java.util.Set;
 
-
 /**
- * The SimulationProxy interface
+ * The SimulationProxy interface.
+ * This is used for communication most between the UI and the simulation.
  *
- * @author Tobias Wältken
+ * First the {@link #attachToGameWindow(GameWindow)} needs to be called to establish the connection.
+ * This should set up all communication channels from the Simulation to the UI.
+ *
+ * The other methods are communication channels from the UI the Simulation.
+ *
+ * @author Tobias Wältken, Tim Neumann
  * @version 1.0
  */
 public interface SimulationProxy {
+
+    /**
+     * Attach this simulation proxy to a specific game window.
+     *
+     * @param gameWindow The game window to attach to
+     */
+    void attachToGameWindow(GameWindow gameWindow);
 
     //
     // Toolbar
@@ -42,8 +53,6 @@ public interface SimulationProxy {
         /** The sub button in the toolbar */
         SUB
     }
-
-    void attachToGameWindow(GameWindow gameWindow);
 
     /**
      * This is called when a button is pressed by the user
@@ -69,15 +78,6 @@ public interface SimulationProxy {
      *     The name of the selected element
      */
     void selectedEntityChanged(String name);
-
-    //
-    // Entity Drawing
-    //
-
-    void drawEntities(long tickCount);
-
-    void setDrawables(List<Drawable> drawables);
-
 
     //
     // Entity placing

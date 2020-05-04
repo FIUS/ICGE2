@@ -19,12 +19,13 @@ import java.util.TimerTask;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.TimerAlreadyRunning;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
+import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 
 
 /**
@@ -35,15 +36,15 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
  * @version 1.0
  */
 public class StandardSimulationClock implements SimulationClock {
-
-    private StandardSimulationProxy simulationProxy;
-
     private final Object tickListenerLock = new Object();
 
     private final List<Function<Long, Boolean>> tickListeners;
     private final List<Function<Long, Boolean>> postTickListeners;
 
     private final Set<CompletableFuture<Void>> operationBoundaries;
+
+    private Consumer<Long> animationTickListener;
+    private StateChangeListener stateChangeListener;
 
     private TimerTask   task;
     private final Timer timer;
@@ -77,17 +78,6 @@ public class StandardSimulationClock implements SimulationClock {
         this.period = SimulationClock.DEFAULT_RENDER_TICK_PERIOD;
         this.shuttingDown = false;
         this.operationBoundaries = Collections.synchronizedSet(new HashSet<>());
-    }
-
-
-    /**
-     * Setter function to set the simulation proxy which is notified about ui changes
-     *
-     * @param simulationProxy
-     *     The proxy to set
-     */
-    public void setSimulationProxy(final StandardSimulationProxy simulationProxy) {
-        this.simulationProxy = simulationProxy;
     }
 
     /**
@@ -169,20 +159,20 @@ public class StandardSimulationClock implements SimulationClock {
 
     @Override
     public synchronized void start() {
-        if (this.simulationProxy != null) {
-            this.simulationProxy.buttonPressed(ButtonType.PLAY);
-        } else {
-            this.startInternal();
+        if (this.stateChangeListener != null) {
+            this.stateChangeListener.clockStarted();
         }
+
+        this.startInternal();
     }
 
     @Override
     public synchronized void stop() {
-        if (this.simulationProxy != null) {
-            this.simulationProxy.buttonPressed(ButtonType.PAUSE);
-        } else {
-            this.stopInternal();
+        if (this.stateChangeListener != null) {
+            this.stateChangeListener.clockPaused();
         }
+
+        this.stopInternal();
     }
 
     @Override
@@ -210,8 +200,8 @@ public class StandardSimulationClock implements SimulationClock {
             }
             //Don't continue to process tick when shutting down.
             if (this.shuttingDown) return;
-            if(this.simulationProxy != null) {
-                this.simulationProxy.drawEntities(this.tickCount);
+            if(this.animationTickListener != null) {
+                this.animationTickListener.accept(this.tickCount);
             }
         }
     }
@@ -238,6 +228,34 @@ public class StandardSimulationClock implements SimulationClock {
                 this.postTickListeners.remove(listener);
             }
         }
+    }
+
+    /**
+     * Set the animation tick listener, that gets called every animation tick and is responsible for informing the UI.
+     *
+     * @param listener
+     *     the listener to set; use null to remove listener
+     * @throws ListenerSetException
+     *     if the listener is already set and the provided listener is not {@code null}.
+     */
+    public void setAnimationTickListener(Consumer<Long> listener) {
+        if ((this.animationTickListener == null) || (listener == null)) {
+            this.animationTickListener = listener;
+        } else throw new ListenerSetException();
+    }
+
+    /**
+     * Set the state change listener, that gets called when the clock get's started or paused through public API and is responsible for informing the UI.
+     *
+     * @param listener
+     *     the listener to set; use null to remove listener
+     * @throws ListenerSetException
+     *     if the listener is already set and the provided listener is not {@code null}.
+     */
+    public void setStateChangeListener(StateChangeListener listener) {
+        if ((this.stateChangeListener == null) || (listener == null)) {
+            this.stateChangeListener = listener;
+        } else throw new ListenerSetException();
     }
 
     @Override
@@ -310,5 +328,20 @@ public class StandardSimulationClock implements SimulationClock {
     @Override
     public void scheduleOperationAtNextTick(final CompletableFuture<Void> endOfOperation) {
         this.scheduleOperationInTicks(1, endOfOperation);
+    }
+
+    /**
+     * The interface for a listener listening for simulation clock starts and stops.
+     * The listener is only informed when the state change is caused from the public API, not from UI interaction.
+     */
+    public interface StateChangeListener {
+        /**
+         * The clock was started.
+         */
+        void clockStarted();
+        /**
+         * The clock was paused/stopped.
+         */
+        void clockPaused();
     }
 }

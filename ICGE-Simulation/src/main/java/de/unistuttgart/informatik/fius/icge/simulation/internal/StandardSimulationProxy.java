@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
@@ -22,6 +23,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotRunProgramException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock.StateChangeListener;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry.EntityRegisteredListener;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
@@ -38,7 +40,9 @@ import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;
 /**
  * StandardSimulationProxy
  *
- * @author Tobias Wältken
+ * See the comment of the interface for what this class is used for.
+ *
+ * @author Tobias Wältken, Tim Neumann
  * @version 1.0
  */
 public class StandardSimulationProxy implements SimulationProxy {
@@ -75,9 +79,6 @@ public class StandardSimulationProxy implements SimulationProxy {
         this.playfield = playfield;
         this.entityProgramRegistry = entityProgramRegistry;
         this.simualtionSidebarMap = new ConcurrentHashMap<>();
-
-        //Simulation Clock
-        this.simulationClock.setSimulationProxy(this);
     }
 
     /**
@@ -99,6 +100,33 @@ public class StandardSimulationProxy implements SimulationProxy {
             this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
         }
         this.simulationSpeedChange(this.gameWindow.getToolbar().getSpeedSliderPosition());
+
+        this.simulationClock.setStateChangeListener(new StateChangeListener() {
+            @Override
+            public void clockStarted() {
+                StandardSimulationProxy.this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
+            }
+
+            @Override
+            public void clockPaused() {
+                StandardSimulationProxy.this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
+            }
+        });
+
+        //EntityDrawing
+        this.simulationClock.setAnimationTickListener(new Consumer<Long>() {
+            @Override
+            public void accept(Long tickCount) {
+                StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().draw(tickCount);
+            }
+        });
+
+        this.playfield.setDrawablesChangedListener(new Consumer<List<Drawable>>() {
+            @Override
+            public void accept(List<Drawable> drawables) {
+                StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().setDrawables(drawables);
+            }
+        });
 
         //ControlButtonState
         this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.VIEW);
@@ -202,18 +230,6 @@ public class StandardSimulationProxy implements SimulationProxy {
         }
 
         this.gameWindow.getPlayfieldDrawer().setSelectedEntityType(name, textureHandle);
-    }
-
-    @Override
-    public void drawEntities(long tickCount) {
-        if(this.gameWindow == null) return;
-        this.gameWindow.getPlayfieldDrawer().draw(tickCount);
-    }
-
-    @Override
-    public void setDrawables(List<Drawable> drawables) {
-        if(this.gameWindow == null) return;
-        this.gameWindow.getPlayfieldDrawer().setDrawables(drawables);
     }
 
     @Override

@@ -50,6 +50,8 @@ public class StandardPlayfield implements Playfield {
     private BiConsumer<SimulationTreeNode, Entity> simulationTreeEntityAddedListener;
     private Consumer<SimulationTreeNode>           simulationTreeEntityRemovedListener;
 
+    private Consumer<List<Drawable>> drawablesChangedListener;
+
     /**
      * Initialize the playfield for the given simulation
      *
@@ -92,7 +94,7 @@ public class StandardPlayfield implements Playfield {
             }
         }
         try {
-            this.getSimulation().getSimulationProxyForWindow().setDrawables(drawables);
+            this.drawablesChangedListener.accept(drawables);
         } catch (@SuppressWarnings("unused") IllegalStateException e) {
             //If we are not attached to a simultion we do not need to draw anything
         }
@@ -332,6 +334,19 @@ public class StandardPlayfield implements Playfield {
     public void setSimulationTreeEntityRemovedListener(Consumer<SimulationTreeNode> listener) {
         if ((this.simulationTreeEntityRemovedListener == null) || (listener == null)) {
             this.simulationTreeEntityRemovedListener = listener;
+        } else throw new ListenerSetException();
+    }
+
+    /**
+     * Set the listener for when the drawables on the playfield changed.
+     * This listener is responsible for informing the UI.
+     *
+     * @param listener
+     *     the listener to set
+     */
+    public void setDrawablesChangedListener(Consumer<List<Drawable>> listener) {
+        if ((this.drawablesChangedListener == null) || (listener == null)) {
+            this.drawablesChangedListener = listener;
         } else throw new ListenerSetException();
     }
 
