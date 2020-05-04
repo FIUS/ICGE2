@@ -21,7 +21,7 @@ fi
 
 git fetch
 
-if ! [ git diff HEAD FETCH_HEAD --exit-code > /dev/null ] ;then
+if ! git diff HEAD FETCH_HEAD --exit-code > /dev/null ;then
   fail "Branch is not up to date." 9
 fi
 
