@@ -7,7 +7,7 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector;
+package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -23,7 +23,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector.DropdownSelector.DropdownEntry;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector.DropdownEntry;
 
 
 /**

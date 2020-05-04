@@ -7,7 +7,7 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector;
+package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown;
 
 import java.awt.event.ItemListener;
 

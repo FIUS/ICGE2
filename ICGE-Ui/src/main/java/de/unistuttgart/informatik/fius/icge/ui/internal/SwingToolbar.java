@@ -24,8 +24,8 @@ import javax.swing.SwingConstants;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
-import de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector.DropdownSelector;
-import de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector.DropdownSelector.DropdownEntry;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector.DropdownEntry;
 
 
 /**
