@@ -35,8 +35,6 @@ public interface SimulationProxy {
         STEP,
         /** The pause button in the toolbar */
         PAUSE,
-        /** The stop button in the toolbar */
-        STOP,
         /** The view button in the toolbar */
         VIEW,
         /** The add button in the toolbar */

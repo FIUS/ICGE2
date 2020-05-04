@@ -96,7 +96,7 @@ public class StandardSimulationProxy implements SimulationProxy {
         if (this.simulationClock.isRunning()) {
             this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
         } else {
-            this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.STOPPED);
+            this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
         }
         this.simulationSpeedChange(this.gameWindow.getToolbar().getSpeedSliderPosition());
 
@@ -168,13 +168,6 @@ public class StandardSimulationProxy implements SimulationProxy {
                     this.simulationClock.stopInternal();
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
-                break;
-
-            case STOP:
-                if (this.simulationClock.isRunning()) {
-                    this.simulationClock.stopInternal();
-                }
-                this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.STOPPED);
                 break;
 
             case VIEW:

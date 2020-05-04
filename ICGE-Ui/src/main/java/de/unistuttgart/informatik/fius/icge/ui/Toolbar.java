@@ -27,10 +27,8 @@ public interface Toolbar {
     enum ClockButtonState {
         /** Indicates a running simulation clock */
         PLAYING,
-        /** Indicates a stoped simulation clock but a unclean simulation */
+        /** Indicates a stoped simulation clock */
         PAUSED,
-        /** Indicates a clean simulation */
-        STOPPED,
         /** Indicates an error or unavailable clock or simulation */
         BLOCKED
     }

@@ -51,8 +51,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     public JButton step;
     /** The pause button in the toolbar */
     public JButton pause;
-    /** The stop button in the toolbar */
-    public JButton stop;
 
     /** A slider to set the simulation time */
     public JSlider simulationTime;
@@ -135,18 +133,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.add(this.pause);
 
         //
-        // stop button setup
-        //
-        this.stop = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.stopIcon).getTexture()));
-        this.stop.addActionListener(ae -> {
-            if (this.simulationProxy != null) {
-                this.simulationProxy.buttonPressed(ButtonType.STOP);
-            }
-        });
-        this.stop.setEnabled(false);
-        this.add(this.stop);
-
-        //
         // simulation time slider setup
         //
         this.addSeparator();
@@ -176,11 +162,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.simulationTime.setEnabled(false);
         this.add(this.simulationTime);
         this.addSeparator();
-
-        //
-        // add visual separator
-        //
-        this.add(new JSeparator(SwingConstants.VERTICAL));
 
         //
         // add visual separator
@@ -306,7 +287,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 SwingToolbar.this.play.setEnabled(false);
                 SwingToolbar.this.step.setEnabled(false);
                 SwingToolbar.this.pause.setEnabled(true);
-                SwingToolbar.this.stop.setEnabled(true);
                 SwingToolbar.this.simulationTime.setEnabled(true);
                 break;
 
@@ -314,15 +294,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 SwingToolbar.this.play.setEnabled(true);
                 SwingToolbar.this.step.setEnabled(true);
                 SwingToolbar.this.pause.setEnabled(false);
-                SwingToolbar.this.stop.setEnabled(true);
-                SwingToolbar.this.simulationTime.setEnabled(true);
-                break;
-
-            case STOPPED:
-                SwingToolbar.this.play.setEnabled(true);
-                SwingToolbar.this.step.setEnabled(true);
-                SwingToolbar.this.pause.setEnabled(false);
-                SwingToolbar.this.stop.setEnabled(false);
                 SwingToolbar.this.simulationTime.setEnabled(true);
                 break;
 
@@ -330,7 +301,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 SwingToolbar.this.play.setEnabled(false);
                 SwingToolbar.this.step.setEnabled(false);
                 SwingToolbar.this.pause.setEnabled(false);
-                SwingToolbar.this.stop.setEnabled(false);
                 SwingToolbar.this.simulationTime.setEnabled(false);
                 break;
 
