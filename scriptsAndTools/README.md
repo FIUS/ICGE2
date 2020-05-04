@@ -5,7 +5,7 @@ So use `$ ./scriptsAndTools/<script>.sh`
 
 Most scripts will fail if an argument is missing
 
-## Scripts to be used by developpers
+## Scripts to be used by developers
 Don't use the other scripts, except if you know what you are doing.
 
 | Name | Description |
