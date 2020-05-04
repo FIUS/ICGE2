@@ -30,14 +30,13 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOn
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
-import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
+import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
 
 
 /**
  * The standard implementation of {@link Playfield}
- * 
+ *
  * @author Tim Neumann
  */
 public class StandardPlayfield implements Playfield {
@@ -46,16 +45,16 @@ public class StandardPlayfield implements Playfield {
     private final Map<Position, PlayfieldCell> cells           = new HashMap<>();
     private final Map<Entity, Position>        entityPositions = new HashMap<>();
     
-    private EntityDrawListener drawer;
-    
     private SimulationTreeNode simualtionTreeRootNode;
     
     private BiConsumer<SimulationTreeNode, Entity> simulationTreeEntityAddedListener;
     private Consumer<SimulationTreeNode>           simulationTreeEntityRemovedListener;
     
+    private Consumer<List<Drawable>> drawablesChangedListener;
+    
     /**
      * Initialize the playfield for the given simulation
-     * 
+     *
      * @param simulation
      *     the parent simulation
      */
@@ -67,23 +66,6 @@ public class StandardPlayfield implements Playfield {
         });
         
         this.simualtionTreeRootNode = new SimulationTreeNode("root", "Entities", "", false);
-    }
-    
-    /**
-     * Set the entity draw listener.
-     * 
-     * @param listener
-     * 
-     * @throws ListenerSetException
-     *     If listener is already set and new listener is not null
-     */
-    public void setEntityDrawListener(EntityDrawListener listener) {
-        if ((this.drawer == null) || (listener == null)) {
-            this.drawer = listener;
-            if (listener != null) {
-                this.drawEntities();
-            }
-        } else throw new ListenerSetException();
     }
     
     /**
@@ -106,13 +88,15 @@ public class StandardPlayfield implements Playfield {
         for (final Entity entity : this.getAllEntities()) {
             try {
                 drawables.add(entity.getDrawInformation());
-            } catch (@SuppressWarnings("unused") EntityNotOnFieldException e) {
+            } catch (@SuppressWarnings("unused") final EntityNotOnFieldException e) {
                 //Entity has been removed from the field while this loop was running.
                 //Just don't draw it and ignore the exception.
             }
         }
-        if (this.drawer != null) {
-            this.drawer.setDrawables(drawables);
+        try {
+            this.drawablesChangedListener.accept(drawables);
+        } catch (@SuppressWarnings("unused") final IllegalStateException e) {
+            //If we are not attached to a simultion we do not need to draw anything
         }
     }
     
@@ -188,12 +172,12 @@ public class StandardPlayfield implements Playfield {
         
         entity.initOnPlayfield(this);
         
-        addEntityToSimulationTree(entity);
+        this.addEntityToSimulationTree(entity);
         this.drawEntities();
     }
     
-    private SimulationTreeNode findNodeForEntity(Entity entity, boolean create) {
-        List<Class<?>> classHiera = new ArrayList<>();
+    private SimulationTreeNode findNodeForEntity(final Entity entity, final boolean create) {
+        final List<Class<?>> classHiera = new ArrayList<>();
         {
             Class<?> clazz = entity.getClass();
             do {
@@ -203,8 +187,8 @@ public class StandardPlayfield implements Playfield {
         }
         SimulationTreeNode node = this.simualtionTreeRootNode;
         
-        hieraLoop: for (Class<?> clazz : classHiera) {
-            for (SimulationTreeNode child : node.getChildren()) {
+        hieraLoop: for (final Class<?> clazz : classHiera) {
+            for (final SimulationTreeNode child : node.getChildren()) {
                 if (child.getElementId().equals(clazz.getName())) {
                     node = child;
                     continue hieraLoop;
@@ -212,21 +196,19 @@ public class StandardPlayfield implements Playfield {
             }
             if (create) {
                 //TODO: get texture from EntityTypeRegistry
-                SimulationTreeNode child = new SimulationTreeNode(clazz.getName(), clazz.getSimpleName(), "", false);
+                final SimulationTreeNode child = new SimulationTreeNode(clazz.getName(), clazz.getSimpleName(), "", false);
                 node.appendChild(child);
                 node = child;
-            } else {
-                return null;
-            }
+            } else return null;
         }
         return node;
     }
     
-    private void addEntityToSimulationTree(Entity entity) {
-        SimulationTreeNode newNode = new SimulationTreeNode(
+    private void addEntityToSimulationTree(final Entity entity) {
+        final SimulationTreeNode newNode = new SimulationTreeNode(
                 Integer.toHexString(entity.hashCode()), entity.toString(), entity.getDrawInformation().getTextureHandle()
         );
-        findNodeForEntity(entity, true).appendChild(newNode);
+        this.findNodeForEntity(entity, true).appendChild(newNode);
         
         this.simulationTreeEntityAddedListener.accept(newNode, entity);
     }
@@ -237,7 +219,7 @@ public class StandardPlayfield implements Playfield {
     }
     
     @Override
-    public void moveEntity(Entity entity, Position pos, EntityMoveAction action) {
+    public void moveEntity(final Entity entity, final Position pos, final EntityMoveAction action) {
         if (pos == null) throw new IllegalArgumentException("The given pos is null.");
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         if (
@@ -267,12 +249,12 @@ public class StandardPlayfield implements Playfield {
         this.drawEntities();
     }
     
-    private void removeEntityFromSimulationTree(Entity entity) {
-        SimulationTreeNode node = findNodeForEntity(entity, false);
+    private void removeEntityFromSimulationTree(final Entity entity) {
+        final SimulationTreeNode node = this.findNodeForEntity(entity, false);
         
         if (node == null) return;
         
-        for (SimulationTreeNode child : node.getChildren()) {
+        for (final SimulationTreeNode child : node.getChildren()) {
             if (child.getElementId().equals(Integer.toHexString(entity.hashCode()))) {
                 node.removeChild(child);
                 this.simulationTreeEntityRemovedListener.accept(child);
@@ -294,7 +276,7 @@ public class StandardPlayfield implements Playfield {
         this.getSimulation().getActionLog()
                 .logAction(new EntityDespawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this));
         
-        removeEntityFromSimulationTree(entity);
+        this.removeEntityFromSimulationTree(entity);
         
         this.drawEntities();
     }
@@ -331,11 +313,11 @@ public class StandardPlayfield implements Playfield {
     
     /**
      * Set the listener for when an entity is added to the simulation tree.
-     * 
+     *
      * @param listener
      *     the listener to set
      */
-    public void setSimulationTreeEntityAddedListener(BiConsumer<SimulationTreeNode, Entity> listener) {
+    public void setSimulationTreeEntityAddedListener(final BiConsumer<SimulationTreeNode, Entity> listener) {
         if ((this.simulationTreeEntityAddedListener == null) || (listener == null)) {
             this.simulationTreeEntityAddedListener = listener;
         } else throw new ListenerSetException();
@@ -343,18 +325,31 @@ public class StandardPlayfield implements Playfield {
     
     /**
      * Set the listener for when an entity is removed from the simulation tree.
-     * 
+     *
      * @param listener
      *     the listener to set
      */
-    public void setSimulationTreeEntityRemovedListener(Consumer<SimulationTreeNode> listener) {
+    public void setSimulationTreeEntityRemovedListener(final Consumer<SimulationTreeNode> listener) {
         if ((this.simulationTreeEntityRemovedListener == null) || (listener == null)) {
             this.simulationTreeEntityRemovedListener = listener;
         } else throw new ListenerSetException();
     }
     
+    /**
+     * Set the listener for when the drawables on the playfield changed. This listener is responsible for informing the
+     * UI.
+     *
+     * @param listener
+     *     the listener to set
+     */
+    public void setDrawablesChangedListener(final Consumer<List<Drawable>> listener) {
+        if ((this.drawablesChangedListener == null) || (listener == null)) {
+            this.drawablesChangedListener = listener;
+        } else throw new ListenerSetException();
+    }
+    
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+        return this.getClass().getSimpleName() + "@" + Integer.toHexString(this.hashCode());
     }
 }

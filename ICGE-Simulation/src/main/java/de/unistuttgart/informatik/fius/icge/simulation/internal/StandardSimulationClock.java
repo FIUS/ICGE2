@@ -19,14 +19,13 @@ import java.util.TimerTask;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.TimerAlreadyRunning;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
 import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
 
 
 /**
@@ -37,17 +36,15 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListene
  * @version 1.0
  */
 public class StandardSimulationClock implements SimulationClock {
-    
-    private StandardSimulationProxy simulationProxy;
-    
-    private EntityDrawListener drawer;
-    
     private final Object tickListenerLock = new Object();
     
     private final List<Function<Long, Boolean>> tickListeners;
     private final List<Function<Long, Boolean>> postTickListeners;
     
     private final Set<CompletableFuture<Void>> operationBoundaries;
+    
+    private Consumer<Long>      animationTickListener;
+    private StateChangeListener stateChangeListener;
     
     private TimerTask   task;
     private final Timer timer;
@@ -64,7 +61,7 @@ public class StandardSimulationClock implements SimulationClock {
      * to concurrency some methods may still be called after a shutdown without the caller doing anything wrong or
      * having any sensible to reaction to this.
      * </p>
-     * 
+     *
      */
     private volatile boolean shuttingDown;
     
@@ -81,35 +78,6 @@ public class StandardSimulationClock implements SimulationClock {
         this.period = SimulationClock.DEFAULT_RENDER_TICK_PERIOD;
         this.shuttingDown = false;
         this.operationBoundaries = Collections.synchronizedSet(new HashSet<>());
-    }
-    
-    /**
-     * Set the entity draw listener.
-     * 
-     * @param listener
-     * 
-     * @throws IllegalStateException
-     *     If clock is running
-     * @throws ListenerSetException
-     *     If listener is already set and new listener is not null
-     */
-    public void setEntityDrawListener(EntityDrawListener listener) {
-        if (this.isRunning()) {
-            throw new IllegalStateException("Draw listener can only be set when clock is stopped or paused!");
-        }
-        if ((this.drawer == null) || (listener == null)) {
-            this.drawer = listener;
-        } else throw new ListenerSetException();
-    }
-    
-    /**
-     * Setter function to set the simulation proxy which is notified about ui changes
-     *
-     * @param simulationProxy
-     *     The proxy to set
-     */
-    public void setSimulationProxy(final StandardSimulationProxy simulationProxy) {
-        this.simulationProxy = simulationProxy;
     }
     
     /**
@@ -152,14 +120,14 @@ public class StandardSimulationClock implements SimulationClock {
      * listener methods, scheduleOperation methods and all methods controlling the state of the clock except for
      * stopInternal.
      * </p>
-     * 
+     *
      * @see #shuttingDown <b>shuttingDown</b> for more information and the reason for all methods returning
      */
     public synchronized void shutdown() {
         if (this.shuttingDown) return;
         this.shuttingDown = true;
-        stop();
-        for (var boundary : Set.copyOf(this.operationBoundaries)) {
+        this.stop();
+        for (final var boundary : Set.copyOf(this.operationBoundaries)) {
             boundary.cancel(true);
         }
     }
@@ -191,20 +159,20 @@ public class StandardSimulationClock implements SimulationClock {
     
     @Override
     public synchronized void start() {
-        if (this.simulationProxy != null) {
-            this.simulationProxy.buttonPressed(ButtonType.PLAY);
-        } else {
-            this.startInternal();
+        if (this.stateChangeListener != null) {
+            this.stateChangeListener.clockStarted();
         }
+        
+        this.startInternal();
     }
     
     @Override
     public synchronized void stop() {
-        if (this.simulationProxy != null) {
-            this.simulationProxy.buttonPressed(ButtonType.PAUSE);
-        } else {
-            this.stopInternal();
+        if (this.stateChangeListener != null) {
+            this.stateChangeListener.clockPaused();
         }
+        
+        this.stopInternal();
     }
     
     @Override
@@ -232,8 +200,8 @@ public class StandardSimulationClock implements SimulationClock {
             }
             //Don't continue to process tick when shutting down.
             if (this.shuttingDown) return;
-            if (this.drawer != null) {
-                this.drawer.draw(this.tickCount);
+            if (this.animationTickListener != null) {
+                this.animationTickListener.accept(this.tickCount);
             }
         }
     }
@@ -260,6 +228,35 @@ public class StandardSimulationClock implements SimulationClock {
                 this.postTickListeners.remove(listener);
             }
         }
+    }
+    
+    /**
+     * Set the animation tick listener, that gets called every animation tick and is responsible for informing the UI.
+     *
+     * @param listener
+     *     the listener to set; use null to remove listener
+     * @throws ListenerSetException
+     *     if the listener is already set and the provided listener is not {@code null}.
+     */
+    public void setAnimationTickListener(final Consumer<Long> listener) {
+        if ((this.animationTickListener == null) || (listener == null)) {
+            this.animationTickListener = listener;
+        } else throw new ListenerSetException();
+    }
+    
+    /**
+     * Set the state change listener, that gets called when the clock get's started or paused through public API and is
+     * responsible for informing the UI.
+     *
+     * @param listener
+     *     the listener to set; use null to remove listener
+     * @throws ListenerSetException
+     *     if the listener is already set and the provided listener is not {@code null}.
+     */
+    public void setStateChangeListener(final StateChangeListener listener) {
+        if ((this.stateChangeListener == null) || (listener == null)) {
+            this.stateChangeListener = listener;
+        } else throw new ListenerSetException();
     }
     
     @Override
@@ -303,7 +300,7 @@ public class StandardSimulationClock implements SimulationClock {
                     this.operationBoundaries.remove(endOfOperation);
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
-                } catch (CancellationException e) {
+                } catch (final CancellationException e) {
                     //When shutting down this is expected
                     if (!this.shuttingDown) {
                         e.printStackTrace();
@@ -332,5 +329,21 @@ public class StandardSimulationClock implements SimulationClock {
     @Override
     public void scheduleOperationAtNextTick(final CompletableFuture<Void> endOfOperation) {
         this.scheduleOperationInTicks(1, endOfOperation);
+    }
+    
+    /**
+     * The interface for a listener listening for simulation clock starts and stops. The listener is only informed when
+     * the state change is caused from the public API, not from UI interaction.
+     */
+    public interface StateChangeListener {
+        /**
+         * The clock was started.
+         */
+        void clockStarted();
+        
+        /**
+         * The clock was paused/stopped.
+         */
+        void clockPaused();
     }
 }

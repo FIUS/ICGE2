@@ -40,7 +40,10 @@ public class EntityCollectAction extends EntityAction {
      *     the position the collected entity was at while being collected
      * 
      */
-    public EntityCollectAction(long tickNumber, Entity entity, CollectableEntity collected, Position collectorPos, Position collectedPos) {
+    public EntityCollectAction(
+            final long tickNumber, final Entity entity, final CollectableEntity collected, final Position collectorPos,
+            final Position collectedPos
+    ) {
         super(tickNumber, entity);
         this.collected = collected;
         this.collectedPos = collectedPos;
@@ -70,8 +73,8 @@ public class EntityCollectAction extends EntityAction {
     
     @Override
     public String getDescription() {
-        return this.getEntity() + " (at " + getCollectorPosition() + ") collected " + getCollectedEntity() + " at "
-                + getCollectedEntityPosition();
+        return this.getEntity() + " (at " + this.getCollectorPosition() + ") collected " + this.getCollectedEntity() + " at "
+                + this.getCollectedEntityPosition();
     }
     
 }

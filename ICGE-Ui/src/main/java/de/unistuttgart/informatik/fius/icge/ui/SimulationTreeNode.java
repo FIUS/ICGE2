@@ -28,10 +28,10 @@ public class SimulationTreeNode {
     
     private ArrayList<SimulationTreeNode> children;
     
-    private String  elementId;
-    private String  displayText;
-    private String  textureId;
-    private boolean isLeaf;
+    private final String  elementId;
+    private final String  displayText;
+    private final String  textureId;
+    private final boolean isLeaf;
     
     /**
      * Default constructor for leaf nodes
@@ -43,7 +43,7 @@ public class SimulationTreeNode {
      * @param textureId
      *     The id of the texture which is rendered infront of the display text.
      */
-    public SimulationTreeNode(String elementId, String displayText, String textureId) {
+    public SimulationTreeNode(final String elementId, final String displayText, final String textureId) {
         this.elementId = elementId;
         this.displayText = displayText;
         this.textureId = textureId;
@@ -62,8 +62,10 @@ public class SimulationTreeNode {
      * @param isLeaf
      *     This indicates if node is a leaf node or not.
      */
-    public SimulationTreeNode(String elementId, String displayText, String textureId, boolean isLeaf) {
-        if (!isLeaf) this.children = new ArrayList<>();
+    public SimulationTreeNode(final String elementId, final String displayText, final String textureId, final boolean isLeaf) {
+        if (!isLeaf) {
+            this.children = new ArrayList<>();
+        }
         
         this.elementId = elementId;
         this.displayText = displayText;
@@ -125,7 +127,7 @@ public class SimulationTreeNode {
      *     The node to append
      * @return Returns true if action was successfull
      */
-    public boolean appendChild(SimulationTreeNode node) {
+    public boolean appendChild(final SimulationTreeNode node) {
         if (this.isLeaf) throw new LeafNodeException();
         
         return this.children.add(node);
@@ -138,7 +140,7 @@ public class SimulationTreeNode {
      *     The node to remove
      * @return Returns true if the given node was a child node
      */
-    public boolean removeChild(SimulationTreeNode node) {
+    public boolean removeChild(final SimulationTreeNode node) {
         if (this.isLeaf) throw new LeafNodeException();
         
         return this.children.remove(node);
@@ -157,27 +159,27 @@ public class SimulationTreeNode {
      * @param lamda
      *     The function to run on every child node
      */
-    public void forEachChild(Consumer<SimulationTreeNode> lamda) {
+    public void forEachChild(final Consumer<SimulationTreeNode> lamda) {
         if (this.isLeaf) throw new LeafNodeException();
         
-        for (SimulationTreeNode child : this.children) {
+        for (final SimulationTreeNode child : this.children) {
             lamda.accept(child);
         }
     }
     
     @Override
     public int hashCode() {
-        return elementId.hashCode();
+        return this.elementId.hashCode();
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof SimulationTreeNode)) return false;
-        return Objects.equals(elementId, ((SimulationTreeNode) obj).elementId);
+        return Objects.equals(this.elementId, ((SimulationTreeNode) obj).elementId);
     }
     
     @Override
     public String toString() {
-        return getDisplayText();
+        return this.getDisplayText();
     }
 }

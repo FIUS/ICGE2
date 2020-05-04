@@ -78,7 +78,7 @@ public class EntityProgramRunningInfo implements RunningProgramInfo {
      * @param future
      *     the future to set; may be null
      */
-    public void setFuture(CompletableFuture<Void> future) {
+    public void setFuture(final CompletableFuture<Void> future) {
         this.future = future;
     }
     

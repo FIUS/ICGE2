@@ -7,9 +7,7 @@
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
-package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector;
-
-import static javax.swing.SwingConstants.LEFT;
+package de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -22,9 +20,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown_selector.DropdownSelector.DropdownEntry;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector.DropdownSelector.DropdownEntry;
 
 
 /**
@@ -39,7 +38,7 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
     
-    private JLabel labelItem;
+    private final JLabel labelItem;
     
     /**
      * Constructor for the DropdownItemRenderer
@@ -47,18 +46,18 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
      */
-    public DropdownItemRenderer(SwingTextureRegistry textureRegistry) {
+    public DropdownItemRenderer(final SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
         
         this.labelItem = new JLabel();
         this.setLayout(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
+        final GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
         constraints.insets = new Insets(2, 2, 2, 2);
         
         this.labelItem.setOpaque(true);
-        this.labelItem.setHorizontalAlignment(LEFT);
+        this.labelItem.setHorizontalAlignment(SwingConstants.LEFT);
         
         this.add(this.labelItem, constraints);
         this.setBackground(Color.LIGHT_GRAY);
@@ -66,7 +65,8 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
     
     @Override
     public Component getListCellRendererComponent(
-            JList<? extends DropdownEntry> list, DropdownEntry value, int index, boolean isSelected, boolean cellHasFocus
+            final JList<? extends DropdownEntry> list, final DropdownEntry value, final int index, final boolean isSelected,
+            final boolean cellHasFocus
     ) {
         if (value == null) {
             this.labelItem.setText("∅");

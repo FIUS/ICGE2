@@ -30,7 +30,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterr
 
 /**
  * The standard implementation of {@link EntityProgramRunner}.
- * 
+ *
  * @author Tim Neumann
  */
 public class StandardEntityProgramRunner implements EntityProgramRunner {
@@ -43,13 +43,10 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     private final Map<Entity, EntityProgramRunningInfo> entityPrograms = new HashMap<>();
     
     private ExecutorService createExecutor() {
-        final ForkJoinWorkerThreadFactory factory = new ForkJoinWorkerThreadFactory() {
-            @Override
-            public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
-                final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
-                worker.setName("EntityProgramRunnerThread-" + worker.getPoolIndex());
-                return worker;
-            }
+        final ForkJoinWorkerThreadFactory factory = pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("EntityProgramRunnerThread-" + worker.getPoolIndex());
+            return worker;
         };
         
         return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
@@ -57,13 +54,13 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     
     /**
      * Create a new StandardEntityProgramRunner.
-     * 
+     *
      * @param registry
      *     The EntityProgramRegistry to use
      */
     public StandardEntityProgramRunner(final StandardEntityProgramRegistry registry) {
         this.registry = registry;
-        this.executor = createExecutor();
+        this.executor = this.createExecutor();
     }
     
     private EntityProgramRunningInfo getSingleInstanceProgramInfo(final String programName) {
@@ -78,18 +75,18 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     private EntityProgramRunningInfo getProgramInfo(final String programName) {
         final EntityProgramRunningInfo programInfo = this.getSingleInstanceProgramInfo(programName);
         if (programInfo != null) return programInfo;
-        if (this.registry.checkIfProgramHasFactory(programName)) {
-            return new EntityProgramRunningInfo(this.registry.getEntityProgram(programName));
-        }
+        if (
+            this.registry.checkIfProgramHasFactory(programName)
+        ) return new EntityProgramRunningInfo(this.registry.getEntityProgram(programName));
         throw new NoSuchElementException("No Program registered with the name \"" + programName + "\"!");
     }
     
     @Override
     public EntityProgramState getState(final String program) {
         if (program == null) throw new IllegalArgumentException("Argument is null.");
-        EntityProgramRunningInfo singleProgramInstance = this.getSingleInstanceProgramInfo(program);
+        final EntityProgramRunningInfo singleProgramInstance = this.getSingleInstanceProgramInfo(program);
         if (singleProgramInstance != null) return singleProgramInstance.getState();
-        boolean hasFactory = this.registry.checkIfProgramHasFactory(program);
+        final boolean hasFactory = this.registry.checkIfProgramHasFactory(program);
         if (hasFactory) return EntityProgramState.IS_FACTORY;
         throw new IllegalStateException("Program should either have a specific instance or be instantiated by a factory!");
     }
@@ -105,7 +102,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     }
     
     public boolean entityCanRunProgram(final Entity entity) {
-        EntityProgramRunningInfo oldInfo = this.entityPrograms.get(entity);
+        final EntityProgramRunningInfo oldInfo = this.entityPrograms.get(entity);
         // only allow new programs to run on the entity if the last finished without exception!
         return (oldInfo == null) || oldInfo.getState().equals(EntityProgramState.FINISHED);
     }
@@ -130,19 +127,19 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
         
         if (!this.canRunProgramOn(info, entity)) throw new CannotRunProgramException();
         
-        CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+        final CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
             try {
                 info.getProgram().run(entity);
                 info.setState(EntityProgramState.FINISHED);
             } catch (@SuppressWarnings("unused") final UncheckedInterruptedException e) {
                 info.setState(EntityProgramState.KILLED);
-            } catch (@SuppressWarnings("unused") CancellationException e) {
+            } catch (@SuppressWarnings("unused") final CancellationException e) {
                 //Simulation was stopped.
                 //Log would be printed into log panel of new task because of concurrency.
                 //I won't bother fixing this now, because log would get cleared immediately anyway.
                 //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
                 info.setState(EntityProgramState.KILLED);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Logger.simout.println("----------------------------------------------");
                 Logger.simout.println("The following exception happened in program " + program + " running on entity " + entity.toString());
                 e.printStackTrace(Logger.simerror);
@@ -160,7 +157,7 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
     }
     
     @Override
-    public RunningProgramInfo getRunningProgramInfo(Entity entity) {
+    public RunningProgramInfo getRunningProgramInfo(final Entity entity) {
         if (entity == null) throw new IllegalArgumentException("Entity cannot be null!");
         if (
             !this.entityPrograms.containsKey(entity)

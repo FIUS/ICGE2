@@ -19,24 +19,17 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
  */
 public class TestTask implements Task {
     
-    private Simulation sim;
-    
     @Override
-    public void prepare(Simulation sim) {
-        this.sim = sim;
-        sim.getPlayfield().addEntity(new Position(3, 4), new TestEntity());
-    }
-    
-    @Override
-    public void solve() {
+    public void run(final Simulation sim) {
+        final TestEntity tE = new TestEntity();
+        sim.getPlayfield().addEntity(new Position(3, 4), tE);
         try {
-            Thread.sleep(10000);
-        } catch (Exception e) {
+            while (true) {
+                tE.move();
+                tE.move();
+                tE.turnClockWise();
+            }
+        } catch (final Exception e) {
         }
-    }
-    
-    @Override
-    public boolean verify() {
-        return true;
     }
 }

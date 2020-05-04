@@ -9,16 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.OutputStream;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 
@@ -32,7 +29,7 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
  * @author David Ruff
  * @version 1.0
  */
-public class SwingConsole extends JTabbedPane implements Console {
+public class SwingConsole extends JPanel implements Console {
     private static final long serialVersionUID = 5100186594058483257L;
     
     private JTextPane simulationConsole;
@@ -47,9 +44,7 @@ public class SwingConsole extends JTabbedPane implements Console {
      * Default constructor
      */
     public SwingConsole() {
-        super(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        
-        Font standardFont = new Font("monospaced", Font.PLAIN, 12);
+        final Font standardFont = new Font("monospaced", Font.PLAIN, 12);
         {   // Setup simulation console
             this.simulationConsole = new JTextPane(new DefaultStyledDocument());
             this.simulationConsole.setEditable(false);
@@ -70,10 +65,7 @@ public class SwingConsole extends JTabbedPane implements Console {
             
         }
         // Add consoles to the TabbedPane
-        this.addTab("Simulation", new JScrollPane(this.simulationConsole));
-        this.addTab("System", new JScrollPane(this.systemConsole));
-        this.addTab("Notes", new JScrollPane(new JTextArea("Your place for non permanent notes!\n")));
-        
+        this.add(new JScrollPane(this.simulationConsole));
     }
     
     @Override

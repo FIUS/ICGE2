@@ -73,7 +73,7 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
         this.getSimulation().getPlayfield().removeEntity(entity);
         this.getInventory().add(entity);
         
-        Action action = new EntityCollectAction(
+        final Action action = new EntityCollectAction(
                 this.getSimulation().getSimulationClock().getLastTickNumber(), this, entity, myPos, otherPos
         );
         this.getSimulation().getActionLog().logAction(action);
@@ -109,7 +109,7 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
         this.getInventory().remove(entity);
         this.getPlayfield().addEntity(pos, entity);
         
-        Action action = new EntityDropAction(this.getSimulation().getSimulationClock().getLastTickNumber(), this, entity, myPos, pos);
+        final Action action = new EntityDropAction(this.getSimulation().getSimulationClock().getLastTickNumber(), this, entity, myPos, pos);
         this.getSimulation().getActionLog().logAction(action);
     }
     

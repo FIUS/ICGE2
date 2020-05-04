@@ -32,7 +32,7 @@ public class EntityDespawnAction extends EntityAction {
      * @param playfield
      *     the playfield the entity was removed from
      */
-    public EntityDespawnAction(long tickNumber, Entity entity, Playfield playfield) {
+    public EntityDespawnAction(final long tickNumber, final Entity entity, final Playfield playfield) {
         super(tickNumber, entity);
         this.playfield = playfield;
     }

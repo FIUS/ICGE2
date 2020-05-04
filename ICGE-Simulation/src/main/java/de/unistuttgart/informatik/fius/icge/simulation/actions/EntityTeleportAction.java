@@ -31,7 +31,7 @@ public class EntityTeleportAction extends EntityMoveAction {
      * @param to
      *     the position the entity is after the moveEntityStepAction
      */
-    public EntityTeleportAction(long tickNumber, Entity entity, Position from, Position to) {
+    public EntityTeleportAction(final long tickNumber, final Entity entity, final Position from, final Position to) {
         super(tickNumber, entity, from, to);
     }
     

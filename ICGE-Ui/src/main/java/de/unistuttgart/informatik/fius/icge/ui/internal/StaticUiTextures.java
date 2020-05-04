@@ -27,6 +27,7 @@ public abstract class StaticUiTextures {
     /** A pause icon */
     public static String pauseIcon;
     /** A stop icon */
+    @Deprecated
     public static String stopIcon;
     
     /** A arrow icon */

@@ -23,18 +23,68 @@ public interface EntitySidebar {
      * @param treeNode
      *     The root node of the simulation tree.
      */
-    public void setSimulationTreeRootNode(SimulationTreeNode treeNode);
+    void setSimulationTreeRootNode(SimulationTreeNode treeNode);
     
     /**
      * This function should be called if the simulation tree changes.
      */
-    public void updateSimulationTree();
+    void updateSimulationTree();
     
     /**
      * This function deletes all currently created ui elements and creates a new inspector
-     * 
+     *
      * @param entries
      *     The entries to create the inspector from
      */
-    public void setEntityInspectorEntries(EntityInspectorEntry[] entries);
+    void setEntityInspectorEntries(EntityInspectorEntry[] entries);
+    
+    /**
+     * Get the selected element of the simulation tree.
+     * 
+     * @return the currently selected SimulationTreeNode
+     */
+    SimulationTreeNode getSimulationTreeSelectedElement();
+    
+    /**
+     * Set the selected element of the simulation tree.
+     * 
+     * @param node
+     *     The SimulationTreeNode to select
+     */
+    void setSimulationTreeSelectedElement(SimulationTreeNode node);
+    
+    /**
+     * Enable the simulation tree.
+     */
+    void enableSimulationTree();
+    
+    /**
+     * Disable the simulation tree.
+     */
+    void disbaleSimulationTree();
+    
+    /**
+     * Set the name of the entity inspector.
+     * 
+     * @param name
+     *     The name to set
+     */
+    void setEntityInspectorName(String name);
+    
+    /**
+     * Get the current name of the entity inspector.
+     * 
+     * @return The name
+     */
+    String getEntityInspectorName();
+    
+    /**
+     * Enable the entity inspector.
+     */
+    void enableEntityInspector();
+    
+    /**
+     * Disable the entity inspector.
+     */
+    void disableEntityInspector();
 }

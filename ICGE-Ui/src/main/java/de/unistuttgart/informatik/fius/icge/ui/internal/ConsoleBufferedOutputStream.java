@@ -10,7 +10,6 @@
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.Color;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -66,7 +65,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
         try {
             this.textPane.getStyledDocument()
                     .insertString(this.textPane.getStyledDocument().getLength(), "" + (char) character, this.style);
-        } catch (BadLocationException e) {
+        } catch (final BadLocationException e) {
             throw new IOException("Bad insert Location: ", e);
         }
     }

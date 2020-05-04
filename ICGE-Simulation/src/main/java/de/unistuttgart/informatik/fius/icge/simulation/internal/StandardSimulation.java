@@ -13,19 +13,24 @@ import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
-import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.EntityDrawListener;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
+import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 
 
 /**
  * The standard implementation of {@link Simulation}
- * 
+ *
  * @author Tim Neumann
  */
 public class StandardSimulation implements Simulation {
@@ -35,56 +40,50 @@ public class StandardSimulation implements Simulation {
     private final StandardEntityProgramRegistry entityProgramRegistry;
     private final StandardEntityProgramRunner   entityProgramRunner;
     private final StandardActionLog             actionLog;
+    private final StandardEntityTypeRegistry    entityTypeRegistry;
+    private final StandardSimulationProxy       simulationProxy;
     
     /**
      * Creates a new standard simulation with the given parameters.
-     * 
+     *
      * @param playfield
      *     The playfield to use
      * @param simulationClock
      *     The simulation clock to use
+     * @param entityTypeRegistry
+     *     The entityTypeRegistry to use
      * @param entityProgramRegistry
      *     The entityProgramRegistry to use
      * @param entityProgramRunner
      *     The entityProgramRunner to use
      * @param actionLog
      *     The actionLog to use
+     * @param inspectionManager
+     *     The inspection manager to use
      */
     public StandardSimulation(
             final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
-            final StandardEntityProgramRegistry entityProgramRegistry, final StandardEntityProgramRunner entityProgramRunner,
-            final StandardActionLog actionLog
+            final StandardEntityTypeRegistry entityTypeRegistry, final StandardEntityProgramRegistry entityProgramRegistry,
+            final StandardEntityProgramRunner entityProgramRunner, final StandardActionLog actionLog,
+            final InspectionManager inspectionManager
     ) {
         this.playfield = playfield;
         this.simulationClock = simulationClock;
         this.entityProgramRegistry = entityProgramRegistry;
         this.entityProgramRunner = entityProgramRunner;
         this.actionLog = actionLog;
+        this.entityTypeRegistry = entityTypeRegistry;
+        
+        this.playfield.initialize(this);
+        
+        this.simulationProxy = new StandardSimulationProxy(
+                simulationClock, inspectionManager, entityTypeRegistry, playfield, entityProgramRegistry
+        );
     }
     
     @Override
     public Playfield getPlayfield() {
         return this.playfield;
-    }
-    
-    @Override
-    public void initialize() {
-        this.playfield.initialize(this);
-    }
-    
-    /**
-     * Set the entity draw listener.
-     * 
-     * @param listener
-     * 
-     * @throws IllegalStateException
-     *     If clock is running
-     * @throws ListenerSetException
-     *     If listener is already set and new listener is not null
-     */
-    public void setEntityDrawListener(EntityDrawListener listener) {
-        this.simulationClock.setEntityDrawListener(listener);
-        this.playfield.setEntityDrawListener(listener);
     }
     
     @Override
@@ -105,5 +104,25 @@ public class StandardSimulation implements Simulation {
     @Override
     public ActionLog getActionLog() {
         return this.actionLog;
+    }
+    
+    @Override
+    public EntityTypeRegistry getEntityTypeRegistry() {
+        return this.entityTypeRegistry;
+    }
+    
+    @Override
+    public SimulationProxy getSimulationProxyForWindow() {
+        return this.simulationProxy;
+    }
+    
+    @Override
+    public void attachToWindow(final GameWindow window) {
+        this.getSimulationProxyForWindow().attachToGameWindow(window);
+    }
+    
+    @Override
+    public void runTask(final Task taskToRun) {
+        new StandardTaskRunner(taskToRun, this).runTask();
     }
 }

@@ -29,7 +29,7 @@ public abstract class EntityAction extends Action {
      * @param entity
      *     the entity that caused the action
      */
-    public EntityAction(long tickNumber, Entity entity) {
+    public EntityAction(final long tickNumber, final Entity entity) {
         super(tickNumber);
         this.entity = entity;
     }

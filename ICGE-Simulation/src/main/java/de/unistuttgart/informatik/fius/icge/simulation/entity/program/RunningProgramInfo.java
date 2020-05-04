@@ -22,11 +22,11 @@ public interface RunningProgramInfo {
     /**
      * @return the state of this object; cannot be null
      */
-    public EntityProgramState getState();
+    EntityProgramState getState();
     
     /**
      * @return the future running the program
      */
-    public CompletableFuture<Void> getFuture();
+    CompletableFuture<Void> getFuture();
     
 }

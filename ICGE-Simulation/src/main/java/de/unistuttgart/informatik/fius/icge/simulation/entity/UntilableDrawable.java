@@ -25,7 +25,7 @@ public class UntilableDrawable extends BasicDrawable {
      * @param z
      * @param textureHandle
      */
-    public UntilableDrawable(double x, double y, int z, String textureHandle) {
+    public UntilableDrawable(final double x, final double y, final int z, final String textureHandle) {
         super(x, y, z, textureHandle);
     }
     

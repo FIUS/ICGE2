@@ -14,27 +14,15 @@ import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 
 /**
  * The interface for a task to be solved by students.
- * 
+ *
  * @author Tim Neumann
  */
 public interface Task {
     /**
-     * Prepare the simulation for this task
-     * 
+     * Run the task in the given simulation
+     *
      * @param sim
-     *     The simulation this task should be prepared in
+     *     The simulation this task should run in
      */
-    void prepare(Simulation sim);
-    
-    /**
-     * Solve the task
-     */
-    void solve();
-    
-    /**
-     * Verify that the task was solved correctly.
-     * 
-     * @return true if the task was solved correctly
-     */
-    boolean verify();
+    void run(Simulation sim);
 }

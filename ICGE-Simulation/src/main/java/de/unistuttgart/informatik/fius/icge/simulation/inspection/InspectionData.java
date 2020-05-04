@@ -37,7 +37,7 @@ public class InspectionData {
      * @param cls
      *     The class to create a inspection data object for.
      */
-    public InspectionData(Class<?> cls) {
+    public InspectionData(final Class<?> cls) {
         this.c = cls;
         this.inspectableAttributes = new HashMap<>();
         this.inspectableMethods = new HashMap<>();
@@ -54,8 +54,8 @@ public class InspectionData {
      *     The name of the attribute to get the value from
      * @return The value
      */
-    public Object getAttributeValue(Object obj, String name) {
-        AttributeInspectionPoint p = this.inspectableAttributes.get(name);
+    public Object getAttributeValue(final Object obj, final String name) {
+        final AttributeInspectionPoint p = this.inspectableAttributes.get(name);
         if (p != null) {
             try {
                 return p.getValue(obj);
@@ -77,8 +77,8 @@ public class InspectionData {
      *     The value to set.
      * @return Whether it worked.
      */
-    public boolean setAttributeValue(Object obj, String name, Object value) {
-        AttributeInspectionPoint p = this.inspectableAttributes.get(name);
+    public boolean setAttributeValue(final Object obj, final String name, final Object value) {
+        final AttributeInspectionPoint p = this.inspectableAttributes.get(name);
         if (p != null) {
             try {
                 p.setValue(obj, value);
@@ -106,8 +106,8 @@ public class InspectionData {
      *     The name of the attribute
      * @return The type of the attribute.
      */
-    public Class<?> getAttributeType(String attributeName) {
-        AttributeInspectionPoint p = this.inspectableAttributes.get(attributeName);
+    public Class<?> getAttributeType(final String attributeName) {
+        final AttributeInspectionPoint p = this.inspectableAttributes.get(attributeName);
         if (p == null) return null;
         return p.getType();
     }
@@ -119,8 +119,8 @@ public class InspectionData {
      *     The name of the attribute.
      * @return Whether the attribute is read only.
      */
-    public boolean isAttributeReadOnly(String attributeName) {
-        AttributeInspectionPoint p = this.inspectableAttributes.get(attributeName);
+    public boolean isAttributeReadOnly(final String attributeName) {
+        final AttributeInspectionPoint p = this.inspectableAttributes.get(attributeName);
         if (p == null) return true;
         return p.isReadOnly();
     }
@@ -148,7 +148,7 @@ public class InspectionData {
      *     The name of the method to get the detail for
      * @return The method detail.
      */
-    public Method getMethodByName(String methodName) {
+    public Method getMethodByName(final String methodName) {
         return this.inspectableMethods.get(methodName);
     }
     
@@ -163,40 +163,40 @@ public class InspectionData {
      *     The arguments to use
      * @return The return value.
      */
-    public Object invokeMethod(Object obj, String methodName, Object... args) {
-        Method m = this.inspectableMethods.get(methodName);
+    public Object invokeMethod(final Object obj, final String methodName, final Object... args) {
+        final Method m = this.inspectableMethods.get(methodName);
         if (m == null) throw new IllegalStateException("No such method!");
         try {
             return m.invoke(obj, args);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             throw new IllegalStateException("Invokation didn't work", e);
         }
     }
     
     private void initMethods() {
-        List<Method> methods = AnnotationReader.getAllMethodsWithAnnotationRecursively(this.c, InspectionMethod.class);
+        final List<Method> methods = AnnotationReader.getAllMethodsWithAnnotationRecursively(this.c, InspectionMethod.class);
         
-        for (Method m : methods) {
+        for (final Method m : methods) {
             m.setAccessible(true);
             this.inspectableMethods.put(this.getDsiplayNameForInspectionMethod(m), m);
         }
     }
     
     private void initAttributes() {
-        List<Field> fields = AnnotationReader.getAllAttributesWithAnnotationRecursively(this.c, InspectionAttribute.class);
-        List<Method> methods = AnnotationReader.getAllMethodsWithAnnotationRecursively(this.c, InspectionAttribute.class);
+        final List<Field> fields = AnnotationReader.getAllAttributesWithAnnotationRecursively(this.c, InspectionAttribute.class);
+        final List<Method> methods = AnnotationReader.getAllMethodsWithAnnotationRecursively(this.c, InspectionAttribute.class);
         
-        for (Field f : fields) {
+        for (final Field f : fields) {
             f.setAccessible(true);
             this.inspectableAttributes.put(this.getDisplayNameForField(f), new AttributeInspectionPoint(f));
         }
         
-        Map<String, Method> getters = new HashMap<>();
-        Map<String, Method> setters = new HashMap<>();
+        final Map<String, Method> getters = new HashMap<>();
+        final Map<String, Method> setters = new HashMap<>();
         
         for (int i = 0; i < methods.size(); i++) {
-            Method m = methods.get(i);
+            final Method m = methods.get(i);
             
             if (this.isGetter(m)) {
                 getters.put(this.getDisplayNameForMethod(m, "get"), m);
@@ -205,12 +205,12 @@ public class InspectionData {
             } else throw new InspectionPointException("Method is neither a getter nor a setter! : " + m.getName());
         }
         
-        for (Entry<String, Method> entry : getters.entrySet()) {
-            String name = entry.getKey();
-            Method setter = setters.remove(name);
-            Method getter = entry.getValue();
-            boolean readOnly = getter.getAnnotation(InspectionAttribute.class).readOnly();
-            if (readOnly || setter == null) {
+        for (final Entry<String, Method> entry : getters.entrySet()) {
+            final String name = entry.getKey();
+            final Method setter = setters.remove(name);
+            final Method getter = entry.getValue();
+            final boolean readOnly = getter.getAnnotation(InspectionAttribute.class).readOnly();
+            if (readOnly || (setter == null)) {
                 if (setter != null) throw new InspectionPointException("Getter specifies read only, but setter found! : " + name);
                 this.validateReadOnlyGetter(getter);
                 getter.setAccessible(true);
@@ -229,16 +229,16 @@ public class InspectionData {
         
     }
     
-    private boolean isGetter(Method met) {
+    private boolean isGetter(final Method met) {
         return (met.getParameterTypes().length == 0) && (met.getReturnType() != Void.TYPE);
     }
     
-    private boolean isSetter(Method met) {
+    private boolean isSetter(final Method met) {
         return (met.getParameterTypes().length == 1) && (met.getReturnType() == Void.TYPE);
     }
     
-    private void validateMethodPair(Method getter, Method setter) {
-        Class<?> type = getter.getReturnType();
+    private void validateMethodPair(final Method getter, final Method setter) {
+        final Class<?> type = getter.getReturnType();
         
         if (type.equals(Void.TYPE)) throw new InspectionPointException("Getter should return something! : " + getter.getName());
         
@@ -250,7 +250,7 @@ public class InspectionData {
             !setter.getReturnType().equals(Void.TYPE)
         ) throw new InspectionPointException("Setter should not be return type null. : " + setter.getName());
         
-        Class<?>[] setterParas = setter.getParameterTypes();
+        final Class<?>[] setterParas = setter.getParameterTypes();
         
         if (setterParas.length != 1) throw new InspectionPointException("Setter should have exactly one parameter! : " + setter.getName());
         
@@ -260,7 +260,7 @@ public class InspectionData {
         
     }
     
-    private void validateReadOnlyGetter(Method getter) {
+    private void validateReadOnlyGetter(final Method getter) {
         if (
             getter.getReturnType().equals(Void.TYPE)
         ) throw new InspectionPointException("Getter should return something! : " + getter.getName());
@@ -270,28 +270,28 @@ public class InspectionData {
         ) throw new InspectionPointException("Getter should not have parameters! : " + getter.getName());
     }
     
-    private String getDisplayNameForField(Field f) {
-        InspectionAttribute anno = f.getAnnotation(InspectionAttribute.class);
+    private String getDisplayNameForField(final Field f) {
+        final InspectionAttribute anno = f.getAnnotation(InspectionAttribute.class);
         if (anno != null) {
-            String name = anno.name();
+            final String name = anno.name();
             if ((name != null) && !name.isEmpty()) return name;
         }
         return f.getName();
     }
     
-    private String getDsiplayNameForInspectionMethod(Method m) {
-        InspectionMethod anno = m.getAnnotation(InspectionMethod.class);
+    private String getDsiplayNameForInspectionMethod(final Method m) {
+        final InspectionMethod anno = m.getAnnotation(InspectionMethod.class);
         if (anno != null) {
-            String name = anno.name();
+            final String name = anno.name();
             if ((name != null) && !name.isEmpty()) return name;
         }
         return m.getName();
     }
     
-    private String getDisplayNameForMethod(Method m, String possiblePrefixToRemove) {
-        InspectionAttribute anno = m.getAnnotation(InspectionAttribute.class);
+    private String getDisplayNameForMethod(final Method m, final String possiblePrefixToRemove) {
+        final InspectionAttribute anno = m.getAnnotation(InspectionAttribute.class);
         if (anno != null) {
-            String name = anno.name();
+            final String name = anno.name();
             if ((name != null) && !name.isEmpty()) return name;
         }
         
@@ -307,15 +307,15 @@ public class InspectionData {
     private static class AttributeInspectionPoint {
         private static final Map<Class<?>, Class<?>> primitiveToWrapperMap = new HashMap<>();
         static {
-            primitiveToWrapperMap.put(Integer.TYPE, Integer.class);
-            primitiveToWrapperMap.put(Long.TYPE, Long.class);
-            primitiveToWrapperMap.put(Character.TYPE, Character.class);
-            primitiveToWrapperMap.put(Byte.TYPE, Byte.class);
-            primitiveToWrapperMap.put(Float.TYPE, Float.class);
-            primitiveToWrapperMap.put(Double.TYPE, Double.class);
-            primitiveToWrapperMap.put(Short.TYPE, Short.class);
-            primitiveToWrapperMap.put(Boolean.TYPE, Boolean.class);
-            primitiveToWrapperMap.put(Void.TYPE, Void.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Integer.TYPE, Integer.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Long.TYPE, Long.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Character.TYPE, Character.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Byte.TYPE, Byte.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Float.TYPE, Float.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Double.TYPE, Double.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Short.TYPE, Short.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Boolean.TYPE, Boolean.class);
+            AttributeInspectionPoint.primitiveToWrapperMap.put(Void.TYPE, Void.class);
         }
         private final boolean  usesField;
         private final Field    f;
@@ -330,44 +330,45 @@ public class InspectionData {
          * @param field
          *     The field for the inspection point.
          */
-        public AttributeInspectionPoint(Field field) {
+        public AttributeInspectionPoint(final Field field) {
             this.usesField = true;
             this.f = field;
             this.getter = null;
             this.setter = null;
-            this.type = convertTypeToWrappers(field.getType());
+            this.type = this.convertTypeToWrappers(field.getType());
             this.readOnly = field.getAnnotation(InspectionAttribute.class).readOnly();
         }
         
-        public AttributeInspectionPoint(Method getter) {
+        public AttributeInspectionPoint(final Method getter) {
             this.usesField = false;
             this.f = null;
             this.getter = getter;
             this.setter = null;
-            this.type = convertTypeToWrappers(getter.getReturnType());
+            this.type = this.convertTypeToWrappers(getter.getReturnType());
             this.readOnly = true;
         }
         
-        public AttributeInspectionPoint(Method getter, Method setter) {
+        public AttributeInspectionPoint(final Method getter, final Method setter) {
             this.usesField = false;
             this.f = null;
             this.getter = getter;
             this.setter = setter;
-            this.type = convertTypeToWrappers(getter.getReturnType());
+            this.type = this.convertTypeToWrappers(getter.getReturnType());
             this.readOnly = false;
         }
         
-        private Class<?> convertTypeToWrappers(Class<?> cls) {
+        private Class<?> convertTypeToWrappers(final Class<?> cls) {
             if (!cls.isPrimitive()) return cls;
-            return primitiveToWrapperMap.get(cls);
+            return AttributeInspectionPoint.primitiveToWrapperMap.get(cls);
         }
         
-        public Object getValue(Object obj) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        public Object getValue(final Object obj) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             if (this.usesField) return this.f.get(obj);
             return this.getter.invoke(obj);
         }
         
-        public void setValue(Object obj, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        public void setValue(final Object obj, final Object value)
+                throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             if (this.readOnly) throw new InspectionPointException("Attribute is read only.");
             if (!this.type.isAssignableFrom(value.getClass())) throw new IllegalArgumentException("Not the correct attribute type.");
             if (this.usesField) {
@@ -422,7 +423,7 @@ public class InspectionData {
          * @param message
          *     the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
          */
-        public InspectionPointException(String message) {
+        public InspectionPointException(final String message) {
             super(message);
         }
         
@@ -439,7 +440,7 @@ public class InspectionData {
          *     is permitted, and indicates that the cause is nonexistent or unknown.)
          * @since 1.4
          */
-        public InspectionPointException(String message, Throwable cause) {
+        public InspectionPointException(final String message, final Throwable cause) {
             super(message, cause);
         }
         
@@ -454,7 +455,7 @@ public class InspectionData {
          *     is permitted, and indicates that the cause is nonexistent or unknown.)
          * @since 1.4
          */
-        public InspectionPointException(Throwable cause) {
+        public InspectionPointException(final Throwable cause) {
             super(cause);
         }
         
@@ -473,7 +474,9 @@ public class InspectionData {
          *
          * @since 1.7
          */
-        protected InspectionPointException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        protected InspectionPointException(
+                final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace
+        ) {
             super(message, cause, enableSuppression, writableStackTrace);
         }
     }

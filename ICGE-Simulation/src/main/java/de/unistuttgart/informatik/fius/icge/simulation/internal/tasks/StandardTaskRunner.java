@@ -19,7 +19,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 
 /**
  * The standard runner for {@link Task} instances.
- * 
+ *
  * @author Tim Neumann
  */
 public class StandardTaskRunner {
@@ -29,7 +29,7 @@ public class StandardTaskRunner {
     
     /**
      * Create a new task runner.
-     * 
+     *
      * @param taskToRun
      *     The Task instance to run
      * @param sim
@@ -42,39 +42,28 @@ public class StandardTaskRunner {
     }
     
     /**
-     * Run the given task and verify the solution.
-     * 
-     * @return true if the task was completed successfully and the solution could be verified
+     * Run the given task
+     *
+     * @return true if the task was completed successfully, false if an exception was thrown in the run method
      */
     public CompletableFuture<Boolean> runTask() {
-        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(this::executeTask);
+        final CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(this::executeTask);
         
         return future;
     }
     
     private boolean executeTask() {
         try {
-            this.taskToRun.prepare(this.sim);
-            this.taskToRun.solve();
-            
-            boolean verified = this.taskToRun.verify();
-            if (verified) {
-                Logger.simout.println("----------------------------------------------");
-                Logger.simout.println("Task completed successfully");
-                Logger.simout.println("----------------------------------------------");
-            } else {
-                Logger.simout.println("----------------------------------------------");
-                Logger.simout.println("Task failed");
-                Logger.simout.println("----------------------------------------------");
-            }
-            return verified;
-        } catch (@SuppressWarnings("unused") CancellationException e) {
+            this.taskToRun.run(this.sim);
+            return true;
+        } catch (final CancellationException e) {
             //Simulation was stopped before completion of the task.
-            //Log would be printed into log panel of new task because of concurrency.
-            //I won't bother fixing this now, because log would get cleared immediately anyway.
-            //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
+            Logger.simout.println("----------------------------------------------");
+            Logger.simout.println("The task was aborted.");
+            e.printStackTrace(Logger.simerror);
+            Logger.simout.println("----------------------------------------------");
             return false;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Logger.simout.println("----------------------------------------------");
             Logger.simout.println("The following exception caused a task failure:");
             e.printStackTrace(Logger.simerror);

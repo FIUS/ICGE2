@@ -40,7 +40,10 @@ public class EntityDropAction extends EntityAction {
      *     the position the dropped entity was dropped to
      * 
      */
-    public EntityDropAction(long tickNumber, Entity entity, CollectableEntity dropped, Position dropperPos, Position droppedPos) {
+    public EntityDropAction(
+            final long tickNumber, final Entity entity, final CollectableEntity dropped, final Position dropperPos,
+            final Position droppedPos
+    ) {
         super(tickNumber, entity);
         this.dropped = dropped;
         this.dropppedPos = droppedPos;
@@ -70,7 +73,8 @@ public class EntityDropAction extends EntityAction {
     
     @Override
     public String getDescription() {
-        return this.getEntity() + " (at " + getDropperPosition() + ") dropped " + getDroppedEntity() + " at " + getDroppedEntityPosition();
+        return this.getEntity() + " (at " + this.getDropperPosition() + ") dropped " + this.getDroppedEntity() + " at "
+                + this.getDroppedEntityPosition();
     }
     
 }

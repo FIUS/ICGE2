@@ -25,7 +25,7 @@ public interface Texture {
      * 
      * @return the image
      */
-    public default Image getTexture() {
+    default Image getTexture() {
         return this.getTexture(0);
     }
     
@@ -36,7 +36,7 @@ public interface Texture {
      *     the current frame number
      * @return the image
      */
-    public Image getTexture(long frame);
+    Image getTexture(long frame);
     
     /**
      * Draw the texture onto the screen.
@@ -52,7 +52,7 @@ public interface Texture {
      * @param size
      *     texture size (for quadratic textures)
      */
-    public default void drawTexture(long frame, Graphics g, int x, int y, int size) {
+    default void drawTexture(final long frame, final Graphics g, final int x, final int y, final int size) {
         this.drawTexture(frame, g, x, y, size, size);
     }
     
@@ -72,5 +72,5 @@ public interface Texture {
      * @param height
      *     texture height
      */
-    public void drawTexture(long frame, Graphics g, int x, int y, int width, int height);
+    void drawTexture(long frame, Graphics g, int x, int y, int width, int height);
 }

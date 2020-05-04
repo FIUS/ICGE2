@@ -62,4 +62,12 @@ public interface GameWindow {
      * Start the game window and all its submodules.
      */
     void start();
+    
+    /**
+     * Set the simulation proxy instance used by multiple UI components to inform the Simulation of user actions.
+     * 
+     * @param simulationProxy
+     *     The instance of simulation proxy to use
+     */
+    void setSimulationProxy(SimulationProxy simulationProxy);
 }

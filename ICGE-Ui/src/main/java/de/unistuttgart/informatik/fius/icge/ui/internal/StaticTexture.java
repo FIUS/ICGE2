@@ -28,17 +28,17 @@ public class StaticTexture implements Texture {
      * @param texture
      *     the image to use as texture.
      */
-    public StaticTexture(Image texture) {
+    public StaticTexture(final Image texture) {
         this.texture = texture;
     }
     
     @Override
-    public Image getTexture(long frame) {
+    public Image getTexture(final long frame) {
         return this.texture;
     }
     
     @Override
-    public void drawTexture(long frame, Graphics g, int x, int y, int width, int height) {
+    public void drawTexture(final long frame, final Graphics g, final int x, final int y, final int width, final int height) {
         g.drawImage(this.texture, x, y, width, height, null);
     }
 }

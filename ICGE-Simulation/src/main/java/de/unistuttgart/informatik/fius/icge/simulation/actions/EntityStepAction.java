@@ -32,7 +32,7 @@ public class EntityStepAction extends EntityMoveAction {
      * @param to
      *     the position the entity is after the move
      */
-    public EntityStepAction(long tickNumber, Entity entity, Position from, Position to) {
+    public EntityStepAction(final long tickNumber, final Entity entity, final Position from, final Position to) {
         super(tickNumber, entity, from, to);
     }
     

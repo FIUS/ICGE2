@@ -24,8 +24,8 @@ import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
-import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
+import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;
 
 
 /**
@@ -66,7 +66,7 @@ public class SwingTextureRegistry implements TextureRegistry {
      * @see #loadTextureFromResource(String, Function)
      */
     public String loadTextureFromResource(final String resourceName) {
-        return loadTextureFromResource(resourceName, SwingTextureRegistry.class::getResourceAsStream);
+        return this.loadTextureFromResource(resourceName, SwingTextureRegistry.class::getResourceAsStream);
     }
     
     @Override
@@ -101,10 +101,10 @@ public class SwingTextureRegistry implements TextureRegistry {
     }
     
     @Override
-    public String createAnimatedTexture(boolean loop) {
-        String textureHandle = SwingTextureRegistry.generateNewTextureHandle();
+    public String createAnimatedTexture(final boolean loop) {
+        final String textureHandle = SwingTextureRegistry.generateNewTextureHandle();
         
-        AnimatedTexture animTexture = new AnimatedTexture(this, loop);
+        final AnimatedTexture animTexture = new AnimatedTexture(this, loop);
         this.handleToTexture.put(textureHandle, animTexture);
         this.animatedTextures.add(textureHandle);
         
@@ -112,17 +112,17 @@ public class SwingTextureRegistry implements TextureRegistry {
     }
     
     @Override
-    public void addAnimationFrameToTexture(String animatedTexture, String frameTexture, long frames) {
+    public void addAnimationFrameToTexture(final String animatedTexture, final String frameTexture, final long frames) {
         try {
-            AnimatedTexture animated = (AnimatedTexture) this.getTextureForHandle(animatedTexture);
+            final AnimatedTexture animated = (AnimatedTexture) this.getTextureForHandle(animatedTexture);
             animated.addAnimationFrame(frameTexture, frames);
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException e) {
             throw new IllegalArgumentException("Texture handle was not a handle for an animated texture!", e);
         }
     }
     
     @Override
-    public boolean isTextureAnimated(String textureHandle) {
+    public boolean isTextureAnimated(final String textureHandle) {
         return this.animatedTextures.contains(textureHandle);
     }
     
@@ -136,10 +136,8 @@ public class SwingTextureRegistry implements TextureRegistry {
      * @throws NoSuchElementException
      */
     public Texture getTextureForHandle(final String handle) {
-        Texture texture = this.handleToTexture.get(handle);
-        if (texture == null) {
-            throw new NoSuchElementException("No Texture for handle \"" + handle + "\" found!");
-        }
+        final Texture texture = this.handleToTexture.get(handle);
+        if (texture == null) throw new NoSuchElementException("No Texture for handle \"" + handle + "\" found!");
         return texture;
     }
 }

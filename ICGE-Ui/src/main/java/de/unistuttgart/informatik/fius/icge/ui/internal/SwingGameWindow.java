@@ -9,14 +9,15 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import static javax.swing.SwingConstants.CENTER;
-
 import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
@@ -25,6 +26,7 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 
@@ -41,8 +43,8 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     
     private final SwingTextureRegistry textureRegistry;
     private final SwingPlayfieldDrawer playfieldDrawer;
-    private final Toolbar              toolbar;
-    private final EntitySidebar        entitySidebar;
+    private final SwingToolbar         toolbar;
+    private final SwingEntitySidebar   entitySidebar;
     private final Console              console;
     
     /**
@@ -60,14 +62,22 @@ public class SwingGameWindow extends JFrame implements GameWindow {
      *     The {@link Console} to use.
      */
     public SwingGameWindow(
-            final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final Toolbar toolbar,
-            final EntitySidebar entitySidebar, final Console console
+            final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final SwingToolbar toolbar,
+            final SwingEntitySidebar entitySidebar, final Console console
     ) {
         this.textureRegistry = textureRegistry;
         this.playfieldDrawer = playfieldDrawer;
         this.toolbar = toolbar;
         this.entitySidebar = entitySidebar;
         this.console = console;
+    }
+    
+    @Override
+    public void setSimulationProxy(final SimulationProxy simulationProxy) {
+        this.playfieldDrawer.setSimulationProxy(simulationProxy);
+        this.toolbar.setSimulationProxy(simulationProxy);
+        this.entitySidebar.setSimulationProxy(simulationProxy);
+        
     }
     
     @Override
@@ -104,23 +114,32 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     public void start() {
         // init jFrame
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        // setup window closing
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
+        this.addWindowListener(new WindowAdapter() { // stop simulation etc.
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                SwingGameWindow.this.cleanup();
+            }
+        });
+        
         this.playfieldDrawer.initialize();
         
         // convert toolbar
         JComponent toolbarComponent;
         try {
-            toolbarComponent = (JComponent) this.toolbar;
+            toolbarComponent = this.toolbar;
         } catch (ClassCastException | NullPointerException e) {
-            toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), CENTER);
+            toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
         
         // convert sidebar
         JComponent sidebarComponent;
         try {
-            sidebarComponent = (JComponent) this.entitySidebar;
+            sidebarComponent = this.entitySidebar;
         } catch (ClassCastException | NullPointerException e) {
-            sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), CENTER);
+            sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
         
         // convert console
@@ -128,7 +147,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         try {
             consoleComponent = (JComponent) this.console;
         } catch (ClassCastException | NullPointerException e) {
-            consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), CENTER);
+            consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
         
         // connect logger to console
@@ -139,15 +158,27 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         
         // setup JFrame layout
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
-        JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, consoleComponent);
+        final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, consoleComponent);
         jsp1.setOneTouchExpandable(true);
         jsp1.setResizeWeight(0.8);
-        JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
+        final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
         jsp2.setOneTouchExpandable(true);
         this.getContentPane().add(BorderLayout.CENTER, jsp2);
         
         // finalize jFrame
         this.pack();
         this.setVisible(true);
+    }
+    
+    /**
+     * Stop the game window.
+     */
+    public void stop() {
+        // TODO close window programatically
+        this.cleanup();
+    }
+    
+    private void cleanup() {
+        // TODO implement simulation
     }
 }

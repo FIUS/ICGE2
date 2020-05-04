@@ -9,14 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.manualstart;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
-import de.unistuttgart.informatik.fius.icge.ui.Drawable;
-import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
-import de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory;
+import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;
 
 
 /**
@@ -33,20 +27,14 @@ public class ManualStartUi {
      *     the command line arguments. Not used.
      */
     public static void main(final String[] args) {
-        final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
-        final GameWindow window = GameWindowFactory.createGameWindow(simulationProxy);
-        
-        // load textures
-        final TextureRegistry tr = window.getTextureRegistry();
-        final String wallTexture = tr.loadTextureFromResource("textures/wall-default.png", ManualStartUi.class::getResourceAsStream);
-        
-        // generate playfield
-        final ArrayList<Drawable> drawables = new ArrayList<>(
-                List.of(new BasicDrawable(-1, -1, 0, wallTexture), new BasicDrawable(5, 5, 0, wallTexture))
-        );
-        window.getPlayfieldDrawer().setDrawables(drawables);
-        
-        window.start();
-        window.setWindowTitle("Manual start");
+        ManualStartUi.newStyleBuilder();
+    }
+    
+    private static void newStyleBuilder() {
+        final WindowBuilder wb = new WindowBuilder();
+        wb.setTitle("Window Builder start!");
+        wb.buildWindow();
+        final GameWindow w = wb.getBuiltWindow();
+        w.start();
     }
 }
