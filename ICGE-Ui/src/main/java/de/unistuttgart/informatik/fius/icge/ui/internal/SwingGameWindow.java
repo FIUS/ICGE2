@@ -12,6 +12,8 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 import static javax.swing.SwingConstants.CENTER;
 
 import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -104,7 +106,16 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     public void start() {
         // init jFrame
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        // setup window closing
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
+        this.addWindowListener(new WindowAdapter() { // stop simulation etc.
+            @Override
+            public void windowClosing(WindowEvent e) {
+                SwingGameWindow.this.cleanup();
+            }
+        });
+        
         this.playfieldDrawer.initialize();
         
         // convert toolbar
@@ -149,5 +160,14 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         // finalize jFrame
         this.pack();
         this.setVisible(true);
+    }
+    
+    public void stop() {
+        // TODO close window programatically
+        this.cleanup();
+    }
+    
+    private void cleanup() {
+        // TODO implement simulation
     }
 }

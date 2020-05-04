@@ -10,5 +10,5 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 public interface Window {
-    public void show(String simulation);
+    public void show(String simulation); // TODO change simulation to right class once refactor is complete!
 }

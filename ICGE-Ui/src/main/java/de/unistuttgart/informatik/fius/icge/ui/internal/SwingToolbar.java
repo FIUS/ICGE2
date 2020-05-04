@@ -50,7 +50,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     private static final long serialVersionUID = -2525998620577603876L;
     
     /** The simulation proxy */
-    private final SimulationProxy      simulationProxy;
+    private SimulationProxy            simulationProxy;
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
     
@@ -88,10 +88,21 @@ public class SwingToolbar extends JToolBar implements Toolbar {
      *     The texture registry the textures and icons are loaded from
      */
     public SwingToolbar(final SimulationProxy simulationProxy, final SwingTextureRegistry textureRegistry) {
+        this(textureRegistry);
+        
+        this.simulationProxy = simulationProxy;
+    }
+    
+    /**
+     * The constructor of the toolbar
+     *
+     * @param textureRegistry
+     *     The texture registry the textures and icons are loaded from
+     */
+    public SwingToolbar(final SwingTextureRegistry textureRegistry) {
         //
         // class setup
         //
-        this.simulationProxy = simulationProxy;
         this.textureRegistry = textureRegistry;
         
         //
@@ -103,7 +114,11 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // play button setup
         //
         this.play = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.playIcon).getTexture()));
-        this.play.addActionListener(ae -> simulationProxy.buttonPressed(ButtonType.PLAY));
+        this.play.addActionListener(ae -> {
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.PLAY);
+            }
+        });
         this.play.setEnabled(false);
         this.add(this.play);
         
@@ -111,7 +126,11 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // step button setup
         //
         this.step = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.stepIcon).getTexture()));
-        this.step.addActionListener(ae -> simulationProxy.buttonPressed(ButtonType.STEP));
+        this.step.addActionListener(ae -> {
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.STEP);
+            }
+        });
         this.step.setEnabled(false);
         this.add(this.step);
         
@@ -119,7 +138,11 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // pause button setup
         //
         this.pause = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.pauseIcon).getTexture()));
-        this.pause.addActionListener(ae -> simulationProxy.buttonPressed(ButtonType.PAUSE));
+        this.pause.addActionListener(ae -> {
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.PAUSE);
+            }
+        });
         this.pause.setEnabled(false);
         this.add(this.pause);
         
@@ -127,7 +150,11 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         // stop button setup
         //
         this.stop = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.stopIcon).getTexture()));
-        this.stop.addActionListener(ae -> simulationProxy.buttonPressed(ButtonType.STOP));
+        this.stop.addActionListener(ae -> {
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.STOP);
+            }
+        });
         this.stop.setEnabled(false);
         this.add(this.stop);
         
@@ -153,12 +180,112 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             final JSlider source = (JSlider) event.getSource();
             
             if (!source.getValueIsAdjusting()) {
-                SwingToolbar.this.simulationProxy.simulationSpeedChange(source.getValue());
+                if (SwingToolbar.this.simulationProxy != null) {
+                    SwingToolbar.this.simulationProxy.simulationSpeedChange(source.getValue());
+                }
             }
         });
         this.simulationTime.setEnabled(false);
         this.add(this.simulationTime);
         this.addSeparator();
+        
+        //
+        // add visual separator
+        //
+        this.add(new JSeparator(SwingConstants.VERTICAL));
+        
+        //
+        // task selector setup
+        //
+        this.addSeparator();
+        this.taskSelect = new DropdownSelector(this.textureRegistry, "Task");
+        this.taskSelect.addSelectionListener(new ItemListener() {
+            
+            @Override
+            public void itemStateChanged(ItemEvent arg0) {
+                if (arg0.getStateChange() == ItemEvent.SELECTED) {
+                    if (SwingToolbar.this.simulationProxy != null) {
+                        SwingToolbar.this.simulationProxy.selectedTaskChange(((DropdownEntry) arg0.getItem()).displayName);
+                    }
+                }
+            }
+        });
+        this.taskSelect.setEnabled(false);
+        this.add(this.taskSelect);
+        this.addSeparator();
+        
+        //
+        // add visual separator
+        //
+        this.add(new JSeparator(SwingConstants.VERTICAL));
+        
+        //
+        // view button setup
+        //
+        this.view = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.arrowIcon).getTexture()));
+        this.view.addActionListener(ae -> {
+            if (SwingToolbar.this.simulationProxy != null) {
+                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.VIEW);
+            }
+        });
+        this.view.setEnabled(false);
+        this.add(this.view);
+        
+        //
+        // add button setup
+        //
+        this.add = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.addIcon).getTexture()));
+        this.add.addActionListener(ae -> {
+            if (SwingToolbar.this.simulationProxy != null) {
+                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ADD);
+            }
+        });
+        this.add.setEnabled(false);
+        this.add(this.add);
+        
+        //
+        // add button setup
+        //
+        this.sub = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.subIcon).getTexture()));
+        this.sub.addActionListener(ae -> {
+            if (SwingToolbar.this.simulationProxy != null) {
+                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.SUB);
+            }
+        });
+        this.sub.setEnabled(false);
+        this.add(this.sub);
+        
+        //
+        // entity selector setup
+        //
+        this.addSeparator();
+        this.entitySelect = new DropdownSelector(this.textureRegistry, "Entity");
+        this.entitySelect.addSelectionListener(new ItemListener() {
+            
+            @Override
+            public void itemStateChanged(ItemEvent arg0) {
+                if (arg0.getStateChange() == ItemEvent.SELECTED) {
+                    if (SwingToolbar.this.simulationProxy != null) {
+                        SwingToolbar.this.simulationProxy.selectedEntityChanged(((DropdownEntry) arg0.getItem()).displayName);
+                    }
+                }
+            }
+        });
+        this.entitySelect.setEnabled(false);
+        this.add(this.entitySelect);
+    }
+    
+    /**
+     * 
+     * @param simulationProxy
+     *     the simulationProxy to set
+     */
+    public void setSimulationProxy(SimulationProxy simulationProxy) {
+        if (this.simulationProxy != null) {
+            throw new IllegalStateException("SimulationProxy is already set and cannot be overwritten!");
+        }
+        
+        this.simulationProxy = simulationProxy;
         
         this.simulationProxy.setSpeedSliderListener(new SpeedSliderListener() {
             
@@ -178,29 +305,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 SwingToolbar.this.simulationTime.setValue(speed);
             }
         });
-        
-        //
-        // add visual separator
-        //
-        this.add(new JSeparator(SwingConstants.VERTICAL));
-        
-        //
-        // task selector setup
-        //
-        this.addSeparator();
-        this.taskSelect = new DropdownSelector(this.textureRegistry, "Task");
-        this.taskSelect.addSelectionListener(new ItemListener() {
-            
-            @Override
-            public void itemStateChanged(ItemEvent arg0) {
-                if (arg0.getStateChange() == ItemEvent.SELECTED) {
-                    SwingToolbar.this.simulationProxy.selectedTaskChange(((DropdownEntry) arg0.getItem()).displayName);
-                }
-            }
-        });
-        this.taskSelect.setEnabled(false);
-        this.add(this.taskSelect);
-        this.addSeparator();
         
         this.simulationProxy.setTaskSelectorListener(new TaskSelectorListener() {
             
@@ -244,35 +348,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 SwingToolbar.this.taskSelect.setEnabled(false);
             }
         });
-        
-        //
-        // add visual separator
-        //
-        this.add(new JSeparator(SwingConstants.VERTICAL));
-        
-        //
-        // view button setup
-        //
-        this.view = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.arrowIcon).getTexture()));
-        this.view.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.VIEW));
-        this.view.setEnabled(false);
-        this.add(this.view);
-        
-        //
-        // add button setup
-        //
-        this.add = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.addIcon).getTexture()));
-        this.add.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ADD));
-        this.add.setEnabled(false);
-        this.add(this.add);
-        
-        //
-        // add button setup
-        //
-        this.sub = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.subIcon).getTexture()));
-        this.sub.addActionListener(ae -> SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.SUB));
-        this.sub.setEnabled(false);
-        this.add(this.sub);
         
         //
         // button listener setup
@@ -348,23 +423,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 }
             }
         });
-        
-        //
-        // entity selector setup
-        //
-        this.addSeparator();
-        this.entitySelect = new DropdownSelector(this.textureRegistry, "Entity");
-        this.entitySelect.addSelectionListener(new ItemListener() {
-            
-            @Override
-            public void itemStateChanged(ItemEvent arg0) {
-                if (arg0.getStateChange() == ItemEvent.SELECTED) {
-                    SwingToolbar.this.simulationProxy.selectedEntityChanged(((DropdownEntry) arg0.getItem()).displayName);
-                }
-            }
-        });
-        this.entitySelect.setEnabled(false);
-        this.add(this.entitySelect);
         
         this.simulationProxy.setEntitySelectorListener(new EntitySelectorListener() {
             

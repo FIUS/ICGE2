@@ -105,13 +105,40 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     /**
      * Create a new SwingPlayfieldDrawer.
      * 
+     * @param textureRegistry
+     *     The texture registry
+     */
+    public SwingPlayfieldDrawer(SwingTextureRegistry textureRegistry) {
+        this.textureRegistry = textureRegistry;
+        
+        this.setOpaque(true);
+        this.repaintManager = RepaintManager.currentManager(this);
+    }
+    
+    /**
+     * Create a new SwingPlayfieldDrawer.
+     * 
      * @param simulationProxy
      *     The simulation proxy this SwingPlayfieldDrawer should subscribe to
      * @param textureRegistry
      *     The texture registry
      */
     public SwingPlayfieldDrawer(SimulationProxy simulationProxy, SwingTextureRegistry textureRegistry) {
-        this.textureRegistry = textureRegistry;
+        this(textureRegistry);
+        
+        this.setSimulationProxy(simulationProxy);
+    }
+    
+    /**
+     * Set the simulation proxy. TODO better doc
+     * 
+     * @param simulationProxy
+     *     The simulation proxy this SwingPlayfieldDrawer should subscribe to
+     */
+    public void setSimulationProxy(SimulationProxy simulationProxy) {
+        if (this.simulationProxy != null) {
+            throw new IllegalStateException("SimulationProxy is already set and cannot be overwritten!");
+        }
         
         this.simulationProxy = simulationProxy;
         
@@ -141,9 +168,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 SwingPlayfieldDrawer.this.selectedEntityTexture = textureHandle;
             }
         });
-        
-        this.setOpaque(true);
-        this.repaintManager = RepaintManager.currentManager(this);
     }
     
     /**

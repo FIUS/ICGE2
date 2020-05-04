@@ -15,6 +15,8 @@ import java.util.List;
 import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
+import de.unistuttgart.informatik.fius.icge.ui.Window;
+import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindowFactory;
 
@@ -33,6 +35,18 @@ public class ManualStartUi {
      *     the command line arguments. Not used.
      */
     public static void main(final String[] args) {
+        newStyleBuilder();
+    }
+    
+    private static void newStyleBuilder() {
+        WindowBuilder wb = new WindowBuilder();
+        wb.setTitle("Window Builder start!");
+        wb.buildWindow();
+        Window w = wb.getBuiltWindow();
+        w.show("simulation");
+    }
+    
+    private static void oldStyleFactory() {
         final MinimalSimulationProxy simulationProxy = new MinimalSimulationProxy();
         final GameWindow window = GameWindowFactory.createGameWindow(simulationProxy);
         

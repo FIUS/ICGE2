@@ -46,7 +46,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     private static final long serialVersionUID = -4409545257025298208L;
     
     /** The simulation proxy */
-    private final SimulationProxy      simulationProxy;
+    private SimulationProxy            simulationProxy;
     /** The texture registry */
     private final SwingTextureRegistry textureRegistry;
     
@@ -70,8 +70,19 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
      *     The texture registry the textures and icons are loaded from
      */
     public SwingEntitySidebar(final SimulationProxy simulationProxy, final SwingTextureRegistry textureRegistry) {
+        this(textureRegistry);
+        
+        this.setSimulationProxy(simulationProxy);
+    }
+    
+    /**
+     * The default constructor
+     * 
+     * @param textureRegistry
+     *     The texture registry the textures and icons are loaded from
+     */
+    public SwingEntitySidebar(final SwingTextureRegistry textureRegistry) {
         // class setup
-        this.simulationProxy = simulationProxy;
         this.textureRegistry = textureRegistry;
         
         // JTree setup
@@ -86,16 +97,48 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             @Override
             public void valueChanged(TreeSelectionEvent arg0) {
                 if (SwingEntitySidebar.this.entityList.getLastSelectedPathComponent() == null) {
-                    SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(null);
+                    if (SwingEntitySidebar.this.simulationProxy != null) {
+                        SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(null);
+                    }
                     return;
                 }
                 
-                SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(
-                        (SimulationTreeNode) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent())
-                                .getUserObject()
-                );
+                if (SwingEntitySidebar.this.simulationProxy != null) {
+                    SwingEntitySidebar.this.simulationProxy.selectedSimulationEntityChange(
+                            (SimulationTreeNode) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList
+                                    .getLastSelectedPathComponent()).getUserObject()
+                    );
+                }
             }
         });
+        
+        // Entity inspector setup
+        this.entityInspector = new SwingEntityInspector(this.textureRegistry);
+        
+        // Sidebar layout
+        JScrollPane pane = new JScrollPane(this.entityList);
+        pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+        JSplitPane jsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pane, this.entityInspector);
+        jsp.setOneTouchExpandable(true);
+        jsp.setResizeWeight(0.4);
+        this.setLayout(new BorderLayout());
+        this.add(jsp, BorderLayout.CENTER);
+    }
+    
+    /**
+     * TODO better doc
+     * 
+     * @param simulationProxy
+     *     The simulation proxy to use
+     */
+    public void setSimulationProxy(final SimulationProxy simulationProxy) {
+        if (this.simulationProxy != null) {
+            throw new IllegalStateException("SimulationProxy is already set and cannot be overwritten!");
+        }
+        
+        this.simulationProxy = simulationProxy;
         
         // Proxy setup
         this.simulationProxy.setSimulationTreeListener(new SimulationTreeListener() {
@@ -133,8 +176,6 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             }
         });
         
-        // Entity inspector setup
-        this.entityInspector = new SwingEntityInspector(this.textureRegistry);
         this.simulationProxy.setEntityInspectorListener(new EntityInspectorListener() {
             
             @Override
@@ -162,17 +203,6 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
                 SwingEntitySidebar.this.entityInspector.setEnabled(false);
             }
         });
-        
-        // Sidebar layout
-        JScrollPane pane = new JScrollPane(this.entityList);
-        pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
-        JSplitPane jsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, pane, this.entityInspector);
-        jsp.setOneTouchExpandable(true);
-        jsp.setResizeWeight(0.4);
-        this.setLayout(new BorderLayout());
-        this.add(jsp, BorderLayout.CENTER);
     }
     
     @Override
@@ -228,7 +258,9 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         for (EntityInspectorEntry entry : entries) {
             this.entityInspector.addUIElement(entry.getName(), entry.getType(), entry.getValue(), (id, value) -> {
                 entry.runCallback(value);
-                this.simulationProxy.entityValueChange(id, value);
+                if (this.simulationProxy != null) {
+                    this.simulationProxy.entityValueChange(id, value);
+                }
             });
         }
     }
