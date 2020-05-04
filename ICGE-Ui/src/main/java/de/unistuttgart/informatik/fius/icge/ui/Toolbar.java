@@ -9,7 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import de.unistuttgart.informatik.fius.icge.ui.internal.dropdownSelector.DropdownSelector;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector;
 
 
 /**
