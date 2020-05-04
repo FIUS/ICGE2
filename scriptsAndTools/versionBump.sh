@@ -19,6 +19,12 @@ if [ "$(git branch --show-current)" != "master" ] ;then
   fail "Not on master branch." 4
 fi
 
+git fetch
+
+if ! [ git diff HEAD FETCH_HEAD --exit-code > /dev/null ] ;then
+  fail "Branch is not up to date." 9
+fi
+
 if ! [ -e "pom.xml" ] ;then
   fail "No pom detcted, Are you in root of repo?" 5
 fi
