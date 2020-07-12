@@ -16,9 +16,9 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
  */
 public enum OutputStyle {
     
-    /** Standard Style for normal text without any purpos (Black) */
+    /** Standard Style for text from stdout */
     STANDARD,
     
-    /** Style for errors (Red) */
+    /** Style for text from stderr (e.g. errors) */
     ERROR
 }

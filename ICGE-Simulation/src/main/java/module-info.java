@@ -9,7 +9,6 @@
  */
 module de.unistuttgart.informatik.fius.icge.simulation {
     requires transitive de.unistuttgart.informatik.fius.icge.ui;
-    requires de.unistuttgart.informatik.fius.icge.log;
     
     exports de.unistuttgart.informatik.fius.icge.simulation;
     exports de.unistuttgart.informatik.fius.icge.simulation.entity;

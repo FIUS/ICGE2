@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotRunProgramException;
@@ -241,8 +240,8 @@ public class StandardSimulationProxy implements SimulationProxy {
             final Entity entity = this.entityTypeRegistry.getNewEntity(typeName);
             return this.entityProgramRegistry.getProgramsForEntity(entity);
         } catch (final Exception e) {
-            Logger.simout.println("Could not load program list for entity type " + typeName + ". (See system log for details.)");
-            e.printStackTrace(Logger.error);
+            System.out.println("Could not load program list for entity type " + typeName + ".");
+            e.printStackTrace();
         }
         return new HashSet<>();
     }
@@ -252,17 +251,17 @@ public class StandardSimulationProxy implements SimulationProxy {
         try {
             final Entity ent = this.entityTypeRegistry.getNewEntity(typeName);
             if (ent == null) {
-                Logger.simout.println("Could not create a new entity of type " + typeName + "!");
+                System.out.println("Could not create a new entity of type " + typeName + "!");
                 return;
             }
             this.playfield.addEntity(new Position(x, y), ent);
             //TODO: Run program or remove that feature.
         } catch (final CannotRunProgramException e) {
-            Logger.simout.println("Could not run program " + program + " for the new entity. (See system log for details.)");
-            e.printStackTrace(Logger.error);
+            System.out.println("Could not run program " + program + " for the new entity.");
+            e.printStackTrace();
         } catch (final Exception e) {
-            Logger.simout.println("Something went wrong while creating new entity. (See system log for details.)");
-            e.printStackTrace(Logger.error);
+            System.out.println("Something went wrong while creating new entity.");
+            e.printStackTrace();
         }
     }
     

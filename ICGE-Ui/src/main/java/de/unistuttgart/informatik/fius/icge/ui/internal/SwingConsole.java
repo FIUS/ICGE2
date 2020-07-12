@@ -9,16 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.awt.Dimension;
 import java.awt.Font;
-import java.io.OutputStream;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 
+import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 
 
@@ -27,16 +24,12 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
  *
  * @author Tobias Wältken
  * @author David Ruff
- * @version 1.0
+ * @author Fabian Bühler
+ * @version 2.0
  */
-public class SwingConsole extends JPanel implements Console {
+public class SwingConsole extends JTextPane implements Console {
     private static final long serialVersionUID = 5100186594058483257L;
     
-    private JTextPane simulationConsole;
-    private JTextPane systemConsole;
-    
-    private ConsoleBufferedOutputStream simulationOutputStream;
-    private ConsoleBufferedOutputStream simulationErrorStream;
     private ConsoleBufferedOutputStream systemOutputStream;
     private ConsoleBufferedOutputStream systemErrorStream;
     
@@ -44,57 +37,39 @@ public class SwingConsole extends JPanel implements Console {
      * Default constructor
      */
     public SwingConsole() {
+        super(new DefaultStyledDocument());
+        
         final Font standardFont = new Font("monospaced", Font.PLAIN, 12);
-        {   // Setup simulation console
-            this.simulationConsole = new JTextPane(new DefaultStyledDocument());
-            this.simulationConsole.setEditable(false);
-            this.simulationConsole.setFont(standardFont);
-            final DefaultCaret caret = (DefaultCaret) this.simulationConsole.getCaret();
-            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.simulationOutputStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.STANDARD);
-            this.simulationErrorStream = new ConsoleBufferedOutputStream(this.simulationConsole, OutputStyle.ERROR);
-        }
-        {   // Setup system console
-            this.systemConsole = new JTextPane(new DefaultStyledDocument());
-            this.systemConsole.setEditable(false);
-            this.systemConsole.setFont(standardFont);
-            final DefaultCaret caret = (DefaultCaret) this.systemConsole.getCaret();
-            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            this.systemOutputStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.STANDARD);
-            this.systemErrorStream = new ConsoleBufferedOutputStream(this.systemConsole, OutputStyle.ERROR);
-            
-        }
+        
+        this.setEditable(false);
+        this.setFont(standardFont);
+        final DefaultCaret caret = (DefaultCaret) this.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        this.systemOutputStream = new ConsoleBufferedOutputStream(this, OutputStyle.STANDARD);
+        this.systemErrorStream = new ConsoleBufferedOutputStream(this, OutputStyle.ERROR);
+        
+        Logger.addOutOutputStream(this.systemOutputStream);
+        Logger.addErrorOutputStream(this.systemErrorStream);
+        
         // Add consoles to the TabbedPane
-        this.add(new JScrollPane(this.simulationConsole));
+        //this.add(new JScrollPane(this.systemConsole));
+        
+        for (int i = 0; i < 20; i++) {
+            System.out.println("Hello world!");
+            System.err.println("Hello error!");
+        }
     }
     
     @Override
-    public OutputStream getSimulationOutputStream() {
-        return this.simulationOutputStream;
+    public void clearConsole() {
+        this.setText("");
     }
     
-    @Override
-    public OutputStream getSimulationErrorStream() {
-        return this.simulationErrorStream;
-    }
-    
-    @Override
-    public OutputStream getSystemOutputStream() {
-        return this.systemOutputStream;
-    }
-    
-    @Override
-    public OutputStream getSystemErrorStream() {
-        return this.systemErrorStream;
-    }
-    
-    @Override
-    public void clearSimulationConsole() {
-        this.simulationConsole.setText("");
-    }
-    
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(400, 200);
+    /**
+     * Detach the internal output streams from {@code Logger.out} and {@code Logger.error}.
+     */
+    public void cleanup() {
+        Logger.removeOutOutputStream(this.systemOutputStream);
+        Logger.removeErrorOutputStream(this.systemErrorStream);
     }
 }

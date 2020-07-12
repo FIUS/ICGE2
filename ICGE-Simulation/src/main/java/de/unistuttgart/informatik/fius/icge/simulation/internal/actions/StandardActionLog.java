@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.MultiTypedList;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.Action;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
@@ -70,7 +69,7 @@ public class StandardActionLog implements ActionLog {
             this.entityActions.get(entity).add(entityAction);
         }
         this.actions.add(actionToLog);
-        Logger.simout.println(actionToLog.getDescription());
+        System.out.println(actionToLog.getDescription());
     }
     
 }

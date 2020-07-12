@@ -34,8 +34,8 @@ public class ManualStartSimulation {
     public static void main(final String[] args) {
         final WindowBuilder wb = new WindowBuilder();
         wb.setTitle("Window Builder start!");
-        wb.buildWindow();
         wb.setGraphicsSettings(false, true);
+        wb.buildWindow();
         final GameWindow w = wb.getBuiltWindow();
         
         ManualStartSimulation.prepareTextures(w.getTextureRegistry());

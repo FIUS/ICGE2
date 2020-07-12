@@ -75,4 +75,11 @@ public class OutputStreamMultiplier extends OutputStream {
             listenerStream.write(arg0);
         }
     }
+    
+    @Override
+    public void close() throws IOException {
+        for (final OutputStream listenerStream : this.listenerStreams) {
+            listenerStream.close();
+        }
+    }
 }

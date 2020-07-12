@@ -19,7 +19,6 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinWorkerThread;
 
-import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramState;
@@ -140,10 +139,10 @@ public class StandardEntityProgramRunner implements EntityProgramRunner {
                 //TODO: If a way is added to see/use the log messages of an old simulation we need to fix this
                 info.setState(EntityProgramState.KILLED);
             } catch (final Exception e) {
-                Logger.simout.println("----------------------------------------------");
-                Logger.simout.println("The following exception happened in program " + program + " running on entity " + entity.toString());
-                e.printStackTrace(Logger.simerror);
-                Logger.simout.println("----------------------------------------------");
+                System.out.println("----------------------------------------------");
+                System.out.println("The following exception happened in program " + program + " running on entity " + entity.toString());
+                e.printStackTrace();
+                System.out.println("----------------------------------------------");
                 info.setState(EntityProgramState.KILLED);
             }
             return null;
