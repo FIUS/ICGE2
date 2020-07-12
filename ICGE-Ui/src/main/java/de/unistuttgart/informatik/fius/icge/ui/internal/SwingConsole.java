@@ -50,14 +50,6 @@ public class SwingConsole extends JTextPane implements Console {
         
         Logger.addOutOutputStream(this.systemOutputStream);
         Logger.addErrorOutputStream(this.systemErrorStream);
-        
-        // Add consoles to the TabbedPane
-        //this.add(new JScrollPane(this.systemConsole));
-        
-        for (int i = 0; i < 20; i++) {
-            System.out.println("Hello world!");
-            System.err.println("Hello error!");
-        }
     }
     
     @Override
