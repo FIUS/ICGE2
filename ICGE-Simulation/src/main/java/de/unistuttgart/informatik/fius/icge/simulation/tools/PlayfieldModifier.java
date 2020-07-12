@@ -56,7 +56,7 @@ public class PlayfieldModifier {
      * @param position
      *     The position to place the entities at
      */
-    public void placeMultipleEntitiesAt(final Supplier<Entity> entityFactory, final int count, final Position position) {
+    public void placeMultipleEntitiesAt(final Supplier<? extends Entity> entityFactory, final int count, final Position position) {
         for (int i = 0; i < count; i++) {
             placeEntityAt(entityFactory.get(), position);
         }
@@ -70,7 +70,7 @@ public class PlayfieldModifier {
      * @param positions
      *     A list of positions to place the entities at
      */
-    public void placeEntityAtEachPosition(final Supplier<Entity> entityFactory, Iterable<Position> positions) {
+    public void placeEntityAtEachPosition(final Supplier<? extends Entity> entityFactory, Iterable<Position> positions) {
         for (Position pos : positions) {
             placeEntityAt(entityFactory.get(), pos);
         }
