@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
-import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
@@ -523,24 +522,22 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         if (this.activeTool == ControlButtonState.ADD) {
             final String type = this.selectedEntityType;
             if ((type == null) || type.equals("")) {
-                Logger.simout.println("Could not spawn entity, no type selected!");
+                System.out.println("Could not spawn entity, no type selected!");
                 return;
             }
             try {
                 this.simulationProxy.spawnEntityAt(type, x, y, null);
             } catch (final Exception e) {
-                Logger.simout.println(
-                        "Error while spawning entity of type " + type + " at (x=" + x + ", y=" + y + "). (See system log for details)"
-                );
-                e.printStackTrace(Logger.error);
+                System.out.println("Error while spawning entity of type " + type + " at (x=" + x + ", y=" + y + ").");
+                e.printStackTrace();
             }
         }
         if (this.activeTool == ControlButtonState.SUB) {
             try {
                 this.simulationProxy.clearCell(x, y);
             } catch (final Exception e) {
-                Logger.simout.println("Error while clearing the cell (x=" + x + ", y=" + y + "). (See system log for details)");
-                e.printStackTrace(Logger.error);
+                System.out.println("Error while clearing the cell (x=" + x + ", y=" + y + ").");
+                e.printStackTrace();
             }
         }
         this.repaint();

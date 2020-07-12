@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsException;
@@ -44,7 +43,7 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
                     NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException e
             ) {
-                e.printStackTrace(Logger.error);
+                e.printStackTrace();
                 // could not instantiate a new entity
                 return null;
             }

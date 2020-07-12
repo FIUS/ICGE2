@@ -17,6 +17,7 @@ import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 
 /**
@@ -24,13 +25,18 @@ import javax.swing.text.StyleConstants;
  *
  * @author Tobias Wältken
  * @author David Ruff
- * @version 1.0
+ * @author Fabian Bühler
+ * @version 2.0
  */
 public class ConsoleBufferedOutputStream extends OutputStream {
     
+    /** The maximum length of the line buffer. */
+    static final int MAX_BUFFER_LENGTH = 2048;
+    
     //TODO add actual buffer to avoid overflowing the textarea and cause lag
-    private final JTextPane textPane;
-    private final Style     style;
+    private final JTextPane     textPane;
+    private final Style         style;
+    private final StringBuilder lineBuffer;
     
     /**
      * Default Constructor
@@ -41,6 +47,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      *     The style type to be used for the output
      */
     public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
+        this.lineBuffer = new StringBuilder(MAX_BUFFER_LENGTH);
         this.textPane = textPane;
         this.style = this.textPane.addStyle(style.toString(), null);
         
@@ -58,15 +65,32 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     @Override
     public void flush() throws IOException {
         super.flush();
+        this.flushLineBufferToTextPane();
     }
     
     @Override
     public void write(final int character) throws IOException {
+        char symbol = (char) character;
+        boolean newline = symbol == '\n'; // should catch CR/LF and LF line endings
+        
+        this.lineBuffer.append(symbol);
+        
+        if (newline || this.lineBuffer.length() >= MAX_BUFFER_LENGTH) {
+            this.flushLineBufferToTextPane();
+        }
+    }
+    
+    private void flushLineBufferToTextPane() throws IOException {
+        // print line to text pane
         try {
-            this.textPane.getStyledDocument()
-                    .insertString(this.textPane.getStyledDocument().getLength(), "" + (char) character, this.style);
+            StyledDocument content = this.textPane.getStyledDocument();
+            synchronized (this.textPane) {
+                content.insertString(content.getLength(), this.lineBuffer.toString(), this.style);
+            }
         } catch (final BadLocationException e) {
             throw new IOException("Bad insert Location: ", e);
         }
+        // reset linebuffer
+        this.lineBuffer.setLength(0);
     }
 }

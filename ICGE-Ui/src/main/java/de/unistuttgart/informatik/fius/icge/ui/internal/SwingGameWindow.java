@@ -10,18 +10,20 @@
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
@@ -45,7 +47,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     private final SwingPlayfieldDrawer playfieldDrawer;
     private final SwingToolbar         toolbar;
     private final SwingEntitySidebar   entitySidebar;
-    private final Console              console;
+    private final SwingConsole         console;
     
     /**
      * Create a new Swing game window using the given submodules.
@@ -63,7 +65,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
      */
     public SwingGameWindow(
             final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final SwingToolbar toolbar,
-            final SwingEntitySidebar entitySidebar, final Console console
+            final SwingEntitySidebar entitySidebar, final SwingConsole console
     ) {
         this.textureRegistry = textureRegistry;
         this.playfieldDrawer = playfieldDrawer;
@@ -145,20 +147,20 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         // convert console
         JComponent consoleComponent;
         try {
-            consoleComponent = (JComponent) this.console;
-        } catch (ClassCastException | NullPointerException e) {
+            consoleComponent = this.console;
+        } catch (NullPointerException e) {
             consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
         
-        // connect logger to console
-        Logger.addSimulationOutputStream(this.console.getSimulationOutputStream());
-        Logger.addSimulationErrorStream(this.console.getSimulationErrorStream());
-        Logger.addOutOutputStream(this.console.getSystemOutputStream());
-        Logger.addErrorOutputStream(this.console.getSystemErrorStream());
+        // setup bottom pane layout
+        final JTabbedPane bottomPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        bottomPane.addTab("Console", new JScrollPane(consoleComponent));
+        bottomPane.setPreferredSize(new Dimension(400, 200));
+        // TODO task status component: bottomPane.addTab("Task Status", null);
         
         // setup JFrame layout
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
-        final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, consoleComponent);
+        final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, bottomPane);
         jsp1.setOneTouchExpandable(true);
         jsp1.setResizeWeight(0.8);
         final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
@@ -180,5 +182,6 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     
     private void cleanup() {
         // TODO implement simulation
+        this.console.cleanup();
     }
 }

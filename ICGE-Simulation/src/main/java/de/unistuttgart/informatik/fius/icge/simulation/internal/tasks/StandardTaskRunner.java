@@ -12,7 +12,6 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal.tasks;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 
-import de.unistuttgart.informatik.fius.icge.log.Logger;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 
@@ -58,16 +57,16 @@ public class StandardTaskRunner {
             return true;
         } catch (final CancellationException e) {
             //Simulation was stopped before completion of the task.
-            Logger.simout.println("----------------------------------------------");
-            Logger.simout.println("The task was aborted.");
-            e.printStackTrace(Logger.simerror);
-            Logger.simout.println("----------------------------------------------");
+            System.out.println("----------------------------------------------");
+            System.out.println("The task was aborted.");
+            e.printStackTrace();
+            System.out.println("----------------------------------------------");
             return false;
         } catch (final Exception e) {
-            Logger.simout.println("----------------------------------------------");
-            Logger.simout.println("The following exception caused a task failure:");
-            e.printStackTrace(Logger.simerror);
-            Logger.simout.println("----------------------------------------------");
+            System.out.println("----------------------------------------------");
+            System.out.println("The following exception caused a task failure:");
+            e.printStackTrace();
+            System.out.println("----------------------------------------------");
             return false;
         }
     }

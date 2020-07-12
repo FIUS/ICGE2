@@ -9,47 +9,16 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import java.io.OutputStream;
-
-
 /**
  * A Console to show text output of the software
  *
  * @author Tobias Wältken
- * @version 1.0
+ * @version 2.0
  */
 public interface Console {
     
     /**
-     * Getter for the output stream of the simulation console
-     *
-     * @return Returns a output stream
+     * Clears the console in the ui.
      */
-    OutputStream getSimulationOutputStream();
-    
-    /**
-     * Getter for the error stream of the simulation console
-     * 
-     * @return Returns a output stream
-     */
-    OutputStream getSimulationErrorStream();
-    
-    /**
-     * Getter for the output stream of the system console
-     *
-     * @return Returns a output stream
-     */
-    OutputStream getSystemOutputStream();
-    
-    /**
-     * Getter for the error stream of the system console
-     *
-     * @return Returns a error stream
-     */
-    OutputStream getSystemErrorStream();
-    
-    /**
-     * Clears the simulation console in the ui.
-     */
-    void clearSimulationConsole();
+    void clearConsole();
 }
