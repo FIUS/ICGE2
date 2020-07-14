@@ -10,6 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.Font;
+import java.io.IOException;
 
 import javax.swing.JTextPane;
 import javax.swing.text.DefaultCaret;
@@ -63,5 +64,11 @@ public class SwingConsole extends JTextPane implements Console {
     public void cleanup() {
         Logger.removeOutOutputStream(this.systemOutputStream);
         Logger.removeErrorOutputStream(this.systemErrorStream);
+        try { // stop timers in ConsoleBufferedOutputStreams
+            this.systemOutputStream.close();
+            this.systemErrorStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
