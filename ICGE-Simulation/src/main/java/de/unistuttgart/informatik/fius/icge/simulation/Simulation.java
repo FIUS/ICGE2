@@ -32,6 +32,13 @@ public interface Simulation {
     Playfield getPlayfield();
     
     /**
+     * Get the task verifier set for this simulation.
+     *
+     * @return The task verifier set for this simulation
+     */
+    TaskVerifier getTaskVerifier();
+    
+    /**
      * Get the simulation clock for this simulation.
      *
      * @return the simulation clock used by this simulation

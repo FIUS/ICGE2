@@ -79,7 +79,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
             try {
                 // flush the line buffer in regular intervalls
                 this.flushLineBufferToTextPane();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 // do not handle exeption during regular buffer flush to avoid exception loops
             }
         });
@@ -101,8 +101,8 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     
     @Override
     public void write(final int character) throws IOException {
-        char symbol = (char) character;
-        boolean newline = symbol == '\n'; // should catch CR/LF and LF line endings
+        final char symbol = (char) character;
+        final boolean newline = symbol == '\n'; // should catch CR/LF and LF line endings
         
         synchronized (this.lineBuffer) {
             this.lineBuffer.append(symbol);
@@ -128,7 +128,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
         if (newText.length() > 0) { // new null check because previous check may be obsolete now
             // print line to text pane
             try {
-                StyledDocument content = this.textPane.getStyledDocument();
+                final StyledDocument content = this.textPane.getStyledDocument();
                 synchronized (this.textPane) {
                     content.insertString(content.getLength(), newText, this.style);
                 }

@@ -26,6 +26,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.Standa
  */
 public class SimulationBuilder {
     
+    private TaskVerifier taskVerifier;
+    
     private Simulation simulation;
     
     /**
@@ -39,12 +41,13 @@ public class SimulationBuilder {
      * @param taskVerifier
      *     The task verifier to use
      */
-    public void setTaskVerifier(final Object taskVerifier) {
+    public void setTaskVerifier(final TaskVerifier taskVerifier) {
         if (
             this.hasBuiltSimulation()
         ) throw new IllegalStateException(
                 "The simulation was already built! Use the methods of the Simulation Object to change its properties."
         );
+        this.taskVerifier = taskVerifier;
     }
     
     /**
@@ -71,7 +74,8 @@ public class SimulationBuilder {
         final InspectionManager inspectionManager = new InspectionManager();
         
         this.simulation = new StandardSimulation(
-                playfield, simulationClock, entityTypeRegistry, entityProgramRegistry, entityProgramRunner, actionLog, inspectionManager
+                playfield, simulationClock, entityTypeRegistry, entityProgramRegistry, entityProgramRunner, actionLog, inspectionManager,
+                this.taskVerifier
         );
     }
     

@@ -12,6 +12,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal;
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
+import de.unistuttgart.informatik.fius.icge.simulation.TaskVerifier;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
@@ -41,6 +42,7 @@ public class StandardSimulation implements Simulation {
     private final StandardEntityProgramRunner   entityProgramRunner;
     private final StandardActionLog             actionLog;
     private final StandardEntityTypeRegistry    entityTypeRegistry;
+    private final TaskVerifier                  taskVerifier;
     private final StandardSimulationProxy       simulationProxy;
     
     /**
@@ -60,12 +62,14 @@ public class StandardSimulation implements Simulation {
      *     The actionLog to use
      * @param inspectionManager
      *     The inspection manager to use
+     * @param taskVerifier
+     *     the task verifier to use to verify the task completion status
      */
     public StandardSimulation(
             final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
             final StandardEntityTypeRegistry entityTypeRegistry, final StandardEntityProgramRegistry entityProgramRegistry,
             final StandardEntityProgramRunner entityProgramRunner, final StandardActionLog actionLog,
-            final InspectionManager inspectionManager
+            final InspectionManager inspectionManager, final TaskVerifier taskVerifier
     ) {
         this.playfield = playfield;
         this.simulationClock = simulationClock;
@@ -73,17 +77,25 @@ public class StandardSimulation implements Simulation {
         this.entityProgramRunner = entityProgramRunner;
         this.actionLog = actionLog;
         this.entityTypeRegistry = entityTypeRegistry;
+        this.taskVerifier = taskVerifier;
         
         this.playfield.initialize(this);
         
+        taskVerifier.attachToSimulation(this);
+        
         this.simulationProxy = new StandardSimulationProxy(
-                simulationClock, inspectionManager, entityTypeRegistry, playfield, entityProgramRegistry
+                simulationClock, inspectionManager, entityTypeRegistry, playfield, entityProgramRegistry, taskVerifier
         );
     }
     
     @Override
     public Playfield getPlayfield() {
         return this.playfield;
+    }
+    
+    @Override
+    public TaskVerifier getTaskVerifier() {
+        return this.taskVerifier;
     }
     
     @Override

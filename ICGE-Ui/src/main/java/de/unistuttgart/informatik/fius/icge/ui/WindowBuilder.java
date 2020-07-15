@@ -16,6 +16,7 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingGameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTaskStatusDisplay;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
 
@@ -99,11 +100,12 @@ public class WindowBuilder {
         final SwingToolbar toolbar = new SwingToolbar(textureRegistry);
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry);
         final SwingConsole console = new SwingConsole();
+        final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay();
         
         playfieldDrawer.setDoubleBuffering(this.useDoubleBuffering);
         playfieldDrawer.setSyncToScreen(this.syncToScreen);
         
-        this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console);
+        this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console, taskStatus);
         if (this.windowTitle != null) {
             this.window.setWindowTitle(this.windowTitle);
         }

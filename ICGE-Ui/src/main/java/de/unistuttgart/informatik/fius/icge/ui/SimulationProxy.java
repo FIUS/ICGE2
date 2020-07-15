@@ -14,10 +14,10 @@ import java.util.Set;
 
 /**
  * The SimulationProxy interface. This is used for communication most between the UI and the simulation.
- *
+ * <p>
  * First the {@link #attachToGameWindow(GameWindow)} needs to be called to establish the connection. This should set up
  * all communication channels from the Simulation to the UI.
- *
+ * <p>
  * The other methods are communication channels from the UI the Simulation.
  *
  * @author Tobias Wältken, Tim Neumann
@@ -78,6 +78,13 @@ public interface SimulationProxy {
      *     The name of the selected element
      */
     void selectedEntityChanged(String name);
+    
+    /**
+     * This gets called by the user to refresh task status information.
+     * <p>
+     * Calling this must verify the task.
+     */
+    void refreshTaskInformation();
     
     //
     // Entity placing

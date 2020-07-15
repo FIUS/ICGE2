@@ -46,9 +46,16 @@ public interface GameWindow {
     /**
      * Get the console for this game window
      *
-     * @return The console used by thsi window
+     * @return The console used by this window
      */
     Console getConsole();
+    
+    /**
+     * Get the task status display for this game window.
+     *
+     * @return The task status display used by this window
+     */
+    TaskStatusDisplay getTaskStatusDisplay();
     
     /**
      * Set the title of the window, in which the ICGE is displayed.
