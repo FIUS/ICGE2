@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.TaskVerifier;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotRunProgramException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
@@ -31,6 +32,7 @@ import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
+import de.unistuttgart.informatik.fius.icge.ui.TaskInformation;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ClockButtonState;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;
 
@@ -63,6 +65,7 @@ public class StandardSimulationProxy implements SimulationProxy {
     private final StandardSimulationClock         simulationClock;
     private final StandardPlayfield               playfield;
     private final StandardEntityProgramRegistry   entityProgramRegistry;
+    private final TaskVerifier                    taskVerifier;
     private final Map<SimulationTreeNode, Entity> simualtionSidebarMap;
     
     private Entity entityToInspect;
@@ -80,17 +83,20 @@ public class StandardSimulationProxy implements SimulationProxy {
      *     The playfield to use
      * @param entityProgramRegistry
      *     the entity program registry
+     * @param taskVerifier
+     *     the task verifier to use to verify the task completion status
      */
     public StandardSimulationProxy(
             final StandardSimulationClock simulationClock, final InspectionManager inspectionManager,
             final StandardEntityTypeRegistry entityTypeRegistry, final StandardPlayfield playfield,
-            final StandardEntityProgramRegistry entityProgramRegistry
+            final StandardEntityProgramRegistry entityProgramRegistry, final TaskVerifier taskVerifier
     ) {
         this.simulationClock = simulationClock;
         this.inspectionManager = inspectionManager;
         this.entityTypeRegistry = entityTypeRegistry;
         this.playfield = playfield;
         this.entityProgramRegistry = entityProgramRegistry;
+        this.taskVerifier = taskVerifier;
         this.simualtionSidebarMap = new ConcurrentHashMap<>();
     }
     
@@ -171,6 +177,13 @@ public class StandardSimulationProxy implements SimulationProxy {
             return true;
         });
         
+        // taskState
+        TaskInformation task = null;
+        if (this.taskVerifier != null) {
+            task = this.taskVerifier.getTaskInformation();
+        }
+        this.gameWindow.getTaskStatusDisplay().setTaskInformation(task);
+        
         this.gameWindow.setSimulationProxy(this);
     }
     
@@ -232,6 +245,16 @@ public class StandardSimulationProxy implements SimulationProxy {
         }
         
         this.gameWindow.getPlayfieldDrawer().setSelectedEntityType(name, textureHandle);
+    }
+    
+    @Override
+    public void refreshTaskInformation() {
+        this.taskVerifier.verify();
+        TaskInformation task = null;
+        if (this.taskVerifier != null) {
+            task = this.taskVerifier.getTaskInformation();
+        }
+        this.gameWindow.getTaskStatusDisplay().setTaskInformation(task);
     }
     
     @Override

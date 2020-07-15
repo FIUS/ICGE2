@@ -42,6 +42,7 @@ public class ManualStartSimulation {
         TestEntity.TEXTURE_HANDLE = ManualStartSimulation.animated;
         
         final SimulationBuilder sb = new SimulationBuilder();
+        sb.setTaskVerifier(new TestTaskVerifier());
         sb.buildSimulation();
         final Simulation sim = sb.getBuiltSimulation();
         

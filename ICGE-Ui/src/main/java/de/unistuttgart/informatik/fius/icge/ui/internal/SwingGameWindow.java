@@ -29,6 +29,7 @@ import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.TaskStatusDisplay;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 
@@ -43,11 +44,12 @@ import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
 public class SwingGameWindow extends JFrame implements GameWindow {
     private static final long serialVersionUID = -7215617949088643819L;
     
-    private final SwingTextureRegistry textureRegistry;
-    private final SwingPlayfieldDrawer playfieldDrawer;
-    private final SwingToolbar         toolbar;
-    private final SwingEntitySidebar   entitySidebar;
-    private final SwingConsole         console;
+    private final SwingTextureRegistry   textureRegistry;
+    private final SwingPlayfieldDrawer   playfieldDrawer;
+    private final SwingToolbar           toolbar;
+    private final SwingEntitySidebar     entitySidebar;
+    private final SwingConsole           console;
+    private final SwingTaskStatusDisplay taskStatus;
     
     /**
      * Create a new Swing game window using the given submodules.
@@ -62,16 +64,19 @@ public class SwingGameWindow extends JFrame implements GameWindow {
      *     The {@link EntitySidebar} to use.
      * @param console
      *     The {@link Console} to use.
+     * @param taskStatus
+     *     The {@link TaskStatusDisplay} to use.
      */
     public SwingGameWindow(
             final SwingTextureRegistry textureRegistry, final SwingPlayfieldDrawer playfieldDrawer, final SwingToolbar toolbar,
-            final SwingEntitySidebar entitySidebar, final SwingConsole console
+            final SwingEntitySidebar entitySidebar, final SwingConsole console, final SwingTaskStatusDisplay taskStatus
     ) {
         this.textureRegistry = textureRegistry;
         this.playfieldDrawer = playfieldDrawer;
         this.toolbar = toolbar;
         this.entitySidebar = entitySidebar;
         this.console = console;
+        this.taskStatus = taskStatus;
     }
     
     @Override
@@ -79,7 +84,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         this.playfieldDrawer.setSimulationProxy(simulationProxy);
         this.toolbar.setSimulationProxy(simulationProxy);
         this.entitySidebar.setSimulationProxy(simulationProxy);
-        
+        this.taskStatus.setSimulationProxy(simulationProxy);
     }
     
     @Override
@@ -105,6 +110,11 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     @Override
     public Console getConsole() {
         return this.console;
+    }
+    
+    @Override
+    public TaskStatusDisplay getTaskStatusDisplay() {
+        return this.taskStatus;
     }
     
     @Override
@@ -155,8 +165,8 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         // setup bottom pane layout
         final JTabbedPane bottomPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         bottomPane.addTab("Console", new JScrollPane(consoleComponent));
+        bottomPane.addTab("Task Status", this.taskStatus);
         bottomPane.setPreferredSize(new Dimension(400, 200));
-        // TODO task status component: bottomPane.addTab("Task Status", null);
         
         // setup JFrame layout
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
