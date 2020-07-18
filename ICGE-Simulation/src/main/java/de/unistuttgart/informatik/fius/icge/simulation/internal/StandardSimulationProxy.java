@@ -25,7 +25,6 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFiel
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock.StateChangeListener;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
@@ -64,7 +63,6 @@ public class StandardSimulationProxy implements SimulationProxy {
     private final StandardEntityTypeRegistry      entityTypeRegistry;
     private final StandardSimulationClock         simulationClock;
     private final StandardPlayfield               playfield;
-    private final StandardEntityProgramRegistry   entityProgramRegistry;
     private final TaskVerifier                    taskVerifier;
     private final Map<SimulationTreeNode, Entity> simualtionSidebarMap;
     
@@ -81,21 +79,17 @@ public class StandardSimulationProxy implements SimulationProxy {
      *     The entity type registry to use
      * @param playfield
      *     The playfield to use
-     * @param entityProgramRegistry
-     *     the entity program registry
      * @param taskVerifier
      *     the task verifier to use to verify the task completion status
      */
     public StandardSimulationProxy(
             final StandardSimulationClock simulationClock, final InspectionManager inspectionManager,
-            final StandardEntityTypeRegistry entityTypeRegistry, final StandardPlayfield playfield,
-            final StandardEntityProgramRegistry entityProgramRegistry, final TaskVerifier taskVerifier
+            final StandardEntityTypeRegistry entityTypeRegistry, final StandardPlayfield playfield, final TaskVerifier taskVerifier
     ) {
         this.simulationClock = simulationClock;
         this.inspectionManager = inspectionManager;
         this.entityTypeRegistry = entityTypeRegistry;
         this.playfield = playfield;
-        this.entityProgramRegistry = entityProgramRegistry;
         this.taskVerifier = taskVerifier;
         this.simualtionSidebarMap = new ConcurrentHashMap<>();
     }
@@ -258,19 +252,7 @@ public class StandardSimulationProxy implements SimulationProxy {
     }
     
     @Override
-    public Set<String> getAvailableProgramsForEntityType(final String typeName) {
-        try {
-            final Entity entity = this.entityTypeRegistry.getNewEntity(typeName);
-            return this.entityProgramRegistry.getProgramsForEntity(entity);
-        } catch (final Exception e) {
-            System.out.println("Could not load program list for entity type " + typeName + ".");
-            e.printStackTrace();
-        }
-        return new HashSet<>();
-    }
-    
-    @Override
-    public void spawnEntityAt(final String typeName, final int x, final int y, final String program) {
+    public void spawnEntityAt(final String typeName, final int x, final int y) {
         try {
             final Entity ent = this.entityTypeRegistry.getNewEntity(typeName);
             if (ent == null) {
@@ -278,10 +260,6 @@ public class StandardSimulationProxy implements SimulationProxy {
                 return;
             }
             this.playfield.addEntity(new Position(x, y), ent);
-            //TODO: Run program or remove that feature.
-        } catch (final CannotRunProgramException e) {
-            System.out.println("Could not run program " + program + " for the new entity.");
-            e.printStackTrace();
         } catch (final Exception e) {
             System.out.println("Something went wrong while creating new entity.");
             e.printStackTrace();

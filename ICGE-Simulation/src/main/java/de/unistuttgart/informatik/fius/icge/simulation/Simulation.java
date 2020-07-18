@@ -10,9 +10,9 @@
 package de.unistuttgart.informatik.fius.icge.simulation;
 
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
+import de.unistuttgart.informatik.fius.icge.simulation.programs.Program;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
@@ -44,20 +44,6 @@ public interface Simulation {
      * @return the simulation clock used by this simulation
      */
     SimulationClock getSimulationClock();
-    
-    /**
-     * Get the entity program registry for this simulation.
-     *
-     * @return the entity program registry used by this simulation
-     */
-    EntityProgramRegistry getEntityProgramRegistry();
-    
-    /**
-     * Get the entity program runner for this simulation.
-     *
-     * @return the entity program runner used by this simulation
-     */
-    EntityProgramRunner getEntityProgramRunner();
     
     /**
      * Get the entity type registry associated with the simulation host.
@@ -95,4 +81,19 @@ public interface Simulation {
      *     The task to run
      */
     void runTask(Task taskToRun);
+    
+    /**
+     * Run the given program for the given Entity in the background.
+     * 
+     * @param <E>
+     *     The subtype of Entity that the Program accepts
+     * @param <S>
+     *     The type of the Entity to run the program for. Must be a supertype of E
+     * @param program
+     *     The program to run
+     * @param entity
+     *     The Entity to run the program for
+     * 
+     */
+    <E extends Entity, S extends E> void runProgram(Program<E> program, S entity);
 }
