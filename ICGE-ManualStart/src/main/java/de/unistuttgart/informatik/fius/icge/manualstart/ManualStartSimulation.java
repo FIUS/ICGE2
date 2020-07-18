@@ -47,7 +47,7 @@ public class ManualStartSimulation {
         final Simulation sim = sb.getBuiltSimulation();
         
         w.start();
-        sim.attachToWindow(w);
+        sim.attachToWindow(w, true);
         sim.runTask(new TestTask());
     }
     

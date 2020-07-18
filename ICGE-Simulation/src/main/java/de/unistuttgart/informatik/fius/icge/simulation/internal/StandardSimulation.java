@@ -42,6 +42,7 @@ public class StandardSimulation implements Simulation {
     private final TaskVerifier               taskVerifier;
     private final StandardSimulationProxy    simulationProxy;
     
+    private StandardTaskRunner          runningTask;
     private final StandardProgramRunner programRunner;
     
     /**
@@ -77,7 +78,9 @@ public class StandardSimulation implements Simulation {
         
         taskVerifier.attachToSimulation(this);
         
-        this.simulationProxy = new StandardSimulationProxy(simulationClock, inspectionManager, entityTypeRegistry, playfield, taskVerifier);
+        this.simulationProxy = new StandardSimulationProxy(
+                this, simulationClock, inspectionManager, entityTypeRegistry, playfield, taskVerifier
+        );
     }
     
     @Override
@@ -112,12 +115,31 @@ public class StandardSimulation implements Simulation {
     
     @Override
     public void attachToWindow(final GameWindow window) {
-        this.getSimulationProxyForWindow().attachToGameWindow(window);
+        this.attachToWindow(window, false);
+    }
+    
+    @Override
+    public void attachToWindow(final GameWindow window, final boolean stopWithWindowClose) {
+        this.getSimulationProxyForWindow().attachToGameWindow(window, stopWithWindowClose);
+    }
+    
+    @Override
+    public void stop() {
+        this.simulationClock.stop();
+        if (this.runningTask != null) {
+            this.runningTask.cancel();
+            this.runningTask = null;
+        }
+        this.programRunner.stopAll();
     }
     
     @Override
     public void runTask(final Task taskToRun) {
-        new StandardTaskRunner(taskToRun, this).runTask();
+        if (this.runningTask != null) {
+            throw new IllegalStateException("Cannot run more than 1 Task per Simulation!");
+        }
+        this.runningTask = new StandardTaskRunner(taskToRun, this);
+        this.runningTask.runTask();
     }
     
     @Override

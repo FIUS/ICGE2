@@ -73,7 +73,7 @@ public class StandardSimulationClock implements SimulationClock {
     public StandardSimulationClock() {
         this.tickListeners = new ArrayList<>();
         this.postTickListeners = new ArrayList<>();
-        this.timer = new Timer("STM-TickTimer");
+        this.timer = new Timer("STM-TickTimer", true);
         this.tickCount = -1;
         this.period = SimulationClock.DEFAULT_RENDER_TICK_PERIOD;
         this.shuttingDown = false;

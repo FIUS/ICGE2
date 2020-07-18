@@ -11,6 +11,10 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal.tasks;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
@@ -23,8 +27,12 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
  */
 public class StandardTaskRunner {
     
+    private final ExecutorService executor;
+    
     private final Task       taskToRun;
     private final Simulation sim;
+    
+    private CompletableFuture<Boolean> taskResult;
     
     /**
      * Create a new task runner.
@@ -38,6 +46,14 @@ public class StandardTaskRunner {
         if ((taskToRun == null) || (sim == null)) throw new IllegalArgumentException("Argument is null.");
         this.taskToRun = taskToRun;
         this.sim = sim;
+        final ForkJoinWorkerThreadFactory factory = pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("TaskThread-" + worker.getPoolIndex());
+            return worker;
+        };
+        
+        // only one task can be run per task runner so parallelism of one is ok
+        this.executor = new ForkJoinPool(1, factory, null, false);
     }
     
     /**
@@ -46,9 +62,10 @@ public class StandardTaskRunner {
      * @return true if the task was completed successfully, false if an exception was thrown in the run method
      */
     public CompletableFuture<Boolean> runTask() {
-        final CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(this::executeTask);
+        if (this.taskResult != null) return this.taskResult;
+        this.taskResult = CompletableFuture.supplyAsync(this::executeTask);
         
-        return future;
+        return this.taskResult;
     }
     
     private boolean executeTask() {
@@ -69,5 +86,13 @@ public class StandardTaskRunner {
             System.out.println("----------------------------------------------");
             return false;
         }
+    }
+    
+    /**
+     * Cancel the completable future and intterupt the underlying thread.
+     */
+    public void cancel() {
+        this.taskResult.cancel(true);
+        this.executor.shutdownNow();
     }
 }

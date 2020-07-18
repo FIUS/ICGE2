@@ -10,17 +10,15 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.TaskVerifier;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
-import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotRunProgramException;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock.StateChangeListener;
@@ -55,11 +53,13 @@ public class StandardSimulationProxy implements SimulationProxy {
     
     // GAME WINDOW
     private GameWindow gameWindow;
+    private boolean    stopSimulationWithWindowClose = false;
     
     // MANAGERS
     private final InspectionManager inspectionManager;
     
     // CURRENT SIMULATION
+    private final Simulation                      simulation;
     private final StandardEntityTypeRegistry      entityTypeRegistry;
     private final StandardSimulationClock         simulationClock;
     private final StandardPlayfield               playfield;
@@ -71,6 +71,8 @@ public class StandardSimulationProxy implements SimulationProxy {
     /**
      * Create a new standard simulation proxy
      *
+     * @param simulation
+     *     The Simulation to use
      * @param simulationClock
      *     The simulation clock to use
      * @param inspectionManager
@@ -83,9 +85,10 @@ public class StandardSimulationProxy implements SimulationProxy {
      *     the task verifier to use to verify the task completion status
      */
     public StandardSimulationProxy(
-            final StandardSimulationClock simulationClock, final InspectionManager inspectionManager,
+            final Simulation simulation, final StandardSimulationClock simulationClock, final InspectionManager inspectionManager,
             final StandardEntityTypeRegistry entityTypeRegistry, final StandardPlayfield playfield, final TaskVerifier taskVerifier
     ) {
+        this.simulation = simulation;
         this.simulationClock = simulationClock;
         this.inspectionManager = inspectionManager;
         this.entityTypeRegistry = entityTypeRegistry;
@@ -95,9 +98,10 @@ public class StandardSimulationProxy implements SimulationProxy {
     }
     
     @Override
-    public void attachToGameWindow(final GameWindow window) {
+    public void attachToGameWindow(final GameWindow window, final boolean stopWithWindowClose) {
         if (this.gameWindow != null) throw new IllegalStateException("Already attached to a window!");
         this.gameWindow = window;
+        this.stopSimulationWithWindowClose = stopWithWindowClose;
         
         //Simulation Clock
         if (this.simulationClock.isRunning()) {
@@ -179,6 +183,26 @@ public class StandardSimulationProxy implements SimulationProxy {
         this.gameWindow.getTaskStatusDisplay().setTaskInformation(task);
         
         this.gameWindow.setSimulationProxy(this);
+    }
+    
+    @Override
+    public void windowClosed() {
+        // clear listeners first        
+        this.simulationClock.setStateChangeListener(null);
+        this.simulationClock.setAnimationTickListener(null);
+        this.playfield.setDrawablesChangedListener(null);
+        this.entityTypeRegistry.setEntityRegisteredListener(null);
+        this.playfield.setSimulationTreeEntityAddedListener(null);
+        this.playfield.setSimulationTreeEntityRemovedListener(null);
+        this.simulationClock.registerPostTickListener(null);
+        
+        // remove gameWindow reference
+        this.gameWindow = null;
+        
+        // stop simulation
+        if (this.stopSimulationWithWindowClose) {
+            this.simulation.stop();
+        }
     }
     
     @Override
