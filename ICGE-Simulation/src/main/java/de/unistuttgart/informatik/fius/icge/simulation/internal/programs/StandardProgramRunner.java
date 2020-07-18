@@ -30,7 +30,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterr
  */
 public class StandardProgramRunner {
     
-    private final ExecutorService executor;
+    private ExecutorService executor;
     
     private final Map<Entity, CompletableFuture<Void>> runningPrograms = new HashMap<>();
     
@@ -50,6 +50,7 @@ public class StandardProgramRunner {
         final ForkJoinWorkerThreadFactory factory = pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName("ProgramThread-" + worker.getPoolIndex());
+            worker.isDaemon();
             return worker;
         };
         
@@ -73,7 +74,10 @@ public class StandardProgramRunner {
     public <E extends Entity, S extends E> void run(final Program<E> program, final S entity) {
         if ((program == null) || (entity == null)) throw new IllegalArgumentException("Argument is null.");
         if (this.runningPrograms.containsKey(entity)) {
-            throw new IllegalStateException("Already running a program for entity " + entity.toString() + "!");
+            if (!this.runningPrograms.get(entity).isDone()) {
+                // only throw exception if last program is still running
+                throw new IllegalStateException("Already running a program for entity " + entity.toString() + "!");
+            }
         }
         
         final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
@@ -110,8 +114,14 @@ public class StandardProgramRunner {
      * Stop all running programs.
      */
     public void stopAll() {
+        // the completable futures will not be interrupted by cancel(true)
+        // see https://github.com/vsilaev/tascalate-concurrent
         for (final CompletableFuture<Void> future : this.runningPrograms.values()) {
             future.cancel(true);
         }
+        ExecutorService oldExecutor = this.executor;
+        this.executor = this.createExecutor();
+        oldExecutor.shutdownNow(); // this interrupts all threads of this executor
+        this.runningPrograms.clear();
     }
 }

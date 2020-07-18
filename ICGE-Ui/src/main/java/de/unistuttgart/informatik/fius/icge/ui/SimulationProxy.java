@@ -30,8 +30,15 @@ public interface SimulationProxy {
      *
      * @param gameWindow
      *     The game window to attach to
+     * @param stopWithWindowClose
+     *     If {@code true} the simulation will stop when the attached window is closed
      */
-    void attachToGameWindow(GameWindow gameWindow);
+    void attachToGameWindow(GameWindow gameWindow, boolean stopWithWindowClose);
+    
+    /**
+     * Called when the window is closing.
+     */
+    void windowClosed();
     
     //
     // Toolbar

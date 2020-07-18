@@ -51,6 +51,8 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     private final SwingConsole           console;
     private final SwingTaskStatusDisplay taskStatus;
     
+    private SimulationProxy simulationProxy;
+    
     /**
      * Create a new Swing game window using the given submodules.
      *
@@ -81,6 +83,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     
     @Override
     public void setSimulationProxy(final SimulationProxy simulationProxy) {
+        this.simulationProxy = simulationProxy;
         this.playfieldDrawer.setSimulationProxy(simulationProxy);
         this.toolbar.setSimulationProxy(simulationProxy);
         this.entitySidebar.setSimulationProxy(simulationProxy);
@@ -191,7 +194,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     }
     
     private void cleanup() {
-        // TODO implement simulation
         this.console.cleanup();
+        this.simulationProxy.windowClosed();
     }
 }

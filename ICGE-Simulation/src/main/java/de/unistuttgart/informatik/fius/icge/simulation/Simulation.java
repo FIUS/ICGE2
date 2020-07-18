@@ -75,7 +75,26 @@ public interface Simulation {
     void attachToWindow(GameWindow window);
     
     /**
+     * Attach this simulation to the given window.
+     * 
+     * @param window
+     *     The window to attach to
+     * @param stopWithWindowClose
+     *     If {@code true} the simulation will stop when the attached window is closed
+     */
+    void attachToWindow(GameWindow window, boolean stopWithWindowClose);
+    
+    /**
+     * Irreversibly stop the simulation and all running background tasks and programs.
+     * 
+     * Calling this method twice will not throw an exception.
+     */
+    void stop();
+    
+    /**
      * Run the given task in the background.
+     * 
+     * Only one task can be run for a simulation so calling this twice will throw an exception.
      * 
      * @param taskToRun
      *     The task to run
