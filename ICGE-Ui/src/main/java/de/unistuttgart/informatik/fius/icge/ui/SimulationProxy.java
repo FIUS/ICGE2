@@ -91,15 +91,6 @@ public interface SimulationProxy {
     //
     
     /**
-     * Get a set of registered programs that can be used with an entity of the given type.
-     *
-     * @param typeName
-     *     the name of the entity type
-     * @return the set of program identifiers
-     */
-    Set<String> getAvailableProgramsForEntityType(String typeName);
-    
-    /**
      * Spawn a new entity of the given type at the given position and bind the program to this entity.
      *
      * @param typeName
@@ -108,10 +99,8 @@ public interface SimulationProxy {
      *     coordinate
      * @param y
      *     coordinate
-     * @param program
-     *     program name; use {@code null} to not set a program
      */
-    void spawnEntityAt(String typeName, int x, int y, String program);
+    void spawnEntityAt(String typeName, int x, int y);
     
     /**
      * Clear all entities in the given cell.

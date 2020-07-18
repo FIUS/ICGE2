@@ -14,8 +14,6 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulati
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
 
 
@@ -66,16 +64,12 @@ public class SimulationBuilder {
         
         final StandardEntityTypeRegistry entityTypeRegistry = new StandardEntityTypeRegistry();
         
-        final StandardEntityProgramRegistry entityProgramRegistry = new StandardEntityProgramRegistry();
-        final StandardEntityProgramRunner entityProgramRunner = new StandardEntityProgramRunner(entityProgramRegistry);
-        
         final StandardActionLog actionLog = new StandardActionLog();
         
         final InspectionManager inspectionManager = new InspectionManager();
         
         this.simulation = new StandardSimulation(
-                playfield, simulationClock, entityTypeRegistry, entityProgramRegistry, entityProgramRunner, actionLog, inspectionManager,
-                this.taskVerifier
+                playfield, simulationClock, entityTypeRegistry, actionLog, inspectionManager, this.taskVerifier
         );
     }
     

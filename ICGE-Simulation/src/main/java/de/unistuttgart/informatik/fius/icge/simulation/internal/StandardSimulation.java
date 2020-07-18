@@ -10,19 +10,18 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
+import de.unistuttgart.informatik.fius.icge.simulation.programs.Program;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.TaskVerifier;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.program.EntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.program.StandardEntityProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.programs.StandardProgramRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
@@ -36,14 +35,14 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
  */
 public class StandardSimulation implements Simulation {
     
-    private final StandardPlayfield             playfield;
-    private final StandardSimulationClock       simulationClock;
-    private final StandardEntityProgramRegistry entityProgramRegistry;
-    private final StandardEntityProgramRunner   entityProgramRunner;
-    private final StandardActionLog             actionLog;
-    private final StandardEntityTypeRegistry    entityTypeRegistry;
-    private final TaskVerifier                  taskVerifier;
-    private final StandardSimulationProxy       simulationProxy;
+    private final StandardPlayfield          playfield;
+    private final StandardSimulationClock    simulationClock;
+    private final StandardActionLog          actionLog;
+    private final StandardEntityTypeRegistry entityTypeRegistry;
+    private final TaskVerifier               taskVerifier;
+    private final StandardSimulationProxy    simulationProxy;
+    
+    private final StandardProgramRunner programRunner;
     
     /**
      * Creates a new standard simulation with the given parameters.
@@ -54,10 +53,6 @@ public class StandardSimulation implements Simulation {
      *     The simulation clock to use
      * @param entityTypeRegistry
      *     The entityTypeRegistry to use
-     * @param entityProgramRegistry
-     *     The entityProgramRegistry to use
-     * @param entityProgramRunner
-     *     The entityProgramRunner to use
      * @param actionLog
      *     The actionLog to use
      * @param inspectionManager
@@ -67,25 +62,22 @@ public class StandardSimulation implements Simulation {
      */
     public StandardSimulation(
             final StandardPlayfield playfield, final StandardSimulationClock simulationClock,
-            final StandardEntityTypeRegistry entityTypeRegistry, final StandardEntityProgramRegistry entityProgramRegistry,
-            final StandardEntityProgramRunner entityProgramRunner, final StandardActionLog actionLog,
+            final StandardEntityTypeRegistry entityTypeRegistry, final StandardActionLog actionLog,
             final InspectionManager inspectionManager, final TaskVerifier taskVerifier
     ) {
         this.playfield = playfield;
         this.simulationClock = simulationClock;
-        this.entityProgramRegistry = entityProgramRegistry;
-        this.entityProgramRunner = entityProgramRunner;
         this.actionLog = actionLog;
         this.entityTypeRegistry = entityTypeRegistry;
         this.taskVerifier = taskVerifier;
+        
+        this.programRunner = new StandardProgramRunner();
         
         this.playfield.initialize(this);
         
         taskVerifier.attachToSimulation(this);
         
-        this.simulationProxy = new StandardSimulationProxy(
-                simulationClock, inspectionManager, entityTypeRegistry, playfield, entityProgramRegistry, taskVerifier
-        );
+        this.simulationProxy = new StandardSimulationProxy(simulationClock, inspectionManager, entityTypeRegistry, playfield, taskVerifier);
     }
     
     @Override
@@ -101,16 +93,6 @@ public class StandardSimulation implements Simulation {
     @Override
     public SimulationClock getSimulationClock() {
         return this.simulationClock;
-    }
-    
-    @Override
-    public EntityProgramRegistry getEntityProgramRegistry() {
-        return this.entityProgramRegistry;
-    }
-    
-    @Override
-    public EntityProgramRunner getEntityProgramRunner() {
-        return this.entityProgramRunner;
     }
     
     @Override
@@ -136,5 +118,11 @@ public class StandardSimulation implements Simulation {
     @Override
     public void runTask(final Task taskToRun) {
         new StandardTaskRunner(taskToRun, this).runTask();
+    }
+    
+    @Override
+    public <E extends Entity, S extends E> void runProgram(Program<E> program, S entity) {
+        //throw new UnsupportedOperationException("Running Programs is currently not implemented!");
+        this.programRunner.run(program, entity);
     }
 }
