@@ -84,9 +84,9 @@ public class StandardProgramRunner {
             try {
                 program.run(entity);
             } catch (@SuppressWarnings("unused") final UncheckedInterruptedException e) {
-                System.out.println("Running program for entity " + entity.toString() + " was stopped.");
+                System.out.println("The running program " + program.toString() + " for entity " + entity.toString() + " was stopped.");
             } catch (@SuppressWarnings("unused") final CancellationException e) {
-                System.out.println("Running program for entity " + entity.toString() + " was stopped.");
+                System.out.println("The running program " + program.toString() + " for entity " + entity.toString() + " was stopped.");
             } catch (final Exception e) {
                 System.out.println("----------------------------------------------");
                 System.out.println("The following exception happened while running a program for the entity " + entity.toString());
