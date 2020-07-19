@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.manualstart;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -94,7 +95,7 @@ public class TestTaskVerifier implements TaskVerifier, TaskInformation {
     
     @Override
     public List<TaskInformation> getChildTasks() {
-        return null;
+        return Collections.emptyList();
     }
     
 }
