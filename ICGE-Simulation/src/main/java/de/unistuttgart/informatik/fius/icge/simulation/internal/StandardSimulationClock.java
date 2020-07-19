@@ -259,6 +259,14 @@ public class StandardSimulationClock implements SimulationClock {
         } else throw new ListenerSetException();
     }
     
+    /**
+     * Remove the state change listener, that gets called when the clock get's started or paused through public API and
+     * is responsible for informing the UI.
+     */
+    public void removeStateChangeListener() {
+        this.stateChangeListener = null;
+    }
+    
     @Override
     public void registerTickListener(final Function<Long, Boolean> listener) {
         if (this.shuttingDown) return;

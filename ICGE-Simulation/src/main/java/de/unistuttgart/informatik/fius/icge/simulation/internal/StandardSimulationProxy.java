@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -95,6 +96,22 @@ public class StandardSimulationProxy implements SimulationProxy {
         this.playfield = playfield;
         this.taskVerifier = taskVerifier;
         this.simualtionSidebarMap = new ConcurrentHashMap<>();
+        
+        // attach tick listeners to simulation clock
+        // only do this once per SimulationProxy as unsetting these listeners is not possible atm
+        this.simulationClock.setAnimationTickListener(new Consumer<Long>() {
+            @Override
+            public void accept(final Long tickCount) {
+                if (StandardSimulationProxy.this.gameWindow != null) {
+                    StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().draw(tickCount);
+                }
+            }
+        });
+        
+        this.simulationClock.registerPostTickListener(unused -> {
+            updateEntityInspector();
+            return true; // post tick listener could be removed by returning false here
+        });
     }
     
     @Override
@@ -124,17 +141,13 @@ public class StandardSimulationProxy implements SimulationProxy {
         });
         
         //EntityDrawing
-        this.simulationClock.setAnimationTickListener(new Consumer<Long>() {
-            @Override
-            public void accept(final Long tickCount) {
-                StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().draw(tickCount);
-            }
-        });
         
         this.playfield.setDrawablesChangedListener(new Consumer<List<Drawable>>() {
             @Override
             public void accept(final List<Drawable> drawables) {
-                StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().setDrawables(drawables);
+                if (StandardSimulationProxy.this.gameWindow != null) {
+                    StandardSimulationProxy.this.gameWindow.getPlayfieldDrawer().setDrawables(drawables);
+                }
             }
         });
         
@@ -142,9 +155,11 @@ public class StandardSimulationProxy implements SimulationProxy {
         this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.VIEW);
         
         //EntitySelection
-        this.entityTypeRegistry.setEntityRegisteredListener(
-                (entityName, textureHandle) -> StandardSimulationProxy.this.gameWindow.getToolbar().addEntity(entityName, textureHandle)
-        );
+        this.entityTypeRegistry.setEntityRegisteredListener((entityName, textureHandle) -> {
+            if (StandardSimulationProxy.this.gameWindow != null) {
+                StandardSimulationProxy.this.gameWindow.getToolbar().addEntity(entityName, textureHandle);
+            }
+        });
         this.gameWindow.getToolbar().enableEntitySelector();
         final String typeName = this.gameWindow.getToolbar().getCurrentEntity();
         String textureHandle = null;
@@ -170,11 +185,6 @@ public class StandardSimulationProxy implements SimulationProxy {
         
         this.gameWindow.getEntitySidebar().disableEntityInspector();
         
-        this.simulationClock.registerPostTickListener(unused -> {
-            updateEntityInspector();
-            return true;
-        });
-        
         // taskState
         TaskInformation task = null;
         if (this.taskVerifier != null) {
@@ -188,13 +198,14 @@ public class StandardSimulationProxy implements SimulationProxy {
     @Override
     public void windowClosed() {
         // clear listeners first        
-        this.simulationClock.setStateChangeListener(null);
-        this.simulationClock.setAnimationTickListener(null);
-        this.playfield.setDrawablesChangedListener(null);
-        this.entityTypeRegistry.setEntityRegisteredListener(null);
-        this.playfield.setSimulationTreeEntityAddedListener(null);
-        this.playfield.setSimulationTreeEntityRemovedListener(null);
-        this.simulationClock.registerPostTickListener(null);
+        // but do not clear tick listeners (see constructor for explanation)
+        //this.simulationClock.setAnimationTickListener(null); // setting null just provokes null pointers
+        //this.simulationClock.registerPostTickListener(null); // setting null just provokes null pointers
+        this.simulationClock.removeStateChangeListener();
+        this.playfield.removeDrawablesChangedListener();
+        this.playfield.removeSimulationTreeEntityAddedListener();
+        this.playfield.removeSimulationTreeEntityRemovedListener();
+        this.entityTypeRegistry.removeEntityRegisteredListener();
         
         // remove gameWindow reference
         this.gameWindow = null;
@@ -334,9 +345,9 @@ public class StandardSimulationProxy implements SimulationProxy {
     }
     
     private void updateEntityInspector() {
-        if (this.entityToInspect != null) {
-            this.gameWindow.getEntitySidebar().setEntityInspectorEntries(this.getEntries(this.entityToInspect));
-        }
+        if (this.gameWindow == null) return;
+        if (this.entityToInspect == null) return;
+        this.gameWindow.getEntitySidebar().setEntityInspectorEntries(this.getEntries(this.entityToInspect));
     }
     
     @Override
