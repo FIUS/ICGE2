@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 
 
@@ -70,16 +71,22 @@ public class StandardTaskRunner {
         try {
             this.taskToRun.run(this.sim);
             return true;
+        } catch (@SuppressWarnings("unused") final UncheckedInterruptedException e) {
+            // task was interrupted on simulation.stop()
+            System.out.println("----------------------------------------------");
+            System.out.println("The task " + this.taskToRun.toString() + " was aborted.");
+            System.out.println("----------------------------------------------");
+            return false;
         } catch (final CancellationException e) {
             //Simulation was stopped before completion of the task.
             System.out.println("----------------------------------------------");
-            System.out.println("The task was aborted.");
+            System.out.println("The task " + this.taskToRun.toString() + " was aborted.");
             e.printStackTrace();
             System.out.println("----------------------------------------------");
             return false;
         } catch (final Exception e) {
             System.out.println("----------------------------------------------");
-            System.out.println("The following exception caused a task failure:");
+            System.out.println("The following exception caused the task " + this.taskToRun.toString() + " to fail:");
             e.printStackTrace();
             System.out.println("----------------------------------------------");
             return false;
