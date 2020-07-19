@@ -44,7 +44,7 @@ public interface TaskInformation {
     /**
      * Get a list of child/sub tasks of this task.
      *
-     * @return a list of sub-tasks (may be {@code null} or empty)
+     * @return a list of sub-tasks (must not be {@code null}, use {@code Collections.emptyList()} instead)
      */
     List<TaskInformation> getChildTasks();
 }
