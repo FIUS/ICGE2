@@ -174,19 +174,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public void setEntityInspectorEntries(final EntityInspectorEntry[] entries) {
-        if (Objects.equals(this.lastEntries, entries)) return;
-        this.lastEntries = entries;
-        
-        this.entityInspector.clearUIElements();
-        
-        for (final EntityInspectorEntry entry : entries) {
-            this.entityInspector.addUIElement(entry.getName(), entry.getType(), entry.getValue(), (id, value) -> {
-                entry.runCallback(value);
-                if (this.simulationProxy != null) {
-                    this.simulationProxy.entityValueChange(id, value);
-                }
-            });
-        }
+        this.entityInspector.updateEntityInspectorEntries(entries);
     }
     
     @Override
