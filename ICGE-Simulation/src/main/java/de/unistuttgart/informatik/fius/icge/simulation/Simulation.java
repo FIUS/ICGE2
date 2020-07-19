@@ -88,7 +88,7 @@ public interface Simulation {
      * @param <E>
      *     The subtype of Entity that the Program accepts
      * @param <S>
-     *     The type of the Entity to run the program for. Must be a supertype of E
+     *     The type of the Entity to run the program for. Must be a subtype of E
      * @param program
      *     The program to run
      * @param entity
