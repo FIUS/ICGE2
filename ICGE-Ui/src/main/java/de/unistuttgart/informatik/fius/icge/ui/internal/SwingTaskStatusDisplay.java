@@ -137,11 +137,11 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
                 this.appendText(document, " (success)\n", this.taskSuccess);
                 break;
             case FAILED:
-                this.appendText(document, " (error)\n", this.taskFail);
+                this.appendText(document, " (failed)\n", this.taskFail);
                 break;
             case UNDECIDED: // don't add any text for undecided status (same as default)
             default:
-                this.appendText(document, "\n", this.taskTitle);
+                this.appendText(document, " (pending)\n", this.taskTitle);
         }
         
         // append description
