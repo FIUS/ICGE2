@@ -15,14 +15,19 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.NumberFormat;
-import java.util.function.BiConsumer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.text.NumberFormatter;
+
+import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
 
 
 /**
@@ -41,6 +46,10 @@ public class SwingEntityInspector extends JPanel {
     
     /** The user warning at the bottom */
     private final JLabel warning;
+    
+    private Object                 updateLock = new Object();
+    private EntityInspectorEntry[] currentEntries;
+    private List<Consumer<String>> uiValueUpdaters;
     
     /**
      * Default constructor
@@ -93,22 +102,122 @@ public class SwingEntityInspector extends JPanel {
     }
     
     /**
+     * Update the entity inspector to reflect the new Values.
+     *
+     * @param entries
+     *     the new list of entries to display
+     */
+    public void updateEntityInspectorEntries(final EntityInspectorEntry[] entries) {
+        if (this.canUpdateValuesOnly(entries)) {
+            // only update values
+            SwingUtilities.invokeLater(() -> {
+                synchronized (this.updateLock) {
+                    // check preconditions
+                    List<Consumer<String>> valueUpdaters = this.uiValueUpdaters;
+                    if (valueUpdaters == null) return; // TODO throw exeptions here?
+                    if (valueUpdaters.size() != entries.length) return;
+                    
+                    // update values
+                    for (int i = 0; i < entries.length; i++) {
+                        valueUpdaters.get(i).accept(entries[i].getValue());
+                    }
+                    
+                    // change to new entries list
+                    this.currentEntries = entries;
+                    
+                    // update ui
+                    this.revalidate();
+                    this.repaint();
+                }
+            });
+            return;
+        }
+        
+        // completely update the view
+        SwingUtilities.invokeLater(() -> {
+            synchronized (this.updateLock) {
+                // clear old elements first, then update current entries list
+                this.clearUIElements();
+                
+                // change to new entries list
+                this.uiValueUpdaters = null;
+                this.currentEntries = entries; // only do this after clearing old elements
+                
+                // add new ui elements
+                List<Consumer<String>> newUiValueUpdaters = new ArrayList<>(entries.length);
+                for (int i = 0; i < entries.length; i++) {
+                    newUiValueUpdaters.add(this.addUIElement(entries[i], i));
+                }
+                
+                // set new value updaters
+                this.uiValueUpdaters = newUiValueUpdaters;
+                
+                // update ui
+                this.revalidate();
+                this.repaint();
+            }
+        });
+    }
+    
+    /**
+     * Check if the new list of entries matches the current entries structurally.
+     *
+     * @param entries
+     *     The ne list of entries to check against currentEntries
+     * @return true iff only the values need to be updated
+     */
+    private boolean canUpdateValuesOnly(final EntityInspectorEntry[] entries) {
+        if (this.currentEntries == null) return false;
+        if (this.currentEntries.length != entries.length) return false;
+        for (int i = 0; i < entries.length; i++) {
+            EntityInspectorEntry oldEntry = this.currentEntries[i];
+            EntityInspectorEntry newEntry = entries[i];
+            if (!oldEntry.getName().equals(newEntry.getName())) return false;
+            if (!oldEntry.getType().equals(newEntry.getType())) return false;
+            // only value can differ for updates without complete redraws!
+        }
+        return true;
+    }
+    
+    /**
+     * Callback to change the value of an entry.
+     * 
+     * This indirect callback is used to avoid changing the callback on the ui element when only the values of the
+     * entries have changed.
+     * 
+     * @param index
+     *     the index of the entry to update
+     * @param name
+     *     the name of the entry to update (additional safeguard)
+     * @param value
+     *     the new value to set for the entry
+     */
+    private void updateValueOnEntity(int index, String name, String value) {
+        if (this.currentEntries == null || index >= this.currentEntries.length) return;
+        EntityInspectorEntry entry = this.currentEntries[index];
+        if (!entry.getName().equals(name)) return;
+        entry.runCallback(value);
+    }
+    
+    /**
      * Add a entry to the ui editor
      * 
-     * @param name
-     *     The name of the setting, which is displayed infromt
-     * @param type
-     *     The type of the setting
-     * @param value
-     *     The default/start value of the element
-     * @param callback
-     *     The callback run on value change
+     * @param entry
+     *     The entry to add a ui element for
+     * @param index
+     *     The index of the entry in currentEntries
+     * @return A consumer that updates the newly added ui element to the given string value
      */
-    public void addUIElement(final String name, final String type, final String value, final BiConsumer<String, String> callback) {
+    private Consumer<String> addUIElement(final EntityInspectorEntry entry, final int index) {
+        
+        final String name = entry.getName();
         this.inspector.add(new JLabel(name + ": "), this.gbc);
         this.gbc.gridx = 1;
         
-        switch (type) {
+        Consumer<String> updateUiValueCallback = (newValue) -> {
+            /* Default is to update nothing. */};
+        
+        switch (entry.getType()) {
             case "integer": {
                 final NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
                 formatter.setValueClass(Integer.class);
@@ -116,7 +225,7 @@ public class SwingEntityInspector extends JPanel {
                 formatter.setMaximum(Integer.MAX_VALUE);
                 formatter.setAllowsInvalid(false);
                 final JFormattedTextField field = new JFormattedTextField(formatter);
-                field.addActionListener(ae -> callback.accept(name, field.getText()));
+                field.addActionListener(ae -> this.updateValueOnEntity(index, name, field.getText()));
                 this.inspector.add(field, this.gbc);
             }
                 break;
@@ -127,36 +236,41 @@ public class SwingEntityInspector extends JPanel {
                 formatter.setMaximum(Long.MAX_VALUE);
                 formatter.setAllowsInvalid(false);
                 final JFormattedTextField field = new JFormattedTextField(formatter);
-                field.addActionListener(ae -> callback.accept(name, field.getText()));
+                field.addActionListener(ae -> this.updateValueOnEntity(index, name, field.getText()));
                 this.inspector.add(field, this.gbc);
             }
                 break;
             case "string": {
-                final JTextField field = new JTextField(value);
-                field.addActionListener(ae -> callback.accept(name, field.getText()));
+                final JTextField field = new JTextField(entry.getValue());
+                updateUiValueCallback = (newValue) -> field.setText(newValue);
+                field.addActionListener(ae -> this.updateValueOnEntity(index, name, field.getText()));
                 this.inspector.add(field, this.gbc);
             }
                 break;
             case "function":
                 final JButton button = new JButton("call");
-                button.addActionListener(ae -> callback.accept(name, ""));
+                button.addActionListener(ae -> this.updateValueOnEntity(index, name, ""));
                 this.inspector.add(button, this.gbc);
                 break;
             default:
-                this.inspector.add(new JLabel(value), this.gbc);
+                JLabel label = new JLabel(entry.getValue());
+                updateUiValueCallback = (newValue) -> label.setText(newValue);
+                this.inspector.add(label, this.gbc);
         }
         
         this.gbc.gridx = 0;
         this.gbc.gridy += 1;
         
+        // TODO move this into outer method
         this.revalidate();
         this.repaint();
+        return updateUiValueCallback;
     }
     
     /**
      * Clears the entity editor
      */
-    public void clearUIElements() {
+    private void clearUIElements() {
         this.remove(this.inspector);
         this.inspector = new JPanel();
         this.inspector.setLayout(new GridBagLayout());
@@ -164,9 +278,6 @@ public class SwingEntityInspector extends JPanel {
         
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
-        
-        this.revalidate();
-        this.repaint();
     }
     
     @Override
