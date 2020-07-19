@@ -122,7 +122,6 @@ public class StandardSimulation implements Simulation {
     
     @Override
     public <E extends Entity, S extends E> void runProgram(Program<E> program, S entity) {
-        //throw new UnsupportedOperationException("Running Programs is currently not implemented!");
         this.programRunner.run(program, entity);
     }
 }

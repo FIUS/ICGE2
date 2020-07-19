@@ -64,7 +64,7 @@ public class StandardProgramRunner {
      * @param <E>
      *     The subtype of Entity that the Program accepts
      * @param <S>
-     *     The type of the Entity to run the program for. Must be a supertype of E
+     *     The type of the Entity to run the program for. Must be a subtype of E
      * @param program
      *     The program to run
      * @param entity
@@ -76,7 +76,7 @@ public class StandardProgramRunner {
             throw new IllegalStateException("Already running a program for entity " + entity.toString() + "!");
         }
         
-        final CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+        final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 program.run(entity);
             } catch (@SuppressWarnings("unused") final UncheckedInterruptedException e) {
@@ -89,7 +89,6 @@ public class StandardProgramRunner {
                 e.printStackTrace();
                 System.out.println("----------------------------------------------");
             }
-            return null;
         }, this.executor);
         
         // set the running program in the entityMap
