@@ -12,9 +12,8 @@ package de.unistuttgart.informatik.fius.icge.simulation.internal.tasks;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinWorkerThread;
-import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
@@ -46,14 +45,13 @@ public class StandardTaskRunner {
         if ((taskToRun == null) || (sim == null)) throw new IllegalArgumentException("Argument is null.");
         this.taskToRun = taskToRun;
         this.sim = sim;
-        final ForkJoinWorkerThreadFactory factory = pool -> {
-            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
-            worker.setName("TaskThread-" + worker.getPoolIndex());
+        final ThreadFactory factory = runnable -> {
+            Thread worker = new Thread(runnable, "TaskThread-" + taskToRun.toString());
             return worker;
         };
         
         // only one task can be run per task runner so parallelism of one is ok
-        this.executor = new ForkJoinPool(1, factory, null, false);
+        this.executor = Executors.newSingleThreadExecutor(factory);
     }
     
     /**
@@ -63,7 +61,7 @@ public class StandardTaskRunner {
      */
     public CompletableFuture<Boolean> runTask() {
         if (this.taskResult != null) return this.taskResult;
-        this.taskResult = CompletableFuture.supplyAsync(this::executeTask);
+        this.taskResult = CompletableFuture.supplyAsync(this::executeTask, this.executor);
         
         return this.taskResult;
     }
