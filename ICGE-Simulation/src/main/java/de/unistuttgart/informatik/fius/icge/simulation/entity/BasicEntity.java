@@ -30,6 +30,11 @@ public abstract class BasicEntity implements Entity {
     
     private WeakReference<Playfield> field;
     
+    /** Lock object to ensure no two actions are scheduled at the same time. */
+    protected Object                  actionLock = new Object();
+    /** The completable future of the last active action. */
+    protected CompletableFuture<Void> currentAction;
+    
     /**
      * @throws EntityNotOnFieldException
      *     if this entity is not on a playfield
@@ -130,10 +135,34 @@ public abstract class BasicEntity implements Entity {
     public void sleep(final int ticks) {
         if (ticks <= 0) throw new IllegalArgumentException("The number of ticks must be > 0 !");
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
+        this.scheduleActionAfterCurrentAction(endOfOperation);
         try {
             this.getSimulation().getSimulationClock().scheduleOperationInTicks(ticks, endOfOperation);
         } finally {
             endOfOperation.complete(null);
+        }
+    }
+    
+    /**
+     * Wait for the current action to finish and schedule the next action right after.
+     * <p>
+     * Use this method only if you know what you are doing!
+     * <p>
+     * The method must be used before scheduling a ComppletableFuture for a future tick of the simulation clock to
+     * prevent llong running actions from running in parallel.
+     * <p>
+     * This method synchronizes on the {@link #actionLock} and stores replaces {@link #currentAction} with
+     * {@code nextAction} after the current action completed.
+     * 
+     * @param nextAction
+     *     The completable future of the action to schedule
+     */
+    protected void scheduleActionAfterCurrentAction(CompletableFuture<Void> nextAction) {
+        synchronized (this.actionLock) {
+            if (this.currentAction != null) {
+                this.currentAction.join();
+            }
+            this.currentAction = nextAction;
         }
     }
     

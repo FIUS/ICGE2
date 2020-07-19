@@ -50,6 +50,7 @@ public abstract class MovableEntity extends BasicEntity {
      */
     public void turnClockWise() {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
+        this.scheduleActionAfterCurrentAction(endOfOperation);
         try {
             this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
             this.turnClockWiseInternal();
@@ -134,6 +135,11 @@ public abstract class MovableEntity extends BasicEntity {
      *     if a solid entity is in the way
      */
     public void move() {
+        // use extra future for whole operation as it is split amongst two futures
+        final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
+        this.scheduleActionAfterCurrentAction(endOfOperation);
+        
+        // setup move
         final int duration = 4;
         final int renderTickDuration = duration * SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
         final SimulationClock clock = this.getSimulation().getSimulationClock();
@@ -164,6 +170,7 @@ public abstract class MovableEntity extends BasicEntity {
             this.internalMove(currentPos, nextPos);
         } finally {
             endOfOperation2.complete(null);
+            endOfOperation.complete(null); // complete future for whole operation
             this.movingDrawable = null;
         }
     }
