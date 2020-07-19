@@ -125,12 +125,12 @@ public class StandardSimulation implements Simulation {
     
     @Override
     public void stop() {
-        this.simulationClock.stop();
         if (this.runningTask != null) {
             this.runningTask.cancel();
             this.runningTask = null;
         }
         this.programRunner.stopAll();
+        this.simulationClock.shutdown(); // stop the clock for good
     }
     
     @Override

@@ -90,7 +90,7 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
     }
     
     /**
-     * Add entity selector listener that gets informed about all entity types added.
+     * Set an entity selector listener that gets informed about all entity types added.
      *
      * @param listener
      *     the listener to set; use null to remove listener
@@ -106,6 +106,13 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
             }
             this.entityRegisteredListener = listener;
         } else throw new ListenerSetException();
+    }
+    
+    /**
+     * Remove the set entity selector listener that gets informed about all entity types added.
+     */
+    public synchronized void removeEntityRegisteredListener() {
+        this.entityRegisteredListener = null;
     }
     
     /**
