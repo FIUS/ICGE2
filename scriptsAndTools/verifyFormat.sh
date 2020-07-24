@@ -28,7 +28,7 @@ if [ ! "$(git status -s **/pom.xml)" == "" ] ;then
   fail "The format of a pom is wrong." 11
 fi
 
-if ! mvn formatter:validate ;then
+if ! mvn compile formatter:validate ;then
   fail "The format of a java file is wrong" 12
 fi
 
