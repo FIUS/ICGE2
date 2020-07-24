@@ -5,11 +5,6 @@ on:
     branches: [ master ]
   pull_request:
 
-defaults:
-  run:
-    shell: bash
-    working-directory: scriptsAndTools
-
 jobs:
   validate_format:
     name: Validate format
@@ -21,7 +16,7 @@ jobs:
       with:
         java-version: 11
     - name: Validate format
-      run: verifyFormat & git status #git status returns zero exactly when there are no uncomitted changes
+      run: ./scriptsAndFormats/verifyFormat.sh & git status #git status returns zero exactly when there are no uncomitted changes
 
   validate_javadoc:
     name: Validate javadoc
