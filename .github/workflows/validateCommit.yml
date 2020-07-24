@@ -11,10 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup java
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
     - name: Validate format
       run: ./scriptsAndFormats/verifyFormat.sh & git status #git status returns zero exactly when there are no uncomitted changes
 
