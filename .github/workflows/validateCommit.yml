@@ -3,7 +3,7 @@ name: Check format and javadoc
 on:
   push:
     branches: [ master ]
-  pull_request
+  pull_request:
 
 defaults:
   run:
