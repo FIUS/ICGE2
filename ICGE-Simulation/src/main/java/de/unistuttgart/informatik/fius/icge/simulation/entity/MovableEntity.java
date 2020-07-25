@@ -40,7 +40,8 @@ public abstract class MovableEntity extends BasicEntity {
     
     @Override
     public Drawable getDrawInformation() {
-        if (this.movingDrawable != null) return this.movingDrawable;
+        final AnimatedDrawable movingDrawable = this.movingDrawable;
+        if (movingDrawable != null) return movingDrawable;
         final Position pos = this.getPosition();
         return new UntilableDrawable(pos.getX(), pos.getY(), this.getZPosition(), this.getTextureHandle());
     }
@@ -50,7 +51,7 @@ public abstract class MovableEntity extends BasicEntity {
      */
     public void turnClockWise() {
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
-        this.scheduleActionAfterCurrentAction(endOfOperation);
+        this.enqueueToPerformNewOperation(endOfOperation);
         try {
             this.getSimulation().getSimulationClock().scheduleOperationAtNextTick(endOfOperation);
             this.turnClockWiseInternal();
@@ -137,7 +138,7 @@ public abstract class MovableEntity extends BasicEntity {
     public void move() {
         // use extra future for whole operation as it is split amongst two futures
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
-        this.scheduleActionAfterCurrentAction(endOfOperation);
+        this.enqueueToPerformNewOperation(endOfOperation);
         
         // setup move
         final int duration = 4;
@@ -204,8 +205,11 @@ public abstract class MovableEntity extends BasicEntity {
      * Move this entity forward one field if that is possible.
      */
     public void moveIfPossible() {
-        if (this.canMove()) {
-            this.move();
+        try {
+            if (this.canMove()) this.move();
+        } catch (@SuppressWarnings("unused") EntityNotOnFieldException | IllegalMoveException e) {
+            // do nothing just catch exeptions if move was made illegal by an operation 
+            // in another thread
         }
     }
 }
