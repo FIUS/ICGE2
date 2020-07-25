@@ -195,6 +195,8 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     
     private void cleanup() {
         this.console.cleanup();
-        this.simulationProxy.windowClosed();
+        if (this.simulationProxy != null) {
+            this.simulationProxy.windowClosed();
+        }
     }
 }
