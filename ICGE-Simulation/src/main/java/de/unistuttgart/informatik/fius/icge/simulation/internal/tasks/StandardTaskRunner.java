@@ -56,9 +56,12 @@ public class StandardTaskRunner {
     }
     
     /**
-     * Run the given task
+     * Run the given task.
+     * <p>
+     * This method is idempotent and will just return the completable future of the running task if called again.
      *
-     * @return true if the task was completed successfully, false if an exception was thrown in the run method
+     * @return CompletableFuture containing the task result: true if the task was completed successfully, false if an
+     *     exception was thrown in the run method of the task
      */
     public CompletableFuture<Boolean> runTask() {
         if (this.taskResult != null) return this.taskResult;

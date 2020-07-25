@@ -201,10 +201,8 @@ public class StandardSimulationProxy implements SimulationProxy {
     
     @Override
     public void windowClosed() {
-        // clear listeners first        
+        // clear listeners first
         // but do not clear tick listeners (see constructor for explanation)
-        //this.simulationClock.setAnimationTickListener(null); // setting null just provokes null pointers
-        //this.simulationClock.registerPostTickListener(null); // setting null just provokes null pointers
         this.simulationClock.removeStateChangeListener();
         this.playfield.removeDrawablesChangedListener();
         this.playfield.removeSimulationTreeEntityAddedListener();
