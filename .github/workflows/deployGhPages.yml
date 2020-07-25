@@ -17,7 +17,7 @@ jobs:
     - name: Generate javadoc
       run: mvn -B javadoc:aggregate -pl '!ICGE-build-tools,!ICGE-ManualStart'
     - name: Deploy
-      uses: uses: peaceiris/actions-gh-pages@v3.7.0-4
+      uses: peaceiris/actions-gh-pages@v3.7.0-4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./target/site/apidocs/
