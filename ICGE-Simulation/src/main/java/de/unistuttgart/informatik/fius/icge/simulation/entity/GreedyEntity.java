@@ -27,8 +27,6 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFiel
  */
 public abstract class GreedyEntity extends MovableEntity implements EntityCollector {
     
-    private final Object inventoryLock = new Object();
-    
     private final Inventory inventory = new Inventory();
     
     /**
@@ -75,9 +73,7 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
             if (!myPos.equals(otherPos)) throw new CannotCollectEntityException("Not on my field");
             
             this.getSimulation().getPlayfield().removeEntity(entity);
-            synchronized (this.inventoryLock) {
-                this.getInventory().add(entity);
-            }
+            this.getInventory().add(entity);
             
             final Action action = new EntityCollectAction(
                     this.getSimulation().getSimulationClock().getLastTickNumber(), this, entity, myPos, otherPos
@@ -98,9 +94,7 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
      * @return A list of currently collectable entities matching the type
      */
     public <T extends CollectableEntity> List<T> getCurrentlyDroppableEntities(final Class<T> type, final boolean includeSubclasses) {
-        synchronized (this.inventoryLock) {
-            return this.getInventory().get(type, includeSubclasses);
-        }
+        return this.getInventory().get(type, includeSubclasses);
     }
     
     @Override
@@ -116,9 +110,7 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
             
             if (!myPos.equals(pos)) throw new CannotCollectEntityException("Not on my field");
             
-            synchronized (this.inventoryLock) {
-                this.getInventory().remove(entity);
-            }
+            this.getInventory().remove(entity);
             this.getPlayfield().addEntity(pos, entity);
             
             final Action action = new EntityDropAction(

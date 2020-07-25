@@ -171,16 +171,16 @@ public abstract class BasicEntity implements Entity {
      * <p>
      * The field {@link #endOfCurrentOperation} keeps track of the operation that is currently performed by this entity.
      * 
-     * @param endofNewOperation
+     * @param endOfNewOperation
      *     The completable future representing the operation to be performed (must be completed when the operation is
      *     completed)
      */
-    protected void enqueueToPerformNewOperation(CompletableFuture<Void> endofNewOperation) {
+    protected void enqueueToPerformNewOperation(CompletableFuture<Void> endOfNewOperation) {
         synchronized (this.operationLock) {
             if (this.endOfCurrentOperation != null) {
                 this.endOfCurrentOperation.join();
             }
-            this.endOfCurrentOperation = endofNewOperation;
+            this.endOfCurrentOperation = endOfNewOperation;
         }
     }
     
