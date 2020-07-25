@@ -36,6 +36,6 @@ jobs:
     - name: Perpare maven
       # Already run the commands run by the next step to download all requirements.
       # Otherwise the log of a failing check is full with log of downloading requirements.
-      run: mvn -B compile javadoc:javadoc ; true      
+      run: mvn -B compile javadoc:javadoc || true      
     - name: Check Javadoc
       run: mvn -B compile javadoc:javadoc
