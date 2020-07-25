@@ -4,9 +4,9 @@ module:de.unistuttgart.informatik.fius.icge.simulation
 de.unistuttgart.informatik.fius.icge.simulation
 de.unistuttgart.informatik.fius.icge.simulation.actions
 de.unistuttgart.informatik.fius.icge.simulation.entity
-de.unistuttgart.informatik.fius.icge.simulation.entity.program
 de.unistuttgart.informatik.fius.icge.simulation.exception
 de.unistuttgart.informatik.fius.icge.simulation.inspection
+de.unistuttgart.informatik.fius.icge.simulation.programs
 de.unistuttgart.informatik.fius.icge.simulation.tasks
 module:de.unistuttgart.informatik.fius.icge.ui
 de.unistuttgart.informatik.fius.icge.ui
