@@ -9,9 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import java.util.Set;
-
-
 /**
  * The SimulationProxy interface. This is used for communication most between the UI and the simulation.
  * <p>
@@ -24,6 +21,14 @@ import java.util.Set;
  * @version 1.0
  */
 public interface SimulationProxy {
+    
+    /**
+     * Attach this simulation proxy to a specific game window.
+     *
+     * @param gameWindow
+     *     The game window to attach to
+     */
+    void attachToGameWindow(GameWindow gameWindow);
     
     /**
      * Attach this simulation proxy to a specific game window.
