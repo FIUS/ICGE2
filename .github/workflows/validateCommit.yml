@@ -39,4 +39,4 @@ jobs:
       # Otherwise the log of a failing check is full with log of downloading requirements.
       run: mvn -B compile javadoc:javadoc ; true      
     - name: Check Javadoc
-      run: mvn -B javadoc:javadoc
+      run: mvn -B compile javadoc:javadoc
