@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Objects;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -54,8 +53,6 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     public DefaultTreeModel     entityListModel;
     /** The entity inspector in the sidebar */
     public SwingEntityInspector entityInspector;
-    
-    private EntityInspectorEntry[] lastEntries;
     
     /**
      * The default constructor

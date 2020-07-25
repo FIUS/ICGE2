@@ -79,7 +79,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
             try {
                 // flush the line buffer in regular intervalls
                 this.flushLineBufferToTextPane();
-            } catch (final IOException e) {
+            } catch (@SuppressWarnings("unused") IOException e) {
                 // do not handle exeption during regular buffer flush to avoid exception loops
             }
         });
