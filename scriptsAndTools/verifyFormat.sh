@@ -28,7 +28,9 @@ if [ ! "$(git status -s **/pom.xml)" == "" ] ;then
   fail "The format of a pom is wrong." 11
 fi
 
-if ! mvn install formatter:validate ;then
+mvn -B -f ICGE-build-tools install
+
+if ! mvn -B formatter:validate ;then
   fail "The format of a java file is wrong" 12
 fi
 

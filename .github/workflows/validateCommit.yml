@@ -17,9 +17,10 @@ jobs:
       with:
         java-version: 11
     - uses: actions/checkout@v2
-    - name: Install project locally
-      # To have ICGE-buildtools
-      run: mvn install
+    - name: Prepare maven
+      # Already run the commands run by the next step to download all requirements.
+      # Otherwise the log of a failing check is full with log of downloading requirements.
+      run: mvn -B -f ICGE-build-tools install ; mvn -B formatter:validate ; true
     - name: Validate format
       #git status returns zero exactly when there are no uncomitted changes
       run: ./scriptsAndTools/verifyFormat.sh && git status
@@ -33,5 +34,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Perpare maven
+      # Already run the commands run by the next step to download all requirements.
+      # Otherwise the log of a failing check is full with log of downloading requirements.
+      run: mvn -B compile javadoc:javadoc ; true      
     - name: Check Javadoc
-      run: mvn -B compile javadoc:javadoc
+      run: mvn -B javadoc:javadoc
