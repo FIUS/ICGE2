@@ -28,12 +28,15 @@ import de.unistuttgart.informatik.fius.icge.ui.Drawable;
  */
 public abstract class BasicEntity implements Entity {
     
+    /** Lock object to make setting the Playfield threadsafe. */
+    private Object                   fieldLock = new Object();
+    /** The current (weak) reference to the playfield. */
     private WeakReference<Playfield> field;
     
-    /** Lock object to ensure no two actions are scheduled at the same time. */
-    protected Object                  actionLock = new Object();
-    /** The completable future of the last active action. */
-    protected CompletableFuture<Void> currentAction;
+    /** Lock object to ensure no two operations are scheduled at the same time. */
+    protected Object                  operationLock = new Object();
+    /** The completable future representing the completuion of the currently performed operation. */
+    protected CompletableFuture<Void> endOfCurrentOperation;
     
     /**
      * @throws EntityNotOnFieldException
@@ -75,7 +78,10 @@ public abstract class BasicEntity implements Entity {
     @Override
     public void initOnPlayfield(final Playfield playfield) {
         if (playfield == null) throw new IllegalArgumentException("The given playfield is null.");
-        this.field = new WeakReference<>(playfield);
+        synchronized (this.fieldLock) {
+            if (this.isOnPlayfield()) throw new IllegalStateException("This entity can only be on a single playfield!");
+            this.field = new WeakReference<>(playfield);
+        }
     }
     
     /**
@@ -84,19 +90,21 @@ public abstract class BasicEntity implements Entity {
      * @return true if and only if this entity is on a playfield
      */
     public boolean isOnPlayfield() {
-        if (this.field == null) return false;
-        final Playfield playfield = this.field.get();
-        if (playfield == null) {
-            // Was on playfield, but no reference to it left, so it does not have a reference to this either.
-            this.field = null;
-            return false;
+        synchronized (this.fieldLock) {
+            if (this.field == null) return false;
+            final Playfield playfield = this.field.get();
+            if (playfield == null) {
+                // Was on playfield, but no reference to it left, so it does not have a reference to this either.
+                this.field = null;
+                return false;
+            }
+            if (!playfield.containsEntity(this)) {
+                // Was on playfield, but no more.
+                this.field = null;
+                return false;
+            }
+            return true;
         }
-        if (!playfield.containsEntity(this)) {
-            // Was on playfield, but no more.
-            this.field = null;
-            return false;
-        }
-        return true;
     }
     
     /**
@@ -107,8 +115,10 @@ public abstract class BasicEntity implements Entity {
      *     if this entity is not on a playfield
      */
     protected Playfield getPlayfield() {
-        if (!this.isOnPlayfield()) throw new EntityNotOnFieldException("This entity is not on a playfield");
-        return this.field.get();
+        synchronized (this.fieldLock) {
+            if (!this.isOnPlayfield()) throw new EntityNotOnFieldException("This entity is not on a playfield");
+            return this.field.get();
+        }
     }
     
     /**
@@ -121,11 +131,13 @@ public abstract class BasicEntity implements Entity {
      *     if the playfield of this entity is not part of any simulation
      */
     protected Simulation getSimulation() {
-        return this.getPlayfield().getSimulation();
+        synchronized (this.fieldLock) {
+            return this.getPlayfield().getSimulation();
+        }
     }
     
     /**
-     * Pause execution for {@code ticks} simulation ticks.
+     * Prevent this entity from performing any operation for {@code ticks} simulation ticks.
      * 
      * @param ticks
      *     numberof simulation ticks to pause; must be {@code > 0}
@@ -135,7 +147,7 @@ public abstract class BasicEntity implements Entity {
     public void sleep(final int ticks) {
         if (ticks <= 0) throw new IllegalArgumentException("The number of ticks must be > 0 !");
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
-        this.scheduleActionAfterCurrentAction(endOfOperation);
+        this.enqueueToPerformNewOperation(endOfOperation);
         try {
             this.getSimulation().getSimulationClock().scheduleOperationInTicks(ticks, endOfOperation);
         } finally {
@@ -144,25 +156,31 @@ public abstract class BasicEntity implements Entity {
     }
     
     /**
-     * Wait for the current action to finish and schedule the next action right after.
+     * Wait for the current operation to finish before allowing the new Operation to perform.
      * <p>
      * Use this method only if you know what you are doing!
      * <p>
-     * The method must be used before scheduling a ComppletableFuture for a future tick of the simulation clock to
-     * prevent llong running actions from running in parallel.
+     * Due to the possibility of using an entity from multiple threads, it would be possible for an entity to have
+     * multiple long running operations (e.g. turning, walking) at once. To make sure that does not happen it is
+     * necessary to only allow one thread per entity to schedule an operation via the simulation clock. This method
+     * helps with that.
      * <p>
-     * This method synchronizes on the {@link #actionLock} and stores replaces {@link #currentAction} with
-     * {@code nextAction} after the current action completed.
+     * Call this method before scheduling an operation with the simulation clock.
+     * <p>
+     * This method synchronizes on the {@link #operationLock} to make sure that only one thread can pass.
+     * <p>
+     * The field {@link #endOfCurrentOperation} keeps track of the operation that is currently performed by this entity.
      * 
-     * @param nextAction
-     *     The completable future of the action to schedule
+     * @param endofNewOperation
+     *     The completable future representing the operation to be performed (must be completed when the operation is
+     *     completed)
      */
-    protected void scheduleActionAfterCurrentAction(CompletableFuture<Void> nextAction) {
-        synchronized (this.actionLock) {
-            if (this.currentAction != null) {
-                this.currentAction.join();
+    protected void enqueueToPerformNewOperation(CompletableFuture<Void> endofNewOperation) {
+        synchronized (this.operationLock) {
+            if (this.endOfCurrentOperation != null) {
+                this.endOfCurrentOperation.join();
             }
-            this.currentAction = nextAction;
+            this.endOfCurrentOperation = endofNewOperation;
         }
     }
     
