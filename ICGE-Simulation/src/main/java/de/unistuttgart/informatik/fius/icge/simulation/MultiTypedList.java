@@ -85,7 +85,7 @@ public class MultiTypedList<P> {
      * @param o
      *     The object to add
      */
-    public void add(final P o) {
+    public synchronized void add(final P o) {
         this.getRelevantListAndCreate(o).add(o);
     }
     
@@ -96,7 +96,7 @@ public class MultiTypedList<P> {
      *     The object to check for
      * @return Whether this list contains the given object
      */
-    public boolean contains(final P o) {
+    public synchronized boolean contains(final P o) {
         final var opt = this.getRelevantList(o);
         if (opt.isEmpty()) return false;
         return opt.get().contains(o);
@@ -107,7 +107,7 @@ public class MultiTypedList<P> {
      * 
      * @return {@code true} if empty
      */
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return this.items.isEmpty();
     }
     
@@ -118,7 +118,7 @@ public class MultiTypedList<P> {
      *     The object to remove
      * @return Whether this cell contained the given object
      */
-    public boolean remove(final P o) {
+    public synchronized boolean remove(final P o) {
         final var opt = this.getRelevantList(o);
         if (opt.isEmpty()) return false;
         return opt.get().remove(o);
@@ -135,7 +135,7 @@ public class MultiTypedList<P> {
      *     Whether to include the subclasses of the given type
      * @return A list of all matching objects
      */
-    public <T extends P> List<T> get(final Class<? extends T> type, final boolean includeSubclasses) {
+    public synchronized <T extends P> List<T> get(final Class<? extends T> type, final boolean includeSubclasses) {
         if (!includeSubclasses) return this.<T>getRelevantListGeneric(type).orElse(List.of());
         
         final List<T> result = new ArrayList<>();
@@ -154,7 +154,7 @@ public class MultiTypedList<P> {
     /**
      * @return a list of stored types.
      */
-    public Set<Class<? extends P>> getStoredTypes() {
+    public synchronized Set<Class<? extends P>> getStoredTypes() {
         return this.items.keySet();
     }
 }
