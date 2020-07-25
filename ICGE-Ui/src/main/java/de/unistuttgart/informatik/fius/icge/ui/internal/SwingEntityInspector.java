@@ -261,9 +261,6 @@ public class SwingEntityInspector extends JPanel {
         this.gbc.gridx = 0;
         this.gbc.gridy += 1;
         
-        // TODO move this into outer method
-        this.revalidate();
-        this.repaint();
         return updateUiValueCallback;
     }
     
