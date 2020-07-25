@@ -280,9 +280,9 @@ public class StandardSimulationProxy implements SimulationProxy {
     
     @Override
     public void refreshTaskInformation() {
-        this.taskVerifier.verify();
         TaskInformation task = null;
         if (this.taskVerifier != null) {
+            this.taskVerifier.verify();
             task = this.taskVerifier.getTaskInformation();
         }
         this.gameWindow.getTaskStatusDisplay().setTaskInformation(task);
