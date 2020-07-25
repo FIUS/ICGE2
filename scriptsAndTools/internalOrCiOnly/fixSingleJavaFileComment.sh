@@ -9,7 +9,11 @@ function fail {
   exit $2
 }
 
-replace=$(cat "$dir/correctHeader.txt")
+if ! [ "$1" == "--i-know-what-i-am-doing" ] ;then
+  exit 91
+fi
+
+replace=$(cat "$3")
 
 searchP="*$SEPERATOR_P"
 replaceP=$(printf "$replace\n$SEPERATOR_P")
@@ -20,7 +24,7 @@ replaceM=$(printf "$replace\n$SEPERATOR_M")
 searchOM="*$SEPERATOR_OM"
 replaceOM=$(printf "$replace\n$SEPERATOR_OM")
 
-buffer=$(cat "$1")
+buffer=$(cat "$2")
 bufLen=${#buffer}
 
 bufferP="${buffer##$searchP}"
@@ -42,7 +46,7 @@ elif [ $bufLenOM -lt $bufLen ] ;then
 elif [ $bufLenM -lt $bufLen ] ;then
   result="$replaceM$bufferM"
 else
-  fail "Could not find sperator in $1" 1
+  fail "Could not find sperator in $2" 1
 fi
 
-echo "$result" > "$1"
+echo "$result" > "$2"
