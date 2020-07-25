@@ -22,8 +22,7 @@ jobs:
       # Otherwise the log of a failing check is full with log of downloading requirements.
       run: mvn -B -f ICGE-build-tools install ; mvn -B formatter:validate ; true
     - name: Validate format
-      #git status returns zero exactly when there are no uncomitted changes
-      run: ./scriptsAndTools/verifyFormat.sh && git status
+      run: ./scriptsAndTools/checkFormat.sh
 
   validate_javadoc:
     name: Validate javadoc

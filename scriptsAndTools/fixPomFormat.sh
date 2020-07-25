@@ -15,5 +15,6 @@ if ! which xmlstarlet >/dev/null 2>&1 ;then
   fail "Need program xmlstarlet" 3
 fi
 
-#Format all poms
-find . -iname "pom.xml" -exec sh -c 'xmlstarlet fo -s 4 -e utf8 "{}" > "{}.2" ;mv "{}.2" "{}"' \;
+operation='mv "{}.2" "{}"'
+
+bash "$dir/internalOrCiOnly/formatPomsAndRunOperation.sh" "--i-know-what-i-am-doing" "$operation"
