@@ -50,7 +50,7 @@ public class StandardProgramRunner {
         final ForkJoinWorkerThreadFactory factory = pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName("ProgramThread-" + worker.getPoolIndex());
-            worker.isDaemon();
+            worker.setDaemon(true);
             return worker;
         };
         
