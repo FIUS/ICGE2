@@ -76,7 +76,9 @@ public class StandardSimulation implements Simulation {
         
         this.playfield.initialize(this);
         
-        taskVerifier.attachToSimulation(this);
+        if (taskVerifier != null) {
+            taskVerifier.attachToSimulation(this);
+        }
         
         this.simulationProxy = new StandardSimulationProxy(
                 this, simulationClock, inspectionManager, entityTypeRegistry, playfield, taskVerifier
