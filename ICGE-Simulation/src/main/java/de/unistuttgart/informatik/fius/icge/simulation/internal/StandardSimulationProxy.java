@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -112,6 +111,11 @@ public class StandardSimulationProxy implements SimulationProxy {
             updateEntityInspector();
             return true; // post tick listener could be removed by returning false here
         });
+    }
+    
+    @Override
+    public void attachToGameWindow(final GameWindow window) {
+        this.attachToGameWindow(window, false);
     }
     
     @Override
