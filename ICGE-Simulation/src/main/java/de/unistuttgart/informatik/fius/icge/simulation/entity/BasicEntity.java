@@ -35,8 +35,8 @@ public abstract class BasicEntity implements Entity {
     
     /** Lock object to ensure no two operations are scheduled at the same time. */
     protected Object                  operationLock = new Object();
-    /** The completable future representing the completuion of the currently performed operation. */
-    protected CompletableFuture<Void> endOfCurrentOperation;
+    /** The completable future representing the completion of the last enqueued operation. */
+    protected CompletableFuture<Void> endOfLastEnqueuedOperation;
     
     /**
      * @throws EntityNotOnFieldException
@@ -137,7 +137,9 @@ public abstract class BasicEntity implements Entity {
     }
     
     /**
-     * Prevent this entity from performing any operation for {@code ticks} simulation ticks.
+     * Prevent this entity from performing any long running operation for {@code ticks} simulation ticks.
+     * <p>
+     * Instant operations that take 0 ticks to execute can still happen.
      * 
      * @param ticks
      *     numberof simulation ticks to pause; must be {@code > 0}
@@ -148,6 +150,7 @@ public abstract class BasicEntity implements Entity {
         if (ticks <= 0) throw new IllegalArgumentException("The number of ticks must be > 0 !");
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         this.enqueueToPerformNewOperation(endOfOperation);
+        // TODO synchronize on operationLock around try/finally to block 0 tick actions also?
         try {
             this.getSimulation().getSimulationClock().scheduleOperationInTicks(ticks, endOfOperation);
         } finally {
@@ -169,18 +172,23 @@ public abstract class BasicEntity implements Entity {
      * <p>
      * This method synchronizes on the {@link #operationLock} to make sure that only one thread can pass.
      * <p>
-     * The field {@link #endOfCurrentOperation} keeps track of the operation that is currently performed by this entity.
+     * The field {@link #endOfLastEnqueuedOperation} keeps track of the operation that is currently performed by this
+     * entity.
      * 
      * @param endOfNewOperation
      *     The completable future representing the operation to be performed (must be completed when the operation is
      *     completed)
      */
     protected void enqueueToPerformNewOperation(CompletableFuture<Void> endOfNewOperation) {
+        final CompletableFuture<Void> endOfLastEnqueuedOperation;
         synchronized (this.operationLock) {
-            if (this.endOfCurrentOperation != null) {
-                this.endOfCurrentOperation.join();
-            }
-            this.endOfCurrentOperation = endOfNewOperation;
+            // switch out last enqueued operation with the new operation end
+            endOfLastEnqueuedOperation = this.endOfLastEnqueuedOperation;
+            this.endOfLastEnqueuedOperation = endOfNewOperation;
+        }
+        // wait outside of synchronized block to allow 0 tick operations to still happen while waiting
+        if (endOfLastEnqueuedOperation != null) {
+            endOfLastEnqueuedOperation.join();
         }
     }
     
