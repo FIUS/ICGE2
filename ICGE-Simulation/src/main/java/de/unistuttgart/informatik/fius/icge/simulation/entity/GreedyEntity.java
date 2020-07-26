@@ -27,6 +27,9 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFiel
  */
 public abstract class GreedyEntity extends MovableEntity implements EntityCollector {
     
+    /** A lock to synchronize all operations involving the entities inventory. */
+    protected final Object inventoryOperationLock = new Object();
+    
     private final Inventory inventory = new Inventory();
     
     /**
@@ -62,7 +65,7 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
         Position myPos;
         Position otherPos;
         
-        synchronized (this.operationLock) {
+        synchronized (this.inventoryOperationLock) {
             try {
                 myPos = this.getPosition();
                 otherPos = entity.getPosition();
@@ -101,7 +104,7 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
     public void drop(final CollectableEntity entity, final Position pos) {
         if ((entity == null) || (pos == null)) throw new IllegalArgumentException("An argument is null.");
         Position myPos;
-        synchronized (this.operationLock) {
+        synchronized (this.inventoryOperationLock) {
             try {
                 myPos = this.getPosition();
             } catch (final EntityNotOnFieldException e) {

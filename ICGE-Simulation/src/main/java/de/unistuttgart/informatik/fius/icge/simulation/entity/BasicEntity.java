@@ -33,8 +33,8 @@ public abstract class BasicEntity implements Entity {
     /** The current (weak) reference to the playfield. */
     private WeakReference<Playfield> field;
     
-    /** Lock object to ensure no two operations are scheduled at the same time. */
-    protected Object                  operationLock = new Object();
+    /** Lock object to ensure no two long running operations (>= 1 clock tick) are scheduled at the same time. */
+    private Object                    operationQueueLock = new Object();
     /** The completable future representing the completion of the last enqueued operation. */
     protected CompletableFuture<Void> endOfLastEnqueuedOperation;
     
@@ -139,7 +139,7 @@ public abstract class BasicEntity implements Entity {
     /**
      * Prevent this entity from performing any long running operation for {@code ticks} simulation ticks.
      * <p>
-     * Instant operations that take 0 ticks to execute can still happen.
+     * Only operations that take >= 1 clock ticks to execute will be affected by this sleep.
      * 
      * @param ticks
      *     numberof simulation ticks to pause; must be {@code > 0}
@@ -150,7 +150,6 @@ public abstract class BasicEntity implements Entity {
         if (ticks <= 0) throw new IllegalArgumentException("The number of ticks must be > 0 !");
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         this.enqueueToPerformNewOperation(endOfOperation);
-        // TODO synchronize on operationLock around try/finally to block 0 tick actions also?
         try {
             this.getSimulation().getSimulationClock().scheduleOperationInTicks(ticks, endOfOperation);
         } finally {
@@ -159,7 +158,7 @@ public abstract class BasicEntity implements Entity {
     }
     
     /**
-     * Wait for the current operation to finish before allowing the new Operation to perform.
+     * Wait for the last enqueued long running operation to finish before allowing the new Operation to perform.
      * <p>
      * Use this method only if you know what you are doing!
      * <p>
@@ -170,7 +169,7 @@ public abstract class BasicEntity implements Entity {
      * <p>
      * Call this method before scheduling an operation with the simulation clock.
      * <p>
-     * This method synchronizes on the {@link #operationLock} to make sure that only one thread can pass.
+     * This method synchronizes on the {@link #operationQueueLock} to make sure that only one thread can pass.
      * <p>
      * The field {@link #endOfLastEnqueuedOperation} keeps track of the operation that is currently performed by this
      * entity.
@@ -180,13 +179,19 @@ public abstract class BasicEntity implements Entity {
      *     completed)
      */
     protected void enqueueToPerformNewOperation(CompletableFuture<Void> endOfNewOperation) {
+        /* Help to understand what happens in this method:
+         * Think of a (single) linked list. The list head is this.endOfLastEnqueuedOperation.
+         * In the synchronized block the current list head is stored in the local temp variable
+         * and replaced by the new list head.
+         * The list links are the calls to the local endOfLastEnqueuedOperation.join()
+         * to wait for the current list head to finish before exiting this method.
+         */
         final CompletableFuture<Void> endOfLastEnqueuedOperation;
-        synchronized (this.operationLock) {
+        synchronized (this.operationQueueLock) {
             // switch out last enqueued operation with the new operation end
             endOfLastEnqueuedOperation = this.endOfLastEnqueuedOperation;
             this.endOfLastEnqueuedOperation = endOfNewOperation;
         }
-        // wait outside of synchronized block to allow 0 tick operations to still happen while waiting
         if (endOfLastEnqueuedOperation != null) {
             endOfLastEnqueuedOperation.join();
         }
