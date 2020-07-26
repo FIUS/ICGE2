@@ -33,7 +33,9 @@ public abstract class BasicEntity implements Entity {
     /** The current (weak) reference to the playfield. */
     private WeakReference<Playfield> field;
     
-    /** Lock object to ensure no two long running operations (>= 1 clock tick) are scheduled at the same time. */
+    /**
+     * Lock object to ensure no two long running operations ({@code >= 1} clock tick) are scheduled at the same time.
+     */
     private Object                    operationQueueLock = new Object();
     /** The completable future representing the completion of the last enqueued operation. */
     protected CompletableFuture<Void> endOfLastEnqueuedOperation;
@@ -139,7 +141,7 @@ public abstract class BasicEntity implements Entity {
     /**
      * Prevent this entity from performing any long running operation for {@code ticks} simulation ticks.
      * <p>
-     * Only operations that take >= 1 clock ticks to execute will be affected by this sleep.
+     * Only operations that take {@code >= 1} clock ticks to execute will be affected by this sleep.
      * 
      * @param ticks
      *     numberof simulation ticks to pause; must be {@code > 0}
