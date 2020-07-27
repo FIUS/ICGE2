@@ -20,10 +20,9 @@ jobs:
     - name: Prepare maven
       # Already run the commands run by the next step to download all requirements.
       # Otherwise the log of a failing check is full with log of downloading requirements.
-      run: mvn -B -f ICGE-build-tools install ; mvn -B formatter:validate ; true
+      run: mvn -B -f ICGE-build-tools install ; mvn -B formatter:validate || true
     - name: Validate format
-      #git status returns zero exactly when there are no uncomitted changes
-      run: ./scriptsAndTools/verifyFormat.sh && git status
+      run: ./scriptsAndTools/checkFormat.sh -v
 
   validate_javadoc:
     name: Validate javadoc
@@ -37,6 +36,6 @@ jobs:
     - name: Perpare maven
       # Already run the commands run by the next step to download all requirements.
       # Otherwise the log of a failing check is full with log of downloading requirements.
-      run: mvn -B compile javadoc:javadoc ; true      
+      run: mvn -B compile javadoc:javadoc || true      
     - name: Check Javadoc
       run: mvn -B compile javadoc:javadoc
