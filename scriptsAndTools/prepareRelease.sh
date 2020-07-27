@@ -83,4 +83,17 @@ echo "This will checkout a new branch, do some changes and commit them."
 
 confirm "Start? [Y/N]" || fail "Aborting." 11
 
-bash "$dir/internalOrCiOnly/prepareReleaseInternal.sh" "--i-know-what-i-am-doing" "$version"
+push="false"
+delete="false"
+
+confirm "Should the new branch be pushed?" && push="true"
+confirm "Should master be checked out and the branch be deleted?" || delete="true"
+
+bash "$dir/internalOrCiOnly/prepareReleaseInternal.sh" "--i-know-what-i-am-doing" "$version" "$push" "$delete"
+
+
+
+
+
+
+

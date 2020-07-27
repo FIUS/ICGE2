@@ -133,7 +133,7 @@
       <repository>
         <id>github</id>
         <name>GitHub Packages</name>
-        <url>https://maven.pkg.github.com/neumantm/icge2</url>
+        <url>https://maven.pkg.github.com/neumantm</url>
       </repository>
     </distributionManagement>
     <modules>
