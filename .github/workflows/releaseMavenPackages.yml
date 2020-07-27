@@ -1,0 +1,20 @@
+name: Release Maven Packages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release_maven_pkg:
+    name: Release maven package
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: actions/checkout@v2
+    - name: Release
+      run: mvn -B deploy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
