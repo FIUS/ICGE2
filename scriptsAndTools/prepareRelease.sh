@@ -81,13 +81,13 @@ version=${version:-$expectedNextVersion}
 echo "Will prepare to release version $version."
 echo "This will checkout a new branch, do some changes and commit them."
 
-confirm "Start? [Y/N]" || fail "Aborting." 11
-
 push="false"
 delete="false"
 
-confirm "Should the new branch be pushed?" && push="true"
-confirm "Should master be checked out and the branch be deleted?" || delete="true"
+confirm "Should the new branch be pushed? [Y/N]" && push="true"
+confirm "Should master be checked out and the branch be deleted? [Y/N]" || delete="true"
+
+confirm "Start? [Y/N]" || fail "Aborting." 11
 
 bash "$dir/internalOrCiOnly/prepareReleaseInternal.sh" "--i-know-what-i-am-doing" "$version" "$push" "$delete"
 

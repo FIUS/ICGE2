@@ -55,7 +55,7 @@ if [ "$3" == "true" ] ;then
   git push --set-upstream origin "$branchName"
   git push origin "$version"
 
-  if [ "$4" == "true" ]
+  if [ "$4" == "true" ] ;then
     git checkout master
     git branch -D "$branchName"
   fi
