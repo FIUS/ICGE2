@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script checks that all java files have the correct file comment.
+# No arguments allowed.
+
 dir="$(dirname "$(realpath "$0")")"
 
 function fail {
@@ -13,7 +16,11 @@ fi
 
 script="$dir/internalOrCiOnly/checkSingleJavaFileComment.sh"
 
-correctHeaderFile="$dir/correctHeader.txt"
+correctHeaderFile="$dir/correctJavaFileComment.txt"
+
+if ! [ -e "$correctHeaderFile" ] ;then
+  fail "Cannot find the file with the correct header: $correctHeaderFile"
+fi
 
 failedFile="$dir/headerFailed"
 rm -f "$failedFile"

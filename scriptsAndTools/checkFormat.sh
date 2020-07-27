@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# This is the main check script which runs all other checks in this directory.
+# The CI runs this script and additionally mvn javadoc:validate
+#
+# Usually there should not be any arguments.
+# There may be one single argument -v. In this case the output of the maven commands is not voided.
+#
+# The script has some required programs, which it checks for.
+# As this script calls checkJavaFileComments the file with the correct comment must exist.
+# (This is currently not checked by this script)
+
+
 dir="$(dirname "$(realpath "$0")")"
 
 function fail {
@@ -24,7 +35,7 @@ if ! which xmlstarlet >/dev/null 2>&1 ;then
 fi
 
 if ! which diff >/dev/null 2>&1 ;then
-  fail "Need preogram diff" 6
+  fail "Need program diff" 6
 fi
 
 if ! "$dir/checkPomFormat.sh" ;then

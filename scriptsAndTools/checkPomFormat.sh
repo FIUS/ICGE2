@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script checks the format of all poms.
+# No arguments allowed
+
 dir="$(dirname "$(realpath "$0")")"
 
 function fail {

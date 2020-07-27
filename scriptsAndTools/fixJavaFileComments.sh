@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script fixes all java file comments
+# No arguments allowed
+
 dir="$(dirname "$(realpath "$0")")"
 
 function fail {
