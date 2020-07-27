@@ -27,7 +27,7 @@ if ! bash "$dir/doVersionBumpInPoms.sh" "--i-know-what-i-am-doing" "$version" ;t
   fail "Could not bump version" 22
 fi
 
-if ! git commit -m "Bump version to $version" "**/pom.xml" ;then
+if ! git commit -m "Bump version to $version" "**pom.xml" ;then
   fail "Could not commit" 23
 fi
 
@@ -45,6 +45,6 @@ if ! bash "$dir/doVersionBumpInPoms.sh" "--i-know-what-i-am-doing" "$newVersion"
   fail "Could not bump version the second time" 25
 fi
 
-if ! git commit -m "Prepare for development on $version" "**/pom.xml" ;then
+if ! git commit -m "Prepare for development on $version" "**pom.xml" ;then
   fail "Could not commit the second tome" 23
 fi

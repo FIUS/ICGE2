@@ -44,7 +44,7 @@ if [ "$(git branch --show-current)" != "master" ] ;then
   fail "Not on master branch." 5
 fi
 
-git fetch
+git fetch >/dev/null
 
 if ! git diff HEAD FETCH_HEAD --exit-code > /dev/null ;then
   fail "Branch is not up to date." 6
