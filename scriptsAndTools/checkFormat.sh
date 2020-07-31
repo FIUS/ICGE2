@@ -13,6 +13,8 @@
 
 dir="$(dirname "$(realpath "$0")")"
 
+mvn="$dir/../mvnw"
+
 function fail {
   echo $1
   exit $2
@@ -22,12 +24,8 @@ if [ ! "$1" == "-v" ] && [ $# -ne 0 ] ; then
   fail "No argument expected (or single -v)" 2
 fi
 
-if ! which git >/dev/null 2>&1 ;then
-  fail "Need program git" 3
-fi
-
-if ! which mvn >/dev/null 2>&1 ;then
-  fail "Need program mvn" 4
+if ! [ -x "$mvn" ] ;then
+  fail "Mavenwrapper missing" 3
 fi
 
 if ! which xmlstarlet >/dev/null 2>&1 ;then
@@ -43,15 +41,15 @@ if ! "$dir/checkPomFormat.sh" ;then
 fi
 
 if [ "$1" == "-v" ] ;then
-  mvn -B -f ICGE-build-tools install
+  "$mvn" -B -f ICGE-build-tools install
 
-  if ! mvn -B formatter:validate ;then
+  if ! "$mvn" -B formatter:validate ;then
     fail "The format of a java file is wrong. See mvn formatter:validate" 22
   fi
 else
-  mvn -B -f ICGE-build-tools install > /dev/null
+  "$mvn" -B -f ICGE-build-tools install > /dev/null
 
-  if ! mvn -B formatter:validate >/dev/null ;then
+  if ! "$mvn" -B formatter:validate >/dev/null ;then
     fail "The format of a java file is wrong. See mvn formatter:validate" 22
   fi
 fi

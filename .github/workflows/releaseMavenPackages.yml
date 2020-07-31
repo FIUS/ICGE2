@@ -17,7 +17,7 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
     - name: Release
-      run: mvn -s "${{ github.workspace }}/scriptsAndTools/internalOrCiOnly/m2settings.xml" deploy -Drepo.login=$REPO_USER -Drepo.pwd=$REPO_PW
+      run: ./mvnw -s "${{ github.workspace }}/scriptsAndTools/internalOrCiOnly/m2settings.xml" deploy -Drepo.login=$REPO_USER -Drepo.pwd=$REPO_PW
       env:
         REPO_USER: ${{ secrets.MAVEN_REPO_USER }}
         REPO_PW: ${{ secrets.MAVEN_REPO_PW }}

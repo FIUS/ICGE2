@@ -15,7 +15,7 @@ jobs:
         java-version: 11
     - uses: actions/checkout@v2
     - name: Generate javadoc
-      run: mvn -B javadoc:aggregate -pl '!ICGE-build-tools,!ICGE-ManualStart'
+      run: ./mvnw -B javadoc:aggregate -pl '!ICGE-build-tools,!ICGE-ManualStart'
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3.7.0-4
       with:
