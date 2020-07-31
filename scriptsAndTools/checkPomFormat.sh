@@ -33,5 +33,4 @@ if [ -e "$failedFile" ] ;then
   fail "The format of at least one pom file is wrong." 21
 fi
 
-
-
+echo "Pom format looking good"

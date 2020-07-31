@@ -57,3 +57,5 @@ fi
 if ! "$dir/checkJavaFileComments.sh" ;then
   fail "A source file header is wrong" 23
 fi
+
+echo "All looking good."

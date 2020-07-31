@@ -32,3 +32,5 @@ if [ -e "$failedFile" ] ;then
   rm "$failedFile"
   fail "Not all headers correct" 11
 fi
+
+echo "Java file comments looking good."
