@@ -88,7 +88,7 @@ echo "This will checkout a new branch, do some changes and commit them."
 push="false"
 delete="false"
 
-confirm "Should the new branch and the tag be pushed? [Y/N]" && push="true"
+confirm "Should the new branch and the tag be pushed? [Y/N]" && push="true" &&
 confirm "Should master be checked out and the branch be deleted? [Y/N]" && delete="true"
 
 confirm "Start? [Y/N]" || fail "Aborting." 11
