@@ -8,25 +8,21 @@ The second version of the introduction course game engine for the Java introduct
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
-
-## Code format
-The code in this project must conform to a specific format which is enforced for all pull requests.
-The formatter can be run locally with the following console command:
-```
-mvn formatter:format
-```
-
-
 ## Found a bug? / Need a feature?
 Please report them by [creating an issue](https://github.com/FIUS/ICGE2/issues/new) on the [github issue page](https://github.com/FIUS/ICGE2/issues).
 Please include a full stacktrace and information to reproduce the error in case of a bug report.
-
 
 ## Contributing
 This project is managed by students part of [FIUS](https://fius.informatik.uni-stuttgart.de/).
 Nevertheless help is always highly appreciated.
 New features and bug fixes can be easily submitted as a pull request but there are a few rules a pull request must adhere to.
 
+### Code format 
+We have some scripts to check and establish the correct code format.
+This is also enforced by the ci for pull-requests.
+See [scriptsAndTools](scriptsAndTools/README.md)
+
+### Pull requests
 A pull request …
  -  … should state clearly what it does or fixes.
  -  … must pass all CI checks (e.g. unit tests, licence header tests and code format tests).

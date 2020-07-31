@@ -1,0 +1,23 @@
+name: Release Maven Packages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release_maven_pkg:
+    name: Release maven package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+    - name: Release
+      run: ./mvnw -s "${{ github.workspace }}/scriptsAndTools/internalOrCiOnly/m2settings.xml" deploy -Drepo.login=$REPO_USER -Drepo.pwd=$REPO_PW
+      env:
+        REPO_USER: ${{ secrets.MAVEN_REPO_USER }}
+        REPO_PW: ${{ secrets.MAVEN_REPO_PW }}

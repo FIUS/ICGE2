@@ -1,0 +1,41 @@
+name: Validate commit
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  validate_format:
+    name: Validate format
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install xmlstarlet
+      run: sudo apt-get install -y xmlstarlet
+    - name: Setup java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: actions/checkout@v2
+    - name: Prepare maven
+      # Already run the commands run by the next step to download all requirements.
+      # Otherwise the log of a failing check is full with log of downloading requirements.
+      run: ./mvnw -B -f ICGE-build-tools install ; ./mvnw -B formatter:validate || true
+    - name: Validate format
+      run: ./scriptsAndTools/checkFormat.sh -v
+
+  validate_javadoc:
+    name: Validate javadoc
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Perpare maven
+      # Already run the commands run by the next step to download all requirements.
+      # Otherwise the log of a failing check is full with log of downloading requirements.
+      run: ./mvnw -B compile javadoc:javadoc || true
+    - name: Check Javadoc
+      run: ./mvnw -B compile javadoc:javadoc
