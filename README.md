@@ -8,6 +8,10 @@ The second version of the introduction course game engine for the Java introduct
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
+## Documentation
+The ci generates documentation from the javadocs in the code.
+The result can be found on our [github pages](https://fius.github.io/ICGE2/).
+
 ## Found a bug? / Need a feature?
 Please report them by [creating an issue](https://github.com/FIUS/ICGE2/issues/new) on the [github issue page](https://github.com/FIUS/ICGE2/issues).
 Please include a full stacktrace and information to reproduce the error in case of a bug report.
