@@ -1,6 +1,6 @@
 # ICGE2
 
-[![Travis CI](https://img.shields.io/travis/FIUS/ICGE2/master?style=plastic)](https://travis-ci.org/fius/ICGE2/)
+[![Github CI](https://github.com/FIUS/ICGE2/workflows/Validate%20commit/badge.svg)](https://github.com/FIUS/ICGE2/actions?query=workflow%3A%22Validate+commit%22)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/FIUS/ICGE2?include_prereleases&style=plastic)](https://github.com/FIUS/ICGE2/releases)
 [![GitHub License](https://img.shields.io/github/license/FIUS/ICGE2?style=plastic)](https://github.com/FIUS/ICGE2/blob/master/LICENSE)
 
