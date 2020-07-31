@@ -36,22 +36,26 @@ if ! which xmlstarlet >/dev/null 2>&1 ;then
   fail "Need program xmlstarlet" 3
 fi
 
+if ! which git >/dev/null 2>&1 ;then
+  fail "Need program git" 4
+fi
+
 if [ "$(git status -s)" != "" ] ;then
-  fail "Detected uncomitted changes" 4
+  fail "Detected uncomitted changes" 5
 fi
 
 if [ "$(git branch --show-current)" != "master" ] ;then
-  fail "Not on master branch." 5
+  fail "Not on master branch." 6
 fi
 
 git fetch >/dev/null 2>&1
 
 if ! git diff HEAD FETCH_HEAD --exit-code > /dev/null ;then
-  fail "Branch is not up to date." 6
+  fail "Branch is not up to date." 7
 fi
 
 if ! [ -e "pom.xml" ] ;then
-  fail "No pom detected, Are you in root of repo?" 7
+  fail "No pom detected, Are you in root of repo?" 8
 fi
 
 lastRelease="$(git tag --list | head -n 1)"
