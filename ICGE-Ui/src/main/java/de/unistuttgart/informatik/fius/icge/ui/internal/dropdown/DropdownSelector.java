@@ -138,8 +138,9 @@ public class DropdownSelector extends JPanel {
         for (final DropdownEntry entry : entries) {
             this.model.addElement(entry);
             
-            if (getCurrentEntry() == null)
+            if (getCurrentEntry() == null) {
                 this.setCurrentEntry(entry);
+            }
         }
     }
     
