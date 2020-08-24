@@ -35,6 +35,7 @@ public class ManualStartSimulation {
         final WindowBuilder wb = new WindowBuilder();
         wb.setTitle("Window Builder start!");
         wb.setGraphicsSettings(false, true);
+        // wb.setDpiScale(1.0);
         wb.buildWindow();
         final GameWindow w = wb.getBuiltWindow();
         

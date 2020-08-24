@@ -9,8 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.Font;
+
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
 
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
@@ -31,9 +36,18 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
 public class WindowBuilder {
     
     private String     windowTitle = "";
+    private double     dpiScale    = 1.0;
     private boolean    useDoubleBuffering;
     private boolean    syncToScreen;
     private GameWindow window;
+    
+    /**
+     * Create a new WindowBuilder.
+     */
+    public WindowBuilder() {
+        this.dpiScale = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
+                .getDefaultTransform().getScaleX();
+    }
     
     /**
      * Set the title of the new window.
@@ -78,6 +92,24 @@ public class WindowBuilder {
     }
     
     /**
+     * Set the scaling factor for highDpi screens.
+     * <p>
+     * The scaling factor is automatically determined but can be manually set with this method. Only scaling factors
+     * {@code 0.5 <= dpiScale <= 3.0} are supported.
+     * 
+     * @param dpiScale
+     *     the scaling factor to use
+     */
+    public void setDpiScale(final double dpiScale) {
+        if (
+            this.hasBuiltWindow()
+        ) throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
+        if (dpiScale < 0.5) throw new IllegalArgumentException("A dpi scale < 0.5 is not supported!");
+        if (dpiScale > 3.0) throw new IllegalArgumentException("A dpi scale > 3.0 is not supported!");
+        this.dpiScale = dpiScale;
+    }
+    
+    /**
      * Actually build the window.
      *
      * <p>
@@ -88,19 +120,34 @@ public class WindowBuilder {
         if (
             this.hasBuiltWindow()
         ) throw new IllegalStateException("The window was already built! Use getBuiltWindow() to acess the built window.");
+        
+        final double fontScale = ((this.dpiScale - 1) * 0.75) + 1;
+        
         // Set window look and feel
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            final UIDefaults uidef = UIManager.getLookAndFeelDefaults();
+            uidef.forEach((key, value) -> { // scale fonts for highdpi
+                if (value instanceof UIDefaults.ActiveValue) {
+                    UIDefaults.ActiveValue lazy = (UIDefaults.ActiveValue) value;
+                    value = lazy.createValue(UIManager.getDefaults());
+                }
+                if (value != null && value instanceof Font) {
+                    Font font = (Font) value;
+                    int scaledFontSize = (int) Math.floor(font.getSize() * fontScale);
+                    uidef.put(key, new FontUIResource(font.getName(), font.getStyle(), scaledFontSize));
+                }
+            });
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             System.err.println("Can't set look and feel because of: " + e.toString());
         }
         
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
-        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(textureRegistry);
-        final SwingToolbar toolbar = new SwingToolbar(textureRegistry);
-        final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry);
-        final SwingConsole console = new SwingConsole();
-        final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay();
+        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(textureRegistry, this.dpiScale);
+        final SwingToolbar toolbar = new SwingToolbar(textureRegistry, this.dpiScale);
+        final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, this.dpiScale);
+        final SwingConsole console = new SwingConsole(fontScale);
+        final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(fontScale);
         
         playfieldDrawer.setDoubleBuffering(this.useDoubleBuffering);
         playfieldDrawer.setSyncToScreen(this.syncToScreen);
