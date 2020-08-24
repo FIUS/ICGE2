@@ -67,24 +67,12 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     /**
      * The constructor of the toolbar
      *
-     * @param simulationProxy
-     *     The simulation proxy to use
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
+     * @param dpiScale
+     *     The scaling value to adjust for highdpi screens
      */
-    public SwingToolbar(final SimulationProxy simulationProxy, final SwingTextureRegistry textureRegistry) {
-        this(textureRegistry);
-        
-        this.simulationProxy = simulationProxy;
-    }
-    
-    /**
-     * The constructor of the toolbar
-     *
-     * @param textureRegistry
-     *     The texture registry the textures and icons are loaded from
-     */
-    public SwingToolbar(final SwingTextureRegistry textureRegistry) {
+    public SwingToolbar(final SwingTextureRegistry textureRegistry, final double dpiScale) {
         //
         // class setup
         //
