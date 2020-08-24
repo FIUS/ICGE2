@@ -51,7 +51,8 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
     /**
      * Default constructor.
      * 
-     * @param fontScale the scaling value for the fontSize
+     * @param fontScale
+     *     the scaling value for the fontSize
      */
     public SwingTaskStatusDisplay(final double fontScale) {
         super(new BorderLayout());
