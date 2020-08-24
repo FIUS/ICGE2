@@ -36,11 +36,15 @@ public class SwingConsole extends JTextPane implements Console {
     
     /**
      * Default constructor
+     * 
+     * @param fontScale
+     *     the scaling value for the fontSize
      */
-    public SwingConsole() {
+    public SwingConsole(final double fontScale) {
         super(new DefaultStyledDocument());
         
-        final Font standardFont = new Font("monospaced", Font.PLAIN, 12);
+        final int fontSize = (int) Math.floor(12 * fontScale);
+        final Font standardFont = new Font("monospaced", Font.PLAIN, fontSize);
         
         this.setEditable(false);
         this.setFont(standardFont);

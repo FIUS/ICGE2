@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -50,9 +51,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private static final long serialVersionUID = 1800137555269066525L;
     
     /** Stretch factor for mapping row/column coordinates to screen coordinates. */
-    private static final double CELL_SIZE = 32;
+    private final double CELL_SIZE;
     
-    private static final int INFO_BAR_HEIGHT = 25;
+    private final int INFO_BAR_HEIGHT;
     
     // Colors
     private static final Color BACKGROUND_COLOR             = new Color(255, 255, 255);
@@ -67,9 +68,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private final SwingTextureRegistry textureRegistry;
     
     // current display offset and zoom
-    private double offsetX = SwingPlayfieldDrawer.CELL_SIZE;
-    private double offsetY = SwingPlayfieldDrawer.CELL_SIZE;
-    private double scale   = 1.0;
+    private double offsetX;
+    private double offsetY;
+    private double scale = 1.0;
     
     // mouse events
     private boolean mouseInWindow = false;
@@ -101,26 +102,24 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      *
      * @param textureRegistry
      *     The texture registry
+     * @param dpiScale
+     *     The scaling value to adjust for highdpi screens
      */
-    public SwingPlayfieldDrawer(final SwingTextureRegistry textureRegistry) {
+    public SwingPlayfieldDrawer(final SwingTextureRegistry textureRegistry, final double dpiScale) {
         this.textureRegistry = textureRegistry;
         
         this.setOpaque(true);
         this.repaintManager = RepaintManager.currentManager(this);
-    }
-    
-    /**
-     * Create a new SwingPlayfieldDrawer.
-     *
-     * @param simulationProxy
-     *     The simulation proxy this SwingPlayfieldDrawer should subscribe to
-     * @param textureRegistry
-     *     The texture registry
-     */
-    public SwingPlayfieldDrawer(final SimulationProxy simulationProxy, final SwingTextureRegistry textureRegistry) {
-        this(textureRegistry);
         
-        this.setSimulationProxy(simulationProxy);
+        this.INFO_BAR_HEIGHT = (int) Math.floor(25 * dpiScale);
+        this.CELL_SIZE = (int) Math.floor(32 * dpiScale);
+        this.offsetX = this.CELL_SIZE;
+        this.offsetY = this.CELL_SIZE;
+        
+        Font font = this.getFont();
+        System.out.println(font.getFontName() + " " + font.getSize());
+        final int newFontSize = (int) Math.floor(12 * dpiScale);
+        this.setFont(new Font(font.getFontName(), font.getStyle(), newFontSize));
     }
     
     /**
@@ -232,7 +231,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             } else {
                 if (this.animatedDrawables.size() > 0) {
                     final Rectangle visible = this.getVisibleRect();
-                    final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+                    final double cellSize = this.CELL_SIZE * this.scale;
                     final int textureSize = Math.toIntExact(Math.round(cellSize));
                     final Optional<Rectangle> rectToDraw = this.animatedDrawables.stream().map(
                             d -> this.getScreenPointFromCellCoordinates(d.getX(), d.getY(), cellSize)
@@ -277,8 +276,8 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     @Override
     public void resetZoomAndPan() {
         this.scale = 1.0;
-        this.offsetX = SwingPlayfieldDrawer.CELL_SIZE;
-        this.offsetY = SwingPlayfieldDrawer.CELL_SIZE;
+        this.offsetX = this.CELL_SIZE;
+        this.offsetY = this.CELL_SIZE;
     }
     
     @Override
@@ -297,12 +296,12 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
     
     private int getColumnCoordinateFromScreenCoordinate(final int screenX) {
-        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         return (int) Math.floor((screenX - this.offsetX) / cellSize);
     }
     
     private int getRowCoordinateFromScreenCoordinate(final int screenY) {
-        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         return (int) Math.floor((screenY - this.offsetY) / cellSize);
     }
     
@@ -331,7 +330,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private void paintGrid(final Graphics g) {
         final Rectangle clipBounds = g.getClipBounds();
         // cell size on screen (with zoom)
-        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         // first visible cell (row/column coordinates without fractions correspond
         // to the top left corner of e cell on screen)
         final double firstX = (Math.IEEEremainder(this.offsetX - clipBounds.x, cellSize) + clipBounds.x) - cellSize;
@@ -401,7 +400,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     }
     
     private void paintDrawable(final Graphics g, final Drawable drawable, final int count, final boolean isTilable) {
-        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX));
         final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY));
         final int textureSize = Math.toIntExact(Math.round(cellSize));
@@ -431,7 +430,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final Graphics g, final Drawable drawable, final int count, final Double[] xOffsets, final Double[] yOffsets,
             final Double scaleAdjust
     ) {
-        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         final int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
         final Texture texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
         // limit count to available offsets
@@ -453,7 +452,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         final int currentCellX = this.getColumnCoordinateFromScreenCoordinate(this.currentMouseX);
         final int currentCellY = this.getRowCoordinateFromScreenCoordinate(this.currentMouseY);
         
-        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         final int roundedCellSize = Math.toIntExact(Math.round(cellSize));
         final int screenX = Math.toIntExact(Math.round(this.offsetX + (currentCellX * cellSize)));
         final int screenY = Math.toIntExact(Math.round(this.offsetY + (currentCellY * cellSize)));
@@ -480,20 +479,17 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         }
         
         // draw info bar
-        if (
-            this.mouseInWindow && g.hitClip(0, height - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, width, SwingPlayfieldDrawer.INFO_BAR_HEIGHT)
-        ) {
+        if (this.mouseInWindow && g.hitClip(0, height - this.INFO_BAR_HEIGHT, width, this.INFO_BAR_HEIGHT)) {
             
             g.setColor(SwingPlayfieldDrawer.BACKGROUND_COLOR);
-            g.fillRect(0, height - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, width, SwingPlayfieldDrawer.INFO_BAR_HEIGHT);
+            g.fillRect(0, height - this.INFO_BAR_HEIGHT, width, this.INFO_BAR_HEIGHT);
             g.setColor(SwingPlayfieldDrawer.GRID_COLOR);
             
             // calculate baseline
             final FontMetrics font = g.getFontMetrics();
             final int heightAboveBaseline = font.getAscent();
             final int heightBelowBaseline = font.getMaxDescent();
-            final int baselineCentered = Math
-                    .toIntExact(Math.round((SwingPlayfieldDrawer.INFO_BAR_HEIGHT / 2.0) - (heightAboveBaseline / 2.0)));
+            final int baselineCentered = Math.toIntExact(Math.round((this.INFO_BAR_HEIGHT / 2.0) - (heightAboveBaseline / 2.0)));
             final int baseline = height - Math.max(baselineCentered, heightBelowBaseline);
             
             // build string
@@ -559,11 +555,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     private void repaintMouseOverlay() {
         this.repaintCellHighlight(this.currentMouseX, this.currentMouseY);
-        this.repaint(0, this.getHeight() - SwingPlayfieldDrawer.INFO_BAR_HEIGHT, this.getWidth(), SwingPlayfieldDrawer.INFO_BAR_HEIGHT);
+        this.repaint(0, this.getHeight() - this.INFO_BAR_HEIGHT, this.getWidth(), this.INFO_BAR_HEIGHT);
     }
     
     private void repaintCellHighlight(final int x, final int y) {
-        final double cellSize = SwingPlayfieldDrawer.CELL_SIZE * this.scale;
+        final double cellSize = this.CELL_SIZE * this.scale;
         final int roundedCellSize = Math.toIntExact(Math.round(cellSize));
         this.repaint(x - roundedCellSize, y - roundedCellSize, 2 * roundedCellSize, 2 * roundedCellSize);
     }

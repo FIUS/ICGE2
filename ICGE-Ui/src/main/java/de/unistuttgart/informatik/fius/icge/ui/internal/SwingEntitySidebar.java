@@ -57,24 +57,12 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     /**
      * The default constructor
      *
-     * @param simulationProxy
-     *     The simulation proxy to use
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
+     * @param dpiScale
+     *     The scaling value to adjust for highdpi screens
      */
-    public SwingEntitySidebar(final SimulationProxy simulationProxy, final SwingTextureRegistry textureRegistry) {
-        this(textureRegistry);
-        
-        this.setSimulationProxy(simulationProxy);
-    }
-    
-    /**
-     * The default constructor
-     *
-     * @param textureRegistry
-     *     The texture registry the textures and icons are loaded from
-     */
-    public SwingEntitySidebar(final SwingTextureRegistry textureRegistry) {
+    public SwingEntitySidebar(final SwingTextureRegistry textureRegistry, final double dpiScale) {
         // class setup
         this.textureRegistry = textureRegistry;
         

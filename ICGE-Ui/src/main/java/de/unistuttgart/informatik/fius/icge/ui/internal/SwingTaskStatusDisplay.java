@@ -50,8 +50,11 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
     
     /**
      * Default constructor.
+     * 
+     * @param fontScale
+     *     the scaling value for the fontSize
      */
-    public SwingTaskStatusDisplay() {
+    public SwingTaskStatusDisplay(final double fontScale) {
         super(new BorderLayout());
         
         // setup text pane
@@ -59,9 +62,10 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
         this.textPane.setEditable(false);
         
         // setup text styles
+        final int fontSize = (int) Math.floor(12 * fontScale);
         this.textStyle = this.textPane.addStyle("Text", null);
         StyleConstants.setFontFamily(this.textStyle, "serif");
-        StyleConstants.setFontSize(this.textStyle, 12);
+        StyleConstants.setFontSize(this.textStyle, fontSize);
         
         this.taskTitle = this.textPane.addStyle("TaskTitle", this.textStyle);
         StyleConstants.setBold(this.taskTitle, true);
