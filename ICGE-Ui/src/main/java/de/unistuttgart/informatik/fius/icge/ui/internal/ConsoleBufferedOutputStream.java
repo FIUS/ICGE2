@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -118,23 +119,25 @@ public class ConsoleBufferedOutputStream extends OutputStream {
             return; // nothing to flush in the line buffer
         }
         
-        String newText;
-        synchronized (this.lineBuffer) { // stringBuilder is not threadsafe
-            // get the current buffer and reset linebuffer 
-            newText = this.lineBuffer.toString();
-            this.lineBuffer.setLength(0);
-        }
-        
-        if (newText.length() > 0) { // new null check because previous check may be obsolete now
-            // print line to text pane
-            try {
-                final StyledDocument content = this.textPane.getStyledDocument();
-                synchronized (this.textPane) {
-                    content.insertString(content.getLength(), newText, this.style);
-                }
-            } catch (final BadLocationException e) {
-                throw new IOException("Bad insert Location: ", e);
+        SwingUtilities.invokeLater(() -> {
+            String newText;
+            synchronized (this.lineBuffer) { // stringBuilder is not threadsafe
+                // get the current buffer and reset linebuffer 
+                newText = this.lineBuffer.toString();
+                this.lineBuffer.setLength(0);
             }
-        }
+            
+            if (newText.length() > 0) { // new null check because previous check may be obsolete now
+                // print line to text pane
+                try {
+                    final StyledDocument content = this.textPane.getStyledDocument();
+                    synchronized (this.textPane) {
+                        content.insertString(content.getLength(), newText, this.style);
+                    }
+                } catch (final BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

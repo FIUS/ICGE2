@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.io.IOException;
 
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 
@@ -59,7 +60,7 @@ public class SwingConsole extends JTextPane implements Console {
     
     @Override
     public void clearConsole() {
-        this.setText("");
+        SwingUtilities.invokeLater(() -> this.setText(""));
     }
     
     /**
