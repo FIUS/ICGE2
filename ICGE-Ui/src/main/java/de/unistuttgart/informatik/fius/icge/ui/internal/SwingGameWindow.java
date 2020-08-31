@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -21,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
@@ -83,11 +85,18 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     
     @Override
     public void setSimulationProxy(final SimulationProxy simulationProxy) {
-        this.simulationProxy = simulationProxy;
-        this.playfieldDrawer.setSimulationProxy(simulationProxy);
-        this.toolbar.setSimulationProxy(simulationProxy);
-        this.entitySidebar.setSimulationProxy(simulationProxy);
-        this.taskStatus.setSimulationProxy(simulationProxy);
+        try {
+            // UI operations must happen in swing thread!
+            SwingUtilities.invokeAndWait(() -> {
+                this.simulationProxy = simulationProxy;
+                this.playfieldDrawer.setSimulationProxy(simulationProxy);
+                this.toolbar.setSimulationProxy(simulationProxy);
+                this.entitySidebar.setSimulationProxy(simulationProxy);
+                this.taskStatus.setSimulationProxy(simulationProxy);
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
     
     @Override
@@ -122,67 +131,75 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     
     @Override
     public void setWindowTitle(final String title) {
-        this.setTitle(title);
+        // UI operations must happen in swing thread!
+        SwingUtilities.invokeLater(() -> this.setTitle(title));
     }
     
     @Override
     @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     public void start() {
-        // init jFrame
-        
-        // setup window closing
-        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
-        this.addWindowListener(new WindowAdapter() { // stop simulation etc.
-            @Override
-            public void windowClosing(final WindowEvent e) {
-                SwingGameWindow.this.cleanup();
-            }
-        });
-        
-        this.playfieldDrawer.initialize();
-        
-        // convert toolbar
-        JComponent toolbarComponent;
         try {
-            toolbarComponent = this.toolbar;
-        } catch (ClassCastException | NullPointerException e) {
-            toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
+            // UI operations must happen in swing thread!
+            SwingUtilities.invokeAndWait(() -> {
+                // init jFrame
+                
+                // setup window closing
+                this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
+                this.addWindowListener(new WindowAdapter() { // stop simulation etc.
+                    @Override
+                    public void windowClosing(final WindowEvent e) {
+                        SwingGameWindow.this.cleanup();
+                    }
+                });
+                
+                this.playfieldDrawer.initialize();
+                
+                // convert toolbar
+                JComponent toolbarComponent;
+                try {
+                    toolbarComponent = this.toolbar;
+                } catch (ClassCastException | NullPointerException e) {
+                    toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
+                }
+                
+                // convert sidebar
+                JComponent sidebarComponent;
+                try {
+                    sidebarComponent = this.entitySidebar;
+                } catch (ClassCastException | NullPointerException e) {
+                    sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
+                }
+                
+                // convert console
+                JComponent consoleComponent;
+                try {
+                    consoleComponent = this.console;
+                } catch (NullPointerException e) {
+                    consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
+                }
+                
+                // setup bottom pane layout
+                final JTabbedPane bottomPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+                bottomPane.addTab("Console", new JScrollPane(consoleComponent));
+                bottomPane.addTab("Task Status", this.taskStatus);
+                bottomPane.setPreferredSize(new Dimension(400, 200));
+                
+                // setup JFrame layout
+                this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
+                final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, bottomPane);
+                jsp1.setOneTouchExpandable(true);
+                jsp1.setResizeWeight(0.8);
+                final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
+                jsp2.setOneTouchExpandable(true);
+                this.getContentPane().add(BorderLayout.CENTER, jsp2);
+                
+                // finalize jFrame
+                this.pack();
+                this.setVisible(true);
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
         }
-        
-        // convert sidebar
-        JComponent sidebarComponent;
-        try {
-            sidebarComponent = this.entitySidebar;
-        } catch (ClassCastException | NullPointerException e) {
-            sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
-        }
-        
-        // convert console
-        JComponent consoleComponent;
-        try {
-            consoleComponent = this.console;
-        } catch (NullPointerException e) {
-            consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
-        }
-        
-        // setup bottom pane layout
-        final JTabbedPane bottomPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        bottomPane.addTab("Console", new JScrollPane(consoleComponent));
-        bottomPane.addTab("Task Status", this.taskStatus);
-        bottomPane.setPreferredSize(new Dimension(400, 200));
-        
-        // setup JFrame layout
-        this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
-        final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, bottomPane);
-        jsp1.setOneTouchExpandable(true);
-        jsp1.setResizeWeight(0.8);
-        final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
-        jsp2.setOneTouchExpandable(true);
-        this.getContentPane().add(BorderLayout.CENTER, jsp2);
-        
-        // finalize jFrame
-        this.pack();
-        this.setVisible(true);
     }
     
     /**
