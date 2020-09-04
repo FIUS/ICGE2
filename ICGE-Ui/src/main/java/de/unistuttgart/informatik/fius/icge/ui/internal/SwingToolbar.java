@@ -73,19 +73,13 @@ public class SwingToolbar extends JToolBar implements Toolbar {
      *     The scaling value to adjust for highdpi screens
      */
     public SwingToolbar(final SwingTextureRegistry textureRegistry, final double dpiScale) {
-        //
         // class setup
-        //
         this.textureRegistry = textureRegistry;
         
-        //
         // toolbar setup
-        //
         this.setFloatable(false);
         
-        //
         // play button setup
-        //
         this.play = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.playIcon).getTexture()));
         this.play.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -95,9 +89,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.play.setEnabled(false);
         this.add(this.play);
         
-        //
         // step button setup
-        //
         this.step = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.stepIcon).getTexture()));
         this.step.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -107,9 +99,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.step.setEnabled(false);
         this.add(this.step);
         
-        //
         // pause button setup
-        //
         this.pause = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.pauseIcon).getTexture()));
         this.pause.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -119,9 +109,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.pause.setEnabled(false);
         this.add(this.pause);
         
-        //
         // simulation time slider setup
-        //
         this.addSeparator();
         // setup hashtable for the labels
         final Hashtable<Integer, JLabel> labels = new Hashtable<>(3);
@@ -141,8 +129,8 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             final JSlider source = (JSlider) event.getSource();
             
             if (!source.getValueIsAdjusting()) {
-                if (SwingToolbar.this.simulationProxy != null) {
-                    SwingToolbar.this.simulationProxy.simulationSpeedChange(source.getValue());
+                if (this.simulationProxy != null) {
+                    this.simulationProxy.simulationSpeedChange(source.getValue());
                 }
             }
         });
@@ -150,56 +138,46 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.add(this.simulationTime);
         this.addSeparator();
         
-        //
         // add visual separator
-        //
         this.add(new JSeparator(SwingConstants.VERTICAL));
         
-        //
         // view button setup
-        //
         this.view = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.arrowIcon).getTexture()));
         this.view.addActionListener(ae -> {
-            if (SwingToolbar.this.simulationProxy != null) {
-                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.VIEW);
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.VIEW);
             }
         });
         this.view.setEnabled(false);
         this.add(this.view);
         
-        //
         // add button setup
-        //
         this.add = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.addIcon).getTexture()));
         this.add.addActionListener(ae -> {
-            if (SwingToolbar.this.simulationProxy != null) {
-                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.ADD);
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.ADD);
             }
         });
         this.add.setEnabled(false);
         this.add(this.add);
         
-        //
         // sub button setup
-        //
         this.sub = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.subIcon).getTexture()));
         this.sub.addActionListener(ae -> {
-            if (SwingToolbar.this.simulationProxy != null) {
-                SwingToolbar.this.simulationProxy.buttonPressed(ButtonType.SUB);
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.SUB);
             }
         });
         this.sub.setEnabled(false);
         this.add(this.sub);
         
-        //
         // entity selector setup
-        //
         this.addSeparator();
         this.entitySelect = new DropdownSelector(this.textureRegistry, "Entity");
         this.entitySelect.addSelectionListener(arg0 -> {
             if (arg0.getStateChange() == ItemEvent.SELECTED) {
-                if (SwingToolbar.this.simulationProxy != null) {
-                    SwingToolbar.this.simulationProxy.selectedEntityChanged(((DropdownEntry) arg0.getItem()).displayName);
+                if (this.simulationProxy != null) {
+                    this.simulationProxy.selectedEntityChanged(((DropdownEntry) arg0.getItem()).displayName);
                 }
             }
         });
@@ -234,27 +212,27 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     public void setControlButtonState(final ControlButtonState controlButtonState) {
         switch (controlButtonState) {
             case VIEW:
-                SwingToolbar.this.view.setEnabled(false);
-                SwingToolbar.this.add.setEnabled(true);
-                SwingToolbar.this.sub.setEnabled(true);
+                this.view.setEnabled(false);
+                this.add.setEnabled(true);
+                this.sub.setEnabled(true);
                 break;
             
             case ADD:
-                SwingToolbar.this.view.setEnabled(true);
-                SwingToolbar.this.add.setEnabled(false);
-                SwingToolbar.this.sub.setEnabled(true);
+                this.view.setEnabled(true);
+                this.add.setEnabled(false);
+                this.sub.setEnabled(true);
                 break;
             
             case SUB:
-                SwingToolbar.this.view.setEnabled(true);
-                SwingToolbar.this.add.setEnabled(true);
-                SwingToolbar.this.sub.setEnabled(false);
+                this.view.setEnabled(true);
+                this.add.setEnabled(true);
+                this.sub.setEnabled(false);
                 break;
             
             case BLOCKED:
-                SwingToolbar.this.view.setEnabled(false);
-                SwingToolbar.this.add.setEnabled(false);
-                SwingToolbar.this.sub.setEnabled(false);
+                this.view.setEnabled(false);
+                this.add.setEnabled(false);
+                this.sub.setEnabled(false);
                 break;
             
             default:
@@ -263,35 +241,37 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     @Override
     public void setClockButtonState(final ClockButtonState clockButtonState) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> this.setClockButtonState(clockButtonState));
+            return;
+        }
+
         switch (clockButtonState) {
             case PLAYING:
-                SwingToolbar.this.play.setEnabled(false);
-                SwingToolbar.this.step.setEnabled(false);
-                SwingToolbar.this.pause.setEnabled(true);
-                SwingToolbar.this.simulationTime.setEnabled(true);
+                this.play.setEnabled(false);
+                this.step.setEnabled(false);
+                this.pause.setEnabled(true);
+                this.simulationTime.setEnabled(true);
                 break;
-            
             case PAUSED:
-                SwingToolbar.this.play.setEnabled(true);
-                SwingToolbar.this.step.setEnabled(true);
-                SwingToolbar.this.pause.setEnabled(false);
-                SwingToolbar.this.simulationTime.setEnabled(true);
+                this.play.setEnabled(true);
+                this.step.setEnabled(true);
+                this.pause.setEnabled(false);
+                this.simulationTime.setEnabled(true);
                 break;
-            
             case BLOCKED:
-                SwingToolbar.this.play.setEnabled(false);
-                SwingToolbar.this.step.setEnabled(false);
-                SwingToolbar.this.pause.setEnabled(false);
-                SwingToolbar.this.simulationTime.setEnabled(false);
+                this.play.setEnabled(false);
+                this.step.setEnabled(false);
+                this.pause.setEnabled(false);
+                this.simulationTime.setEnabled(false);
                 break;
-            
             default:
         }
     }
     
     @Override
     public int getSpeedSliderPosition() {
-        return SwingToolbar.this.simulationTime.getValue();
+        return this.simulationTime.getValue();
     }
     
     @Override
@@ -301,35 +281,34 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         ) throw new IllegalArgumentException(
                 "Simulation Speed Value is out of bounds. Should be between 0 and 10 (both inclusive) but is: " + position
         );
-        
-        SwingToolbar.this.simulationTime.setValue(position);
+        this.simulationTime.setValue(position);
     }
     
     @Override
     public String getCurrentlySelectedEntity() {
-        final DropdownEntry currentEntry = SwingToolbar.this.entitySelect.getCurrentEntry();
+        final DropdownEntry currentEntry = this.entitySelect.getCurrentEntry();
         if (currentEntry == null) return "";
         return currentEntry.displayName;
     }
     
     @Override
     public void setCurrentlySelectedEntity(final String entity) {
-        SwingToolbar.this.entitySelect.setCurrentEntry(SwingToolbar.this.entitySelect.new DropdownEntry(entity));
+        this.entitySelect.setCurrentEntry(this.entitySelect.new DropdownEntry(entity));
     }
     
     @Override
     public void enableEntitySelector() {
-        SwingToolbar.this.entitySelect.setEnabled(true);
+        this.entitySelect.setEnabled(true);
     }
     
     @Override
     public void disableEntitySelector() {
-        SwingToolbar.this.entitySelect.removeAllEntries();
-        SwingToolbar.this.entitySelect.setEnabled(false);
+        this.entitySelect.removeAllEntries();
+        this.entitySelect.setEnabled(false);
     }
     
     @Override
     public void addEntityToEntitySelector(final String name, final String textureId) {
-        SwingToolbar.this.entitySelect.addEntry(SwingToolbar.this.entitySelect.new DropdownEntry(name, textureId));
+        this.entitySelect.addEntry(this.entitySelect.new DropdownEntry(name, textureId));
     }
 }

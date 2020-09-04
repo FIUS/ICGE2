@@ -294,7 +294,8 @@ public class SwingEntityInspector extends JPanel {
      * @param state
      *     The state to set its enabled state to
      */
-    public static void setEnabledState(final JPanel panel, final boolean state) {
+    // set to private to avoid having to check for event dispatch thread on public API
+    private static void setEnabledState(final JPanel panel, final boolean state) {
         panel.setEnabled(state);
         
         for (final Component component : panel.getComponents()) {

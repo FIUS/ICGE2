@@ -123,12 +123,12 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
         this.updateSimulationTree();
     }
     
-    private void getExpanededTreePaths(final List<TreePath> expanded, final TreePath path) {
+    private void getExpandedTreePaths(final List<TreePath> expanded, final TreePath path) {
         if (path == null) return;
         for (final Enumeration<TreePath> e = this.entityList.getExpandedDescendants(path); e.hasMoreElements();) {
             final TreePath p = e.nextElement();
             expanded.add(p);
-            this.getExpanededTreePaths(expanded, p);
+            this.getExpandedTreePaths(expanded, p);
         }
     }
     
@@ -142,7 +142,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     public void updateSimulationTree() {
         final TreePath lastSelected = this.entityList.getSelectionPath();
         final List<TreePath> expanded = new ArrayList<>();
-        this.getExpanededTreePaths(expanded, this.getRootPath());
+        this.getExpandedTreePaths(expanded, this.getRootPath());
         SwingEntitySidebar.updateTreeNodeChildren((DefaultMutableTreeNode) this.entityList.getModel().getRoot());
         this.entityListModel.reload();
         this.entityList.addSelectionPath(lastSelected);

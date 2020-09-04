@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.ui.internal;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -206,7 +207,8 @@ public class SwingGameWindow extends JFrame implements GameWindow {
      * Stop the game window.
      */
     public void stop() {
-        // TODO close window programatically
+        // programmatically close the window
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         this.cleanup();
     }
     
