@@ -68,14 +68,14 @@ public interface GameWindow {
     /**
      * Start the game window and all its submodules.
      *
-     * @implNote Implementations are not required to perform that start with a synchronous call pattern. When this
-     *     method returns, the startup may be incomplete.
+     * <b>Note:</b> Implementations are not required to perform that start with a synchronous call pattern. When this
+     * method returns, the startup may be incomplete.
      */
     void start();
     
     /**
      * Set the simulation proxy instance used by multiple UI components to inform the Simulation of user actions.
-     * 
+     *
      * @param simulationProxy
      *     The instance of simulation proxy to use
      */
