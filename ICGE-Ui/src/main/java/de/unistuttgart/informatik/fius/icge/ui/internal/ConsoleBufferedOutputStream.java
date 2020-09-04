@@ -118,14 +118,14 @@ public class ConsoleBufferedOutputStream extends OutputStream {
         if (this.lineBuffer.length() == 0) { // fast exit as default without costly synchronized
             return; // nothing to flush in the line buffer
         }
-
+        
         String newText;
         synchronized (this.lineBuffer) { // stringBuilder is not threadsafe
             // get the current buffer and reset linebuffer
             newText = this.lineBuffer.toString();
             this.lineBuffer.setLength(0);
         }
-
+        
         if (newText.length() > 0) { // new null check because previous check may be obsolete now
             // print line to text pane
             SwingUtilities.invokeLater(() -> {

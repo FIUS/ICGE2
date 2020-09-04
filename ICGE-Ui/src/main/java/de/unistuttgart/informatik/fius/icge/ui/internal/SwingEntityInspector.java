@@ -279,6 +279,11 @@ public class SwingEntityInspector extends JPanel {
     
     @Override
     public void setEnabled(final boolean enabled) {
+        // ensure we're on the EDT
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> setEnabled(enabled));
+            return;
+        }
         super.setEnabled(enabled);
         
         this.title.setEnabled(enabled);

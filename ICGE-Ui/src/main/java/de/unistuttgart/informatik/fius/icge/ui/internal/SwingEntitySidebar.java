@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -140,6 +141,10 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public void updateSimulationTree() {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(this::updateSimulationTree);
+            return;
+        }
         final TreePath lastSelected = this.entityList.getSelectionPath();
         final List<TreePath> expanded = new ArrayList<>();
         this.getExpandedTreePaths(expanded, this.getRootPath());
@@ -153,6 +158,10 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public void setEnabled(final boolean enabled) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> setEnabled(enabled));
+            return;
+        }
         super.setEnabled(enabled);
         this.entityList.setEnabled(enabled);
     }

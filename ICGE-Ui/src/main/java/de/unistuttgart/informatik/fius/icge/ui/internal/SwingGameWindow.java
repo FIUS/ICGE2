@@ -139,68 +139,67 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     @Override
     @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     public void start() {
-        try {
-            // UI operations must happen in swing thread!
-            SwingUtilities.invokeAndWait(() -> {
-                // init jFrame
-                
-                // setup window closing
-                this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
-                this.addWindowListener(new WindowAdapter() { // stop simulation etc.
-                    @Override
-                    public void windowClosing(final WindowEvent e) {
-                        SwingGameWindow.this.cleanup();
-                    }
-                });
-                
-                this.playfieldDrawer.initialize();
-                
-                // convert toolbar
-                JComponent toolbarComponent;
-                try {
-                    toolbarComponent = this.toolbar;
-                } catch (ClassCastException | NullPointerException e) {
-                    toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
-                }
-                
-                // convert sidebar
-                JComponent sidebarComponent;
-                try {
-                    sidebarComponent = this.entitySidebar;
-                } catch (ClassCastException | NullPointerException e) {
-                    sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
-                }
-                
-                // convert console
-                JComponent consoleComponent;
-                try {
-                    consoleComponent = this.console;
-                } catch (NullPointerException e) {
-                    consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
-                }
-                
-                // setup bottom pane layout
-                final JTabbedPane bottomPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-                bottomPane.addTab("Console", new JScrollPane(consoleComponent));
-                bottomPane.addTab("Task Status", this.taskStatus);
-                bottomPane.setPreferredSize(new Dimension(400, 200));
-                
-                // setup JFrame layout
-                this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
-                final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, bottomPane);
-                jsp1.setOneTouchExpandable(true);
-                jsp1.setResizeWeight(0.8);
-                final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
-                jsp2.setOneTouchExpandable(true);
-                this.getContentPane().add(BorderLayout.CENTER, jsp2);
-                
-                // finalize jFrame
-                this.pack();
-                this.setVisible(true);
-            });
-        } catch (InterruptedException | InvocationTargetException e) {
-            e.printStackTrace();
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(this::start);
+            return;
         }
+        // Conversions for subelements are in here, because setting the simulation proxy does not take care of the
+        // layouting work incurred by updating these subelements. TODO: Consider layouting in #setSimulationProxy
+        // init jFrame
+        
+        // setup window closing
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
+        this.addWindowListener(new WindowAdapter() { // stop simulation etc.
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                SwingGameWindow.this.cleanup();
+            }
+        });
+        
+        this.playfieldDrawer.initialize();
+        
+        // convert toolbar
+        JComponent toolbarComponent;
+        try {
+            toolbarComponent = this.toolbar;
+        } catch (ClassCastException | NullPointerException e) {
+            toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
+        }
+        
+        // convert sidebar
+        JComponent sidebarComponent;
+        try {
+            sidebarComponent = this.entitySidebar;
+        } catch (ClassCastException | NullPointerException e) {
+            sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
+        }
+        
+        // convert console
+        JComponent consoleComponent;
+        try {
+            consoleComponent = this.console;
+        } catch (NullPointerException e) {
+            consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
+        }
+        
+        // setup bottom pane layout
+        final JTabbedPane bottomPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        bottomPane.addTab("Console", new JScrollPane(consoleComponent));
+        bottomPane.addTab("Task Status", this.taskStatus);
+        bottomPane.setPreferredSize(new Dimension(400, 200));
+        
+        // setup JFrame layout
+        this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
+        final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, bottomPane);
+        jsp1.setOneTouchExpandable(true);
+        jsp1.setResizeWeight(0.8);
+        final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
+        jsp2.setOneTouchExpandable(true);
+        this.getContentPane().add(BorderLayout.CENTER, jsp2);
+        
+        // finalize jFrame
+        this.pack();
+        this.setVisible(true);
     }
     
     /**
