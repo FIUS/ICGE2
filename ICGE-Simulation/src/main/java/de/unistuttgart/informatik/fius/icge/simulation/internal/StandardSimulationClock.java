@@ -128,11 +128,7 @@ public class StandardSimulationClock implements SimulationClock {
         this.shuttingDown = true;
         this.stop();
         for (final var boundary : Set.copyOf(this.operationBoundaries)) {
-            try {
-                boundary.cancel(true);
-            } catch (CancellationException e) {
-                // we're kind of expecting these here
-            }
+            boundary.cancel(true);
         }
     }
     

@@ -143,11 +143,11 @@ public class SwingGameWindow extends JFrame implements GameWindow {
             SwingUtilities.invokeLater(this::start);
             return;
         }
-        // Conversions for subelements are in here, because setting the simulation proxy does not take care of the
-        // layouting work incurred by updating these subelements. TODO: Consider layouting in #setSimulationProxy
         // init jFrame
         
+        //
         // setup window closing
+        //
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
         this.addWindowListener(new WindowAdapter() { // stop simulation etc.
             @Override
@@ -158,7 +158,9 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         
         this.playfieldDrawer.initialize();
         
+        //
         // convert toolbar
+        //
         JComponent toolbarComponent;
         try {
             toolbarComponent = this.toolbar;
@@ -166,7 +168,9 @@ public class SwingGameWindow extends JFrame implements GameWindow {
             toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
         
+        //
         // convert sidebar
+        //
         JComponent sidebarComponent;
         try {
             sidebarComponent = this.entitySidebar;
@@ -174,7 +178,9 @@ public class SwingGameWindow extends JFrame implements GameWindow {
             sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
         
+        //
         // convert console
+        //
         JComponent consoleComponent;
         try {
             consoleComponent = this.console;
@@ -182,13 +188,17 @@ public class SwingGameWindow extends JFrame implements GameWindow {
             consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
         
+        //
         // setup bottom pane layout
+        //
         final JTabbedPane bottomPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         bottomPane.addTab("Console", new JScrollPane(consoleComponent));
         bottomPane.addTab("Task Status", this.taskStatus);
         bottomPane.setPreferredSize(new Dimension(400, 200));
         
+        //
         // setup JFrame layout
+        //
         this.getContentPane().add(BorderLayout.NORTH, toolbarComponent);
         final JSplitPane jsp1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.playfieldDrawer, bottomPane);
         jsp1.setOneTouchExpandable(true);
@@ -197,7 +207,9 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         jsp2.setOneTouchExpandable(true);
         this.getContentPane().add(BorderLayout.CENTER, jsp2);
         
+        //
         // finalize jFrame
+        //
         this.pack();
         this.setVisible(true);
     }
@@ -208,7 +220,6 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     public void stop() {
         // programmatically close the window
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-        this.cleanup();
     }
     
     private void cleanup() {

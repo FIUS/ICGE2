@@ -74,13 +74,19 @@ public class SwingToolbar extends JToolBar implements Toolbar {
      *     The scaling value to adjust for highdpi screens
      */
     public SwingToolbar(final SwingTextureRegistry textureRegistry, final double dpiScale) {
+        //
         // class setup
+        //
         this.textureRegistry = textureRegistry;
         
+        //
         // toolbar setup
+        //
         this.setFloatable(false);
         
+        //
         // play button setup
+        //
         this.play = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.playIcon).getTexture()));
         this.play.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -90,7 +96,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.play.setEnabled(false);
         this.add(this.play);
         
+        //
         // step button setup
+        //
         this.step = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.stepIcon).getTexture()));
         this.step.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -100,7 +108,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.step.setEnabled(false);
         this.add(this.step);
         
+        //
         // pause button setup
+        //
         this.pause = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.pauseIcon).getTexture()));
         this.pause.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -110,7 +120,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.pause.setEnabled(false);
         this.add(this.pause);
         
+        //
         // simulation time slider setup
+        //
         this.addSeparator();
         // setup hashtable for the labels
         final Hashtable<Integer, JLabel> labels = new Hashtable<>(3);
@@ -139,10 +151,14 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.add(this.simulationTime);
         this.addSeparator();
         
+        //
         // add visual separator
+        //
         this.add(new JSeparator(SwingConstants.VERTICAL));
         
+        //
         // view button setup
+        //
         this.view = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.arrowIcon).getTexture()));
         this.view.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -152,7 +168,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.view.setEnabled(false);
         this.add(this.view);
         
+        //
         // add button setup
+        //
         this.add = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.addIcon).getTexture()));
         this.add.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -162,7 +180,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.add.setEnabled(false);
         this.add(this.add);
         
+        //
         // sub button setup
+        //
         this.sub = new JToggleButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.subIcon).getTexture()));
         this.sub.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -172,7 +192,9 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         this.sub.setEnabled(false);
         this.add(this.sub);
         
+        //
         // entity selector setup
+        //
         this.addSeparator();
         this.entitySelect = new DropdownSelector(this.textureRegistry, "Entity");
         this.entitySelect.addSelectionListener(arg0 -> {

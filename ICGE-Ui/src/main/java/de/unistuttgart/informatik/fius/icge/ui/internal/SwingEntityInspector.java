@@ -279,7 +279,6 @@ public class SwingEntityInspector extends JPanel {
     
     @Override
     public void setEnabled(final boolean enabled) {
-        // ensure we're on the EDT
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(() -> setEnabled(enabled));
             return;
@@ -299,7 +298,6 @@ public class SwingEntityInspector extends JPanel {
      * @param state
      *     The state to set its enabled state to
      */
-    // set to private to avoid having to check for event dispatch thread on public API
     private static void setEnabledState(final JPanel panel, final boolean state) {
         panel.setEnabled(state);
         
