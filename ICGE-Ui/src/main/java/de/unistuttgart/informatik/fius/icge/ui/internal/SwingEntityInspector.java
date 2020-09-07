@@ -279,10 +279,6 @@ public class SwingEntityInspector extends JPanel {
     
     @Override
     public void setEnabled(final boolean enabled) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> setEnabled(enabled));
-            return;
-        }
         super.setEnabled(enabled);
         
         this.title.setEnabled(enabled);
