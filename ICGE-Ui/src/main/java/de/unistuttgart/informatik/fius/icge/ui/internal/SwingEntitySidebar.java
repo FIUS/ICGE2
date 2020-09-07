@@ -141,10 +141,15 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public void updateSimulationTree() {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(this::updateSimulationTree);
-            return;
-        }
+        SwingUtilities.invokeLater(this::updateSimulationTreeInternal);
+    }
+    
+    /**
+     * Update the simulation tree model.
+     * <p>
+     * This methodmust be called from the swing ui thread!
+     */
+    private void updateSimulationTreeInternal() {
         final TreePath lastSelected = this.entityList.getSelectionPath();
         final List<TreePath> expanded = new ArrayList<>();
         this.getExpandedTreePaths(expanded, this.getRootPath());
@@ -158,10 +163,6 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public void setEnabled(final boolean enabled) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> setEnabled(enabled));
-            return;
-        }
         super.setEnabled(enabled);
         this.entityList.setEnabled(enabled);
     }
@@ -231,7 +232,8 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             returnNode.setAllowsChildren(false);
         } else {
             node.forEachChild(
-                    (final SimulationTreeNode childNode) -> returnNode.add(SwingEntitySidebar.generateDefaultMutableTreeNodeFromSimulationTreeNode(childNode))
+                    (final SimulationTreeNode childNode) -> returnNode
+                            .add(SwingEntitySidebar.generateDefaultMutableTreeNodeFromSimulationTreeNode(childNode))
             );
         }
         
