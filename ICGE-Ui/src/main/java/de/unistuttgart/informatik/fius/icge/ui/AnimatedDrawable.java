@@ -49,6 +49,7 @@ public class AnimatedDrawable implements Drawable {
      * @param z
      *     value
      * @param textureHandle
+     *     the handle of the texture used for this drawable
      */
     public AnimatedDrawable(
             final long tickStart, final double xStart, final double yStart, final long duration, final double xEnd, final double yEnd,

@@ -20,6 +20,7 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy.ButtonType;
@@ -220,11 +221,19 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     @Override
     public void addEntity(final String displayName, final String textureID) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> this.addEntity(displayName, textureID));
+            return;
+        }
         this.entitySelect.addEntry(this.entitySelect.new DropdownEntry(displayName, textureID));
     }
     
     @Override
     public void setControlButtonState(final ControlButtonState controlButtonState) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> this.setControlButtonState(controlButtonState));
+            return;
+        }
         switch (controlButtonState) {
             case VIEW:
                 this.view.setEnabled(false);
@@ -256,6 +265,11 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     @Override
     public void setClockButtonState(final ClockButtonState clockButtonState) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> this.setClockButtonState(clockButtonState));
+            return;
+        }
+        
         switch (clockButtonState) {
             case PLAYING:
                 this.play.setEnabled(false);
@@ -263,21 +277,18 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 this.pause.setEnabled(true);
                 this.simulationTime.setEnabled(true);
                 break;
-            
             case PAUSED:
                 this.play.setEnabled(true);
                 this.step.setEnabled(true);
                 this.pause.setEnabled(false);
                 this.simulationTime.setEnabled(true);
                 break;
-            
             case BLOCKED:
                 this.play.setEnabled(false);
                 this.step.setEnabled(false);
                 this.pause.setEnabled(false);
                 this.simulationTime.setEnabled(false);
                 break;
-            
             default:
         }
     }
@@ -295,7 +306,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 "Simulation Speed Value is out of bounds. Should be between 0 and 10 (both inclusive) but is: " + position
         );
         
-        this.simulationTime.setValue(position);
+        SwingToolbar.this.simulationTime.setValue(position);
     }
     
     @Override
@@ -307,17 +318,24 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     @Override
     public void setCurrentlySelectedEntity(final String entity) {
-        this.entitySelect.setCurrentEntry(this.entitySelect.new DropdownEntry(entity));
+        SwingUtilities.invokeLater(() -> {
+            this.entitySelect.setCurrentEntry(this.entitySelect.new DropdownEntry(entity));
+        });
     }
     
     @Override
     public void enableEntitySelector() {
-        this.entitySelect.setEnabled(true);
+        SwingUtilities.invokeLater(() -> {
+            this.entitySelect.setEnabled(true);
+        });
     }
     
     @Override
     public void disableEntitySelector() {
-        this.entitySelect.removeAllEntries();
-        this.entitySelect.setEnabled(false);
+        SwingUtilities.invokeLater(() -> {
+            this.entitySelect.removeAllEntries();
+            this.entitySelect.setEnabled(false);
+        });
     }
+    
 }

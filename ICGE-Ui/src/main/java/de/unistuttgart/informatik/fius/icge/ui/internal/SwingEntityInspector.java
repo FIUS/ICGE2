@@ -279,6 +279,10 @@ public class SwingEntityInspector extends JPanel {
     
     @Override
     public void setEnabled(final boolean enabled) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> setEnabled(enabled));
+            return;
+        }
         super.setEnabled(enabled);
         
         this.title.setEnabled(enabled);
@@ -294,7 +298,7 @@ public class SwingEntityInspector extends JPanel {
      * @param state
      *     The state to set its enabled state to
      */
-    public static void setEnabledState(final JPanel panel, final boolean state) {
+    private static void setEnabledState(final JPanel panel, final boolean state) {
         panel.setEnabled(state);
         
         for (final Component component : panel.getComponents()) {

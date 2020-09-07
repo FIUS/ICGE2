@@ -9,6 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SwingUtilities;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -54,6 +58,12 @@ class SwingGameWindowUiTest {
     @Test
     void testStart() {
         this.window.start();
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            // nothing to do here, we're waiting for Swing events to finish
+        }
         Assertions.assertTrue(this.window.isVisible(), "JFrame should be visisble");
     }
 }
