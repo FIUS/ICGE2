@@ -165,7 +165,7 @@ public class StandardSimulationProxy implements SimulationProxy {
             }
         });
         this.gameWindow.getToolbar().enableEntitySelector();
-        final String typeName = this.gameWindow.getToolbar().getCurrentEntity();
+        final String typeName = this.gameWindow.getToolbar().getCurrentlySelectedEntity();
         String textureHandle = null;
         if ((typeName != null) && !typeName.equals("")) {
             textureHandle = this.entityTypeRegistry.getTextureHandleOfEntityType(typeName);

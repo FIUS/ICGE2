@@ -219,13 +219,6 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     }
     
     @Override
-    public String getCurrentEntity() {
-        final DropdownEntry e = this.entitySelect.getCurrentEntry();
-        if (e == null) return null;
-        return e.displayName;
-    }
-    
-    @Override
     public void addEntity(final String displayName, final String textureID) {
         this.entitySelect.addEntry(this.entitySelect.new DropdownEntry(displayName, textureID));
     }
@@ -326,10 +319,5 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     public void disableEntitySelector() {
         SwingToolbar.this.entitySelect.removeAllEntries();
         SwingToolbar.this.entitySelect.setEnabled(false);
-    }
-    
-    @Override
-    public void addEntityToEntitySelector(final String name, final String textureId) {
-        SwingToolbar.this.entitySelect.addEntry(SwingToolbar.this.entitySelect.new DropdownEntry(name, textureId));
     }
 }

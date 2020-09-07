@@ -48,14 +48,6 @@ public interface Toolbar {
     }
     
     /**
-     * Getter function for the user selected entity
-     *
-     * @return The displayname of the selected entry
-     * @see DropdownSelector
-     */
-    String getCurrentEntity();
-    
-    /**
      * Append the list of entities with the given entry
      *
      * @param displayName
@@ -121,14 +113,4 @@ public interface Toolbar {
      * Disable the entity selector
      */
     void disableEntitySelector();
-    
-    /**
-     * Add a entity to the entity selector drop down.
-     *
-     * @param name
-     *     The name of the new entity.
-     * @param textureId
-     *     The texture handle of the new entity.
-     */
-    void addEntityToEntitySelector(String name, String textureId);
 }
