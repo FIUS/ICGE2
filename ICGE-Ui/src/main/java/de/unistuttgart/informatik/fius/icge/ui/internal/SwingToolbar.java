@@ -221,19 +221,12 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     
     @Override
     public void addEntity(final String displayName, final String textureID) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> this.addEntity(displayName, textureID));
-            return;
-        }
-        this.entitySelect.addEntry(this.entitySelect.new DropdownEntry(displayName, textureID));
+        SwingUtilities.invokeLater(() -> {
+            this.entitySelect.addEntry(this.entitySelect.new DropdownEntry(displayName, textureID));
+        });
     }
     
-    @Override
-    public void setControlButtonState(final ControlButtonState controlButtonState) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> this.setControlButtonState(controlButtonState));
-            return;
-        }
+    private void setControlButtonStateInternal(final ControlButtonState controlButtonState) {
         switch (controlButtonState) {
             case VIEW:
                 this.view.setEnabled(false);
@@ -264,12 +257,11 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     }
     
     @Override
-    public void setClockButtonState(final ClockButtonState clockButtonState) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> this.setClockButtonState(clockButtonState));
-            return;
-        }
-        
+    public void setControlButtonState(final ControlButtonState controlButtonState) {
+        SwingUtilities.invokeLater(() -> this.setControlButtonStateInternal(controlButtonState));
+    }
+    
+    private void setClockButtonStateInternal(final ClockButtonState clockButtonState) {
         switch (clockButtonState) {
             case PLAYING:
                 this.play.setEnabled(false);
@@ -294,6 +286,11 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     }
     
     @Override
+    public void setClockButtonState(final ClockButtonState clockButtonState) {
+        SwingUtilities.invokeLater(() -> this.setClockButtonStateInternal(clockButtonState));
+    }
+    
+    @Override
     public int getSpeedSliderPosition() {
         return this.simulationTime.getValue();
     }
@@ -306,7 +303,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
                 "Simulation Speed Value is out of bounds. Should be between 0 and 10 (both inclusive) but is: " + position
         );
         
-        SwingToolbar.this.simulationTime.setValue(position);
+        this.simulationTime.setValue(position);
     }
     
     @Override
