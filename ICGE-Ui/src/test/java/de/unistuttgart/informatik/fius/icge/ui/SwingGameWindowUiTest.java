@@ -38,17 +38,22 @@ class SwingGameWindowUiTest {
     
     /**
      * Setup the game window
+     * 
+     * @throws Exception
+     *     When anything goes wrong
      */
     @BeforeEach
-    public void setup() {
-        final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
-        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(textureRegistry, 1);
-        final SwingToolbar toolbar = new SwingToolbar(textureRegistry, 1);
-        final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, 1);
-        final SwingConsole console = new SwingConsole(1);
-        final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(1);
-        
-        this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console, taskStatus);
+    public void setup() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
+            final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(textureRegistry, 1);
+            final SwingToolbar toolbar = new SwingToolbar(textureRegistry, 1);
+            final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, 1);
+            final SwingConsole console = new SwingConsole(1);
+            final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(1);
+            
+            this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console, taskStatus);
+        });
     }
     
     /**

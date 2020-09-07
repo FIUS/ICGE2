@@ -54,6 +54,8 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     
     /**
      * Default Constructor
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param textPane
      *     The text pane to place the stream data into

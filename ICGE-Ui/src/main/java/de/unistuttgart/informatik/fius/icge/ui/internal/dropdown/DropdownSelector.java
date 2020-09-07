@@ -85,6 +85,8 @@ public class DropdownSelector extends JPanel {
     
     /**
      * Constructor of the DropdownSelector
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
@@ -118,7 +120,9 @@ public class DropdownSelector extends JPanel {
     
     /**
      * Setter for the currently selected entry
-     * 
+     * <p>
+     * This should only be called from the swing ui thread
+     * <p>
      * WARNING: This is not checked if it is available it can be ANY entry
      * 
      * @param entry
@@ -130,6 +134,8 @@ public class DropdownSelector extends JPanel {
     
     /**
      * This function adds an entry to the selector
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param entries
      *     1 to n entries to be appended
@@ -146,6 +152,8 @@ public class DropdownSelector extends JPanel {
     
     /**
      * This function removes all entries from the dropdown menu
+     * <p>
+     * This should only be called from the swing ui thread
      */
     public void removeAllEntries() {
         this.model.removeAllElements();
@@ -153,6 +161,8 @@ public class DropdownSelector extends JPanel {
     
     /**
      * Adds a listener which reacts to the selection and deselection of items
+     * <p>
+     * This should only be called from the swing ui thread
      * 
      * @param listener
      *     The listener which is added

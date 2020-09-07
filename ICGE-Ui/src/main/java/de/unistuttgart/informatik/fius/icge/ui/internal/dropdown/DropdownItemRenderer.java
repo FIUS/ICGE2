@@ -42,6 +42,8 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
     
     /**
      * Constructor for the DropdownItemRenderer
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from

@@ -36,6 +36,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
  * A swing implementation of the EntitySidebar
  *
  * @author Tobias Wältken
+ * 
  * @version 1.0
  */
 public class SwingEntitySidebar extends JPanel implements EntitySidebar {
@@ -47,16 +48,18 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     private final SwingTextureRegistry textureRegistry;
     
     /** The root node of the entity list */
-    public SimulationTreeNode   rootNode;
+    private SimulationTreeNode   rootNode;
     /** The hierarchical list of all entities */
-    public JTree                entityList;
+    private JTree                entityList;
     /** The model of the JTree component */
-    public DefaultTreeModel     entityListModel;
+    private DefaultTreeModel     entityListModel;
     /** The entity inspector in the sidebar */
-    public SwingEntityInspector entityInspector;
+    private SwingEntityInspector entityInspector;
     
     /**
      * The default constructor
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
@@ -119,8 +122,12 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public void setSimulationTreeRootNode(final SimulationTreeNode treeNode) {
-        this.rootNode = treeNode;
-        this.entityListModel.setRoot(SwingEntitySidebar.generateDefaultMutableTreeNodeFromSimulationTreeNode(this.rootNode));
+        SwingUtilities.invokeLater(() -> {
+            this.rootNode = treeNode;
+            this.entityListModel.setRoot(SwingEntitySidebar.generateDefaultMutableTreeNodeFromSimulationTreeNode(this.rootNode));
+        });
+        // As this method itself is using invoke later, it does not need to be in the block above.
+        // The order of execution is still correct, because calls to invokeLater are processes in the order the calls happen.
         this.updateSimulationTree();
     }
     
@@ -223,6 +230,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
      *
      * @param node
      *     The {@link SimulationTreeNode} the Tree structure is generated from
+     * 
      * @return Returns the corresponding {@link DefaultMutableTreeNode}
      */
     private static DefaultMutableTreeNode generateDefaultMutableTreeNodeFromSimulationTreeNode(final SimulationTreeNode node) {
@@ -232,8 +240,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
             returnNode.setAllowsChildren(false);
         } else {
             node.forEachChild(
-                    (final SimulationTreeNode childNode) -> returnNode
-                            .add(SwingEntitySidebar.generateDefaultMutableTreeNodeFromSimulationTreeNode(childNode))
+                    (final SimulationTreeNode childNode) -> returnNode.add(SwingEntitySidebar.generateDefaultMutableTreeNodeFromSimulationTreeNode(childNode))
             );
         }
         
@@ -242,8 +249,7 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public SimulationTreeNode getSimulationTreeSelectedElement() {
-        return (SimulationTreeNode) ((DefaultMutableTreeNode) SwingEntitySidebar.this.entityList.getLastSelectedPathComponent())
-                .getUserObject();
+        return (SimulationTreeNode) ((DefaultMutableTreeNode) this.entityList.getLastSelectedPathComponent()).getUserObject();
     }
     
     @Override
@@ -253,32 +259,34 @@ public class SwingEntitySidebar extends JPanel implements EntitySidebar {
     
     @Override
     public void enableSimulationTree() {
-        SwingEntitySidebar.this.entityList.setEnabled(true);
+        SwingUtilities.invokeLater(() -> this.entityList.setEnabled(true));
     }
     
     @Override
     public void disbaleSimulationTree() {
-        SwingEntitySidebar.this.entityList.setEnabled(false);
-        SwingEntitySidebar.this.entityListModel.setRoot(null);
+        SwingUtilities.invokeLater(() -> {
+            this.entityList.setEnabled(false);
+            this.entityListModel.setRoot(null);
+        });
     }
     
     @Override
     public void setEntityInspectorName(final String name) {
-        SwingEntitySidebar.this.entityInspector.setName(name);
+        SwingUtilities.invokeLater(() -> this.entityInspector.setName(name));
     }
     
     @Override
     public String getEntityInspectorName() {
-        return SwingEntitySidebar.this.entityInspector.getName();
+        return this.entityInspector.getName();
     }
     
     @Override
     public void enableEntityInspector() {
-        SwingEntitySidebar.this.entityInspector.setEnabled(true);
+        SwingUtilities.invokeLater(() -> this.entityInspector.setEnabled(true));
     }
     
     @Override
     public void disableEntityInspector() {
-        SwingEntitySidebar.this.entityInspector.setEnabled(false);
+        SwingUtilities.invokeLater(() -> SwingEntitySidebar.this.entityInspector.setEnabled(false));
     }
 }

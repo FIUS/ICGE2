@@ -42,6 +42,8 @@ class DropdownItemEditor extends BasicComboBoxEditor {
     
     /**
      * Constructor for the DropdownItemEditor
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
