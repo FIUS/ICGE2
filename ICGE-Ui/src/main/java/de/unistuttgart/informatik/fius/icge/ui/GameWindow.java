@@ -66,10 +66,7 @@ public interface GameWindow {
     void setWindowTitle(String title);
     
     /**
-     * Start the game window and all its submodules.
-     * <p>
-     * <b>Note:</b> Implementations are not required to perform that start with a synchronous call pattern. When this
-     * method returns, the startup may be incomplete.
+     * Start and show the game window.
      */
     void start();
     

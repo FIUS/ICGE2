@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -82,6 +81,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         this.entitySidebar = entitySidebar;
         this.console = console;
         this.taskStatus = taskStatus;
+        SwingUtilities.invokeLater(this::initGameWindow);
     }
     
     @Override
@@ -131,22 +131,36 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     }
     
     @Override
-    @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     public void start() {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(this::start);
-            return;
-        }
+        // Asynchronously set visible to true
+        SwingUtilities.invokeLater(() -> this.setVisible(true));
+    }
+    
+    /**
+     * Stop the game window.
+     */
+    public void stop() {
+        // programmatically close the window
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    }
+    
+    /**
+     * Initialize window listeners and layout all child components.
+     * <p>
+     * This method must be called from the swing event thread.
+     */
+    @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
+    private void initGameWindow() {
         // init jFrame
         
         //
         // setup window closing
         //
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // only dispose the single window
-        this.addWindowListener(new WindowAdapter() { // stop simulation etc.
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(final WindowEvent e) {
-                SwingGameWindow.this.cleanup();
+                SwingGameWindow.this.cleanup(); // stop simulation etc.
             }
         });
         
@@ -205,17 +219,11 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         // finalize jFrame
         //
         this.pack();
-        this.setVisible(true);
     }
     
     /**
-     * Stop the game window.
+     * Clean up all resources used by this window and tell the simulation that the window is now closed.
      */
-    public void stop() {
-        // programmatically close the window
-        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-    }
-    
     private void cleanup() {
         this.console.cleanup();
         if (this.simulationProxy != null) {
