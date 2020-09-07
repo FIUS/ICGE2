@@ -119,16 +119,16 @@ public class ConsoleBufferedOutputStream extends OutputStream {
             return; // nothing to flush in the line buffer
         }
         
-        SwingUtilities.invokeLater(() -> {
-            String newText;
-            synchronized (this.lineBuffer) { // stringBuilder is not threadsafe
-                // get the current buffer and reset linebuffer 
-                newText = this.lineBuffer.toString();
-                this.lineBuffer.setLength(0);
-            }
-            
-            if (newText.length() > 0) { // new null check because previous check may be obsolete now
-                // print line to text pane
+        String newText;
+        synchronized (this.lineBuffer) { // stringBuilder is not threadsafe
+            // get the current buffer and reset linebuffer
+            newText = this.lineBuffer.toString();
+            this.lineBuffer.setLength(0);
+        }
+        
+        if (newText.length() > 0) { // new null check because previous check may be obsolete now
+            // print line to text pane
+            SwingUtilities.invokeLater(() -> {
                 try {
                     final StyledDocument content = this.textPane.getStyledDocument();
                     synchronized (this.textPane) {
@@ -137,7 +137,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
                 } catch (final BadLocationException e) {
                     e.printStackTrace();
                 }
-            }
-        });
+            });
+        }
     }
 }

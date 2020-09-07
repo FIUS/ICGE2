@@ -54,6 +54,7 @@ public class BasicDrawable implements Drawable {
      * @param z
      *     value
      * @param textureHandle
+     *     the handle of the texture used for this drawable
      */
     public BasicDrawable(final double x, final double y, final int z, final String textureHandle) {
         this.x = x;

@@ -22,6 +22,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -168,7 +169,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             @Override
             public void mouseClicked(final MouseEvent e) {
                 // ignore this for now
-                
             }
         });
         
@@ -196,7 +196,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     @Override
     public void setDrawables(final List<Drawable> drawables) {
-        this.drawables = drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
+        this.drawables = drawables.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toUnmodifiableList());
         this.animatedDrawables = drawables.stream().filter(
                 d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
         ).collect(Collectors.toUnmodifiableList());
@@ -209,7 +209,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.currentFrame = tickCount;
         this.animatedDrawables.forEach(d -> d.setCurrentTick(tickCount));
         if (this.animatedDrawables.size() > 0) {
-            this.drawables = this.drawables.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toUnmodifiableList());
+            this.drawables = this.drawables.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toUnmodifiableList());
         }
         
         SwingUtilities.invokeLater(() -> {

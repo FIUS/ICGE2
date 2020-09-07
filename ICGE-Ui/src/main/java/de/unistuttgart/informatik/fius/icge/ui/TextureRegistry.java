@@ -39,6 +39,7 @@ public interface TextureRegistry {
      * @return the handle to retrieve the texture
      *
      * @throws TextureNotFoundException
+     *     the texture could not be loaded from the given resource location
      */
     String loadTextureFromResource(String resourceName, final Function<String, InputStream> resourceProvider);
     
@@ -84,6 +85,7 @@ public interface TextureRegistry {
      * @return the handle to retrieve the texture
      *
      * @throws TextureNotFoundException
+     *     the texture could not be loaded from the given file path
      */
     String loadTextureFromFile(String filePath);
 }
