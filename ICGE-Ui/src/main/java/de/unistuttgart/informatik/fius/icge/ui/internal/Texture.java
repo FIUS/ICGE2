@@ -40,6 +40,8 @@ public interface Texture {
     
     /**
      * Draw the texture onto the screen.
+     * <p>
+     * This method should only be called from the swing ui thread.
      * 
      * @param frame
      *     the current frame number
@@ -58,6 +60,8 @@ public interface Texture {
     
     /**
      * Draw the texture onto the screen.
+     * <p>
+     * This method should only be called from the swing ui thread.
      * 
      * @param frame
      *     the current frame number

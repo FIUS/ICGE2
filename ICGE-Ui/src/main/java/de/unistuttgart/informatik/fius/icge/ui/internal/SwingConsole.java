@@ -37,6 +37,8 @@ public class SwingConsole extends JTextPane implements Console {
     
     /**
      * Default constructor
+     * <p>
+     * This should only be called from the swing ui thread
      * 
      * @param fontScale
      *     the scaling value for the fontSize

@@ -9,9 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.List;
-import java.awt.BorderLayout;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -50,6 +50,8 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
     
     /**
      * Default constructor.
+     * <p>
+     * This should only be called from the swing ui thread
      * 
      * @param fontScale
      *     the scaling value for the fontSize

@@ -9,16 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -100,6 +91,8 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     /**
      * Create a new SwingPlayfieldDrawer.
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param textureRegistry
      *     The texture registry
@@ -137,6 +130,8 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     
     /**
      * Initialize the PlayfieldDrawer.
+     * <p>
+     * This should only be called from the swing ui thread
      */
     public void initialize() {
         

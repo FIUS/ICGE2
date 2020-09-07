@@ -46,27 +46,29 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     private final SwingTextureRegistry textureRegistry;
     
     /** The play button in the toolbar */
-    public JButton play;
+    private JButton play;
     /** The step button in the toolbar */
-    public JButton step;
+    private JButton step;
     /** The pause button in the toolbar */
-    public JButton pause;
+    private JButton pause;
     
     /** A slider to set the simulation time */
-    public JSlider simulationTime;
+    private JSlider simulationTime;
     
     /** The button to change to view mode */
-    public JToggleButton view;
+    private JToggleButton view;
     /** The button to change to add mode */
-    public JToggleButton add;
+    private JToggleButton add;
     /** The button to change to sub mode */
-    public JToggleButton sub;
+    private JToggleButton sub;
     
     /** The selector which selects the entity for the user to place */
-    public DropdownSelector entitySelect;
+    private DropdownSelector entitySelect;
     
     /**
      * The constructor of the toolbar
+     * <p>
+     * This should only be called from the swing ui thread
      *
      * @param textureRegistry
      *     The texture registry the textures and icons are loaded from
@@ -302,8 +304,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         ) throw new IllegalArgumentException(
                 "Simulation Speed Value is out of bounds. Should be between 0 and 10 (both inclusive) but is: " + position
         );
-        
-        this.simulationTime.setValue(position);
+        SwingUtilities.invokeLater(() -> this.simulationTime.setValue(position));
     }
     
     @Override

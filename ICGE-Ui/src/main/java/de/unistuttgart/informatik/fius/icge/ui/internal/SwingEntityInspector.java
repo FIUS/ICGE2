@@ -14,6 +14,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,8 @@ public class SwingEntityInspector extends JPanel {
     
     /**
      * Default constructor
+     * <p>
+     * This should only be called from the swing ui thread
      * 
      * @param textureRegistry
      *     The texture registry to get the images from
@@ -98,7 +101,13 @@ public class SwingEntityInspector extends JPanel {
      */
     @Override
     public void setName(final String name) {
-        this.title.setText(name);
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                this.title.setText(name);
+            });
+        } catch (InvocationTargetException | InterruptedException e) {
+            System.err.println("Failed to set entity inspector name because of: " + e.toString());
+        }
     }
     
     /**
@@ -164,6 +173,7 @@ public class SwingEntityInspector extends JPanel {
      *
      * @param entries
      *     The ne list of entries to check against currentEntries
+     * 
      * @return true iff only the values need to be updated
      */
     private boolean canUpdateValuesOnly(final EntityInspectorEntry[] entries) {
@@ -201,11 +211,14 @@ public class SwingEntityInspector extends JPanel {
     
     /**
      * Add a entry to the ui editor
+     * <p>
+     * This should only be run from the swing ui thread
      * 
      * @param entry
      *     The entry to add a ui element for
      * @param index
      *     The index of the entry in currentEntries
+     * 
      * @return A consumer that updates the newly added ui element to the given string value
      */
     private Consumer<String> addUIElement(final EntityInspectorEntry entry, final int index) {
@@ -266,6 +279,8 @@ public class SwingEntityInspector extends JPanel {
     
     /**
      * Clears the entity editor
+     * <p>
+     * This should only be called from the swing ui thread
      */
     private void clearUIElements() {
         this.remove(this.inspector);
