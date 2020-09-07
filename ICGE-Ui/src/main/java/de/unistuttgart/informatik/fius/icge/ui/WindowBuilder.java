@@ -10,8 +10,10 @@
 package de.unistuttgart.informatik.fius.icge.ui;
 
 import java.awt.GraphicsEnvironment;
+import java.lang.reflect.InvocationTargetException;
 import java.awt.Font;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -35,18 +37,79 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
  */
 public class WindowBuilder {
     
-    private String     windowTitle = "";
-    private double     dpiScale    = 1.0;
-    private boolean    useDoubleBuffering;
-    private boolean    syncToScreen;
-    private GameWindow window;
+    private static boolean isDefaultLookAndFeelUpdated = false;
+    private static double  dpiScale;
+    private static double  fontScale;
+    
+    private String              windowTitle = "";
+    private boolean             useDoubleBuffering;
+    private boolean             syncToScreen;
+    private volatile GameWindow window;
     
     /**
      * Create a new WindowBuilder.
      */
     public WindowBuilder() {
-        this.dpiScale = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
-                .getDefaultTransform().getScaleX();
+        this(WindowBuilder.getDeviceDpiScale());
+    }
+    
+    /**
+     * Create a new WindowBuilder.
+     * 
+     * @param dpiScale
+     *     the scaling factor for high dpi screens, only effective for the very first WindowBuilder instantiation!
+     */
+    public WindowBuilder(double dpiScale) {
+        if (dpiScale < 0.5) throw new IllegalArgumentException("A dpi scale < 0.5 is not supported!");
+        if (dpiScale > 3.0) throw new IllegalArgumentException("A dpi scale > 3.0 is not supported!");
+        
+        if (!WindowBuilder.isDefaultLookAndFeelUpdated) { // only once
+            WindowBuilder.isDefaultLookAndFeelUpdated = true;
+            WindowBuilder.dpiScale = dpiScale;
+            WindowBuilder.fontScale = ((dpiScale - 1) * 0.75) + 1;
+            this.setUiDefaults(dpiScale, WindowBuilder.fontScale);
+        }
+    }
+    
+    /**
+     * Get the scaling factor from the default display device.
+     * 
+     * @return the dpi scale of the default display
+     */
+    private static double getDeviceDpiScale() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getDefaultTransform()
+                .getScaleX();
+    }
+    
+    /**
+     * Set the UI Manager defaults forlook and feeel and dpi scaling.
+     * <p>
+     * This method must only be called once. Calling this twice may have undefined behaviur.
+     * 
+     * @param dpiScale
+     *     The dpi scaling factor to use to scale all fonts.
+     * @param fontScale
+     *     The scaling factor to be applied to fonts specifically
+     */
+    private void setUiDefaults(double dpiScale, double fontScale) {
+        // Set window look and feel
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            final UIDefaults uidef = UIManager.getLookAndFeelDefaults();
+            uidef.forEach((key, value) -> { // scale fonts for highdpi
+                if (value instanceof UIDefaults.ActiveValue) {
+                    UIDefaults.ActiveValue lazy = (UIDefaults.ActiveValue) value;
+                    value = lazy.createValue(UIManager.getDefaults());
+                }
+                if (value != null && value instanceof Font) {
+                    Font font = (Font) value;
+                    int scaledFontSize = (int) Math.floor(font.getSize() * fontScale);
+                    uidef.put(key, new FontUIResource(font.getName(), font.getStyle(), scaledFontSize));
+                }
+            });
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            System.err.println("Can't set look and feel because of: " + e.toString());
+        }
     }
     
     /**
@@ -92,24 +155,6 @@ public class WindowBuilder {
     }
     
     /**
-     * Set the scaling factor for highDpi screens.
-     * <p>
-     * The scaling factor is automatically determined but can be manually set with this method. Only scaling factors
-     * {@code 0.5 <= dpiScale <= 3.0} are supported.
-     * 
-     * @param dpiScale
-     *     the scaling factor to use
-     */
-    public void setDpiScale(final double dpiScale) {
-        if (
-            this.hasBuiltWindow()
-        ) throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
-        if (dpiScale < 0.5) throw new IllegalArgumentException("A dpi scale < 0.5 is not supported!");
-        if (dpiScale > 3.0) throw new IllegalArgumentException("A dpi scale > 3.0 is not supported!");
-        this.dpiScale = dpiScale;
-    }
-    
-    /**
      * Actually build the window.
      *
      * <p>
@@ -120,34 +165,26 @@ public class WindowBuilder {
         if (
             this.hasBuiltWindow()
         ) throw new IllegalStateException("The window was already built! Use getBuiltWindow() to acess the built window.");
-        
-        final double fontScale = ((this.dpiScale - 1) * 0.75) + 1;
-        
-        // Set window look and feel
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            final UIDefaults uidef = UIManager.getLookAndFeelDefaults();
-            uidef.forEach((key, value) -> { // scale fonts for highdpi
-                if (value instanceof UIDefaults.ActiveValue) {
-                    UIDefaults.ActiveValue lazy = (UIDefaults.ActiveValue) value;
-                    value = lazy.createValue(UIManager.getDefaults());
-                }
-                if (value != null && value instanceof Font) {
-                    Font font = (Font) value;
-                    int scaledFontSize = (int) Math.floor(font.getSize() * fontScale);
-                    uidef.put(key, new FontUIResource(font.getName(), font.getStyle(), scaledFontSize));
-                }
-            });
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            System.err.println("Can't set look and feel because of: " + e.toString());
+            SwingUtilities.invokeAndWait(this::buildWindowInternal);
+        } catch (final InterruptedException | InvocationTargetException e) {
+            // TODO better exception handling
+            System.err.println("Can't build the window because of: " + e.toString());
         }
-        
+    }
+    
+    /**
+     * Build the window.
+     * <p>
+     * This method must be called in the swing UI thread!
+     */
+    private void buildWindowInternal() {
         final SwingTextureRegistry textureRegistry = new SwingTextureRegistry();
-        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(textureRegistry, this.dpiScale);
-        final SwingToolbar toolbar = new SwingToolbar(textureRegistry, this.dpiScale);
-        final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, this.dpiScale);
-        final SwingConsole console = new SwingConsole(fontScale);
-        final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(fontScale);
+        final SwingPlayfieldDrawer playfieldDrawer = new SwingPlayfieldDrawer(textureRegistry, WindowBuilder.dpiScale);
+        final SwingToolbar toolbar = new SwingToolbar(textureRegistry, WindowBuilder.dpiScale);
+        final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, WindowBuilder.dpiScale);
+        final SwingConsole console = new SwingConsole(WindowBuilder.fontScale);
+        final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(WindowBuilder.fontScale);
         
         playfieldDrawer.setDoubleBuffering(this.useDoubleBuffering);
         playfieldDrawer.setSyncToScreen(this.syncToScreen);
