@@ -86,18 +86,12 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     
     @Override
     public void setSimulationProxy(final SimulationProxy simulationProxy) {
-        try {
-            // UI operations must happen in swing thread!
-            SwingUtilities.invokeAndWait(() -> {
-                this.simulationProxy = simulationProxy;
-                this.playfieldDrawer.setSimulationProxy(simulationProxy);
-                this.toolbar.setSimulationProxy(simulationProxy);
-                this.entitySidebar.setSimulationProxy(simulationProxy);
-                this.taskStatus.setSimulationProxy(simulationProxy);
-            });
-        } catch (InterruptedException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        // contains no direct calls to any swing ui method
+        this.simulationProxy = simulationProxy;
+        this.playfieldDrawer.setSimulationProxy(simulationProxy);
+        this.toolbar.setSimulationProxy(simulationProxy);
+        this.entitySidebar.setSimulationProxy(simulationProxy);
+        this.taskStatus.setSimulationProxy(simulationProxy);
     }
     
     @Override
