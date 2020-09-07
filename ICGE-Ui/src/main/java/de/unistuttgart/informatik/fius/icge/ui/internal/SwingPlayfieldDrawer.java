@@ -111,7 +111,6 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.offsetY = this.CELL_SIZE;
         
         Font font = this.getFont();
-        System.out.println(font.getFontName() + " " + font.getSize());
         final int newFontSize = (int) Math.floor(12 * dpiScale);
         this.setFont(new Font(font.getFontName(), font.getStyle(), newFontSize));
     }
