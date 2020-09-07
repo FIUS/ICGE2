@@ -60,6 +60,7 @@ class SwingGameWindowUiTest {
         this.window.start();
         try {
             SwingUtilities.invokeAndWait(() -> {
+                // wait for event queue to catch up
             });
         } catch (InterruptedException | InvocationTargetException e) {
             // nothing to do here, we're waiting for Swing events to finish
