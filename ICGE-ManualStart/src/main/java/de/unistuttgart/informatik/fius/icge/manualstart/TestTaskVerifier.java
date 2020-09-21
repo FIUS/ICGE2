@@ -97,147 +97,147 @@ public class TestTaskVerifier implements TaskVerifier, TaskInformation {
     @Override
     public List<TaskInformation> getChildTasks() {
         ArrayList<TaskInformation> subTasks = new ArrayList<>();
-
-        subTasks.add(new TaskInformation(){
-
+        
+        subTasks.add(new TaskInformation() {
+            
             @Override
             public String getTaskTitle() {
                 return "a) Successful sub task";
             }
-
+            
             @Override
             public String getTaskDescription() {
                 return "Super basic sample description";
             }
-
+            
             @Override
             public TaskVerificationStatus getTaskStatus() {
                 return TaskVerificationStatus.SUCCESSFUL;
             }
-
+            
             @Override
             public List<TaskInformation> getChildTasks() {
                 return Collections.emptyList();
             }
         });
-
-        subTasks.add(new TaskInformation(){
-
+        
+        subTasks.add(new TaskInformation() {
+            
             @Override
             public String getTaskTitle() {
                 return "b) undecided sub task";
             }
-
+            
             @Override
             public String getTaskDescription() {
                 return "Super basic sample description";
             }
-
+            
             @Override
             public TaskVerificationStatus getTaskStatus() {
                 return TaskVerificationStatus.UNDECIDED;
             }
-
+            
             @Override
             public List<TaskInformation> getChildTasks() {
                 ArrayList<TaskInformation> subTasks = new ArrayList<>();
-
-                subTasks.add(new TaskInformation(){
-
+                
+                subTasks.add(new TaskInformation() {
+                    
                     @Override
                     public String getTaskTitle() {
                         return "b.1) Successful sub sub task";
                     }
-
+                    
                     @Override
                     public String getTaskDescription() {
                         return "Super basic sample description";
                     }
-
+                    
                     @Override
                     public TaskVerificationStatus getTaskStatus() {
                         return TaskVerificationStatus.SUCCESSFUL;
                     }
-
+                    
                     @Override
                     public List<TaskInformation> getChildTasks() {
                         return Collections.emptyList();
                     }
                 });
-
-                subTasks.add(new TaskInformation(){
-
+                
+                subTasks.add(new TaskInformation() {
+                    
                     @Override
                     public String getTaskTitle() {
                         return "b.2) undecided sub sub task";
                     }
-
+                    
                     @Override
                     public String getTaskDescription() {
                         return "Super basic sample description";
                     }
-
+                    
                     @Override
                     public TaskVerificationStatus getTaskStatus() {
                         return TaskVerificationStatus.UNDECIDED;
                     }
-
+                    
                     @Override
                     public List<TaskInformation> getChildTasks() {
                         return Collections.emptyList();
                     }
                 });
-
-                subTasks.add(new TaskInformation(){
-
+                
+                subTasks.add(new TaskInformation() {
+                    
                     @Override
                     public String getTaskTitle() {
                         return "b.3) failed sub sub task";
                     }
-
+                    
                     @Override
                     public String getTaskDescription() {
                         return "Super basic sample description";
                     }
-
+                    
                     @Override
                     public TaskVerificationStatus getTaskStatus() {
                         return TaskVerificationStatus.FAILED;
                     }
-
+                    
                     @Override
                     public List<TaskInformation> getChildTasks() {
                         return Collections.emptyList();
                     }
                 });
-
+                
                 return subTasks;
             }
         });
-
-        subTasks.add(new TaskInformation(){
-
+        
+        subTasks.add(new TaskInformation() {
+            
             @Override
             public String getTaskTitle() {
                 return "c) failed sub task";
             }
-
+            
             @Override
             public String getTaskDescription() {
                 return "Super basic sample description";
             }
-
+            
             @Override
             public TaskVerificationStatus getTaskStatus() {
                 return TaskVerificationStatus.FAILED;
             }
-
+            
             @Override
             public List<TaskInformation> getChildTasks() {
                 return Collections.emptyList();
             }
         });
-
+        
         return subTasks;
     }
     
