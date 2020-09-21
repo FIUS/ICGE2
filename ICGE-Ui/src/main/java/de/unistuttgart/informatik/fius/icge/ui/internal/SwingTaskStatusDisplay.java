@@ -135,7 +135,7 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
         if (title == null || title.length() == 0) {
             title = "Unnamed Task";
         }
-        this.appendText(document, title, this.taskTitle);
+        this.appendText(document, indentText(title, depth), this.taskTitle);
         
         // append task status
         switch (task.getTaskStatus()) {
@@ -153,7 +153,7 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
         // append description
         final String description = task.getTaskDescription();
         if (description != null && description.length() > 0) {
-            this.appendText(document, description + '\n', this.textStyle);
+            this.appendText(document, indentText(description + '\n', depth + 2), this.textStyle);
         }
         
         // handle subtasks
@@ -165,7 +165,7 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
             }
         }
     }
-    
+
     /**
      * Appends text to a styled document while silently dismissing {@link BadLocationException}.
      *
@@ -182,5 +182,35 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
         } catch (final BadLocationException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This function appends indentation spaces to a string
+     * 
+     * @param text
+     *     The string to indent, which may contain newline characters
+     * @param depth
+     *     The depth of the indention
+     * @return
+     *     Returns the new indented string.
+     */
+    private static String indentText(final String text, final int depth) {
+        if (depth == 0) return text;
+
+        StringBuilder returnString = new StringBuilder();
+        String indention = "\u2003".repeat(depth);
+
+        for (String s : text.split("\n")) {
+            returnString.append(indention);
+            returnString.append(s);
+            returnString.append('\n');
+        }
+
+        // Delete the final new line character if needed to prevent additional unwanted newlines in the result string
+        if (!text.endsWith("\n")) {
+            returnString.deleteCharAt(returnString.length() - 1);
+        }
+
+        return returnString.toString();
     }
 }
