@@ -1,14 +1,35 @@
 name: Deploy GitHub Pages
 
+env:
+  gh_pages_index_prefix: |
+    <html>
+      <head>
+        <title>ICGE Documentation</title>
+      </head>
+      <body>
+        <h1>ICGE Documentation</h1>
+        <p> This is the documentation for the ICGE.</p>
+        <p> If you are looking for the code, see <a href="https://github.com/fius/icge2">github.com/fius/icge2</a></p>
+        
+        <h2>Contents</h2>
+  
+  gh_pages_index_suffix: |
+      </body>
+    </html>
+
 on:
   push:
     branches: [ master ]
+    tags: [ ** ]
+  workflow_dispatch
 
 jobs:
-  deploy_pages:
-    name: Deploy GitHub Pages
+  generate_javadoc:
+    name: Generate Javadoc 
     runs-on: ubuntu-latest
     steps:
+    - name: Calculate ref
+        run: echo ::set-env name=REF_NAME::${GITHUB_REF#refs/*/}
     - name: Setup java
       uses: actions/setup-java@v1
       with:
@@ -21,4 +42,26 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./target/site/apidocs/
-        destination_dir: ./apidocs
+        destination_dir: ./${{ env.REF_NAME }}
+  generate_index:
+    name: Generate Index
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+    - name: Generate index
+      run: |
+        !#/usr/bin/env bash
+        echo $gh_pages_index_prefix > index.html
+        for path in * ;do
+          if [ -d $path ] ;then
+            echo '<a href="'$path'">$path</a>' >> index.html
+          fi
+        done
+
+        echo $gh_pages_index_suffix >> index.html
+    - name: Commit index
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Update index
