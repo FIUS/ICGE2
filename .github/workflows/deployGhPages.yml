@@ -12,8 +12,10 @@ env:
         <p> If you are looking for the code, see <a href="https://github.com/fius/icge2">github.com/fius/icge2</a></p>
         
         <h2>Contents</h2>
+        <ul>
   
   gh_pages_index_suffix: |
+    </ul>
     </body>
     </html>
 
@@ -56,7 +58,7 @@ jobs:
         echo $gh_pages_index_prefix > index.html
         for path in * ;do
           if [ -d $path ] ;then
-            echo '<a href="'$path'">$path</a>' >> index.html
+            echo '<li><a href="'$path'">$path</a></li>' >> index.html
           fi
         done
 
