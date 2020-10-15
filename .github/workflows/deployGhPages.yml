@@ -23,6 +23,8 @@ on:
   push:
     branches: [ master ]
     tags: [ '**' ]
+  release:
+    types: [ published, edited ]
   workflow_dispatch: {}
 
 jobs:
