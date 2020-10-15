@@ -101,6 +101,12 @@ public class SwingEntityInspector extends JPanel {
      */
     @Override
     public void setName(final String name) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            this.title.setText(name);
+            return;
+        }
+        
+        // cannot call invokeAndWait when already in EventDispatchThread!
         try {
             SwingUtilities.invokeAndWait(() -> {
                 this.title.setText(name);
