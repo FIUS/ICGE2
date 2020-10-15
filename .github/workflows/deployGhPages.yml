@@ -1,7 +1,7 @@
 name: Deploy GitHub Pages
 
 env:
-  gh_pages_index_prefix: |
+  gh_pages_index_prefix: >
     <html>
       <head>
         <title>ICGE Documentation</title>
@@ -14,7 +14,7 @@ env:
         <h2>Contents</h2>
         <ul>
   
-  gh_pages_index_suffix: |
+  gh_pages_index_suffix: >
     </ul>
     </body>
     </html>
@@ -53,12 +53,12 @@ jobs:
       with:
         ref: gh-pages
     - name: Generate index
-      run: |
+      run: >
         #!/usr/bin/env bash
         echo $gh_pages_index_prefix > index.html
         for path in * ;do
           if [ -d $path ] ;then
-            echo '<li><a href="'$path'">$path</a></li>' >> index.html
+            echo '<li><a href="'$path'">'$path'</a></li>' >> index.html
           fi
         done
 
