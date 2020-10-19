@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.manualstart;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.CollectableEntity;
 import de.unistuttgart.informatik.fius.icge.simulation.programs.Program;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 
@@ -23,7 +24,27 @@ public class TestTask implements Task {
     @Override
     public void run(final Simulation sim) {
         final TestEntity tE = new TestEntity();
+        
         sim.getPlayfield().addEntity(new Position(3, 4), tE);
+        
+        CollectableEntity coin = new Coin();
+        sim.getPlayfield().addEntity(new Position(3, 4), coin);
+        
+        while (true) {
+            tE.collect(coin);
+            tE.drop(coin);
+            tE.collect(coin);
+            tE.drop(coin);
+            tE.collect(coin);
+            tE.drop(coin);
+            tE.collect(coin);
+            tE.drop(coin);
+            tE.sleep(1);
+            if (false) {
+                break;
+            }
+        }
+        
         sim.runProgram(new Program<TestEntity>() {
             @Override
             public void run(TestEntity entity) {
