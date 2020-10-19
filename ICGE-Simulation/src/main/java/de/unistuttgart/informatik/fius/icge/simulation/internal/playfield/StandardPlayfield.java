@@ -178,14 +178,14 @@ public class StandardPlayfield implements Playfield {
                 this.entityPositions.containsKey(entity)
             ) throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
             
-            this.entityPositions.put(entity, pos);
+            entity.initOnPlayfield(this);
             
             this.addEntityToCell(pos, entity);
             
+            this.entityPositions.put(entity, pos);
+            
             this.getSimulation().getActionLog()
                     .logAction(new EntitySpawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this, pos));
-            
-            entity.initOnPlayfield(this);
             
             this.addEntityToSimulationTree(entity);
             this.drawEntities();

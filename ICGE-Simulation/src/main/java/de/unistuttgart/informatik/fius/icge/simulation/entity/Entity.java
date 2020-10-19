@@ -11,6 +11,7 @@ package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnotherFieldException;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 
 
@@ -33,13 +34,20 @@ public interface Entity {
     /**
      * Method to initialize this entity after being added to the playfield.
      * <p>
-     * This method needs to be called by the playfield directly after the entity was added.
+     * This method should not be called from anywhere other than the playfield implementation.
+     * </p>
+     * <p>
+     * This method needs to be called by the playfield directly before adding the entity to the field.
      * </p>
      * 
      * @param playfield
      *     The playfield this entity was added to; must <b>not</b> be <b>null</b>
+     * 
      * @throws IllegalArgumentException
      *     if the given playfield is null
+     * @throws EntityOnAnotherFieldException
+     *     if the entity is already on a field
      */
     void initOnPlayfield(Playfield playfield);
+    
 }

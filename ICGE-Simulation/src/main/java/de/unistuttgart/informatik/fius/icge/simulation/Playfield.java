@@ -16,6 +16,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTeleportAct
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnotherFieldException;
 
 
 /**
@@ -87,8 +88,11 @@ public interface Playfield {
      *     The position to add the entity; must <b>not</b> be <b>null</b>
      * @param entity
      *     The entity to add; must <b>not</b> be <b>on the field</b>; must <b>not</b> be <b>null</b>
+     * 
      * @throws EntityAlreadyOnFieldExcpetion
      *     if the given entity has been added to this playfield before
+     * @throws EntityOnAnotherFieldException
+     *     if the entity is already on another field
      * @throws IllegalArgumentException
      *     if the given pos or entity is null
      */
