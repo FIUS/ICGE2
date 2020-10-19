@@ -42,4 +42,13 @@ public interface Entity {
      *     if the given playfield is null
      */
     void initOnPlayfield(Playfield playfield);
+    
+    /**
+     * Method to tell the entity that it was removed from the playfield.
+     * <p>
+     * This Method must only be called by the playfield.
+     * This method needs to be called by the playfield directly after the entity was removed.
+     * </p>
+     */
+    void removeFromPlayfield();
 }

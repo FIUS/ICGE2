@@ -86,6 +86,13 @@ public abstract class BasicEntity implements Entity {
         }
     }
     
+    @Override
+    public void removeFromPlayfield() {
+        synchronized (this.fieldLock) {
+            this.field = null;
+        }
+    }
+    
     /**
      * Check whether this entity is on a playfield
      * 

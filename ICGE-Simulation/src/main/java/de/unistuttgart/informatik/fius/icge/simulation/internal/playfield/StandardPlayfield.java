@@ -304,6 +304,8 @@ public class StandardPlayfield implements Playfield {
             
             this.getSimulation().getActionLog()
                     .logAction(new EntityDespawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this));
+
+            entity.removeFromPlayfield();
             
             this.removeEntityFromSimulationTree(entity);
             
