@@ -16,6 +16,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnotherFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionAttribute;
 import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
@@ -81,7 +82,7 @@ public abstract class BasicEntity implements Entity {
     public void initOnPlayfield(final Playfield playfield) {
         if (playfield == null) throw new IllegalArgumentException("The given playfield is null.");
         synchronized (this.fieldLock) {
-            if (this.isOnPlayfield()) throw new IllegalStateException("This entity can only be on a single playfield!");
+            if (this.isOnPlayfield()) throw new EntityOnAnotherFieldException("This entity can only be on a single playfield!");
             this.field = new WeakReference<>(playfield);
         }
     }
@@ -101,8 +102,7 @@ public abstract class BasicEntity implements Entity {
                 return false;
             }
             if (!playfield.containsEntity(this)) {
-                // Was on playfield, but no more.
-                this.field = null;
+                // Was on playfield, but no more or just being added on playfield
                 return false;
             }
             return true;
