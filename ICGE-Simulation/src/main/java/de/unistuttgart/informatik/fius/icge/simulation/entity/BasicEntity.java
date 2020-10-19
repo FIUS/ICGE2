@@ -48,7 +48,13 @@ public abstract class BasicEntity implements Entity {
     @InspectionAttribute(readOnly = true)
     @Override
     public Position getPosition() {
-        return this.getPlayfield().getEntityPosition(this);
+        // never synchronize on fieldLock in this method to avoid deadlocks!
+        // local variable to avoid race conditions in if later
+        WeakReference<Playfield> field = this.field;
+        if (field == null) throw new EntityNotOnFieldException("This entity is not on a playfield");
+        Playfield playfield = field.get();
+        if (playfield == null) throw new EntityNotOnFieldException("This entity is not on a playfield");
+        return playfield.getEntityPosition(this);
     }
     
     /**
