@@ -41,6 +41,7 @@ public class ManualStartSimulation {
         
         ManualStartSimulation.prepareTextures(w.getTextureRegistry());
         TestEntity.TEXTURE_HANDLE = ManualStartSimulation.animated;
+        Coin.TEXTURE_HANDLE = textureHandleCoin;
         
         final SimulationBuilder sb = new SimulationBuilder();
         sb.setTaskVerifier(new TestTaskVerifier());

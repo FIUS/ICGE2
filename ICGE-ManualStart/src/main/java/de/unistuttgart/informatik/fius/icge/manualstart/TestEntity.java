@@ -9,13 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.manualstart;
 
-import de.unistuttgart.informatik.fius.icge.simulation.entity.MovableEntity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.GreedyEntity;
 
 
 /**
  * Basic test entity.
  */
-public class TestEntity extends MovableEntity {
+public class TestEntity extends GreedyEntity {
     
     /**
      * The texture handle used for the test entity.

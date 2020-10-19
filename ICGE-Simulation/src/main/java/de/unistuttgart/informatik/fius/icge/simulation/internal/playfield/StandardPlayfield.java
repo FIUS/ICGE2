@@ -188,8 +188,8 @@ public class StandardPlayfield implements Playfield {
                     .logAction(new EntitySpawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this, pos));
             
             this.addEntityToSimulationTree(entity);
-            this.drawEntities();
         }
+        this.drawEntities();
     }
     
     private SimulationTreeNode findNodeForEntity(final Entity entity, final boolean create) {
@@ -269,8 +269,8 @@ public class StandardPlayfield implements Playfield {
             
             this.getSimulation().getActionLog().logAction(actionToLog);
             
-            this.drawEntities();
         }
+        this.drawEntities();
     }
     
     private void removeEntityFromSimulationTree(final Entity entity) {
@@ -307,8 +307,8 @@ public class StandardPlayfield implements Playfield {
             
             this.removeEntityFromSimulationTree(entity);
             
-            this.drawEntities();
         }
+        this.drawEntities();
     }
     
     @Override
