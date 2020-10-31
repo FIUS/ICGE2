@@ -77,4 +77,18 @@ public interface ActionLog {
      *     The action to log
      */
     void logAction(Action actionToLog);
+    
+    /**
+     * Set ActionLog console output (default: true)
+     *
+     * @param enable
+     *     true: log to console, false: do not log to console
+     */
+    void setConsoleOutput(boolean enable);
+    
+    /**
+     * Get ActionLog console output status (true: log to console, false: do not log to console)
+     */
+    boolean getConsoleOutput();
+    
 }
