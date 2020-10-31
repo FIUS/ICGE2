@@ -72,6 +72,7 @@ public interface GameWindow {
     
     /**
      * Stop and close the game window.
+     * This action is equivalent with pressing the "X"-button of the window.
      */
     void stop();
     
