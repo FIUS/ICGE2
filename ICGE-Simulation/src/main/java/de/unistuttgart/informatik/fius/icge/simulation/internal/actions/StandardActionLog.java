@@ -35,6 +35,8 @@ public class StandardActionLog implements ActionLog {
     
     private final Map<Entity, MultiTypedList<EntityAction>> entityActions = new HashMap<>();
     
+    private boolean consoleLog = true;
+    
     @Override
     public List<Action> getAllActions() {
         synchronized (this.actionsLock) {
@@ -84,8 +86,18 @@ public class StandardActionLog implements ActionLog {
         synchronized (this.actionsLock) {
             this.actions.add(actionToLog);
         }
-        // TODO make it possible to turn off actions logging to console
-        System.out.println(actionToLog.getDescription());
+        if (this.consoleLog) {
+            System.out.println(actionToLog.getDescription());
+        }
     }
     
+    @Override
+    public void setConsoleOutput(boolean enable) {
+        this.consoleLog = enable;
+    }
+    
+    @Override
+    public boolean getConsoleOutput() {
+        return this.consoleLog;
+    }
 }
