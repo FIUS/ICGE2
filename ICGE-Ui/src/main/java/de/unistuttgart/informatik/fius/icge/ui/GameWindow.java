@@ -71,6 +71,11 @@ public interface GameWindow {
     void start();
     
     /**
+     * Stop and close the game window.
+     */
+    void stop();
+    
+    /**
      * Set the simulation proxy instance used by multiple UI components to inform the Simulation of user actions.
      *
      * @param simulationProxy
