@@ -136,9 +136,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         SwingUtilities.invokeLater(() -> this.setVisible(true));
     }
     
-    /**
-     * Stop the game window.
-     */
+    @Override
     public void stop() {
         // programmatically close the window
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
