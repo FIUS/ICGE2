@@ -79,7 +79,7 @@ public interface ActionLog {
     void logAction(Action actionToLog);
     
     /**
-     * Set ActionLog console output (default: true)
+     * Set ActionLog console output (default: {@code true})
      *
      * @param enable
      *     true: log to console, false: do not log to console
@@ -87,7 +87,9 @@ public interface ActionLog {
     void setConsoleOutput(boolean enable);
     
     /**
-     * Get ActionLog console output status (true: log to console, false: do not log to console)
+     * Get ActionLog console output status.
+     * <p>
+     * If true {@code true}, all actions are printed to console when they are logged. If {@code false} the actions are logged but not printed to console.
      */
     boolean getConsoleOutput();
     
