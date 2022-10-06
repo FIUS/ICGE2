@@ -198,9 +198,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     @Override
     public void setDrawables(final List<Drawable> drawables) {
         this.drawables = drawables.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toUnmodifiableList());
-        this.animatedDrawables = drawables.stream()
-                .filter(d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle()))
-                .collect(Collectors.toUnmodifiableList());
+        this.animatedDrawables = drawables.stream().filter(
+                d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
+        ).collect(Collectors.toUnmodifiableList());
         this.fullRepaintNeeded = true;
         this.draw(this.currentFrame);
     }
@@ -234,9 +234,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                     final Rectangle visible = this.getVisibleRect();
                     final double cellSize = this.CELL_SIZE * this.scale;
                     final int textureSize = Math.toIntExact(Math.round(cellSize));
-                    final Optional<Rectangle> rectToDraw = this.animatedDrawables.stream()
-                            .map(d -> this.getScreenPointFromCellCoordinates(d.getX(), d.getY(), cellSize))
-                            .map(p -> SwingPlayfieldDrawer.getPaintRectFromPoint(p, textureSize)).filter(r -> r.intersects(visible))
+                    final Optional<Rectangle> rectToDraw = this.animatedDrawables.stream().map(
+                            d -> this.getScreenPointFromCellCoordinates(d.getX(), d.getY(), cellSize)
+                    ).map(p -> SwingPlayfieldDrawer.getPaintRectFromPoint(p, textureSize)).filter(r -> r.intersects(visible))
                             .reduce((final Rectangle r1, final Rectangle r2) -> {
                                 r1.add(r2);
                                 return r1;
@@ -269,9 +269,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             }
         });
         // filter out finished animations
-        this.animatedDrawables = this.drawables.stream()
-                .filter(d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle()))
-                .collect(Collectors.toUnmodifiableList());
+        this.animatedDrawables = this.drawables.stream().filter(
+                d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle())
+        ).collect(Collectors.toUnmodifiableList());
     }
     
     @Override
