@@ -376,15 +376,15 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         // group and count drawables
         while (iter.hasNext()) {
             final Drawable next = iter.next();
-            currentCount += next.getAmount();
             final boolean groupable = SwingPlayfieldDrawer.canGroupDrawables(last, next);
             if (!groupable && (last != null)) {
                 this.paintDrawable(g, last, currentCount, isTilable);
             }
+            currentCount += next.getAmount();
             isTilable = isTilable && next.isTilable();
             last = next;
             if (!groupable) {
-                currentCount = 0;
+                currentCount = next.getAmount();
                 isTilable = next.isTilable();
             }
         }
@@ -418,6 +418,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         final Double[] yOffsets = { 0.0, 0.0, 0.0, third, third, third, twoThird, twoThird, twoThird };
         final Double scaleAdjust = third;
         this.paintMultiCountDrawable(g, drawable, count, xOffsets, yOffsets, scaleAdjust);
+        
     }
     
     private void paintMultiCountDrawable(
