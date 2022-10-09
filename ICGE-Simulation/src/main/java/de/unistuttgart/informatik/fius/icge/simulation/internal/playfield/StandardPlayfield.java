@@ -151,18 +151,7 @@ public class StandardPlayfield implements Playfield {
                 cell = new PlayfieldCell(pos);
                 this.cells.put(pos, cell);
             }
-            List<Entity> entityList=cell.get(entity.getClass(), false);
-            switch(entityList.size()) {
-                case 0:
-                    cell.add(entity);
-                    break;
-                case 1:
-                    entityList.get(0).setAmount(entityList.get(0).getAmount()+entity.getAmount());
-                    System.out.println(entityList.get(0).getAmount());
-                    break;
-                default:
-            }
-            
+            cell.add(entity);
         }
     }
     
@@ -186,9 +175,17 @@ public class StandardPlayfield implements Playfield {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
         synchronized (this.playfieldLock) {
-            if (
-                this.entityPositions.containsKey(entity)
-            ) throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
+            if (this.entityPositions.containsKey(entity))
+                throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
+            
+            PlayfieldCell cell = this.cells.get(pos);
+            if (cell != null) {
+                List<Entity> entityList = this.cells.get(pos).get(entity.getClass(), false);
+                if (!entityList.isEmpty()) {
+                    entityList.get(0).setAmount(entityList.get(0).getAmount() + entity.getAmount());
+                    return;
+                }
+            }
             
             entity.initOnPlayfield(this);
             
@@ -200,6 +197,7 @@ public class StandardPlayfield implements Playfield {
                     .logAction(new EntitySpawnAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, this, pos));
             
             this.addEntityToSimulationTree(entity);
+            
         }
         this.drawEntities();
     }
@@ -255,9 +253,8 @@ public class StandardPlayfield implements Playfield {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
         synchronized (this.playfieldLock) {
-            if (
-                !this.entityPositions.containsKey(entity)
-            ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+            if (!this.entityPositions.containsKey(entity))
+                throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
             
             EntityMoveAction actionToLog = action;
             
@@ -266,12 +263,10 @@ public class StandardPlayfield implements Playfield {
             if (actionToLog == null) {
                 actionToLog = new EntityTeleportAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, oldPos, pos);
             } else {
-                if (
-                    !actionToLog.getEntity().equals(entity)
-                ) throw new IllegalArgumentException("Given action wasn't caused by given entity.");
-                if (
-                    !actionToLog.from().equals(oldPos)
-                ) throw new IllegalArgumentException("Given action does not start at current position of given entity.");
+                if (!actionToLog.getEntity().equals(entity))
+                    throw new IllegalArgumentException("Given action wasn't caused by given entity.");
+                if (!actionToLog.from().equals(oldPos))
+                    throw new IllegalArgumentException("Given action does not start at current position of given entity.");
                 if (!actionToLog.to().equals(pos)) throw new IllegalArgumentException("Given action does not end at given pos.");
             }
             
@@ -306,9 +301,8 @@ public class StandardPlayfield implements Playfield {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
         synchronized (this.playfieldLock) {
-            if (
-                !this.entityPositions.containsKey(entity)
-            ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+            if (!this.entityPositions.containsKey(entity))
+                throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
             
             final Position pos = this.entityPositions.get(entity);
             this.removeEntityFromCell(pos, entity);
