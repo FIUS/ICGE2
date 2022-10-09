@@ -21,10 +21,32 @@ import de.unistuttgart.informatik.fius.icge.ui.Drawable;
  * @author Tim Neumann
  */
 public interface Entity {
+    
     /**
      * @return the position of this entity
      */
     Position getPosition();
+    
+    /**
+     * @return the amount of this entity
+     */
+    int getAmount();
+    
+    /**
+     * @param amount 
+     * 
+     */
+    void setAmount(int amount);
+    
+    /**
+     * 
+     */
+    void incrementAmount();
+    
+    /**
+     * 
+     */
+    void decrementAmount();
     
     /**
      * @return the information required to draw this entity; must <b>not</b> be <b>null</b>

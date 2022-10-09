@@ -38,6 +38,13 @@ public class BasicDrawable implements Drawable {
     private final int z;
     
     /**
+     * The amount.
+     *
+     * The amount is used to draw multiple of the same drawable in the same cell by tiling or by diplaying a number on top of the Texture.
+     */
+    private int amount;
+    
+    /**
      * The handle of the texture for this drawable.
      *
      * The texture must be registered in the TextureRegistry.
@@ -60,6 +67,28 @@ public class BasicDrawable implements Drawable {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.amount = 1;
+        this.textureHandle = textureHandle;
+    }
+    
+    /**
+     * Create a new Drawable.
+     *
+     * @param x
+     *     coordinate
+     * @param y
+     *     coordinate
+     * @param z
+     *     value
+     * @param amount
+     * @param textureHandle
+     *     the handle of the texture used for this drawable
+     */
+    public BasicDrawable(final double x, final double y, final int z, int amount, final String textureHandle) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.amount = amount;
         this.textureHandle = textureHandle;
     }
     
@@ -81,5 +110,20 @@ public class BasicDrawable implements Drawable {
     @Override
     public String getTextureHandle() {
         return this.textureHandle;
+    }
+
+    @Override
+    public int getAmount() {
+        return this.amount;
+    }
+
+    @Override
+    public void setAmount(int amount) {
+        this.amount=amount;
+    }
+
+    @Override
+    public void incrementAmount() {
+        this.amount++;
     }
 }

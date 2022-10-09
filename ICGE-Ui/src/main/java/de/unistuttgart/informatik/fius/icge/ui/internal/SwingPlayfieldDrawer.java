@@ -376,7 +376,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         // group and count drawables
         while (iter.hasNext()) {
             final Drawable next = iter.next();
-            currentCount += 1;
+            currentCount += next.getAmount();
             final boolean groupable = SwingPlayfieldDrawer.canGroupDrawables(last, next);
             if (!groupable && (last != null)) {
                 this.paintDrawable(g, last, currentCount, isTilable);
@@ -389,7 +389,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             }
         }
         if (last != null) {
-            this.paintDrawable(g, last, currentCount + 1, isTilable);
+            this.paintDrawable(g, last, last.getAmount(), isTilable);
         }
     }
     

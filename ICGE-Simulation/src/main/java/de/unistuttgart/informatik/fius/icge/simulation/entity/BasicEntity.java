@@ -40,6 +40,13 @@ public abstract class BasicEntity implements Entity {
     private Object                    operationQueueLock = new Object();
     /** The completable future representing the completion of the last enqueued operation. */
     protected CompletableFuture<Void> endOfLastEnqueuedOperation;
+    private int amount;
+    
+    
+    public BasicEntity() {
+        this.amount=1;
+    }
+    
     
     /**
      * @throws EntityNotOnFieldException
@@ -81,7 +88,7 @@ public abstract class BasicEntity implements Entity {
     @Override
     public Drawable getDrawInformation() {
         final Position pos = this.getPosition();
-        return new BasicDrawable(pos.getX(), pos.getY(), this.getZPosition(), this.getTextureHandle());
+        return new BasicDrawable(pos.getX(), pos.getY(), this.getZPosition(), this.getAmount(), this.getTextureHandle());      
     }
     
     @Override
@@ -210,4 +217,23 @@ public abstract class BasicEntity implements Entity {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(this.hashCode());
     }
     
+    @Override
+    public int getAmount() {
+        return this.amount;
+    }
+    
+    @Override
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+    
+    @Override
+    public void incrementAmount() {
+        this.amount++;
+    }
+    
+    @Override
+    public void decrementAmount() {
+        this.amount--;
+    }
 }

@@ -170,4 +170,19 @@ public class AnimatedDrawable implements Drawable {
     public long getDuration() {
         return this.duration;
     }
+
+    @Override
+    public int getAmount() {
+        return 1;
+    }
+
+    @Override
+    public void setAmount(int amount) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void incrementAmount() {
+        throw new UnsupportedOperationException();
+    }
 }

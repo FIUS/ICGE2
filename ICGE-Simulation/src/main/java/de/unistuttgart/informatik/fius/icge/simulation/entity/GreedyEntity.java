@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
@@ -75,8 +76,27 @@ public abstract class GreedyEntity extends MovableEntity implements EntityCollec
             
             if (!myPos.equals(otherPos)) throw new CannotCollectEntityException("Not on my field");
             
-            this.getSimulation().getPlayfield().removeEntity(entity);
-            this.getInventory().add(entity);
+            entity.decrementAmount();
+            if (entity.getAmount() == 0) {
+                this.getSimulation().getPlayfield().removeEntity(entity);
+            }
+            
+            List<CollectableEntity> classList = this.getInventory().get(entity.getClass(), false);
+            System.out.println(this.getSimulation().getPlayfield().getEntitiesAt(new Position(1,0)).get(1).getAmount());
+            if (classList.isEmpty()) {
+                try {
+                    this.getInventory().add(entity.getClass().getDeclaredConstructor(null).newInstance(null));
+                } catch (
+                        InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e
+                ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                
+            } else {
+                classList.get(0).incrementAmount();
+            }
             
             final Action action = new EntityCollectAction(
                     this.getSimulation().getSimulationClock().getLastTickNumber(), this, entity, myPos, otherPos

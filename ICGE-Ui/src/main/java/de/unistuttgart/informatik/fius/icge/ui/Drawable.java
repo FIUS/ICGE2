@@ -46,6 +46,17 @@ public interface Drawable extends Comparable<Drawable> {
     int getZ();
     
     /**
+     * Get the amount of same drawables in the cell
+     * 
+     * @return returns the number of this type of drawables in this cell
+     */
+    int getAmount();
+    
+    void setAmount(int amount);
+    
+    void incrementAmount();
+    
+    /**
      * Get the handle of the texture for this drawable.
      *
      * The texture must be registered in the TextureRegistry.

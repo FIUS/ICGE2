@@ -10,6 +10,7 @@
 package de.unistuttgart.informatik.fius.icge.simulation.internal.playfield;
 
 import java.lang.ref.WeakReference;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,7 +151,18 @@ public class StandardPlayfield implements Playfield {
                 cell = new PlayfieldCell(pos);
                 this.cells.put(pos, cell);
             }
-            cell.add(entity);
+            List<Entity> entityList=cell.get(entity.getClass(), false);
+            switch(entityList.size()) {
+                case 0:
+                    cell.add(entity);
+                    break;
+                case 1:
+                    entityList.get(0).setAmount(entityList.get(0).getAmount()+entity.getAmount());
+                    System.out.println(entityList.get(0).getAmount());
+                    break;
+                default:
+            }
+            
         }
     }
     
