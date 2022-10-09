@@ -227,6 +227,15 @@ public class StandardSimulationProxy implements SimulationProxy {
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
                 break;
+                
+            case BACKSTEP:
+                if (!this.simulationClock.isRunning()) {
+                    this.simulationClock.step();
+                } else {
+                    this.simulationClock.stopInternal();
+                }
+                this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
+                break;    
             
             case STEP:
                 if (!this.simulationClock.isRunning()) {

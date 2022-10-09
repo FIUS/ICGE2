@@ -57,6 +57,8 @@ public interface SimulationProxy {
         PLAY,
         /** The step button in the toolbar */
         STEP,
+        /** The step back button in the toolbar */
+        BACKSTEP,
         /** The pause button in the toolbar */
         PAUSE,
         /** The view button in the toolbar */

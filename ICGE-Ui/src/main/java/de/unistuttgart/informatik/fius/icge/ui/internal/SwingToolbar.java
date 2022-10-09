@@ -51,6 +51,8 @@ public class SwingToolbar extends JToolBar implements Toolbar {
     private JButton step;
     /** The pause button in the toolbar */
     private JButton pause;
+    /** The Step back button in the toolbar */
+    private JButton backStep;
     
     /** A slider to set the simulation time */
     private JSlider simulationTime;
@@ -101,6 +103,18 @@ public class SwingToolbar extends JToolBar implements Toolbar {
         //
         // step button setup
         //
+        this.backStep = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.backStepIcon).getTexture()));
+        this.backStep.addActionListener(ae -> {
+            if (this.simulationProxy != null) {
+                this.simulationProxy.buttonPressed(ButtonType.BACKSTEP);
+            }
+        });
+        this.backStep.setEnabled(false);
+        this.add(this.backStep);
+        
+        //
+        // step button setup
+        //
         this.step = new JButton(new ImageIcon(this.textureRegistry.getTextureForHandle(StaticUiTextures.stepIcon).getTexture()));
         this.step.addActionListener(ae -> {
             if (this.simulationProxy != null) {
@@ -108,7 +122,7 @@ public class SwingToolbar extends JToolBar implements Toolbar {
             }
         });
         this.step.setEnabled(false);
-        this.add(this.step);
+        this.add(this.step);       
         
         //
         // pause button setup

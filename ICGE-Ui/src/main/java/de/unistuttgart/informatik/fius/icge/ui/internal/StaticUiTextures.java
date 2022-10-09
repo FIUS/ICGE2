@@ -24,6 +24,8 @@ public abstract class StaticUiTextures {
     public static String playIcon;
     /** A step icon */
     public static String stepIcon;
+    /** A step back icon */
+    public static String backStepIcon;
     /** A pause icon */
     public static String pauseIcon;
     /** A stop icon */
@@ -46,6 +48,7 @@ public abstract class StaticUiTextures {
     public static void load(final TextureRegistry registry) {
         StaticUiTextures.playIcon = registry.loadTextureFromResource("textures/play.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.stepIcon = registry.loadTextureFromResource("textures/step.png", TextureRegistry.class::getResourceAsStream);
+        StaticUiTextures.backStepIcon = registry.loadTextureFromResource("textures/backStep.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.pauseIcon = registry.loadTextureFromResource("textures/pause.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.stopIcon = registry.loadTextureFromResource("textures/stop.png", TextureRegistry.class::getResourceAsStream);
         
