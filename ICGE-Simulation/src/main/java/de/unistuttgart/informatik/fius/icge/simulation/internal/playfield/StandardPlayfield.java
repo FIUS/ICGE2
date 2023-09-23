@@ -56,12 +56,13 @@ public class StandardPlayfield implements Playfield {
     
     private long    lastEntityDraw    = 0;
     private boolean delayedEntityDraw = false;
+    private long    timeBetweenDraws  = 16; //the time between draw calls in milliseconds
     
     private Runnable delayedEntitiesDrawRunnable = () -> {
         long timeSinceLastEntityDraw = System.nanoTime() - this.lastEntityDraw;
-        if (timeSinceLastEntityDraw < 16000000) { //update once every 16ms (62.5 Hz)
+        if (timeSinceLastEntityDraw < this.timeBetweenDraws * 1000000) { //update once every 16ms (62.5 Hz)
             try {
-                Thread.sleep(16 - timeSinceLastEntityDraw / 1000000);
+                Thread.sleep(this.timeBetweenDraws - timeSinceLastEntityDraw / 1000000);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -434,5 +435,24 @@ public class StandardPlayfield implements Playfield {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(this.hashCode());
+    }
+    
+    /**
+     * Get's {@link #timeBetweenDraws timeBetweenDraws}
+     * 
+     * @return time waiting between draw calls in milliseconds
+     */
+    public long getTimeBetweenDraws() {
+        return this.timeBetweenDraws;
+    }
+    
+    /**
+     * Set's {@link #timeBetweenDraws timeBetweenDraws}
+     * 
+     * @param timeBetweenDraws
+     *     time waiting between draw calls in milliseconds
+     */
+    public void setTimeBetweenDraws(long timeBetweenDraws) {
+        this.timeBetweenDraws = timeBetweenDraws;
     }
 }
