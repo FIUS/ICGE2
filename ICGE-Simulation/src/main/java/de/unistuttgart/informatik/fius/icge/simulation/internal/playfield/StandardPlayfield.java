@@ -54,6 +54,30 @@ public class StandardPlayfield implements Playfield {
     
     private Consumer<List<Drawable>> drawablesChangedListener;
     
+    private long    lastEntityDraw    = 0;
+    private boolean delayedEntityDraw = false;
+    
+    private Runnable delayedEntitiesDrawRunnable = () -> {
+        long timeSinceLastEntityDraw = System.nanoTime() - this.lastEntityDraw;
+        if (timeSinceLastEntityDraw < 16000000) { //update once every 16ms (62.5 Hz)
+            try {
+                Thread.sleep(16 - timeSinceLastEntityDraw / 1000000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        this.lastEntityDraw = System.nanoTime();
+        this.delayedEntityDraw = false;
+        try {
+            Thread.sleep(1); // leave some time between this.delayedEntityDraw = false; and  drawEntitiesInternal(), so as to not lose any draw calls due to poor timing
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        this.drawEntitiesInternal();
+    };
+    
     /**
      * Initialize the playfield for the given simulation
      *
@@ -86,6 +110,13 @@ public class StandardPlayfield implements Playfield {
      * Converts all entities to drawables and sends them to the playfield drawer.
      */
     public void drawEntities() {
+        if (!this.delayedEntityDraw) {
+            this.delayedEntityDraw = true;
+            new Thread(this.delayedEntitiesDrawRunnable).start();
+        }
+    }
+    
+    private void drawEntitiesInternal() {
         final List<Drawable> drawables = new ArrayList<>();
         for (final Entity entity : this.getAllEntities()) {
             try {
@@ -102,6 +133,7 @@ public class StandardPlayfield implements Playfield {
         } catch (@SuppressWarnings("unused") final IllegalStateException e) {
             //If we are not attached to a simultion we do not need to draw anything
         }
+        this.lastEntityDraw = System.nanoTime();
     }
     
     @Override
@@ -174,9 +206,8 @@ public class StandardPlayfield implements Playfield {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
         synchronized (this.playfieldLock) {
-            if (
-                this.entityPositions.containsKey(entity)
-            ) throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
+            if (this.entityPositions.containsKey(entity))
+                throw new EntityAlreadyOnFieldExcpetion("The given entity" + entity + "is already on this playfield.");
             
             entity.initOnPlayfield(this);
             
@@ -243,9 +274,8 @@ public class StandardPlayfield implements Playfield {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
         synchronized (this.playfieldLock) {
-            if (
-                !this.entityPositions.containsKey(entity)
-            ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+            if (!this.entityPositions.containsKey(entity))
+                throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
             
             EntityMoveAction actionToLog = action;
             
@@ -254,12 +284,10 @@ public class StandardPlayfield implements Playfield {
             if (actionToLog == null) {
                 actionToLog = new EntityTeleportAction(this.getSimulation().getSimulationClock().getLastTickNumber(), entity, oldPos, pos);
             } else {
-                if (
-                    !actionToLog.getEntity().equals(entity)
-                ) throw new IllegalArgumentException("Given action wasn't caused by given entity.");
-                if (
-                    !actionToLog.from().equals(oldPos)
-                ) throw new IllegalArgumentException("Given action does not start at current position of given entity.");
+                if (!actionToLog.getEntity().equals(entity))
+                    throw new IllegalArgumentException("Given action wasn't caused by given entity.");
+                if (!actionToLog.from().equals(oldPos))
+                    throw new IllegalArgumentException("Given action does not start at current position of given entity.");
                 if (!actionToLog.to().equals(pos)) throw new IllegalArgumentException("Given action does not end at given pos.");
             }
             
@@ -294,9 +322,8 @@ public class StandardPlayfield implements Playfield {
         if (entity == null) throw new IllegalArgumentException("The given entity is null.");
         
         synchronized (this.playfieldLock) {
-            if (
-                !this.entityPositions.containsKey(entity)
-            ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
+            if (!this.entityPositions.containsKey(entity))
+                throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
             
             final Position pos = this.entityPositions.get(entity);
             this.removeEntityFromCell(pos, entity);
