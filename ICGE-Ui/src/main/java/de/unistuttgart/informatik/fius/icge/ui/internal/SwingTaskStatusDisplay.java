@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -62,6 +63,7 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
         // setup text pane
         this.textPane = new JTextPane(new DefaultStyledDocument());
         this.textPane.setEditable(false);
+        ((DefaultCaret) this.textPane.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         
         // setup text styles
         final int fontSize = (int) Math.floor(12 * fontScale);
