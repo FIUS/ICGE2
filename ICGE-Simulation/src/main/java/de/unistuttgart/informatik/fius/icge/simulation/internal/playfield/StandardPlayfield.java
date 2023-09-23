@@ -71,7 +71,7 @@ public class StandardPlayfield implements Playfield {
         this.lastEntityDraw = System.nanoTime();
         this.delayedEntityDraw = false;
         try {
-            Thread.sleep(1); // leave some time between this.delayedEntityDraw = false; and  drawEntitiesInternal(), so as to not lose any draw calls due to poor timing
+            Thread.sleep(10); // leave some time between this.delayedEntityDraw = false; and  drawEntitiesInternal(), so as to not lose any draw calls due to poor timing
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
