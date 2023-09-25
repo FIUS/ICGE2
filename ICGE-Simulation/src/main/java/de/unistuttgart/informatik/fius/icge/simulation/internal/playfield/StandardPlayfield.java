@@ -338,7 +338,7 @@ public class StandardPlayfield implements Playfield {
         
         synchronized (this.playfieldLock) {
             if (
-            	!this.entityPositions.containsKey(entity)
+                !this.entityPositions.containsKey(entity)
             ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
             
             final Position pos = this.entityPositions.get(entity);
