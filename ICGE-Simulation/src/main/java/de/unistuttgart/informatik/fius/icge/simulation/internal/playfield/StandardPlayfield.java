@@ -113,7 +113,6 @@ public class StandardPlayfield implements Playfield {
         return simulation;
     }
     
-    
     /**
      * Converts all entities to drawables and sends them to the playfield drawer if the last draw has not occurred
      * recently.
