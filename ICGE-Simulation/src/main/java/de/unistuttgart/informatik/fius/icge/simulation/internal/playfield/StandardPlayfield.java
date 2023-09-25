@@ -54,13 +54,14 @@ public class StandardPlayfield implements Playfield {
     
     private Consumer<List<Drawable>> drawablesChangedListener;
     
-    private long    lastEntityDraw    = 0;
-    private boolean delayedEntityDraw = false;
-    private long    timeBetweenDraws  = 16; //the time between draw calls in milliseconds
+    private long    lastEntityDraw            = 0;
+    private boolean delayedEntityDraw         = false;
+    private long    timeBetweenDraws          = 32; //the time between draw calls in milliseconds
+    private Thread  delayedDrawEntitiesThread = new Thread();
     
     private Runnable delayedEntitiesDrawRunnable = () -> {
         long timeSinceLastEntityDraw = System.nanoTime() - this.lastEntityDraw;
-        if (timeSinceLastEntityDraw < this.timeBetweenDraws * 1000000) { //update once every 16ms (62.5 Hz)
+        if (timeSinceLastEntityDraw < this.timeBetweenDraws * 1000000) {
             try {
                 Thread.sleep(this.timeBetweenDraws - timeSinceLastEntityDraw / 1000000);
             } catch (InterruptedException e) {
@@ -68,15 +69,20 @@ public class StandardPlayfield implements Playfield {
                 e.printStackTrace();
             }
         }
-        this.lastEntityDraw = System.nanoTime();
         this.delayedEntityDraw = false;
+        drawEntitiesInternal();
+        this.lastEntityDraw = System.nanoTime();
+    };
+    
+    private Runnable restartDelayedEntitiesDrawThreadRunnable = () -> {
         try {
-            Thread.sleep(10); // leave some time between this.delayedEntityDraw = false; and  drawEntitiesInternal(), so as to not lose any draw calls due to poor timing
+            this.delayedDrawEntitiesThread.join();
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        this.drawEntitiesInternal();
+        this.delayedDrawEntitiesThread = new Thread(this.delayedEntitiesDrawRunnable);
+        this.delayedDrawEntitiesThread.start();
     };
     
     /**
@@ -107,10 +113,15 @@ public class StandardPlayfield implements Playfield {
         return simulation;
     }
     
+    
+    /**
+     * Converts all entities to drawables and sends them to the playfield drawer if the last draw has not occurred
+     * recently.
+     */
     public void drawEntities() {
         if (!this.delayedEntityDraw) {
             this.delayedEntityDraw = true;
-            new Thread(this.delayedEntitiesDrawRunnable).start();
+            new Thread(this.restartDelayedEntitiesDrawThreadRunnable).start();
         }
     }
     
@@ -134,7 +145,6 @@ public class StandardPlayfield implements Playfield {
         } catch (@SuppressWarnings("unused") final IllegalStateException e) {
             //If we are not attached to a simultion we do not need to draw anything
         }
-        this.lastEntityDraw = System.nanoTime();
     }
     
     @Override
@@ -328,7 +338,7 @@ public class StandardPlayfield implements Playfield {
         
         synchronized (this.playfieldLock) {
             if (
-                !this.entityPositions.containsKey(entity)
+            	!this.entityPositions.containsKey(entity)
             ) throw new EntityNotOnFieldException("The given entity" + entity + "is not on this playfield.");
             
             final Position pos = this.entityPositions.get(entity);
