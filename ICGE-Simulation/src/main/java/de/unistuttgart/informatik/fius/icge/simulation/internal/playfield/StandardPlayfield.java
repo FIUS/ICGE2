@@ -97,8 +97,7 @@ public class StandardPlayfield implements Playfield {
     }
     
     /**
-     * Converts all entities to drawables and sends them to the playfield drawer if the last draw has not occurred
-     * recently.
+     * Converts all entities to drawables and sends them to the playfield drawer every 32ms.
      */
     public void drawEntities() {
         this.awaitingEntityDraw = true;
@@ -431,24 +430,5 @@ public class StandardPlayfield implements Playfield {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(this.hashCode());
-    }
-    
-    /**
-     * Get's {@link #timeBetweenDraws timeBetweenDraws}
-     * 
-     * @return time waiting between draw calls in milliseconds
-     */
-    public long getTimeBetweenDraws() {
-        return this.timeBetweenDraws;
-    }
-    
-    /**
-     * Set's {@link #timeBetweenDraws timeBetweenDraws}
-     * 
-     * @param timeBetweenDraws
-     *     time waiting between draw calls in milliseconds
-     */
-    public void setTimeBetweenDraws(long timeBetweenDraws) {
-        this.timeBetweenDraws = timeBetweenDraws;
     }
 }
