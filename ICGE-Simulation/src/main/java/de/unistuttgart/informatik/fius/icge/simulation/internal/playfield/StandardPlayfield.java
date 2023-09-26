@@ -69,7 +69,7 @@ public class StandardPlayfield implements Playfield {
                 e.printStackTrace();
             }
         }
-        this.delayedEntityDraw = false;
+        this.awaitingEntityDraw = false;
         drawEntitiesInternal();
         this.lastEntityDraw = System.nanoTime();
     };
@@ -118,8 +118,8 @@ public class StandardPlayfield implements Playfield {
      * recently.
      */
     public void drawEntities() {
-        if (!this.delayedEntityDraw) {
-            this.delayedEntityDraw = true;
+        if (!this.awaitingEntityDraw) {
+            this.awaitingEntityDraw = true;
             new Thread(this.restartDelayedEntitiesDrawThreadRunnable).start();
         }
     }
