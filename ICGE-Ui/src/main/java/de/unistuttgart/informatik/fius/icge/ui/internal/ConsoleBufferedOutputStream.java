@@ -43,7 +43,7 @@ import javax.swing.text.StyledDocument;
 public class ConsoleBufferedOutputStream extends OutputStream {
     
     /** The maximum length of the line buffer. */
-    static final int MAX_BUFFER_LENGTH = 1024;
+    static final int MAX_BUFFER_LENGTH = 4096;
     
     private final Timer timer;
     
@@ -78,7 +78,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
                 throw new UnsupportedOperationException("With stye type " + style.toString());
         }
         
-        this.timer = new Timer(500, (event) -> {
+        this.timer = new Timer(32, (event) -> {
             try {
                 // flush the line buffer in regular intervalls
                 this.flushLineBufferToTextPane();
@@ -105,13 +105,12 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     @Override
     public void write(final int character) throws IOException {
         final char symbol = (char) character;
-        final boolean newline = symbol == '\n'; // should catch CR/LF and LF line endings
         
         synchronized (this.lineBuffer) {
             this.lineBuffer.append(symbol);
         }
         
-        if (newline || this.lineBuffer.length() >= MAX_BUFFER_LENGTH) {
+        if (this.lineBuffer.length() >= MAX_BUFFER_LENGTH) {
             this.flushLineBufferToTextPane();
         }
     }
