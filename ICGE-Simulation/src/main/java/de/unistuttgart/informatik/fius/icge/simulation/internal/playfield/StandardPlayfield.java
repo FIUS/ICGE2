@@ -55,7 +55,7 @@ public class StandardPlayfield implements Playfield {
     private Consumer<List<Drawable>> drawablesChangedListener;
     
     private long             lastEntityDraw            = 0;
-    private volatile boolean delayedEntityDraw         = false;
+    private volatile boolean awaitingEntityDraw        = false;
     private long             timeBetweenDraws          = 32; //the time between draw calls in milliseconds
     private Thread           delayedDrawEntitiesThread = new Thread();
     
