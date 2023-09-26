@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -54,36 +56,8 @@ public class StandardPlayfield implements Playfield {
     
     private Consumer<List<Drawable>> drawablesChangedListener;
     
-    private long             lastEntityDraw            = 0;
-    private volatile boolean awaitingEntityDraw        = false;
-    private long             timeBetweenDraws          = 32; //the time between draw calls in milliseconds
-    private Thread           delayedDrawEntitiesThread = new Thread();
-    
-    private Runnable delayedEntitiesDrawRunnable = () -> {
-        long timeSinceLastEntityDraw = System.nanoTime() - this.lastEntityDraw;
-        if (timeSinceLastEntityDraw < this.timeBetweenDraws * 1000000) {
-            try {
-                Thread.sleep(this.timeBetweenDraws - timeSinceLastEntityDraw / 1000000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        this.awaitingEntityDraw = false;
-        drawEntitiesInternal();
-        this.lastEntityDraw = System.nanoTime();
-    };
-    
-    private Runnable restartDelayedEntitiesDrawThreadRunnable = () -> {
-        try {
-            this.delayedDrawEntitiesThread.join();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        this.delayedDrawEntitiesThread = new Thread(this.delayedEntitiesDrawRunnable);
-        this.delayedDrawEntitiesThread.start();
-    };
+    private boolean awaitingEntityDraw = false;
+    private long    timeBetweenDraws   = 32; //the time between draw calls in milliseconds
     
     /**
      * Initialize the playfield for the given simulation
@@ -99,6 +73,15 @@ public class StandardPlayfield implements Playfield {
         });
         
         this.simualtionTreeRootNode = new SimulationTreeNode("root", "Entities", "", false);
+        
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            
+            @Override
+            public void run() {
+                drawEntitiesInternal();
+            }
+            
+        }, 0, this.timeBetweenDraws);
     }
     
     /**
@@ -118,31 +101,30 @@ public class StandardPlayfield implements Playfield {
      * recently.
      */
     public void drawEntities() {
-        if (!this.awaitingEntityDraw) {
-            this.awaitingEntityDraw = true;
-            new Thread(this.restartDelayedEntitiesDrawThreadRunnable).start();
-        }
+        this.awaitingEntityDraw = true;
     }
     
     /**
      * Converts all entities to drawables and sends them to the playfield drawer.
      */
     private void drawEntitiesInternal() {
-        final List<Drawable> drawables = new ArrayList<>();
-        for (final Entity entity : this.getAllEntities()) {
+        if (this.awaitingEntityDraw) {
+            final List<Drawable> drawables = new ArrayList<>();
+            for (final Entity entity : this.getAllEntities()) {
+                try {
+                    drawables.add(entity.getDrawInformation());
+                } catch (@SuppressWarnings("unused") final EntityNotOnFieldException e) {
+                    //Entity has been removed from the field while this loop was running.
+                    //Just don't draw it and ignore the exception.
+                }
+            }
             try {
-                drawables.add(entity.getDrawInformation());
-            } catch (@SuppressWarnings("unused") final EntityNotOnFieldException e) {
-                //Entity has been removed from the field while this loop was running.
-                //Just don't draw it and ignore the exception.
+                if (this.drawablesChangedListener != null) {
+                    this.drawablesChangedListener.accept(drawables);
+                }
+            } catch (@SuppressWarnings("unused") final IllegalStateException e) {
+                //If we are not attached to a simultion we do not need to draw anything
             }
-        }
-        try {
-            if (this.drawablesChangedListener != null) {
-                this.drawablesChangedListener.accept(drawables);
-            }
-        } catch (@SuppressWarnings("unused") final IllegalStateException e) {
-            //If we are not attached to a simultion we do not need to draw anything
         }
     }
     
