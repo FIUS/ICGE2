@@ -43,7 +43,8 @@ import javax.swing.text.StyledDocument;
 public class ConsoleBufferedOutputStream extends OutputStream {
     
     /** The maximum length of the line buffer. */
-    private int maxBufferLength = 4096;
+    static final int  STANDART_MAX_BUFFER_LENGTH = 4096;
+    private final int maxBufferLength;
     
     private final Timer timer;
     
@@ -63,7 +64,23 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      *     The style type to be used for the output
      */
     public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
-        this.lineBuffer = new StringBuilder(this.maxBufferLength * 2);
+        this(textPane, style, STANDART_MAX_BUFFER_LENGTH);
+    }
+    
+    /**
+     * Constructor with maxBufferLenght included
+     * 
+     * @param textPane
+     *     The text pane to place the stream data into
+     * @param style
+     *     The style type to be used for the output
+     * @param maxBufferLength
+     *     the maximum length of the text buffer before it is flushed. The buffer is also flushed every 32ms. Choosing a
+     *     small value may result in one output stream being cut of by the messages from another.
+     */
+    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style, int maxBufferLength) {
+        this.maxBufferLength = maxBufferLength;
+        this.lineBuffer = new StringBuilder(maxBufferLength * 2);
         
         this.textPane = textPane;
         this.style = this.textPane.addStyle(style.toString(), null);
@@ -88,22 +105,6 @@ public class ConsoleBufferedOutputStream extends OutputStream {
         });
         this.timer.setCoalesce(true);
         this.timer.start(); // start timer after everything is initialized
-    }
-    
-    /**
-     * Constructor with maxBufferLenght included
-     * 
-     * @param textPane
-     *     The text pane to place the stream data into
-     * @param style
-     *     The style type to be used for the output
-     * @param maxBufferLength
-     *     the maximum length of the text buffer before it is flushed. The buffer is also flushed every 32ms. Choosing a
-     *     small value may result in one output stream being cut of by the messages from another.
-     */
-    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style, int maxBufferLength) {
-        this(textPane, style);
-        this.maxBufferLength = maxBufferLength;
     }
     
     @Override
@@ -165,16 +166,6 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      */
     public int getMaxBufferLength() {
         return this.maxBufferLength;
-    }
-    
-    /**
-     * Set's {@link #maxBufferLength maxBufferLength}
-     * 
-     * @param maxBufferLength
-     *     maxBufferLength
-     */
-    public void setMaxBufferLength(int maxBufferLength) {
-        this.maxBufferLength = maxBufferLength;
     }
     
 }
