@@ -89,6 +89,11 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
     private boolean              useDoubleBuffer = true;
     private boolean              syncToscreen    = true;
     
+    private double dpiScale;
+    
+    private Font scaleFont;
+    private Font font;
+    
     /**
      * Create a new SwingPlayfieldDrawer.
      * <p>
@@ -109,10 +114,12 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.CELL_SIZE = (int) Math.floor(32 * dpiScale);
         this.offsetX = this.CELL_SIZE;
         this.offsetY = this.CELL_SIZE;
+        this.dpiScale = dpiScale;
         
         Font font = this.getFont();
-        final int newFontSize = (int) Math.floor(12 * dpiScale);
-        this.setFont(new Font(font.getFontName(), font.getStyle(), newFontSize));
+        final int newFontSize = (int) Math.floor(12 * dpiScale * this.scale);
+        this.font = new Font(font.getFontName(), font.getStyle(), newFontSize);
+        this.setFont(this.font);
     }
     
     /**
@@ -272,6 +279,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.scale = 1.0;
         this.offsetX = this.CELL_SIZE;
         this.offsetY = this.CELL_SIZE;
+        Font font = this.getFont();
+        final int newFontSize = (int) Math.floor(12 * this.dpiScale * this.scale);
+        this.scaleFont = new Font(font.getFontName(), font.getStyle(), newFontSize);
     }
     
     @Override
@@ -425,18 +435,45 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final Double scaleAdjust
     ) {
         final double cellSize = this.CELL_SIZE * this.scale;
-        final int textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
         final Texture texture = this.textureRegistry.getTextureForHandle(drawable.getTextureHandle());
         // limit count to available offsets
+        int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX));
+        int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY));
+        int textureSize = Math.toIntExact(Math.round(cellSize));
         final int limitedCount = Math.min(Math.min(xOffsets.length, yOffsets.length), count);
-        for (int i = 0; i < limitedCount; i++) {
-            // intra cell offsets
-            final double tmpOffsetX = cellSize * xOffsets[i];
-            final double tmpOffsetY = cellSize * yOffsets[i];
-            final int x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX + tmpOffsetX));
-            final int y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY + tmpOffsetY));
+        if (count > limitedCount) {
             texture.drawTexture(this.currentFrame, g, x, y, textureSize, textureSize);
+            drawNumber(count, g, x, y);
+        } else {
+            textureSize = Math.toIntExact(Math.round(cellSize * scaleAdjust));
+            for (int i = 0; i < limitedCount; i++) {
+                // intra cell offsets
+                final double tmpOffsetX = cellSize * xOffsets[i];
+                final double tmpOffsetY = cellSize * yOffsets[i];
+                x = Math.toIntExact(Math.round((drawable.getX() * cellSize) + this.offsetX + tmpOffsetX));
+                y = Math.toIntExact(Math.round((drawable.getY() * cellSize) + this.offsetY + tmpOffsetY));
+                texture.drawTexture(this.currentFrame, g, x, y, textureSize, textureSize);
+            }
         }
+    }
+    
+    private void drawNumber(int count, Graphics g, int x, int y) {
+        final double cellSize = this.CELL_SIZE * this.scale;
+        g.setFont(this.scaleFont);
+        int xOffset = 0;
+        int yOffset = (int) (0.6 * cellSize);
+        switch (Integer.toString(count).length()) {
+            case 2:
+                xOffset = (int) (0.25 * cellSize);
+                break;
+            case 3:
+                xOffset = (int) (0.175 * cellSize);
+                break;
+            default:
+                break;
+        }
+        g.drawString("" + count, x + xOffset, y + yOffset);
+        g.setFont(this.font);
     }
     
     private void paintOverlay(final Graphics g) {
@@ -585,6 +622,10 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.scale = newScale;
         this.offsetX += dx;
         this.offsetY += dy;
+        
+        Font font = this.getFont();
+        final int newFontSize = (int) Math.floor(12 * this.dpiScale * this.scale);
+        this.scaleFont = new Font(font.getFontName(), font.getStyle(), newFontSize);
         this.repaint();
     }
     
