@@ -43,7 +43,8 @@ import javax.swing.text.StyledDocument;
 public class ConsoleBufferedOutputStream extends OutputStream {
     
     /** The maximum length of the line buffer. */
-    static final int MAX_BUFFER_LENGTH = 1024;
+    static final int  DEFAULT_MAX_BUFFER_LENGTH = 4096;
+    private final int maxBufferLength;
     
     private final Timer timer;
     
@@ -63,7 +64,23 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      *     The style type to be used for the output
      */
     public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
-        this.lineBuffer = new StringBuilder(MAX_BUFFER_LENGTH * 2);
+        this(textPane, style, DEFAULT_MAX_BUFFER_LENGTH);
+    }
+    
+    /**
+     * Constructor with maxBufferLenght included
+     * 
+     * @param textPane
+     *     The text pane to place the stream data into
+     * @param style
+     *     The style type to be used for the output
+     * @param maxBufferLength
+     *     the maximum length of the text buffer before it is flushed. The buffer is also flushed every 32ms. Choosing a
+     *     small value may result in one output stream being cut of by the messages from another.
+     */
+    public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style, int maxBufferLength) {
+        this.maxBufferLength = maxBufferLength;
+        this.lineBuffer = new StringBuilder(maxBufferLength * 2);
         
         this.textPane = textPane;
         this.style = this.textPane.addStyle(style.toString(), null);
@@ -78,7 +95,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
                 throw new UnsupportedOperationException("With stye type " + style.toString());
         }
         
-        this.timer = new Timer(500, (event) -> {
+        this.timer = new Timer(32, (event) -> {
             try {
                 // flush the line buffer in regular intervalls
                 this.flushLineBufferToTextPane();
@@ -105,13 +122,12 @@ public class ConsoleBufferedOutputStream extends OutputStream {
     @Override
     public void write(final int character) throws IOException {
         final char symbol = (char) character;
-        final boolean newline = symbol == '\n'; // should catch CR/LF and LF line endings
         
         synchronized (this.lineBuffer) {
             this.lineBuffer.append(symbol);
         }
         
-        if (newline || this.lineBuffer.length() >= MAX_BUFFER_LENGTH) {
+        if (this.lineBuffer.length() >= this.maxBufferLength) {
             this.flushLineBufferToTextPane();
         }
     }
@@ -142,4 +158,14 @@ public class ConsoleBufferedOutputStream extends OutputStream {
             });
         }
     }
+    
+    /**
+     * Get's {@link #maxBufferLength maxBufferLength}
+     * 
+     * @return maxBufferLength
+     */
+    public int getMaxBufferLength() {
+        return this.maxBufferLength;
+    }
+    
 }
