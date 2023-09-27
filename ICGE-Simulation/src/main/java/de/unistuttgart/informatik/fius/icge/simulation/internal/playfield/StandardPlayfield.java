@@ -97,7 +97,8 @@ public class StandardPlayfield implements Playfield {
     }
     
     /**
-     * Queues a draw update to the playfield drawer. Draw updates are sent to the playfield drawer automatically every 32ms.
+     * Queues a draw update to the playfield drawer. Draw updates are sent to the playfield drawer automatically every
+     * 32ms.
      */
     public void drawEntities() {
         this.awaitingEntityDraw = true;
@@ -107,24 +108,26 @@ public class StandardPlayfield implements Playfield {
      * Converts all entities to drawables and sends them to the playfield drawer.
      */
     private void drawEntitiesInternal() {
-        if (this.awaitingEntityDraw) {
-            final List<Drawable> drawables = new ArrayList<>();
-            for (final Entity entity : this.getAllEntities()) {
-                try {
-                    drawables.add(entity.getDrawInformation());
-                } catch (@SuppressWarnings("unused") final EntityNotOnFieldException e) {
-                    //Entity has been removed from the field while this loop was running.
-                    //Just don't draw it and ignore the exception.
-                }
-            }
+        if (!this.awaitingEntityDraw) { //fast exit as default
+            return; // no updates to draw
+        }
+        final List<Drawable> drawables = new ArrayList<>();
+        for (final Entity entity : this.getAllEntities()) {
             try {
-                if (this.drawablesChangedListener != null) {
-                    this.drawablesChangedListener.accept(drawables);
-                }
-            } catch (@SuppressWarnings("unused") final IllegalStateException e) {
-                //If we are not attached to a simultion we do not need to draw anything
+                drawables.add(entity.getDrawInformation());
+            } catch (@SuppressWarnings("unused") final EntityNotOnFieldException e) {
+                //Entity has been removed from the field while this loop was running.
+                //Just don't draw it and ignore the exception.
             }
         }
+        try {
+            if (this.drawablesChangedListener != null) {
+                this.drawablesChangedListener.accept(drawables);
+            }
+        } catch (@SuppressWarnings("unused") final IllegalStateException e) {
+            //If we are not attached to a simultion we do not need to draw anything
+        }
+        
     }
     
     @Override
