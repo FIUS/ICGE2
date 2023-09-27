@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -54,6 +56,9 @@ public class StandardPlayfield implements Playfield {
     
     private Consumer<List<Drawable>> drawablesChangedListener;
     
+    private boolean awaitingEntityDraw = false;
+    private long    timeBetweenDraws   = 32; //the time between draw calls in milliseconds
+    
     /**
      * Initialize the playfield for the given simulation
      *
@@ -68,6 +73,15 @@ public class StandardPlayfield implements Playfield {
         });
         
         this.simualtionTreeRootNode = new SimulationTreeNode("root", "Entities", "", false);
+        
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            
+            @Override
+            public void run() {
+                drawEntitiesInternal();
+            }
+            
+        }, 0, this.timeBetweenDraws);
     }
     
     /**
@@ -83,9 +97,20 @@ public class StandardPlayfield implements Playfield {
     }
     
     /**
-     * Converts all entities to drawables and sends them to the playfield drawer.
+     * Queues a draw update to the playfield drawer. Draw updates are sent to the playfield drawer automatically every
+     * 32ms.
      */
     public void drawEntities() {
+        this.awaitingEntityDraw = true;
+    }
+    
+    /**
+     * Converts all entities to drawables and sends them to the playfield drawer.
+     */
+    private void drawEntitiesInternal() {
+        if (!this.awaitingEntityDraw) { //fast exit as default
+            return; // no updates to draw
+        }
         final List<Drawable> drawables = new ArrayList<>();
         for (final Entity entity : this.getAllEntities()) {
             try {
@@ -102,6 +127,7 @@ public class StandardPlayfield implements Playfield {
         } catch (@SuppressWarnings("unused") final IllegalStateException e) {
             //If we are not attached to a simultion we do not need to draw anything
         }
+        
     }
     
     @Override
