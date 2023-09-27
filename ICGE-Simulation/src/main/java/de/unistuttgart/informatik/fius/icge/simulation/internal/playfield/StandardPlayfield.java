@@ -97,7 +97,7 @@ public class StandardPlayfield implements Playfield {
     }
     
     /**
-     * Converts all entities to drawables and sends them to the playfield drawer every 32ms.
+     * Queues a draw update to the playfield drawer. Draw updates are sent to the playfield drawer automatically every 32ms.
      */
     public void drawEntities() {
         this.awaitingEntityDraw = true;
