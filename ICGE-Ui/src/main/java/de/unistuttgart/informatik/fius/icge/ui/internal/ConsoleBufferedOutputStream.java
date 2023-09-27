@@ -43,7 +43,7 @@ import javax.swing.text.StyledDocument;
 public class ConsoleBufferedOutputStream extends OutputStream {
     
     /** The maximum length of the line buffer. */
-    static final int  STANDART_MAX_BUFFER_LENGTH = 4096;
+    static final int  DEFAULT_MAX_BUFFER_LENGTH = 4096;
     private final int maxBufferLength;
     
     private final Timer timer;
@@ -64,7 +64,7 @@ public class ConsoleBufferedOutputStream extends OutputStream {
      *     The style type to be used for the output
      */
     public ConsoleBufferedOutputStream(final JTextPane textPane, final OutputStyle style) {
-        this(textPane, style, STANDART_MAX_BUFFER_LENGTH);
+        this(textPane, style, DEFAULT_MAX_BUFFER_LENGTH);
     }
     
     /**
