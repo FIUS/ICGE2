@@ -325,7 +325,11 @@ public class StandardSimulationProxy implements SimulationProxy {
                 type = "readonly_string";
             }
             //TODO: this.inspectionManager.getAttributeType(e, name)
-            final String value = this.inspectionManager.getAttributeValue(e, name).toString();
+            final Object valueObject = this.inspectionManager.getAttributeValue(e, name);
+            String value = "N/A";
+            if (valueObject != null) {
+                value = valueObject.toString();
+            }
             result.add(new EntityInspectorEntry(name, type, value, newValue -> {
                 this.inspectionManager.setAttributeValue(e, name, newValue);
                 this.playfield.drawEntities();
