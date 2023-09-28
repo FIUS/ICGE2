@@ -59,8 +59,10 @@ public class InspectionData {
         if (p != null) {
             try {
                 return p.getValue(obj);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            } catch (IllegalAccessException | IllegalArgumentException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
+            } catch (InvocationTargetException e) {
             }
         }
         return null;
