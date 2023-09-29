@@ -326,7 +326,7 @@ public class StandardSimulationProxy implements SimulationProxy {
             }
             //TODO: this.inspectionManager.getAttributeType(e, name)
             final Object valueObject = this.inspectionManager.getAttributeValue(e, name);
-            String value = "N/A";
+            String value = "null";
             if (valueObject != null) {
                 value = valueObject.toString();
             }
