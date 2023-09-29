@@ -59,8 +59,11 @@ public class InspectionData {
         if (p != null) {
             try {
                 return p.getValue(obj);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            } catch (IllegalAccessException | IllegalArgumentException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                // InvocationTargetException is suppressed to prevent crashes from methods that throw an exception when the value is null, e.g. getPosition(); 
             }
         }
         return null;
