@@ -63,6 +63,7 @@ public class InspectionData {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
+                // InvocationTargetException is suppressed to prevent crashes from methods that throw an exception when the value is null, e.g. getPosition(); 
             }
         }
         return null;
