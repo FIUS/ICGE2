@@ -19,5 +19,6 @@ jobs:
       - name: Publish package
         run: ./mvnw -s "${{ github.workspace }}/scriptsAndTools/internalOrCiOnly/deploySettings.xml" deploy -Dgithub.user=$GITHUB_USER -Dgithub.token=$GITHUB_TOKEN
         env:
-	  GITHUB_USER: ${{ secrets.MAVEN_REPO_USER }}
-   	  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USER: ${{ secrets.MAVEN_REPO_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
