@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -16,19 +16,19 @@ import java.util.ArrayList;
 
 /**
  * Class containing multiple textures of an animation.
- * 
+ *
  * @author Fabian Bühler
  */
 public class AnimatedTexture implements Texture {
-    
+
     private final SwingTextureRegistry      registry;
     private final ArrayList<AnimationFrame> animationFrames;
     private long                            duration;
     private final boolean                   loop;
-    
+
     /**
      * Create a new animated Texture.
-     * 
+     *
      * @param registry
      *     the texture registry.
      * @param loop
@@ -40,10 +40,10 @@ public class AnimatedTexture implements Texture {
         this.duration = 0;
         this.loop = loop;
     }
-    
+
     /**
      * Add a texture at the end of the animation.
-     * 
+     *
      * @param frameTexture
      *     the texture handle of the texture to add.
      * @param frames
@@ -57,10 +57,10 @@ public class AnimatedTexture implements Texture {
         final AnimationFrame frame = new AnimationFrame(last, last + (frames - 1), texture);
         this.animationFrames.add(frame);
     }
-    
+
     /**
      * Get the texture for the current frame.
-     * 
+     *
      * @param frame
      *     the current frame
      * @return the texture for the frame
@@ -68,10 +68,10 @@ public class AnimatedTexture implements Texture {
     public Texture getTextureForTick(final long frame) {
         return this.getTextureForTick(frame, 0);
     }
-    
+
     /**
      * Get the texture for the current frame.
-     * 
+     *
      * @param frame
      *     the current frame
      * @param animationStart
@@ -80,7 +80,7 @@ public class AnimatedTexture implements Texture {
      */
     private Texture getTextureForTick(final long frame, final long animationStart) {
         if (this.duration == 0) throw new IllegalStateException("AnimatedTexture is empty!");
-        
+
         long animationFrame = frame - animationStart;
         if (this.loop) {
             animationFrame = animationFrame % this.duration;
@@ -98,22 +98,22 @@ public class AnimatedTexture implements Texture {
         }
         throw new IllegalStateException("This can only happen if the start and end frames of the animation frames were set wrong!");
     }
-    
+
     @Override
     public Image getTexture(final long frame) {
         return this.getTextureForTick(frame).getTexture();
     }
-    
+
     @Override
     public void drawTexture(final long frame, final Graphics g, final int x, final int y, final int width, final int height) {
         this.getTextureForTick(frame).drawTexture(frame, g, x, y, width, height);
     }
-    
+
     private class AnimationFrame {
         private final long    startFrame;
         private final long    endFrame;
         private final Texture texture;
-        
+
         private AnimationFrame(final long startFrame, final long endFrame, final Texture texture) {
             this.startFrame = startFrame;
             this.endFrame = endFrame;

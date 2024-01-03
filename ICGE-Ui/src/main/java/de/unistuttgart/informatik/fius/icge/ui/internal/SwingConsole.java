@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -31,40 +31,40 @@ import de.unistuttgart.informatik.fius.icge.ui.Console;
  */
 public class SwingConsole extends JTextPane implements Console {
     private static final long serialVersionUID = 5100186594058483257L;
-    
+
     private ConsoleBufferedOutputStream systemOutputStream;
     private ConsoleBufferedOutputStream systemErrorStream;
-    
+
     /**
      * Default constructor
      * <p>
      * This should only be called from the swing ui thread
-     * 
+     *
      * @param fontScale
      *     the scaling value for the fontSize
      */
     public SwingConsole(final double fontScale) {
         super(new DefaultStyledDocument());
-        
+
         final int fontSize = (int) Math.floor(12 * fontScale);
         final Font standardFont = new Font("monospaced", Font.PLAIN, fontSize);
-        
+
         this.setEditable(false);
         this.setFont(standardFont);
         final DefaultCaret caret = (DefaultCaret) this.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         this.systemOutputStream = new ConsoleBufferedOutputStream(this, OutputStyle.STANDARD);
         this.systemErrorStream = new ConsoleBufferedOutputStream(this, OutputStyle.ERROR);
-        
+
         Logger.addOutOutputStream(this.systemOutputStream);
         Logger.addErrorOutputStream(this.systemErrorStream);
     }
-    
+
     @Override
     public void clearConsole() {
         SwingUtilities.invokeLater(() -> this.setText(""));
     }
-    
+
     /**
      * Detach the internal output streams from {@code Logger.out} and {@code Logger.error}.
      */

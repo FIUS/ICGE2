@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -33,12 +33,12 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
  * @author Tim Neumann
  */
 class SwingGameWindowUiTest {
-    
+
     private SwingGameWindow window;
-    
+
     /**
      * Setup the game window
-     * 
+     *
      * @throws Exception
      *     When anything goes wrong
      */
@@ -51,11 +51,11 @@ class SwingGameWindowUiTest {
             final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, 1);
             final SwingConsole console = new SwingConsole(1);
             final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(1);
-            
+
             this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console, taskStatus);
         });
     }
-    
+
     /**
      * Test {@link SwingGameWindow#start()}
      */

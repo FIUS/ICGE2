@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -36,66 +36,66 @@ import de.unistuttgart.informatik.fius.icge.ui.EntityInspectorEntry;
  */
 public class SwingEntityInspector extends JPanel {
     private static final long serialVersionUID = 1L;
-    
+
     private final GridBagConstraints gbc;
-    
+
     /** The name at the top */
     private final JLabel title;
-    
+
     /** The JPanel containing all the ui elements */
     private JPanel inspector;
-    
+
     /** The user warning at the bottom */
     private final JLabel warning;
-    
+
     private Object                 updateLock = new Object();
     private EntityInspectorEntry[] currentEntries;
     private List<Consumer<String>> uiValueUpdaters;
-    
+
     /**
      * Default constructor
      * <p>
      * This should only be called from the swing ui thread
-     * 
+     *
      * @param textureRegistry
      *     The texture registry to get the images from
      */
     public SwingEntityInspector(final SwingTextureRegistry textureRegistry) {
         this.setLayout(new BorderLayout());
-        
+
         this.title = new JLabel("Empty");
         this.add(this.title, BorderLayout.PAGE_START);
-        
+
         this.inspector = new JPanel();
         this.inspector.setLayout(new GridBagLayout());
         this.add(this.inspector, BorderLayout.CENTER);
-        
+
         this.warning = new JLabel("Pause the simulation to modify an entity!");
         this.warning.setVisible(false);
         this.add(this.warning, BorderLayout.PAGE_END);
-        
+
         this.gbc = new GridBagConstraints();
         this.gbc.fill = GridBagConstraints.HORIZONTAL;
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
-        
+
         this.setEnabled(false);
         this.warning.setVisible(false);
     }
-    
+
     /**
      * Getter for the inspector name wich is displayed at the top
-     * 
+     *
      * @return the name
      */
     @Override
     public String getName() {
         return this.title.getText();
     }
-    
+
     /**
      * Setter for the inspector name
-     * 
+     *
      * @param name
      *     The new name
      */
@@ -105,7 +105,7 @@ public class SwingEntityInspector extends JPanel {
             this.title.setText(name);
             return;
         }
-        
+
         // cannot call invokeAndWait when already in EventDispatchThread!
         try {
             SwingUtilities.invokeAndWait(() -> {
@@ -115,7 +115,7 @@ public class SwingEntityInspector extends JPanel {
             System.err.println("Failed to set entity inspector name because of: " + e.toString());
         }
     }
-    
+
     /**
      * Update the entity inspector to reflect the new Values.
      *
@@ -131,15 +131,15 @@ public class SwingEntityInspector extends JPanel {
                     List<Consumer<String>> valueUpdaters = this.uiValueUpdaters;
                     if (valueUpdaters == null) return; // TODO throw exeptions here?
                     if (valueUpdaters.size() != entries.length) return;
-                    
+
                     // update values
                     for (int i = 0; i < entries.length; i++) {
                         valueUpdaters.get(i).accept(entries[i].getValue());
                     }
-                    
+
                     // change to new entries list
                     this.currentEntries = entries;
-                    
+
                     // update ui
                     this.revalidate();
                     this.repaint();
@@ -147,39 +147,39 @@ public class SwingEntityInspector extends JPanel {
             });
             return;
         }
-        
+
         // completely update the view
         SwingUtilities.invokeLater(() -> {
             synchronized (this.updateLock) {
                 // clear old elements first, then update current entries list
                 this.clearUIElements();
-                
+
                 // change to new entries list
                 this.uiValueUpdaters = null;
                 this.currentEntries = entries; // only do this after clearing old elements
-                
+
                 // add new ui elements
                 List<Consumer<String>> newUiValueUpdaters = new ArrayList<>(entries.length);
                 for (int i = 0; i < entries.length; i++) {
                     newUiValueUpdaters.add(this.addUIElement(entries[i], i));
                 }
-                
+
                 // set new value updaters
                 this.uiValueUpdaters = newUiValueUpdaters;
-                
+
                 // update ui
                 this.revalidate();
                 this.repaint();
             }
         });
     }
-    
+
     /**
      * Check if the new list of entries matches the current entries structurally.
      *
      * @param entries
      *     The ne list of entries to check against currentEntries
-     * 
+     *
      * @return true iff only the values need to be updated
      */
     private boolean canUpdateValuesOnly(final EntityInspectorEntry[] entries) {
@@ -194,13 +194,13 @@ public class SwingEntityInspector extends JPanel {
         }
         return true;
     }
-    
+
     /**
      * Callback to change the value of an entry.
-     * 
+     *
      * This indirect callback is used to avoid changing the callback on the ui element when only the values of the
      * entries have changed.
-     * 
+     *
      * @param index
      *     the index of the entry to update
      * @param name
@@ -214,28 +214,28 @@ public class SwingEntityInspector extends JPanel {
         if (!entry.getName().equals(name)) return;
         entry.runCallback(value);
     }
-    
+
     /**
      * Add a entry to the ui editor
      * <p>
      * This should only be run from the swing ui thread
-     * 
+     *
      * @param entry
      *     The entry to add a ui element for
      * @param index
      *     The index of the entry in currentEntries
-     * 
+     *
      * @return A consumer that updates the newly added ui element to the given string value
      */
     private Consumer<String> addUIElement(final EntityInspectorEntry entry, final int index) {
-        
+
         final String name = entry.getName();
         this.inspector.add(new JLabel(name + ": "), this.gbc);
         this.gbc.gridx = 1;
-        
+
         Consumer<String> updateUiValueCallback = (newValue) -> {
             /* Default is to update nothing. */};
-        
+
         switch (entry.getType()) {
             case "integer": {
                 final NumberFormatter formatter = new NumberFormatter(NumberFormat.getInstance());
@@ -276,13 +276,13 @@ public class SwingEntityInspector extends JPanel {
                 updateUiValueCallback = (newValue) -> label.setText(newValue);
                 this.inspector.add(label, this.gbc);
         }
-        
+
         this.gbc.gridx = 0;
         this.gbc.gridy += 1;
-        
+
         return updateUiValueCallback;
     }
-    
+
     /**
      * Clears the entity editor
      * <p>
@@ -293,23 +293,23 @@ public class SwingEntityInspector extends JPanel {
         this.inspector = new JPanel();
         this.inspector.setLayout(new GridBagLayout());
         this.add(this.inspector, BorderLayout.CENTER);
-        
+
         this.gbc.gridx = 0;
         this.gbc.gridy = 0;
     }
-    
+
     @Override
     public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
-        
+
         this.title.setEnabled(enabled);
         SwingEntityInspector.setEnabledState(this.inspector, enabled);
         this.warning.setVisible(!enabled);
     }
-    
+
     /**
      * Recursive method to enable and disable a JPanel and its children
-     * 
+     *
      * @param panel
      *     The panel to traverse
      * @param state
@@ -317,7 +317,7 @@ public class SwingEntityInspector extends JPanel {
      */
     private static void setEnabledState(final JPanel panel, final boolean state) {
         panel.setEnabled(state);
-        
+
         for (final Component component : panel.getComponents()) {
             if (component instanceof JPanel) {
                 SwingEntityInspector.setEnabledState((JPanel) component, state);
@@ -325,7 +325,7 @@ public class SwingEntityInspector extends JPanel {
             component.setEnabled(state);
         }
     }
-    
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(300, 300);
