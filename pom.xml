@@ -130,12 +130,12 @@
         </dependencies>
     </dependencyManagement>
     <distributionManagement>
-	   <repository>
-    	 <id>github</id>
-     	 <name>GitHub fius Apache Maven Packages</name>
-     	 <url>https://maven.pkg.github.com/fius/jvk</url>
-   	 </repository>
-	</distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub fius Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/fius/jvk</url>
+        </repository>
+    </distributionManagement>
     <modules>
         <module>ICGE-Ui</module>
         <module>ICGE-Simulation</module>
