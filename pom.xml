@@ -131,15 +131,10 @@
     </dependencyManagement>
     <distributionManagement>
         <repository>
-            <id>c-hack.icge-release</id>
-            <name>C-Hack ICGE-Release Repo</name>
-            <url>https://maven.c-hack.de/repository/icge-release/</url>
+            <id>github</id>
+            <name>GitHub fius Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/fius/jvk</url>
         </repository>
-        <snapshotRepository>
-            <id>c-hack.snapshot</id>
-            <name>C-Hack Repositroy Snapshot</name>
-            <url>https://maven.c-hack.de/repository/snapshot/</url>
-        </snapshotRepository>
     </distributionManagement>
     <modules>
         <module>ICGE-Ui</module>
