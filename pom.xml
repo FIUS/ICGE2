@@ -133,7 +133,7 @@
         <repository>
             <id>github</id>
             <name>GitHub fius Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/fius/jvk</url>
+            <url>https://maven.pkg.github.com/FIUS/ICGE2</url>
         </repository>
     </distributionManagement>
     <modules>
