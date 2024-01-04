@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -45,16 +45,16 @@ import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
  */
 public class SwingGameWindow extends JFrame implements GameWindow {
     private static final long serialVersionUID = -7215617949088643819L;
-    
+
     private final SwingTextureRegistry   textureRegistry;
     private final SwingPlayfieldDrawer   playfieldDrawer;
     private final SwingToolbar           toolbar;
     private final SwingEntitySidebar     entitySidebar;
     private final SwingConsole           console;
     private final SwingTaskStatusDisplay taskStatus;
-    
+
     private SimulationProxy simulationProxy;
-    
+
     /**
      * Create a new Swing game window using the given submodules.
      *
@@ -83,7 +83,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         this.taskStatus = taskStatus;
         SwingUtilities.invokeLater(this::initGameWindow);
     }
-    
+
     @Override
     public void setSimulationProxy(final SimulationProxy simulationProxy) {
         // contains no direct calls to any swing ui method
@@ -93,55 +93,55 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         this.entitySidebar.setSimulationProxy(simulationProxy);
         this.taskStatus.setSimulationProxy(simulationProxy);
     }
-    
+
     @Override
     public TextureRegistry getTextureRegistry() {
         return this.textureRegistry;
     }
-    
+
     @Override
     public PlayfieldDrawer getPlayfieldDrawer() {
         return this.playfieldDrawer;
     }
-    
+
     @Override
     public Toolbar getToolbar() {
         return this.toolbar;
     }
-    
+
     @Override
     public EntitySidebar getEntitySidebar() {
         return this.entitySidebar;
     }
-    
+
     @Override
     public Console getConsole() {
         return this.console;
     }
-    
+
     @Override
     public TaskStatusDisplay getTaskStatusDisplay() {
         return this.taskStatus;
     }
-    
+
     @Override
     public void setWindowTitle(final String title) {
         // UI operations must happen in swing thread!
         SwingUtilities.invokeLater(() -> this.setTitle(title));
     }
-    
+
     @Override
     public void start() {
         // Asynchronously set visible to true
         SwingUtilities.invokeLater(() -> this.setVisible(true));
     }
-    
+
     @Override
     public void stop() {
         // programmatically close the window
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
-    
+
     /**
      * Initialize window listeners and layout all child components.
      * <p>
@@ -150,7 +150,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     private void initGameWindow() {
         // init jFrame
-        
+
         //
         // setup window closing
         //
@@ -161,9 +161,9 @@ public class SwingGameWindow extends JFrame implements GameWindow {
                 SwingGameWindow.this.cleanup(); // stop simulation etc.
             }
         });
-        
+
         this.playfieldDrawer.initialize();
-        
+
         //
         // convert toolbar
         //
@@ -173,7 +173,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         } catch (ClassCastException | NullPointerException e) {
             toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
-        
+
         //
         // convert sidebar
         //
@@ -183,7 +183,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         } catch (ClassCastException | NullPointerException e) {
             sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
-        
+
         //
         // convert console
         //
@@ -193,7 +193,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         } catch (NullPointerException e) {
             consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
-        
+
         //
         // setup bottom pane layout
         //
@@ -201,7 +201,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         bottomPane.addTab("Console", new JScrollPane(consoleComponent));
         bottomPane.addTab("Task Status", this.taskStatus);
         bottomPane.setPreferredSize(new Dimension(400, 200));
-        
+
         //
         // setup JFrame layout
         //
@@ -212,13 +212,13 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
         jsp2.setOneTouchExpandable(true);
         this.getContentPane().add(BorderLayout.CENTER, jsp2);
-        
+
         //
         // finalize jFrame
         //
         this.pack();
     }
-    
+
     /**
      * Clean up all resources used by this window and tell the simulation that the window is now closed.
      */

@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -36,33 +36,33 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
  * @author Tim Neumann
  */
 public class WindowBuilder {
-    
+
     private static boolean isDefaultLookAndFeelUpdated = false;
     private static double  dpiScale;
     private static double  fontScale;
-    
+
     private String              windowTitle = "";
     private boolean             useDoubleBuffering;
     private boolean             syncToScreen;
     private volatile GameWindow window;
-    
+
     /**
      * Create a new WindowBuilder.
      */
     public WindowBuilder() {
         this(WindowBuilder.getDeviceDpiScale());
     }
-    
+
     /**
      * Create a new WindowBuilder.
-     * 
+     *
      * @param dpiScale
      *     the scaling factor for high dpi screens, only effective for the very first WindowBuilder instantiation!
      */
     public WindowBuilder(double dpiScale) {
         if (dpiScale < 0.5) throw new IllegalArgumentException("A dpi scale < 0.5 is not supported!");
         if (dpiScale > 3.0) throw new IllegalArgumentException("A dpi scale > 3.0 is not supported!");
-        
+
         if (!WindowBuilder.isDefaultLookAndFeelUpdated) { // only once
             WindowBuilder.isDefaultLookAndFeelUpdated = true;
             WindowBuilder.dpiScale = dpiScale;
@@ -70,22 +70,22 @@ public class WindowBuilder {
             this.setUiDefaults(dpiScale, WindowBuilder.fontScale);
         }
     }
-    
+
     /**
      * Get the scaling factor from the default display device.
-     * 
+     *
      * @return the dpi scale of the default display
      */
     private static double getDeviceDpiScale() {
         return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getDefaultTransform()
                 .getScaleX();
     }
-    
+
     /**
      * Set the UI Manager defaults forlook and feeel and dpi scaling.
      * <p>
      * This method must only be called once. Calling this twice may have undefined behaviur.
-     * 
+     *
      * @param dpiScale
      *     The dpi scaling factor to use to scale all fonts.
      * @param fontScale
@@ -111,7 +111,7 @@ public class WindowBuilder {
             System.err.println("Can't set look and feel because of: " + e.toString());
         }
     }
-    
+
     /**
      * Set the title of the new window.
      *
@@ -124,13 +124,12 @@ public class WindowBuilder {
      *     The title to set
      */
     public void setTitle(final String title) {
-        if (
-            this.hasBuiltWindow()
-        ) throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
-        
+        if (this.hasBuiltWindow())
+            throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
+
         this.windowTitle = title;
     }
-    
+
     /**
      * Set the graphics settings of the playfield drawer.
      * <p>
@@ -146,14 +145,13 @@ public class WindowBuilder {
      *     playfield.
      */
     public void setGraphicsSettings(final boolean useDoubleBuffering, final boolean syncToScreen) {
-        if (
-            this.hasBuiltWindow()
-        ) throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
-        
+        if (this.hasBuiltWindow())
+            throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
+
         this.useDoubleBuffering = useDoubleBuffering;
         this.syncToScreen = syncToScreen;
     }
-    
+
     /**
      * Actually build the window.
      *
@@ -162,9 +160,8 @@ public class WindowBuilder {
      * </p>
      */
     public void buildWindow() {
-        if (
-            this.hasBuiltWindow()
-        ) throw new IllegalStateException("The window was already built! Use getBuiltWindow() to acess the built window.");
+        if (this.hasBuiltWindow())
+            throw new IllegalStateException("The window was already built! Use getBuiltWindow() to acess the built window.");
         try {
             SwingUtilities.invokeAndWait(this::buildWindowInternal);
         } catch (final InterruptedException | InvocationTargetException e) {
@@ -172,7 +169,7 @@ public class WindowBuilder {
             System.err.println("Can't build the window because of: " + e.toString());
         }
     }
-    
+
     /**
      * Build the window.
      * <p>
@@ -185,25 +182,25 @@ public class WindowBuilder {
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, WindowBuilder.dpiScale);
         final SwingConsole console = new SwingConsole(WindowBuilder.fontScale);
         final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(WindowBuilder.fontScale);
-        
+
         playfieldDrawer.setDoubleBuffering(this.useDoubleBuffering);
         playfieldDrawer.setSyncToScreen(this.syncToScreen);
-        
+
         this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console, taskStatus);
         if (this.windowTitle != null) {
             this.window.setWindowTitle(this.windowTitle);
         }
     }
-    
+
     /**
      * Get whether the window has been built.
-     * 
+     *
      * @return true if and only if the window has been built
      */
     public boolean hasBuiltWindow() {
         return this.window != null;
     }
-    
+
     /**
      * Get the window that was built.
      * <p>

@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -40,23 +40,23 @@ public class SwingTextureRegistry implements TextureRegistry {
     private final Map<String, String>  pathToHandle     = new HashMap<>();
     private final Set<String>          animatedTextures = new HashSet<>();
     private final Map<String, Texture> handleToTexture  = new HashMap<>();
-    
+
     /**
      * Default constructor
      */
     public SwingTextureRegistry() {
         StaticUiTextures.load(this);
     }
-    
+
     /**
      * Generate a new unique texture handle.
-     * 
+     *
      * @return uuid texture handle
      */
     private static String generateNewTextureHandle() {
         return UUID.randomUUID().toString();
     }
-    
+
     /**
      * Load a texture from a local (ui module) resource.
      *
@@ -68,7 +68,7 @@ public class SwingTextureRegistry implements TextureRegistry {
     public String loadTextureFromResource(final String resourceName) {
         return this.loadTextureFromResource(resourceName, SwingTextureRegistry.class::getResourceAsStream);
     }
-    
+
     @Override
     public String loadTextureFromResource(final String resourceName, final Function<String, InputStream> resourceProvider) {
         if (this.resourceToHandle.containsKey(resourceName)) return this.resourceToHandle.get(resourceName);
@@ -82,7 +82,7 @@ public class SwingTextureRegistry implements TextureRegistry {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
         }
     }
-    
+
     @Override
     public String loadTextureFromFile(final String filePath) {
         final Path resolvedPath = Path.of(filePath).toAbsolutePath();
@@ -99,18 +99,18 @@ public class SwingTextureRegistry implements TextureRegistry {
         }
         return textureHandle;
     }
-    
+
     @Override
     public String createAnimatedTexture(final boolean loop) {
         final String textureHandle = SwingTextureRegistry.generateNewTextureHandle();
-        
+
         final AnimatedTexture animTexture = new AnimatedTexture(this, loop);
         this.handleToTexture.put(textureHandle, animTexture);
         this.animatedTextures.add(textureHandle);
-        
+
         return textureHandle;
     }
-    
+
     @Override
     public void addAnimationFrameToTexture(final String animatedTexture, final String frameTexture, final long frames) {
         try {
@@ -120,12 +120,12 @@ public class SwingTextureRegistry implements TextureRegistry {
             throw new IllegalArgumentException("Texture handle was not a handle for an animated texture!", e);
         }
     }
-    
+
     @Override
     public boolean isTextureAnimated(final String textureHandle) {
         return this.animatedTextures.contains(textureHandle);
     }
-    
+
     /**
      * Get the texture for the given texture handle.
      *

@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -23,17 +23,17 @@ import java.util.jar.JarFile;
 
 /**
  * A class for finding classes in the class loader
- * 
+ *
  * @author Tim Neumann
  */
 public class ClassFinder {
     private ClassFinder() {
         //hide constructor
     }
-    
+
     /**
      * Get all classes in the current context class loader, which match the filter.
-     * 
+     *
      * @param filter
      *     The filter to check each class against.
      * @return A list of classes
@@ -43,9 +43,9 @@ public class ClassFinder {
     public static List<Class<?>> getClassesInClassLoader(final Predicate<Class<?>> filter) throws IOException {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final List<URL> urls = Collections.list(loader.getResources("de"));
-        
+
         final List<Class<?>> classes = new ArrayList<>();
-        
+
         for (final URL url : urls) {
             if (url.getProtocol().equals("jar")) {
                 ClassFinder.loadClassesFromJar(url, filter, classes);
@@ -53,10 +53,10 @@ public class ClassFinder {
                 ClassFinder.loadClassesFromFS(url, filter, classes, loader);
             }
         }
-        
+
         return classes;
     }
-    
+
     private static void loadClassesFromJar(final URL url, final Predicate<Class<?>> filter, final List<Class<?>> classes)
             throws IOException {
         final String urlS = url.getPath();
@@ -83,7 +83,7 @@ public class ClassFinder {
             throw new IOException(e2);
         }
     }
-    
+
     private static void loadClassesFromFS(
             final URL url, final Predicate<Class<?>> filter, final List<Class<?>> classes, final ClassLoader loader
     ) throws IOException {
@@ -94,7 +94,7 @@ public class ClassFinder {
             throw new IOException(e);
         }
     }
-    
+
     private static void loadClassInFile(
             final File file, final List<Class<?>> classes, final ClassLoader loader, final String rootDir, final Predicate<Class<?>> filter
     ) throws ClassNotFoundException {
@@ -116,7 +116,7 @@ public class ClassFinder {
             }
         }
     }
-    
+
     private static String convertPathToClassName(final String path, final String rootDir) {
         if (!path.startsWith(rootDir)) throw new IllegalStateException("File not starting with root dir!");
         final String[] fileSeps = new String[] { System.getProperty("file.separator"), "/" };
@@ -128,6 +128,6 @@ public class ClassFinder {
             relPath = relPath.replace(fileSep, ".");
         }
         return relPath;
-        
+
     }
 }

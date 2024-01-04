@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -16,18 +16,18 @@ import java.util.function.Consumer;
  * EntityInspectorEntry
  */
 public class EntityInspectorEntry {
-    
+
     private final String name;
-    
+
     private final String type;
-    
+
     private final String value;
-    
+
     private final Consumer<String> callback;
-    
+
     /**
      * Default constructor
-     * 
+     *
      * @param name
      *     The name of the setting
      * @param type
@@ -43,37 +43,37 @@ public class EntityInspectorEntry {
         this.value = value;
         this.callback = callback;
     }
-    
+
     /**
      * Getter for the name
-     * 
+     *
      * @return returns the name
      */
     public String getName() {
         return this.name;
     }
-    
+
     /**
      * Getter for the type
-     * 
+     *
      * @return returns the type
      */
     public String getType() {
         return this.type;
     }
-    
+
     /**
      * Getter for the value
-     * 
+     *
      * @return returns the value
      */
     public String getValue() {
         return this.value;
     }
-    
+
     /**
      * This function runs the callback of the item
-     * 
+     *
      * @param arg
      *     The argument of the callback
      */

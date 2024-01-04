@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -21,20 +21,20 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 /**
  * A class for managing the inspections
- * 
+ *
  * @author Tim Neumann
  */
 public class InspectionManager {
-    
+
     private final Map<Class<?>, InspectionData> inspectableClasses = new HashMap<>();
-    
+
     /**
      * Create a new inspection manager.
      */
     public InspectionManager() {
         try {
             final List<Class<?>> classes = ClassFinder.getClassesInClassLoader(c -> true);
-            
+
             for (final Class<?> cls : classes) {
                 final InspectionData d = new InspectionData(cls);
                 if (d.hasAnyInspectableElements()) {
@@ -45,10 +45,10 @@ public class InspectionManager {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Get's all attribute names of the given entity.
-     * 
+     *
      * @param entity
      *     The entity to get the names for
      * @return A List of attribute names.
@@ -58,10 +58,10 @@ public class InspectionManager {
         if (d == null) return Collections.emptyList();
         return d.getAttributeNames();
     }
-    
+
     /**
      * Get's all method names of the given entity.
-     * 
+     *
      * @param entity
      *     The entity to get the names for
      * @return A List of method names.
@@ -71,10 +71,10 @@ public class InspectionManager {
         if (d == null) return Collections.emptyList();
         return d.getMethodNames();
     }
-    
+
     /**
      * Checks whether the attribute with the given name in the given entity is writable.
-     * 
+     *
      * @param entity
      *     The entity.
      * @param attributeName
@@ -86,10 +86,10 @@ public class InspectionManager {
         if (d == null) return false;
         return !d.isAttributeReadOnly(attributeName);
     }
-    
+
     /**
      * Get's the type of the attribute with the given name in the given entity.
-     * 
+     *
      * @param entity
      *     The entity.
      * @param attributeName
@@ -101,10 +101,10 @@ public class InspectionManager {
         if (d == null) return null;
         return d.getAttributeType(attributeName);
     }
-    
+
     /**
      * Get the value of the attribute with the given name from the given entity
-     * 
+     *
      * @param entity
      *     The entity to get the value from
      * @param attributeName
@@ -116,10 +116,10 @@ public class InspectionManager {
         if (d == null) return null;
         return d.getAttributeValue(entity, attributeName);
     }
-    
+
     /**
      * Set the value of the attribute with the given name in the given entity
-     * 
+     *
      * @param entity
      *     The entity to set the value in
      * @param attributeName
@@ -133,10 +133,10 @@ public class InspectionManager {
         if (d == null) return false;
         return d.setAttributeValue(entity, attributeName, value);
     }
-    
+
     /**
      * Get the detail of the method with the given name of the given name.
-     * 
+     *
      * @param entity
      *     The entity to get the method of.
      * @param methodName
@@ -148,10 +148,10 @@ public class InspectionManager {
         if (d == null) return null;
         return d.getMethodByName(methodName);
     }
-    
+
     /**
      * Invokes the method with the given name on the given entity. Uses the given arguments.
-     * 
+     *
      * @param entity
      *     The entity to invoke the method in.
      * @param methodName
@@ -167,5 +167,5 @@ public class InspectionManager {
         if (d == null) throw new IllegalStateException("Not a known inspectable class");
         return d.invokeMethod(entity, methodName, args);
     }
-    
+
 }

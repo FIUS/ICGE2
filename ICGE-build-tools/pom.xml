@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.uni-stuttgart.informatik.fius</groupId>
-        <artifactId>ICGE</artifactId>
-        <version>2.3.9-Snapshot</version>
+        <artifactId>icge</artifactId>
+        <version>2.3.8</version>
     </parent>
-    <artifactId>ICGE-build-tools</artifactId>
+    <artifactId>icge-build-tools</artifactId>
     <name>ICGE build tools</name>
 </project>

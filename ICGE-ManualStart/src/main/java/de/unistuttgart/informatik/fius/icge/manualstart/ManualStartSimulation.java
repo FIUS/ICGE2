@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -22,11 +22,11 @@ import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;
  * @author Tim Neumann
  */
 public class ManualStartSimulation {
-    
+
     private static String textureHandleWall;
     private static String textureHandleCoin;
     private static String animated;
-    
+
     /**
      * @param args
      *     the command line arguments. Not used.
@@ -38,21 +38,21 @@ public class ManualStartSimulation {
         // wb.setDpiScale(1.0);
         wb.buildWindow();
         final GameWindow w = wb.getBuiltWindow();
-        
+
         ManualStartSimulation.prepareTextures(w.getTextureRegistry());
         TestEntity.TEXTURE_HANDLE = ManualStartSimulation.animated;
         Coin.TEXTURE_HANDLE = textureHandleCoin;
-        
+
         final SimulationBuilder sb = new SimulationBuilder();
         sb.setTaskVerifier(new TestTaskVerifier());
         sb.buildSimulation();
         final Simulation sim = sb.getBuiltSimulation();
-        
+
         w.start();
         sim.attachToWindow(w, true);
         sim.runTask(new TestTask());
     }
-    
+
     private static void prepareTextures(final TextureRegistry tr) {
         ManualStartSimulation.textureHandleWall = tr
                 .loadTextureFromResource("textures/wall-default.png", ManualStartSimulation.class::getResourceAsStream);

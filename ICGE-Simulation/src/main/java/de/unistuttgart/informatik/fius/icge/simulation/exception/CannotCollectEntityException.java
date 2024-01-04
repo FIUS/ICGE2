@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -11,16 +11,16 @@ package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
 /**
  * This exception indicates that an entity program cannot be run.
- * 
+ *
  * @author Tim Neumann
  */
 public class CannotCollectEntityException extends SimulationExcpetion {
-    
+
     /**
      * generated
      */
     private static final long serialVersionUID = 6758366706458330276L;
-    
+
     /**
      * Constructs a new CannotCollectEntityException with {@code null} as its detail message. The cause is not
      * initialized, and may subsequently be initialized by a call to {@link #initCause}.
@@ -28,7 +28,7 @@ public class CannotCollectEntityException extends SimulationExcpetion {
     public CannotCollectEntityException() {
         super();
     }
-    
+
     /**
      * Constructs a new CannotCollectEntityException with the specified detail message. The cause is not initialized,
      * and may subsequently be initialized by a call to {@link #initCause}.
@@ -39,7 +39,7 @@ public class CannotCollectEntityException extends SimulationExcpetion {
     public CannotCollectEntityException(final String message) {
         super(message);
     }
-    
+
     /**
      * Constructs a new CannotCollectEntityException with the specified cause and a detail message of
      * {@code (cause==null ? null : cause.toString())} (which typically contains the class and detail message of
@@ -54,7 +54,7 @@ public class CannotCollectEntityException extends SimulationExcpetion {
     public CannotCollectEntityException(final Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Constructs a new CannotCollectEntityException with the specified detail message and cause.
      *

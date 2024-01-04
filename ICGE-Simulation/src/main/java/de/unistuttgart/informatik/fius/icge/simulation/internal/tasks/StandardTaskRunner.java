@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -26,14 +26,14 @@ import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
  * @author Tim Neumann
  */
 public class StandardTaskRunner {
-    
+
     private final ExecutorService executor;
-    
+
     private final Task       taskToRun;
     private final Simulation sim;
-    
+
     private CompletableFuture<Boolean> taskResult;
-    
+
     /**
      * Create a new task runner.
      *
@@ -50,11 +50,11 @@ public class StandardTaskRunner {
             Thread worker = new Thread(runnable, "TaskThread-" + taskToRun.toString());
             return worker;
         };
-        
+
         // only one task can be run per task runner so parallelism of one is ok
         this.executor = Executors.newSingleThreadExecutor(factory);
     }
-    
+
     /**
      * Run the given task.
      * <p>
@@ -66,10 +66,10 @@ public class StandardTaskRunner {
     public CompletableFuture<Boolean> runTask() {
         if (this.taskResult != null) return this.taskResult;
         this.taskResult = CompletableFuture.supplyAsync(this::executeTask, this.executor);
-        
+
         return this.taskResult;
     }
-    
+
     private boolean executeTask() {
         try {
             this.taskToRun.run(this.sim);
@@ -95,7 +95,7 @@ public class StandardTaskRunner {
             return false;
         }
     }
-    
+
     /**
      * Cancel the completable future and intterupt the underlying thread.
      */

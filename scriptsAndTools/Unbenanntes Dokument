@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# This script fixes all java file comments
+# No arguments allowed
+
+dir="$(dirname "$(realpath "$0")")"
+
+function fail {
+  echo $1
+  exit $2
+}
+
+if [ $# -ne 0 ] ; then
+  fail "No argument expected" 2
+fi
+
+script="$dir/internalOrCiOnly/fixSingleJavaFileComment.sh"
+
+correctHeaderFile="$dir/correctJavaFileHeader.txt"
+
+#Fix all headers
+javaFiles=$($dir/checkJavaFileComments.sh | grep -o "\..*\.java")
+for file in $javaFiles 
+do	
+	echo "fixing $dir$file"
+	cat $correctHeaderFile $file > $file
+done

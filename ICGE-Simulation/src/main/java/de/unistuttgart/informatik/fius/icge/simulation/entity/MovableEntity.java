@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -27,17 +27,17 @@ import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 
 /**
  * A movable entity
- * 
+ *
  * @author Tim Neumann
  */
 public abstract class MovableEntity extends BasicEntity {
-    
+
     private Direction lookingDirection = Direction.EAST;
-    
+
     private AnimatedDrawable movingDrawable = null;
-    
+
     private Direction directionOfAlmostArrivedMove;
-    
+
     @Override
     public Drawable getDrawInformation() {
         final AnimatedDrawable movingDrawable = this.movingDrawable;
@@ -45,7 +45,7 @@ public abstract class MovableEntity extends BasicEntity {
         final Position pos = this.getPosition();
         return new UntilableDrawable(pos.getX(), pos.getY(), this.getZPosition(), this.getTextureHandle());
     }
-    
+
     /**
      * Turn this entity for 90 degrees in clock wise direction.
      */
@@ -59,53 +59,53 @@ public abstract class MovableEntity extends BasicEntity {
             endOfOperation.complete(null);
         }
     }
-    
+
     private void turnClockWiseInternal() {
         final Direction oldLookingDirection = this.lookingDirection;
         this.lookingDirection = this.lookingDirection.clockWiseNext();
         final long tick = this.getSimulation().getSimulationClock().getLastTickNumber();
         this.getSimulation().getActionLog().logAction(new EntityTurnAction(tick, this, oldLookingDirection, this.lookingDirection));
     }
-    
+
     @InspectionMethod(name = "turnClockwise")
     private void turnClockWiseInspector() {
         this.turnClockWiseInternal();
         this.recalculateAnimationAfterInspector();
     }
-    
+
     private void recalculateAnimationAfterInspector() {
         if (this.movingDrawable != null) {
-            
+
             final long tickStart = this.movingDrawable.getTickStart();
             final long duration = this.movingDrawable.getDuration();
-            
+
             Direction movingDir;
             if (this.directionOfAlmostArrivedMove == null) {
                 movingDir = this.lookingDirection;
             } else {
                 movingDir = this.directionOfAlmostArrivedMove;
             }
-            
+
             final Position currentPos = this.getPosition();
             final Position nextPos = currentPos.adjacentPosition(movingDir);
-            
+
             this.movingDrawable = new AnimatedDrawable(
                     tickStart, currentPos.getX(), currentPos.getY(), duration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
                     this.getTextureHandle()
             );
         }
     }
-    
+
     /**
      * @return the current looking direction of this entity
      */
     public Direction getLookingDirection() {
         return this.lookingDirection;
     }
-    
+
     /**
      * Set the looking direction
-     * 
+     *
      * @param direction
      *     the name of the new direction
      */
@@ -114,7 +114,7 @@ public abstract class MovableEntity extends BasicEntity {
         this.lookingDirection = Direction.valueOf(direction.toUpperCase());
         this.recalculateAnimationAfterInspector();
     }
-    
+
     /**
      * @return the looking direction as a string
      */
@@ -122,14 +122,14 @@ public abstract class MovableEntity extends BasicEntity {
     public String getLookingDirectionString() {
         return this.getLookingDirection().toString();
     }
-    
+
     private boolean isSolidEntityAt(final Position pos) {
         return this.getPlayfield().isSolidEntityAt(pos);
     }
-    
+
     /**
      * Move this entity forward one field.
-     * 
+     *
      * @throws EntityNotOnFieldException
      *     if this entity is not on a playfield
      * @throws IllegalMoveException
@@ -139,7 +139,7 @@ public abstract class MovableEntity extends BasicEntity {
         // use extra future for whole operation as it is split amongst two futures
         final CompletableFuture<Void> endOfOperation = new CompletableFuture<>();
         this.enqueueToPerformNewOperation(endOfOperation);
-        
+
         // setup move
         final int duration = 4;
         final int renderTickDuration = duration * SimulationClock.RENDER_TICKS_PER_SIMULATION_TICK;
@@ -152,7 +152,7 @@ public abstract class MovableEntity extends BasicEntity {
                 currentTick, currentPos.getX(), currentPos.getY(), renderTickDuration, nextPos.getX(), nextPos.getY(), this.getZPosition(),
                 this.getTextureHandle()
         );
-        
+
         final CompletableFuture<Void> endOfOperation1 = new CompletableFuture<>();
         try {
             clock.scheduleOperationInTicks(duration / 2, endOfOperation1);
@@ -162,7 +162,7 @@ public abstract class MovableEntity extends BasicEntity {
         } finally {
             endOfOperation1.complete(null);
         }
-        
+
         final CompletableFuture<Void> endOfOperation2 = new CompletableFuture<>();
         try {
             clock.scheduleOperationInTicks(duration / 2, endOfOperation2);
@@ -175,16 +175,16 @@ public abstract class MovableEntity extends BasicEntity {
             this.movingDrawable = null;
         }
     }
-    
+
     @InspectionMethod(name = "move")
     private void moveInspector() {
         final Position currentPos = this.getPosition();
         final Position nextPos = currentPos.adjacentPosition(this.lookingDirection);
-        
+
         this.internalMove(currentPos, nextPos);
         this.recalculateAnimationAfterInspector();
     }
-    
+
     private void internalMove(final Position currentPos, final Position nextPos) {
         if (this.isSolidEntityAt(nextPos)) throw new IllegalMoveException("Solid Entity in the way");
         final EntityMoveAction action = new EntityStepAction(
@@ -192,7 +192,7 @@ public abstract class MovableEntity extends BasicEntity {
         );
         this.getPlayfield().moveEntity(this, nextPos, action);
     }
-    
+
     /**
      * @return whether this entity can move forward one field.
      */
@@ -200,7 +200,7 @@ public abstract class MovableEntity extends BasicEntity {
         final Position nextPos = this.getPosition().adjacentPosition(this.lookingDirection);
         return this.isOnPlayfield() && !this.isSolidEntityAt(nextPos);
     }
-    
+
     /**
      * Move this entity forward one field if that is possible.
      */
@@ -208,7 +208,7 @@ public abstract class MovableEntity extends BasicEntity {
         try {
             if (this.canMove()) this.move();
         } catch (@SuppressWarnings("unused") EntityNotOnFieldException | IllegalMoveException e) {
-            // do nothing just catch exeptions if move was made illegal by an operation 
+            // do nothing just catch exeptions if move was made illegal by an operation
             // in another thread
         }
     }

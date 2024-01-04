@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -11,23 +11,23 @@ package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
 /**
  * This exception indicates that an entity program cannot be run.
- * 
+ *
  * @author Tim Neumann
  */
 public class UncheckedInterruptedException extends IllegalArgumentException {
-    
+
     /**
      * generated
      */
     private static final long serialVersionUID = -8407441370711369840L;
-    
+
     /**
      * Constructs an <code>EntityProgramInterruptedException</code> with no detail message.
      */
     public UncheckedInterruptedException() {
         super();
     }
-    
+
     /**
      * Constructs an <code>EntityProgramInterruptedException</code> with the specified detail message.
      *
@@ -37,7 +37,7 @@ public class UncheckedInterruptedException extends IllegalArgumentException {
     public UncheckedInterruptedException(final String s) {
         super(s);
     }
-    
+
     /**
      * Constructs a new exception with the specified detail message and cause.
      *
@@ -55,7 +55,7 @@ public class UncheckedInterruptedException extends IllegalArgumentException {
     public UncheckedInterruptedException(final String message, final Throwable cause) {
         super(message, cause);
     }
-    
+
     /**
      * Constructs a new exception with the specified cause and a detail message of
      * {@code (cause==null ? null : cause.toString())} (which typically contains the class and detail message of

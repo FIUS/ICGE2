@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -25,14 +25,14 @@ import de.unistuttgart.informatik.fius.icge.ui.exception.LeafNodeException;
  * @version 1.0
  */
 public class SimulationTreeNode {
-    
+
     private ArrayList<SimulationTreeNode> children;
-    
+
     private final String  elementId;
     private final String  displayText;
     private final String  textureId;
     private final boolean isLeaf;
-    
+
     /**
      * Default constructor for leaf nodes
      *
@@ -49,7 +49,7 @@ public class SimulationTreeNode {
         this.textureId = textureId;
         this.isLeaf = true;
     }
-    
+
     /**
      * This constructor can be used to create non leaf nodes as well as leaf nodes.
      *
@@ -66,13 +66,13 @@ public class SimulationTreeNode {
         if (!isLeaf) {
             this.children = new ArrayList<>();
         }
-        
+
         this.elementId = elementId;
         this.displayText = displayText;
         this.textureId = textureId;
         this.isLeaf = isLeaf;
     }
-    
+
     /**
      * Getter for the element id the non visible string to better identify the selected entity.
      *
@@ -81,7 +81,7 @@ public class SimulationTreeNode {
     public String getElementId() {
         return this.elementId;
     }
-    
+
     /**
      * Getter for the display text which is the name of the entity which is displayed to the user.
      *
@@ -90,7 +90,7 @@ public class SimulationTreeNode {
     public String getDisplayText() {
         return this.displayText;
     }
-    
+
     /**
      * Getter for the texture id the identifier of the texture which is rendered infront of the display text.
      *
@@ -99,7 +99,7 @@ public class SimulationTreeNode {
     public String getTextureId() {
         return this.textureId;
     }
-    
+
     /**
      * This checks if node is a leaf node.
      *
@@ -108,7 +108,7 @@ public class SimulationTreeNode {
     public boolean isLeaf() {
         return this.isLeaf;
     }
-    
+
     /**
      * Function to check if the node has children.
      *
@@ -116,10 +116,10 @@ public class SimulationTreeNode {
      */
     public boolean hasChildren() {
         if (this.isLeaf) return false;
-        
+
         return !this.children.isEmpty();
     }
-    
+
     /**
      * Appends a child node to this node
      *
@@ -129,10 +129,10 @@ public class SimulationTreeNode {
      */
     public boolean appendChild(final SimulationTreeNode node) {
         if (this.isLeaf) throw new LeafNodeException();
-        
+
         return this.children.add(node);
     }
-    
+
     /**
      * Removes a child node from this node
      *
@@ -142,17 +142,17 @@ public class SimulationTreeNode {
      */
     public boolean removeChild(final SimulationTreeNode node) {
         if (this.isLeaf) throw new LeafNodeException();
-        
+
         return this.children.remove(node);
     }
-    
+
     /**
      * @return a list of all children
      */
     public List<SimulationTreeNode> getChildren() {
         return List.copyOf(this.children);
     }
-    
+
     /**
      * Runs a function for each added child node with the child node as a parameter
      *
@@ -161,23 +161,23 @@ public class SimulationTreeNode {
      */
     public void forEachChild(final Consumer<SimulationTreeNode> lamda) {
         if (this.isLeaf) throw new LeafNodeException();
-        
+
         for (final SimulationTreeNode child : this.children) {
             lamda.accept(child);
         }
     }
-    
+
     @Override
     public int hashCode() {
         return this.elementId.hashCode();
     }
-    
+
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof SimulationTreeNode)) return false;
         return Objects.equals(this.elementId, ((SimulationTreeNode) obj).elementId);
     }
-    
+
     @Override
     public String toString() {
         return this.getDisplayText();

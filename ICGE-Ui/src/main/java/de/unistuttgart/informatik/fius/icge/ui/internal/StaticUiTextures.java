@@ -1,9 +1,9 @@
 /*
  * This source file is part of the FIUS ICGE project.
  * For more information see github.com/FIUS/ICGE2
- * 
+ *
  * Copyright (c) 2019 the ICGE project authors.
- * 
+ *
  * This software is available under the MIT license.
  * SPDX-License-Identifier:    MIT
  */
@@ -19,7 +19,7 @@ import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
  * @version 1.0
  */
 public abstract class StaticUiTextures {
-    
+
     /** A play icon */
     public static String playIcon;
     /** A step icon */
@@ -29,14 +29,14 @@ public abstract class StaticUiTextures {
     /** A stop icon */
     @Deprecated
     public static String stopIcon;
-    
+
     /** A arrow icon */
     public static String arrowIcon;
     /** A add icon */
     public static String addIcon;
     /** A sub icon */
     public static String subIcon;
-    
+
     /**
      * This function loads all textures into the given texture registry and stores the icon ids
      *
@@ -48,7 +48,7 @@ public abstract class StaticUiTextures {
         StaticUiTextures.stepIcon = registry.loadTextureFromResource("textures/step.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.pauseIcon = registry.loadTextureFromResource("textures/pause.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.stopIcon = registry.loadTextureFromResource("textures/stop.png", TextureRegistry.class::getResourceAsStream);
-        
+
         StaticUiTextures.arrowIcon = registry.loadTextureFromResource("textures/arrow.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.addIcon = registry.loadTextureFromResource("textures/add.png", TextureRegistry.class::getResourceAsStream);
         StaticUiTextures.subIcon = registry.loadTextureFromResource("textures/sub.png", TextureRegistry.class::getResourceAsStream);
