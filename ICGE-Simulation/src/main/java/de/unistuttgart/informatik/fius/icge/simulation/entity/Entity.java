@@ -9,12 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
-*
-
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnotherFieldException;
-import de.unistuttgart.informatik.fius.icge.ui.Drawable;**
+import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 
 
 /**
@@ -27,12 +25,12 @@ public interface Entity {
      * @return the position of this entity
      */
     Position getPosition();
- *
+
     /**
      * @return the information required to draw this entity; must <b>not</b> be <b>null</b>
      */
     Drawable getDrawInformation();
- *
+
     /**
      * Method to initialize this entity after being added to the playfield.
      * <p>
@@ -51,5 +49,5 @@ public interface Entity {
      *     if the entity is already on a field
      */
     void initOnPlayfield(Playfield playfield);
- *
+
 }

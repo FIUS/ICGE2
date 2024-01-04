@@ -9,7 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.exception;
 
-*
 /**
  * The ListenerSetException is thrown if a set listener function in the SimulationProxy fails
  *
@@ -18,7 +17,7 @@ package de.unistuttgart.informatik.fius.icge.ui.exception;
  */
 public class ListenerSetException extends IllegalArgumentException {
     private static final long serialVersionUID = -2620520061340158420L;
- *
+
     /**
      * Default constructor
      */

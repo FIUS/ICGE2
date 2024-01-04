@@ -8,7 +8,7 @@
  * SPDX-License-Identifier:    MIT
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
- *
+
 /**
  * An entity, which can be collected by {@link EntityCollector}.
  *

@@ -8,11 +8,11 @@
  * SPDX-License-Identifier:    MIT
  */
 package de.unistuttgart.informatik.fius.icge.simulation.programs;
- *
+
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
- *
- *
+
+
 /**
  * The interface for programs that operate on entities.
  *

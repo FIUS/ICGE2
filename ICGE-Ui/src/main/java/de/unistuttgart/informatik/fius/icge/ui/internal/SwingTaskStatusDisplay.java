@@ -9,11 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-*
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.List;*
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,10 +23,11 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;*
+import javax.swing.text.StyledDocument;
+
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TaskInformation;
-import de.unistuttgart.informatik.fius.icge.ui.TaskStatusDisplay;**
+import de.unistuttgart.informatik.fius.icge.ui.TaskStatusDisplay;
 
 
 /**
@@ -37,14 +37,17 @@ import de.unistuttgart.informatik.fius.icge.ui.TaskStatusDisplay;**
  * @version 1.0
  */
 public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay {
-    *
-    private static final long serialVersionUID = -2711911902591163118L;*
-    private final JTextPane textPane;*
-    private final Style       textStyle;
-    private final Style       taskTitle;
-    private final Style       taskSuccess;
-    private final Style taskFail;*
-    private SimulationProxy simulationProxy;*
+
+    private static final long serialVersionUID = -2711911902591163118L;
+
+    private final JTextPane textPane;
+
+    private final Style textStyle;
+    private final Style taskTitle;
+    private final Style taskSuccess;
+    private final Style taskFail;
+
+    private SimulationProxy simulationProxy;
 
     /**
      * Default constructor.
@@ -56,27 +59,27 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
      */
     public SwingTaskStatusDisplay(final double fontScale) {
         super(new BorderLayout());
- *
+
         // setup text pane
         this.textPane = new JTextPane(new DefaultStyledDocument());
         this.textPane.setEditable(false);
         ((DefaultCaret) this.textPane.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
- *
+
         // setup text styles
         final int fontSize = (int) Math.floor(12 * fontScale);
         this.textStyle = this.textPane.addStyle("Text", null);
         StyleConstants.setFontFamily(this.textStyle, "serif");
         StyleConstants.setFontSize(this.textStyle, fontSize);
- *
+
         this.taskTitle = this.textPane.addStyle("TaskTitle", this.textStyle);
         StyleConstants.setBold(this.taskTitle, true);
- *
+
         this.taskSuccess = this.textPane.addStyle("TaskSuccess", this.taskTitle);
         this.taskFail = this.textPane.addStyle("TaskFail", this.taskTitle);
- *
+
         StyleConstants.setForeground(this.taskSuccess, Color.GREEN);
         StyleConstants.setForeground(this.taskFail, Color.RED);
- *
+
         // setup refresh button
         final JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(ae -> {
@@ -84,11 +87,11 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
                 this.simulationProxy.refreshTaskInformation();
             }
         });
- *
+
         // pack component
         this.add(new JScrollPane(this.textPane), BorderLayout.CENTER);
         this.add(refreshButton, BorderLayout.LINE_END);
-    }*
+    }
 
     /**
      * Set the simulation proxy. TODO better doc
@@ -98,9 +101,9 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
      */
     public void setSimulationProxy(final SimulationProxy simulationProxy) {
         if (this.simulationProxy != null) throw new IllegalStateException("SimulationProxy is already set and cannot be overwritten!");
- *
+
         this.simulationProxy = simulationProxy;
-    }*
+    }
 
     @Override
     public void setTaskInformation(final TaskInformation task) {
@@ -115,7 +118,7 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
                 this.appendText(document, "You can set a task verifier in the SimulationBuilder.", this.textStyle);
             }
         });
-    }*
+    }
 
     /**
      * Appends the task information of the task and all subtasks to the styled document.
@@ -128,14 +131,14 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
      *     the current task depth (starts with 0, may be used to indent subtasks later)
      */
     private void appendTaskInformation(final TaskInformation task, final StyledDocument document, final int depth) {
- *
+
         // append title
         String title = task.getTaskTitle();
         if (title == null || title.length() == 0) {
             title = "Unnamed Task";
         }
         this.appendText(document, indentText(title, depth), this.taskTitle);
- *
+
         // append task status
         switch (task.getTaskStatus()) {
             case SUCCESSFUL:
@@ -148,13 +151,13 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
             default:
                 this.appendText(document, " (pending)\n", this.taskTitle);
         }
- *
+
         // append description
         final String description = task.getTaskDescription();
         if (description != null && description.length() > 0) {
             this.appendText(document, indentText(description + '\n', depth + 2), this.textStyle);
         }
- *
+
         // handle subtasks
         final List<TaskInformation> childTasks = task.getChildTasks();
         if (childTasks != null) {
@@ -163,7 +166,7 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
                 this.appendTaskInformation(subTask, document, depth + 1);
             }
         }
-    }*
+    }
 
     /**
      * Appends text to a styled document while silently dismissing {@link BadLocationException}.
@@ -181,7 +184,7 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
         } catch (final BadLocationException e) {
             e.printStackTrace();
         }
-    }*
+    }
 
     /**
      * This function appends indentation spaces to a string
@@ -194,21 +197,21 @@ public class SwingTaskStatusDisplay extends JPanel implements TaskStatusDisplay 
      */
     private static String indentText(final String text, final int depth) {
         if (depth == 0) return text;
- *
+
         StringBuilder returnString = new StringBuilder();
         String indention = "\u2003".repeat(depth);
- *
+
         for (String s : text.split("\n")) {
             returnString.append(indention);
             returnString.append(s);
             returnString.append('\n');
         }
- *
+
         // Delete the final new line character if needed to prevent additional unwanted newlines in the result string
         if (!text.endsWith("\n")) {
             returnString.deleteCharAt(returnString.length() - 1);
         }
- *
+
         return returnString.toString();
     }
 }

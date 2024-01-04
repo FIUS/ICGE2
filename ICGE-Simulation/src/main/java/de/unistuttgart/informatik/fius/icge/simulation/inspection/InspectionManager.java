@@ -9,15 +9,14 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.inspection;
 
-*
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;*
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
+import java.util.Map;
+
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 
 /**
@@ -26,8 +25,8 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
  * @author Tim Neumann
  */
 public class InspectionManager {
-    *
-    private final Map<Class<?>, InspectionData> inspectableClasses = new HashMap<>();*
+
+    private final Map<Class<?>, InspectionData> inspectableClasses = new HashMap<>();
 
     /**
      * Create a new inspection manager.
@@ -35,7 +34,7 @@ public class InspectionManager {
     public InspectionManager() {
         try {
             final List<Class<?>> classes = ClassFinder.getClassesInClassLoader(c -> true);
- *
+
             for (final Class<?> cls : classes) {
                 final InspectionData d = new InspectionData(cls);
                 if (d.hasAnyInspectableElements()) {
@@ -45,7 +44,7 @@ public class InspectionManager {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-    }*
+    }
 
     /**
      * Get's all attribute names of the given entity.
@@ -58,7 +57,7 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return Collections.emptyList();
         return d.getAttributeNames();
-    }*
+    }
 
     /**
      * Get's all method names of the given entity.
@@ -71,7 +70,7 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return Collections.emptyList();
         return d.getMethodNames();
-    }*
+    }
 
     /**
      * Checks whether the attribute with the given name in the given entity is writable.
@@ -86,7 +85,7 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return false;
         return !d.isAttributeReadOnly(attributeName);
-    }*
+    }
 
     /**
      * Get's the type of the attribute with the given name in the given entity.
@@ -101,7 +100,7 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return null;
         return d.getAttributeType(attributeName);
-    }*
+    }
 
     /**
      * Get the value of the attribute with the given name from the given entity
@@ -116,7 +115,7 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return null;
         return d.getAttributeValue(entity, attributeName);
-    }*
+    }
 
     /**
      * Set the value of the attribute with the given name in the given entity
@@ -133,7 +132,7 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return false;
         return d.setAttributeValue(entity, attributeName, value);
-    }*
+    }
 
     /**
      * Get the detail of the method with the given name of the given name.
@@ -148,7 +147,7 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) return null;
         return d.getMethodByName(methodName);
-    }*
+    }
 
     /**
      * Invokes the method with the given name on the given entity. Uses the given arguments.
@@ -167,5 +166,6 @@ public class InspectionManager {
         final InspectionData d = this.inspectableClasses.get(entity.getClass());
         if (d == null) throw new IllegalStateException("Not a known inspectable class");
         return d.invokeMethod(entity, methodName, args);
-    }*
+    }
+
 }

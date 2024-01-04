@@ -9,11 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.playfield;
 
-*
-
 import de.unistuttgart.informatik.fius.icge.simulation.MultiTypedList;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 
 /**
@@ -23,7 +21,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
  */
 public class PlayfieldCell extends MultiTypedList<Entity> {
     private final Position pos;
- *
+
     /**
      * Create a new playfield cell,
      *
@@ -34,7 +32,7 @@ public class PlayfieldCell extends MultiTypedList<Entity> {
         super();
         this.pos = pos;
     }
- *
+
     /**
      * @return the position of this cell
      */

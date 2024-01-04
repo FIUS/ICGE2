@@ -9,13 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
-*
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;**
+import java.util.Set;
 
 
 /**
@@ -26,8 +24,8 @@ import java.util.Set;**
  *     The parent type of all types contained in this list.
  */
 public class MultiTypedList<P> {
-    *
-    private final HashMap<Class<? extends P>, List<P>> items = new HashMap<>();*
+
+    private final HashMap<Class<? extends P>, List<P>> items = new HashMap<>();
 
     /**
      * Get the relevant list for the given type.
@@ -44,7 +42,7 @@ public class MultiTypedList<P> {
         @SuppressWarnings("unchecked")
         final var listOfCorrectType = (List<T>) list;
         return Optional.ofNullable(listOfCorrectType);
-    }*
+    }
 
     private Class<? extends P> getClass(final P o) {
         //Actually a cast should not be necessary here.
@@ -52,7 +50,7 @@ public class MultiTypedList<P> {
         @SuppressWarnings("unchecked")
         final var type = (Class<? extends P>) o.getClass();
         return type;
-    }*
+    }
 
     /**
      * Get the relevant list for the given object.
@@ -63,7 +61,7 @@ public class MultiTypedList<P> {
      */
     private Optional<List<P>> getRelevantList(final P o) {
         return this.getRelevantListGeneric(this.getClass(o));
-    }*
+    }
 
     /**
      * Get the relevant list for the given entity and create it if it is not there.
@@ -75,11 +73,11 @@ public class MultiTypedList<P> {
     private List<P> getRelevantListAndCreate(final P o) {
         final var type = this.getClass(o);
         if (this.items.containsKey(type)) return this.items.get(type);
- *
+
         final List<P> list = new ArrayList<>();
         this.items.put(type, list);
         return list;
-    }*
+    }
 
     /**
      * Add the given object to this list.
@@ -89,7 +87,7 @@ public class MultiTypedList<P> {
      */
     public synchronized void add(final P o) {
         this.getRelevantListAndCreate(o).add(o);
-    }*
+    }
 
     /**
      * Check whether this list contains the given object.
@@ -102,7 +100,7 @@ public class MultiTypedList<P> {
         final var opt = this.getRelevantList(o);
         if (opt.isEmpty()) return false;
         return opt.get().contains(o);
-    }*
+    }
 
     /**
      * Return {@code true} iff the list contains no objects.
@@ -111,7 +109,7 @@ public class MultiTypedList<P> {
      */
     public synchronized boolean isEmpty() {
         return this.items.isEmpty();
-    }*
+    }
 
     /**
      * Remove the given object from this list.
@@ -124,7 +122,7 @@ public class MultiTypedList<P> {
         final var opt = this.getRelevantList(o);
         if (opt.isEmpty()) return false;
         return opt.get().remove(o);
-    }*
+    }
 
     /**
      * Get all objects in this list of the given type.
@@ -139,9 +137,9 @@ public class MultiTypedList<P> {
      */
     public synchronized <T extends P> List<T> get(final Class<? extends T> type, final boolean includeSubclasses) {
         if (!includeSubclasses) return this.<T>getRelevantListGeneric(type).orElse(List.of());
- *
+
         final List<T> result = new ArrayList<>();
- *
+
         for (final Class<? extends P> storedType : this.items.keySet()) {
             if (type.isAssignableFrom(storedType)) {
                 final Class<? extends T> storedTypeAsSubOfRequested = storedType.asSubclass(type);
@@ -149,9 +147,9 @@ public class MultiTypedList<P> {
                 result.addAll(listForStoredType);
             }
         }
- *
+
         return result;
-    }*
+    }
 
     /**
      * @return a list of stored types.

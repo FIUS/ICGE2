@@ -9,24 +9,22 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-*
-
-import java.util.function.Consumer;**
+import java.util.function.Consumer;
 
 
 /**
  * EntityInspectorEntry
  */
 public class EntityInspectorEntry {
- *
+
     private final String name;
- *
+
     private final String type;
- *
+
     private final String value;
- *
+
     private final Consumer<String> callback;
- *
+
     /**
      * Default constructor
      *
@@ -45,7 +43,7 @@ public class EntityInspectorEntry {
         this.value = value;
         this.callback = callback;
     }
- *
+
     /**
      * Getter for the name
      *
@@ -54,7 +52,7 @@ public class EntityInspectorEntry {
     public String getName() {
         return this.name;
     }
- *
+
     /**
      * Getter for the type
      *
@@ -63,7 +61,7 @@ public class EntityInspectorEntry {
     public String getType() {
         return this.type;
     }
- *
+
     /**
      * Getter for the value
      *
@@ -72,7 +70,7 @@ public class EntityInspectorEntry {
     public String getValue() {
         return this.value;
     }
- *
+
     /**
      * This function runs the callback of the item
      *

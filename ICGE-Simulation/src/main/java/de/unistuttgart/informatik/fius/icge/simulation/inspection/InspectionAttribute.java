@@ -9,14 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.inspection;
 
-*
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;*
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.Target;**
+import java.lang.annotation.Target;
 
 
 /**
@@ -32,7 +31,7 @@ import java.lang.annotation.Target;**
 public @interface InspectionAttribute {
     /** @return The optional name of the attribute, to be displayed in the front end. */
     String name() default "";
- *
+
     /** @return Optional argument setting this attribute to read only. */
     boolean readOnly() default false;
 }

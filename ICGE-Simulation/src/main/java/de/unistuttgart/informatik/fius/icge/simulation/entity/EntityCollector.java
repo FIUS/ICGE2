@@ -9,11 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
-*
-
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotCollectEntityException;
-import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotDropEntityException;**
+import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotDropEntityException;
 
 
 /**
@@ -22,7 +20,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.CannotDropEntit
  * @author Tim Neumann
  */
 public interface EntityCollector {
- *
+
     /**
      * Check if this can collect and drop the given collectable entity type.
      *
@@ -31,7 +29,7 @@ public interface EntityCollector {
      * @return true if this entity collector can collect or drop the given entity type
      */
     boolean canCarry(Class<? extends CollectableEntity> type);
- *
+
     /**
      * Collect the given entity.
      *
@@ -43,7 +41,7 @@ public interface EntityCollector {
      *     if an argument is null
      */
     void collect(CollectableEntity entity);
- *
+
     /**
      * Drop the given entity.
      *
@@ -57,5 +55,5 @@ public interface EntityCollector {
      *     if an argument is null
      */
     void drop(CollectableEntity entity, Position pos);
- *
+
 }

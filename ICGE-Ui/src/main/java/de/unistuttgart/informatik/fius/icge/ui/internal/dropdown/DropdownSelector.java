@@ -9,15 +9,15 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown;
 
-*
+import java.awt.event.ItemListener;
 
-import java.awt.event.ItemListener;*
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;*
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;**
+import javax.swing.JPanel;
+
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
 
 
 /**
@@ -27,7 +27,7 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;**
  * @version 1.0
  */
 public class DropdownSelector extends JPanel {
-    private static final long serialVersionUID = -3898035206502504991L;*
+    private static final long serialVersionUID = -3898035206502504991L;
 
     /**
      * This class represents a single entry of the selector
@@ -40,7 +40,7 @@ public class DropdownSelector extends JPanel {
         public String displayName;
         /** The texture id of the icon which is rendert infront of the display name */
         public String textureID;
- *
+
         /**
          * The empty constructor
          */
@@ -48,7 +48,7 @@ public class DropdownSelector extends JPanel {
             this.displayName = "";
             this.textureID = "";
         }
- *
+
         /**
          * This constructor is used for text only entries
          *
@@ -59,7 +59,7 @@ public class DropdownSelector extends JPanel {
             this.displayName = name;
             this.textureID = "";
         }
- *
+
         /**
          * The default constructor
          *
@@ -72,14 +72,16 @@ public class DropdownSelector extends JPanel {
             this.displayName = name;
             this.textureID = texture;
         }
-    }*
+    }
 
     /** The texture registry */
-    private final SwingTextureRegistry textureRegistry;*
-    private final JLabel                                   label;
-    private final JComboBox<DropdownSelector.DropdownEntry> comboBox;*
+    private final SwingTextureRegistry textureRegistry;
+
+    private final JLabel                                    label;
+    private final JComboBox<DropdownSelector.DropdownEntry> comboBox;
+
     /** The data model of the DropdownSelector */
-    private final DefaultComboBoxModel<DropdownEntry> model;*
+    private final DefaultComboBoxModel<DropdownEntry> model;
 
     /**
      * Constructor of the DropdownSelector
@@ -93,19 +95,19 @@ public class DropdownSelector extends JPanel {
      */
     public DropdownSelector(final SwingTextureRegistry textureRegistry, final String header) {
         this.textureRegistry = textureRegistry;
- *
+
         this.label = new JLabel(header + ": ");
         this.comboBox = new JComboBox<>();
- *
+
         this.model = new DefaultComboBoxModel<>();
         this.comboBox.setModel(this.model);
         this.comboBox.setRenderer(new DropdownItemRenderer(this.textureRegistry));
         this.comboBox.setEditor(new DropdownItemEditor(this.textureRegistry));
- *
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(this.label);
         this.add(this.comboBox);
-    }*
+    }
 
     /**
      * Getter for the currently selected entry
@@ -114,7 +116,7 @@ public class DropdownSelector extends JPanel {
      */
     public DropdownEntry getCurrentEntry() {
         return (DropdownEntry) this.comboBox.getEditor().getItem();
-    }*
+    }
 
     /**
      * Setter for the currently selected entry
@@ -128,7 +130,7 @@ public class DropdownSelector extends JPanel {
      */
     public void setCurrentEntry(final DropdownEntry entry) {
         this.comboBox.getEditor().setItem(entry);
-    }*
+    }
 
     /**
      * This function adds an entry to the selector
@@ -141,12 +143,12 @@ public class DropdownSelector extends JPanel {
     public void addEntry(final DropdownEntry... entries) {
         for (final DropdownEntry entry : entries) {
             this.model.addElement(entry);
- *
+
             if (getCurrentEntry() == null) {
                 this.setCurrentEntry(entry);
             }
         }
-    }*
+    }
 
     /**
      * This function removes all entries from the dropdown menu
@@ -155,7 +157,7 @@ public class DropdownSelector extends JPanel {
      */
     public void removeAllEntries() {
         this.model.removeAllElements();
-    }*
+    }
 
     /**
      * Adds a listener which reacts to the selection and deselection of items
@@ -167,7 +169,7 @@ public class DropdownSelector extends JPanel {
      */
     public void addSelectionListener(final ItemListener listener) {
         this.comboBox.addItemListener(listener);
-    }*
+    }
 
     @Override
     public void setEnabled(final boolean enabled) {

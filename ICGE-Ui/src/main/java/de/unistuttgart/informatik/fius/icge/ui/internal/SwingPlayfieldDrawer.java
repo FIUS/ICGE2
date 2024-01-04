@@ -9,8 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-*
-
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -20,14 +18,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;*
+import java.util.stream.Collectors;
+
 import javax.swing.JPanel;
 import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;*
+import javax.swing.SwingUtilities;
+
 import de.unistuttgart.informatik.fius.icge.ui.Drawable;
 import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
-import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;**
+import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;
 
 
 /**
@@ -36,51 +36,63 @@ import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;**
  * @author Tim Neumann
  */
 public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
-    *
+
     /**
      * generated
      */
-    private static final long serialVersionUID = 1800137555269066525L;*
+    private static final long serialVersionUID = 1800137555269066525L;
+
     /** Stretch factor for mapping row/column coordinates to screen coordinates. */
-    private final double CELL_SIZE;*
-    private final int INFO_BAR_HEIGHT;*
+    private final double CELL_SIZE;
+
+    private final int INFO_BAR_HEIGHT;
+
     // Colors
-    private static final Color          BACKGROUND_COLOR             = new Color(255, 255, 255);
-    private static final Color          BACKGROUND_COLOR_TRANSPARENT = new Color(255, 255, 255, 230);
-    private static final Color          GRID_COLOR                   = new Color(46, 52, 54);
-    private static final Color OVERLAY_COLOR                = new Color(0, 40, 255, 50);*
+    private static final Color BACKGROUND_COLOR             = new Color(255, 255, 255);
+    private static final Color BACKGROUND_COLOR_TRANSPARENT = new Color(255, 255, 255, 230);
+    private static final Color GRID_COLOR                   = new Color(46, 52, 54);
+    private static final Color OVERLAY_COLOR                = new Color(0, 40, 255, 50);
+
     private static final RenderingHints RENDERING_HINTS = new RenderingHints(
             RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
-    );*
-    private final SwingTextureRegistry textureRegistry;*
+    );
+
+    private final SwingTextureRegistry textureRegistry;
+
     // current display offset and zoom
     private double offsetX;
     private double offsetY;
-    private double scale = 1.0;*
+    private double scale = 1.0;
+
     // mouse events
     private boolean mouseInWindow = false;
     private int     currentMouseX = 0;
     private int     currentMouseY = 0;
     private int     mouseStartX   = 0;
     private int     mouseStartY   = 0;
-    private boolean isDrag        = false;*
+    private boolean isDrag        = false;
+
     // current tool state
     private ControlButtonState activeTool            = ControlButtonState.BLOCKED;
     private String             selectedEntityType    = null;
     private String             selectedEntityTexture = null;
-    private SimulationProxy    simulationProxy;*
-    private List<Drawable>     drawables             = List.of();
-    private List<Drawable>     animatedDrawables     = List.of();
-    private boolean            fullRepaintNeeded     = true;
-    private Rectangle          lastRedrawArea        = null;
-    private long           currentFrame      = 0;*
+    private SimulationProxy    simulationProxy;
+
+    private List<Drawable> drawables         = List.of();
+    private List<Drawable> animatedDrawables = List.of();
+    private boolean        fullRepaintNeeded = true;
+    private Rectangle      lastRedrawArea    = null;
+    private long           currentFrame      = 0;
+
     // current graphic settings
     private final RepaintManager repaintManager;
     private boolean              useDoubleBuffer = true;
-    private boolean              syncToscreen    = true;*
-    private double dpiScale;*
-    private Font                 scaleFont;
-    private Font font;*
+    private boolean              syncToscreen    = true;
+
+    private double dpiScale;
+
+    private Font scaleFont;
+    private Font font;
 
     /**
      * Create a new SwingPlayfieldDrawer.
@@ -94,21 +106,21 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      */
     public SwingPlayfieldDrawer(final SwingTextureRegistry textureRegistry, final double dpiScale) {
         this.textureRegistry = textureRegistry;
- *
+
         this.setOpaque(true);
         this.repaintManager = RepaintManager.currentManager(this);
- *
+
         this.INFO_BAR_HEIGHT = (int) Math.floor(25 * dpiScale);
         this.CELL_SIZE = (int) Math.floor(32 * dpiScale);
         this.offsetX = this.CELL_SIZE;
         this.offsetY = this.CELL_SIZE;
         this.dpiScale = dpiScale;
- *
+
         Font font = this.getFont();
         final int newFontSize = (int) Math.floor(12 * dpiScale * this.scale);
         this.font = new Font(font.getFontName(), font.getStyle(), newFontSize);
         this.setFont(this.font);
-    }*
+    }
 
     /**
      * Set the simulation proxy. TODO better doc
@@ -118,9 +130,9 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      */
     public void setSimulationProxy(final SimulationProxy simulationProxy) {
         if (this.simulationProxy != null) throw new IllegalStateException("SimulationProxy is already set and cannot be overwritten!");
- *
+
         this.simulationProxy = simulationProxy;
-    }*
+    }
 
     /**
      * Initialize the PlayfieldDrawer.
@@ -128,60 +140,60 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
      * This should only be called from the swing ui thread
      */
     public void initialize() {
- *
+
         this.addMouseListener(new MouseListener() {
- *
+
             @Override
             public void mouseReleased(final MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     SwingPlayfieldDrawer.this.mouseReleased(e.getX(), e.getY());
                 }
             }
- *
+
             @Override
             public void mousePressed(final MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     SwingPlayfieldDrawer.this.mousePressed(e.getX(), e.getY());
                 }
             }
- *
+
             @Override
             public void mouseExited(final MouseEvent e) {
                 SwingPlayfieldDrawer.this.updateMouseInWindow(false);
             }
- *
+
             @Override
             public void mouseEntered(final MouseEvent e) {
                 SwingPlayfieldDrawer.this.updateMouseInWindow(true);
             }
- *
+
             @Override
             public void mouseClicked(final MouseEvent e) {
                 // ignore this for now
             }
         });
- *
+
         this.addMouseMotionListener(new MouseMotionListener() {
- *
+
             @Override
             public void mouseMoved(final MouseEvent e) {
                 SwingPlayfieldDrawer.this.updateMousePosition(e.getX(), e.getY());
             }
- *
+
             @Override
             public void mouseDragged(final MouseEvent e) {
                 SwingPlayfieldDrawer.this.updateDrag(e.getX(), e.getY());
                 SwingPlayfieldDrawer.this.updateMousePosition(e.getX(), e.getY());
             }
         });
- *
+
         this.addMouseWheelListener(e -> {
             final int rot = e.getWheelRotation();
             final int x = e.getX();
             final int y = e.getY();
             SwingPlayfieldDrawer.this.updateZoom(rot, x, y);
         });
-    }*
+    }
 
     @Override
     public void setDrawables(final List<Drawable> drawables) {
@@ -191,7 +203,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 .collect(Collectors.toUnmodifiableList());
         this.fullRepaintNeeded = true;
         this.draw(this.currentFrame);
-    }*
+    }
 
     @Override
     public void draw(final long tickCount) {
@@ -200,16 +212,16 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         if (this.animatedDrawables.size() > 0) {
             this.drawables = this.drawables.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toUnmodifiableList());
         }
- *
+
         SwingUtilities.invokeLater(() -> {
             // synchronize this to fix possible null pointer when setting double buffer setting
- *
+
             final boolean bufferEnabled = this.repaintManager.isDoubleBufferingEnabled();
             if (!this.useDoubleBuffer) {
                 // only  change strategy to false since true should already be default
                 this.repaintManager.setDoubleBufferingEnabled(this.useDoubleBuffer);
             }
- *
+
             if (this.fullRepaintNeeded) {
                 Rectangle visible = this.getVisibleRect();
                 if (visible == null) {
@@ -260,7 +272,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.animatedDrawables = this.drawables.stream()
                 .filter(d -> d.isAnimated() || this.textureRegistry.isTextureAnimated(d.getTextureHandle()))
                 .collect(Collectors.toUnmodifiableList());
-    }*
+    }
 
     @Override
     public void resetZoomAndPan() {
@@ -270,42 +282,42 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         Font font = this.getFont();
         final int newFontSize = (int) Math.floor(12 * this.dpiScale * this.scale);
         this.scaleFont = new Font(font.getFontName(), font.getStyle(), newFontSize);
-    }*
+    }
 
     @Override
     public void setDoubleBuffering(final boolean useDoubleBuffering) {
         this.useDoubleBuffer = useDoubleBuffering;
-    }*
+    }
 
     @Override
     public void setSyncToScreen(final boolean syncToScreen) {
         this.syncToscreen = syncToScreen;
-    }*
+    }
 
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(800, 600);
-    }*
+    }
 
     private int getColumnCoordinateFromScreenCoordinate(final int screenX) {
         final double cellSize = this.CELL_SIZE * this.scale;
         return (int) Math.floor((screenX - this.offsetX) / cellSize);
-    }*
+    }
 
     private int getRowCoordinateFromScreenCoordinate(final int screenY) {
         final double cellSize = this.CELL_SIZE * this.scale;
         return (int) Math.floor((screenY - this.offsetY) / cellSize);
-    }*
+    }
 
     private Point getScreenPointFromCellCoordinates(final double x, final double y, final double cellSize) {
         final int screenX = Math.toIntExact(Math.round((x * cellSize) + this.offsetX));
         final int screenY = Math.toIntExact(Math.round((y * cellSize) + this.offsetY));
         return new Point(screenX, screenY);
-    }*
+    }
 
     private static Rectangle getPaintRectFromPoint(final Point upperLeftCorner, final int cellSize) {
         return new Rectangle(upperLeftCorner.x, upperLeftCorner.y, cellSize, cellSize);
-    }*
+    }
 
     @Override
     public void paintComponent(final Graphics g) {
@@ -317,7 +329,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.paintGrid(g);
         this.paintDrawableList(g, this.drawables);
         this.paintOverlay(g);
-    }*
+    }
 
     private void paintGrid(final Graphics g) {
         final Rectangle clipBounds = g.getClipBounds();
@@ -327,7 +339,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         // to the top left corner of e cell on screen)
         final double firstX = (Math.IEEEremainder(this.offsetX - clipBounds.x, cellSize) + clipBounds.x) - cellSize;
         final double firstY = (Math.IEEEremainder(this.offsetY - clipBounds.y, cellSize) + clipBounds.y) - cellSize;
- *
+
         final int width = this.getWidth();
         final int height = this.getHeight();
         g.setColor(SwingPlayfieldDrawer.GRID_COLOR);
@@ -341,7 +353,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             final int iy = (int) y;
             g.drawLine(0, iy, width, iy);
         }
-    }*
+    }
 
     /**
      * Compare two drawables and checks if they can be grouped together.
@@ -362,7 +374,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         if (Math.abs(a.getX() - b.getX()) > 0.001) return false;
         if (Math.abs(a.getY() - b.getY()) > 0.001) return false;
         return true;
-    }*
+    }
 
     private void paintDrawableList(final Graphics g, final List<Drawable> drawablesList) {
         if (drawablesList.size() <= 0) return;
@@ -370,7 +382,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         Drawable last = null;
         int currentCount = 0;
         boolean isTilable = true;
- *
+
         // group and count drawables
         while (iter.hasNext()) {
             final Drawable next = iter.next();
@@ -389,7 +401,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         if (last != null) {
             this.paintDrawable(g, last, currentCount + 1, isTilable);
         }
-    }*
+    }
 
     private void paintDrawable(final Graphics g, final Drawable drawable, final int count, final boolean isTilable) {
         final double cellSize = this.CELL_SIZE * this.scale;
@@ -416,7 +428,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         final Double[] yOffsets = { 0.0, 0.0, 0.0, third, third, third, twoThird, twoThird, twoThird };
         final Double scaleAdjust = third;
         this.paintMultiCountDrawable(g, drawable, count, xOffsets, yOffsets, scaleAdjust);
-    }*
+    }
 
     private void paintMultiCountDrawable(
             final Graphics g, final Drawable drawable, final int count, final Double[] xOffsets, final Double[] yOffsets,
@@ -443,7 +455,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
                 texture.drawTexture(this.currentFrame, g, x, y, textureSize, textureSize);
             }
         }
-    }*
+    }
 
     private void drawNumber(int count, Graphics g, int x, int y) {
         final double cellSize = this.CELL_SIZE * this.scale;
@@ -462,20 +474,20 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         }
         g.drawString("" + count, x + xOffset, y + yOffset);
         g.setFont(this.font);
-    }*
+    }
 
     private void paintOverlay(final Graphics g) {
         final int width = this.getWidth();
         final int height = this.getHeight();
- *
+
         final int currentCellX = this.getColumnCoordinateFromScreenCoordinate(this.currentMouseX);
         final int currentCellY = this.getRowCoordinateFromScreenCoordinate(this.currentMouseY);
- *
+
         final double cellSize = this.CELL_SIZE * this.scale;
         final int roundedCellSize = Math.toIntExact(Math.round(cellSize));
         final int screenX = Math.toIntExact(Math.round(this.offsetX + (currentCellX * cellSize)));
         final int screenY = Math.toIntExact(Math.round(this.offsetY + (currentCellY * cellSize)));
- *
+
         // draw cell highlight
         if (this.mouseInWindow && g.hitClip(screenX, screenY, roundedCellSize, roundedCellSize)) {
             // draw current tool texture
@@ -496,44 +508,44 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             g.setColor(SwingPlayfieldDrawer.OVERLAY_COLOR);
             g.fillRect(screenX, screenY, roundedCellSize, roundedCellSize);
         }
- *
+
         // draw info bar
         if (this.mouseInWindow && g.hitClip(0, height - this.INFO_BAR_HEIGHT, width, this.INFO_BAR_HEIGHT)) {
- *
+
             g.setColor(SwingPlayfieldDrawer.BACKGROUND_COLOR);
             g.fillRect(0, height - this.INFO_BAR_HEIGHT, width, this.INFO_BAR_HEIGHT);
             g.setColor(SwingPlayfieldDrawer.GRID_COLOR);
- *
+
             // calculate baseline
             final FontMetrics font = g.getFontMetrics();
             final int heightAboveBaseline = font.getAscent();
             final int heightBelowBaseline = font.getMaxDescent();
             final int baselineCentered = Math.toIntExact(Math.round((this.INFO_BAR_HEIGHT / 2.0) - (heightAboveBaseline / 2.0)));
             final int baseline = height - Math.max(baselineCentered, heightBelowBaseline);
- *
+
             // build string
             final String infoText = "Cell (x=" + currentCellX + ", y=" + currentCellY + ")";
             g.drawString(infoText, 5, baseline);
- *
+
         }
-    }*
+    }
 
     private void mousePressed(final int screenX, final int screenY) {
         this.mouseStartX = screenX;
         this.mouseStartY = screenY;
         this.isDrag = false;
-    }*
+    }
 
     private void mouseReleased(final int screenX, final int screenY) {
         if (!this.isDrag) {
             this.mouseClick(this.mouseStartX, this.mouseStartY);
         }
-    }*
+    }
 
     private void mouseClick(final int screenX, final int screenY) {
         final int x = this.getColumnCoordinateFromScreenCoordinate(screenX);
         final int y = this.getRowCoordinateFromScreenCoordinate(screenY);
- *
+
         if (this.activeTool == ControlButtonState.ADD) {
             final String type = this.selectedEntityType;
             if ((type == null) || type.equals("")) {
@@ -556,12 +568,12 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
             }
         }
         this.repaint();
-    }*
+    }
 
     private void updateMouseInWindow(final boolean mouseInWindow) {
         this.mouseInWindow = mouseInWindow;
         this.repaintMouseOverlay();
-    }*
+    }
 
     private void updateMousePosition(final int x, final int y) {
         final int oldX = this.currentMouseX;
@@ -570,18 +582,18 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.currentMouseY = y;
         this.repaintCellHighlight(oldX, oldY);
         this.repaintMouseOverlay();
-    }*
+    }
 
     private void repaintMouseOverlay() {
         this.repaintCellHighlight(this.currentMouseX, this.currentMouseY);
         this.repaint(0, this.getHeight() - this.INFO_BAR_HEIGHT, this.getWidth(), this.INFO_BAR_HEIGHT);
-    }*
+    }
 
     private void repaintCellHighlight(final int x, final int y) {
         final double cellSize = this.CELL_SIZE * this.scale;
         final int roundedCellSize = Math.toIntExact(Math.round(cellSize));
         this.repaint(x - roundedCellSize, y - roundedCellSize, 2 * roundedCellSize, 2 * roundedCellSize);
-    }*
+    }
 
     private void updateDrag(final int x, final int y) {
         this.isDrag = true;
@@ -591,7 +603,7 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.mouseStartX = x;
         this.mouseStartY = y;
         this.repaint();
-    }*
+    }
 
     private void updateZoom(final int amount, final int x, final int y) {
         final double zoomScaling = 0.1 * Math.ceil(this.scale);
@@ -610,17 +622,17 @@ public class SwingPlayfieldDrawer extends JPanel implements PlayfieldDrawer {
         this.scale = newScale;
         this.offsetX += dx;
         this.offsetY += dy;
- *
+
         Font font = this.getFont();
         final int newFontSize = (int) Math.floor(12 * this.dpiScale * this.scale);
         this.scaleFont = new Font(font.getFontName(), font.getStyle(), newFontSize);
         this.repaint();
-    }*
+    }
 
     @Override
     public void setSelectedTool(final ControlButtonState selectedTool) {
         this.activeTool = selectedTool;
-    }*
+    }
 
     @Override
     public void setSelectedEntityType(final String typeName, final String textureHandle) {

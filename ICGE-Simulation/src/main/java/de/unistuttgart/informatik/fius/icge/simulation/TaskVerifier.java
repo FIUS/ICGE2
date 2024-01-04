@@ -9,9 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
-*
-
-import de.unistuttgart.informatik.fius.icge.ui.TaskInformation;**
+import de.unistuttgart.informatik.fius.icge.ui.TaskInformation;
 
 
 /**
@@ -29,14 +27,14 @@ public interface TaskVerifier {
      *     the simulation to verify
      */
     void attachToSimulation(Simulation sim);
- *
+
     /**
      * Verify if the current state of the simulation matches the requirements for the successful completion of the task.
      * <p>
      * This method should update the task information returned by {@link #getTaskInformation}.
      */
     void verify();
- *
+
     /**
      * Get the current task information.
      * <p>

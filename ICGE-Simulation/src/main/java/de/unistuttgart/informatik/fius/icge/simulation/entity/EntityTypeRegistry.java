@@ -9,11 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
-*
-
 import java.util.Set;
-import java.util.function.Supplier;*
-import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsException;**
+import java.util.function.Supplier;
+
+import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsException;
 
 
 /**
@@ -22,7 +21,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsEx
  * @author Fabian Bühler
  */
 public interface EntityTypeRegistry {
- *
+
     /**
      * Register a new entity type by name.
      * <p>
@@ -43,7 +42,7 @@ public interface EntityTypeRegistry {
      *     if the name is already used
      */
     void registerEntityType(final String typeName, final String textureHandle, Class<? extends Entity> entityType);
- *
+
     /**
      * Register a new entity type by name.
      * <p>
@@ -63,14 +62,14 @@ public interface EntityTypeRegistry {
      *     if the name is already used
      */
     void registerEntityType(final String typeName, final String textureHandle, Supplier<? extends Entity> entityFactory);
- *
+
     /**
      * Get a set of all currently registered entity types.
      *
      * @return registered entity types
      */
     Set<String> getRegisteredEntityTypes();
- *
+
     /**
      * Get the texture handle of a registered entity type.
      *
@@ -81,7 +80,7 @@ public interface EntityTypeRegistry {
      *     if an argument is null
      */
     String getTextureHandleOfEntityType(final String typeName);
- *
+
     /**
      * Get a new Entity instance of a registered entity type.
      *

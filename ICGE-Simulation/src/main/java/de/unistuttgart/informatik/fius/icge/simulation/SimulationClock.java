@@ -9,10 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
-*
-
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;**
+import java.util.function.Function;
 
 
 /**
@@ -23,17 +21,17 @@ import java.util.function.Function;**
  * @version 1.0
  */
 public interface SimulationClock {
- *
+
     /**
      * The number of render ticks per one simulation tick.
      */
     int RENDER_TICKS_PER_SIMULATION_TICK = 8;
- *
+
     /**
      * The render period, that is set by default.
      */
     int DEFAULT_RENDER_TICK_PERIOD = 50;
- *
+
     /**
      * Set the period of the render ticks. The game ticks will have this period times
      * {@value #RENDER_TICKS_PER_SIMULATION_TICK}.
@@ -42,33 +40,33 @@ public interface SimulationClock {
      *     The new period in milliseconds.
      */
     void setPeriod(int millis);
- *
+
     /**
      * Get the period of the render ticks.
      *
      * @return The number of milliseconds per render tick period.
      */
     int getRenderTickPeriod();
- *
+
     /**
      * Get the period of the game ticks.
      *
      * @return The number of milliseconds per game tick period.
      */
     int getGameTickPeriod();
- *
+
     /**
      * Query the clock if its running
      *
      * @return if the clock is running
      */
     boolean isRunning();
- *
+
     /**
      * Start ticking.
      */
     void start();
- *
+
     /**
      * Stop ticking.
      * <p>
@@ -76,12 +74,12 @@ public interface SimulationClock {
      * </p>
      */
     void stop();
- *
+
     /**
      * Execute one single tick
      */
     void step();
- *
+
     /**
      * Register a listener for simulation ticks.
      * <p>
@@ -92,7 +90,7 @@ public interface SimulationClock {
      *     The listener to be called.
      */
     void registerTickListener(Function<Long, Boolean> listener);
- *
+
     /**
      * Register a listener for the end of simulation ticks.
      * <p>
@@ -103,17 +101,17 @@ public interface SimulationClock {
      *     The listener to be called.
      */
     void registerPostTickListener(Function<Long, Boolean> listener);
- *
+
     /**
      * @return the number of the last simulation tick
      */
     long getLastTickNumber();
- *
+
     /**
      * @return the number of the last render tick
      */
     long getLastRenderTickNumber();
- *
+
     /**
      * Schedule an operation, to happen during the given tick. This method will block until that tick. Then the tick
      * processing will halt until the given end of operation is completed.
@@ -129,7 +127,7 @@ public interface SimulationClock {
      *     if the end of operation completes exceptionally
      */
     void scheduleOperationAtTick(long tick, CompletableFuture<Void> endOfOperation);
- *
+
     /**
      * Schedule an operation, to happen during the tick a given number of ticks in the future. This method will block
      * until that tick. Then the tick processing will halt until the given end of operation is completed.
@@ -145,7 +143,7 @@ public interface SimulationClock {
      *     if the end of operation completes exceptionally
      */
     void scheduleOperationInTicks(long ticks, CompletableFuture<Void> endOfOperation);
- *
+
     /**
      * Schedule an operation, to happen during the next tick. This method will block until that tick. Then the tick
      * processing will halt until the given end of operation is completed.

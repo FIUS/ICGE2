@@ -9,10 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
-*
-
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 
 /**
@@ -21,7 +19,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
  * @author Tim Neumann
  */
 public class EntityStepAction extends EntityMoveAction {
- *
+
     /**
      * Create an entity step action.
      *
@@ -37,7 +35,7 @@ public class EntityStepAction extends EntityMoveAction {
     public EntityStepAction(final long tickNumber, final Entity entity, final Position from, final Position to) {
         super(tickNumber, entity, from, to);
     }
- *
+
     @Override
     public String getDescription() {
         return this.getEntity() + " stepped from " + this.from() + " to " + this.to();

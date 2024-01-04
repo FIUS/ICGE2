@@ -9,10 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
-*
-
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 
 /**
@@ -21,9 +19,9 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
  * @author Tim Neumann
  */
 public class EntityDespawnAction extends EntityAction {
- *
+
     private final Playfield playfield;
- *
+
     /**
      * Create an entity despawn action
      *
@@ -38,14 +36,14 @@ public class EntityDespawnAction extends EntityAction {
         super(tickNumber, entity);
         this.playfield = playfield;
     }
- *
+
     /**
      * @return the playfield the entity was removed from
      */
     public Playfield getPlayfield() {
         return this.playfield;
     }
- *
+
     @Override
     public String getDescription() {
         return this.getEntity() + " despawned from " + this.getPlayfield();

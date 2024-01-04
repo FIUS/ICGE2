@@ -9,8 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.programs;
 
-*
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -18,10 +16,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
-import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;*
+import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
+
 import de.unistuttgart.informatik.fius.icge.simulation.programs.Program;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
-import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;**
+import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterruptedException;
 
 
 /**
@@ -30,16 +29,17 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.UncheckedInterr
  * @author Fabian Bühler
  */
 public class StandardProgramRunner {
-    *
-    private ExecutorService executor;*
-    private final Map<Entity, CompletableFuture<Void>> runningPrograms = new HashMap<>();*
+
+    private ExecutorService executor;
+
+    private final Map<Entity, CompletableFuture<Void>> runningPrograms = new HashMap<>();
 
     /**
      * Standard constructor setting up the executor for the Futures.
      */
     public StandardProgramRunner() {
         this.executor = this.createExecutor();
-    }*
+    }
 
     /**
      * Create an executor that uses named threads for a better debugging experience,
@@ -53,9 +53,9 @@ public class StandardProgramRunner {
             worker.setDaemon(true);
             return worker;
         };
- *
+
         return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
-    }*
+    }
 
     /**
      * Run a program for the given entity inside a completable future.
@@ -79,7 +79,7 @@ public class StandardProgramRunner {
                 throw new IllegalStateException("Already running a program for entity " + entity.toString() + "!");
             }
         }
- *
+
         final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 program.run(entity);
@@ -94,10 +94,10 @@ public class StandardProgramRunner {
                 System.out.println("----------------------------------------------");
             }
         }, this.executor);
- *
+
         // set the running program in the entityMap
         this.runningPrograms.put(entity, future);
-    }*
+    }
 
     /**
      * Get the running program as a CompletableFuture.
@@ -108,7 +108,7 @@ public class StandardProgramRunner {
      */
     public CompletableFuture<Void> getRunningProgram(Entity entity) {
         return this.runningPrograms.get(entity);
-    }*
+    }
 
     /**
      * Stop all running programs.

@@ -9,9 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
-*
-
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 
 /**
@@ -20,9 +18,9 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
  * @author Tim Neumann
  */
 public abstract class EntityAction extends Action {
- *
+
     private final Entity entity;
- *
+
     /**
      * Create an entity action.
      *
@@ -35,7 +33,7 @@ public abstract class EntityAction extends Action {
         super(tickNumber);
         this.entity = entity;
     }
- *
+
     /**
      * @return the entity that caused this action.
      */

@@ -9,7 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-*
 /**
  * The interface for a game window of the ICGE.
  *
@@ -22,42 +21,42 @@ public interface GameWindow {
      * @return The texture registry used by this window.
      */
     TextureRegistry getTextureRegistry();
- *
+
     /**
      * Get the drawer responsible for drawing the playfield for this game window.
      *
      * @return The playfield drawer used by this window.
      */
     PlayfieldDrawer getPlayfieldDrawer();
- *
+
     /**
      * Get the toolbar for this game window.
      *
      * @return The toolbar used by this window.
      */
     Toolbar getToolbar();
- *
+
     /**
      * Get the entity sidebar for this game window
      *
      * @return The entity sidebar used by this window
      */
     EntitySidebar getEntitySidebar();
- *
+
     /**
      * Get the console for this game window
      *
      * @return The console used by this window
      */
     Console getConsole();
- *
+
     /**
      * Get the task status display for this game window.
      *
      * @return The task status display used by this window
      */
     TaskStatusDisplay getTaskStatusDisplay();
- *
+
     /**
      * Set the title of the window, in which the ICGE is displayed.
      *
@@ -65,17 +64,17 @@ public interface GameWindow {
      *     The title to use.
      */
     void setWindowTitle(String title);
- *
+
     /**
      * Start and show the game window.
      */
     void start();
- *
+
     /**
      * Stop and close the game window. This action is equivalent with pressing the "X"-button of the window.
      */
     void stop();
- *
+
     /**
      * Set the simulation proxy instance used by multiple UI components to inform the Simulation of user actions.
      *

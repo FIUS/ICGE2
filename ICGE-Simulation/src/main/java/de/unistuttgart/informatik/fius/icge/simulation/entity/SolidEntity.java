@@ -9,14 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
-*
 /**
  * A solid entity, through which a movable entity cannot move.
  *
  * @author Tim Neumann
  */
 public interface SolidEntity extends Entity {
- *
+
     /**
      * Get whether this entity is really solid at the moment.
      * <p>

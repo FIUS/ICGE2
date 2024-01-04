@@ -9,23 +9,23 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-*
-
 import java.awt.GraphicsEnvironment;
 import java.lang.reflect.InvocationTargetException;
-import java.awt.Font;*
+import java.awt.Font;
+
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.FontUIResource;*
+import javax.swing.plaf.FontUIResource;
+
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingGameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTaskStatusDisplay;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;**
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
 
 
 /**
@@ -36,21 +36,22 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;**
  * @author Tim Neumann
  */
 public class WindowBuilder {
-    *
-    private static boolean      isDefaultLookAndFeelUpdated = false;
-    private static double       dpiScale;
-    private static double  fontScale;*
-    private String              windowTitle                 = "";
+
+    private static boolean isDefaultLookAndFeelUpdated = false;
+    private static double  dpiScale;
+    private static double  fontScale;
+
+    private String              windowTitle = "";
     private boolean             useDoubleBuffering;
     private boolean             syncToScreen;
-    private volatile GameWindow window;*
+    private volatile GameWindow window;
 
     /**
      * Create a new WindowBuilder.
      */
     public WindowBuilder() {
         this(WindowBuilder.getDeviceDpiScale());
-    }*
+    }
 
     /**
      * Create a new WindowBuilder.
@@ -61,14 +62,14 @@ public class WindowBuilder {
     public WindowBuilder(double dpiScale) {
         if (dpiScale < 0.5) throw new IllegalArgumentException("A dpi scale < 0.5 is not supported!");
         if (dpiScale > 3.0) throw new IllegalArgumentException("A dpi scale > 3.0 is not supported!");
- *
+
         if (!WindowBuilder.isDefaultLookAndFeelUpdated) { // only once
             WindowBuilder.isDefaultLookAndFeelUpdated = true;
             WindowBuilder.dpiScale = dpiScale;
             WindowBuilder.fontScale = ((dpiScale - 1) * 0.75) + 1;
             this.setUiDefaults(dpiScale, WindowBuilder.fontScale);
         }
-    }*
+    }
 
     /**
      * Get the scaling factor from the default display device.
@@ -78,7 +79,7 @@ public class WindowBuilder {
     private static double getDeviceDpiScale() {
         return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getDefaultTransform()
                 .getScaleX();
-    }*
+    }
 
     /**
      * Set the UI Manager defaults forlook and feeel and dpi scaling.
@@ -109,7 +110,7 @@ public class WindowBuilder {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             System.err.println("Can't set look and feel because of: " + e.toString());
         }
-    }*
+    }
 
     /**
      * Set the title of the new window.
@@ -125,9 +126,9 @@ public class WindowBuilder {
     public void setTitle(final String title) {
         if (this.hasBuiltWindow())
             throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
- *
+
         this.windowTitle = title;
-    }*
+    }
 
     /**
      * Set the graphics settings of the playfield drawer.
@@ -146,10 +147,10 @@ public class WindowBuilder {
     public void setGraphicsSettings(final boolean useDoubleBuffering, final boolean syncToScreen) {
         if (this.hasBuiltWindow())
             throw new IllegalStateException("The window was already built! Use the methods of the Window Object to change its properties.");
- *
+
         this.useDoubleBuffering = useDoubleBuffering;
         this.syncToScreen = syncToScreen;
-    }*
+    }
 
     /**
      * Actually build the window.
@@ -167,7 +168,7 @@ public class WindowBuilder {
             // TODO better exception handling
             System.err.println("Can't build the window because of: " + e.toString());
         }
-    }*
+    }
 
     /**
      * Build the window.
@@ -181,15 +182,15 @@ public class WindowBuilder {
         final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, WindowBuilder.dpiScale);
         final SwingConsole console = new SwingConsole(WindowBuilder.fontScale);
         final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(WindowBuilder.fontScale);
- *
+
         playfieldDrawer.setDoubleBuffering(this.useDoubleBuffering);
         playfieldDrawer.setSyncToScreen(this.syncToScreen);
- *
+
         this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console, taskStatus);
         if (this.windowTitle != null) {
             this.window.setWindowTitle(this.windowTitle);
         }
-    }*
+    }
 
     /**
      * Get whether the window has been built.
@@ -198,7 +199,7 @@ public class WindowBuilder {
      */
     public boolean hasBuiltWindow() {
         return this.window != null;
-    }*
+    }
 
     /**
      * Get the window that was built.

@@ -9,10 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
-*
-
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 
 
 /**
@@ -36,7 +34,7 @@ public class EntityTeleportAction extends EntityMoveAction {
     public EntityTeleportAction(final long tickNumber, final Entity entity, final Position from, final Position to) {
         super(tickNumber, entity, from, to);
     }
- *
+
     @Override
     public String getDescription() {
         return this.getEntity() + " teleported from " + this.from() + " to " + this.to();

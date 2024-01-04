@@ -9,8 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.inspection;
 
-*
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;**
+import java.util.jar.JarFile;
 
 
 /**
@@ -31,7 +29,7 @@ import java.util.jar.JarFile;**
 public class ClassFinder {
     private ClassFinder() {
         //hide constructor
-    }*
+    }
 
     /**
      * Get all classes in the current context class loader, which match the filter.
@@ -45,9 +43,9 @@ public class ClassFinder {
     public static List<Class<?>> getClassesInClassLoader(final Predicate<Class<?>> filter) throws IOException {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final List<URL> urls = Collections.list(loader.getResources("de"));
- *
+
         final List<Class<?>> classes = new ArrayList<>();
- *
+
         for (final URL url : urls) {
             if (url.getProtocol().equals("jar")) {
                 ClassFinder.loadClassesFromJar(url, filter, classes);
@@ -55,9 +53,9 @@ public class ClassFinder {
                 ClassFinder.loadClassesFromFS(url, filter, classes, loader);
             }
         }
- *
+
         return classes;
-    }*
+    }
 
     private static void loadClassesFromJar(final URL url, final Predicate<Class<?>> filter, final List<Class<?>> classes)
             throws IOException {
@@ -84,7 +82,7 @@ public class ClassFinder {
         } catch (final URISyntaxException e2) {
             throw new IOException(e2);
         }
-    }*
+    }
 
     private static void loadClassesFromFS(
             final URL url, final Predicate<Class<?>> filter, final List<Class<?>> classes, final ClassLoader loader
@@ -95,7 +93,7 @@ public class ClassFinder {
         } catch (URISyntaxException | ClassNotFoundException e) {
             throw new IOException(e);
         }
-    }*
+    }
 
     private static void loadClassInFile(
             final File file, final List<Class<?>> classes, final ClassLoader loader, final String rootDir, final Predicate<Class<?>> filter
@@ -117,7 +115,7 @@ public class ClassFinder {
                 }
             }
         }
-    }*
+    }
 
     private static String convertPathToClassName(final String path, final String rootDir) {
         if (!path.startsWith(rootDir)) throw new IllegalStateException("File not starting with root dir!");
@@ -130,6 +128,6 @@ public class ClassFinder {
             relPath = relPath.replace(fileSep, ".");
         }
         return relPath;
- *
+
     }
 }

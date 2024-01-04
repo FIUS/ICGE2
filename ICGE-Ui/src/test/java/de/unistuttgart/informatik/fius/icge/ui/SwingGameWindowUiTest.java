@@ -9,21 +9,22 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-*
+import java.lang.reflect.InvocationTargetException;
 
-import java.lang.reflect.InvocationTargetException;*
-import javax.swing.SwingUtilities;*
+import javax.swing.SwingUtilities;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;*
+import org.junit.jupiter.api.Test;
+
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingConsole;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingEntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingGameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingPlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTaskStatusDisplay;
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;**
+import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;
 
 
 /**
@@ -32,8 +33,8 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.SwingToolbar;**
  * @author Tim Neumann
  */
 class SwingGameWindowUiTest {
-    *
-    private SwingGameWindow window;*
+
+    private SwingGameWindow window;
 
     /**
      * Setup the game window
@@ -50,10 +51,10 @@ class SwingGameWindowUiTest {
             final SwingEntitySidebar entitySidebar = new SwingEntitySidebar(textureRegistry, 1);
             final SwingConsole console = new SwingConsole(1);
             final SwingTaskStatusDisplay taskStatus = new SwingTaskStatusDisplay(1);
- *
+
             this.window = new SwingGameWindow(textureRegistry, playfieldDrawer, toolbar, entitySidebar, console, taskStatus);
         });
-    }*
+    }
 
     /**
      * Test {@link SwingGameWindow#start()}

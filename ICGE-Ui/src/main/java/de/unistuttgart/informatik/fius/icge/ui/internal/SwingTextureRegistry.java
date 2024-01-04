@@ -9,8 +9,6 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
-*
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +20,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;*
-import javax.imageio.ImageIO;*
+import java.util.function.Function;
+
+import javax.imageio.ImageIO;
+
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;**
+import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;
 
 
 /**
@@ -36,17 +36,17 @@ import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundExceptio
  * @version 1.0
  */
 public class SwingTextureRegistry implements TextureRegistry {
-    private final Map<String, String> resourceToHandle = new HashMap<>();
-    private final Map<String, String> pathToHandle     = new HashMap<>();
-    private final Set<String>         animatedTextures = new HashSet<>();
-    private final Map<String, Texture> handleToTexture  = new HashMap<>();*
+    private final Map<String, String>  resourceToHandle = new HashMap<>();
+    private final Map<String, String>  pathToHandle     = new HashMap<>();
+    private final Set<String>          animatedTextures = new HashSet<>();
+    private final Map<String, Texture> handleToTexture  = new HashMap<>();
 
     /**
      * Default constructor
      */
     public SwingTextureRegistry() {
         StaticUiTextures.load(this);
-    }*
+    }
 
     /**
      * Generate a new unique texture handle.
@@ -55,7 +55,7 @@ public class SwingTextureRegistry implements TextureRegistry {
      */
     private static String generateNewTextureHandle() {
         return UUID.randomUUID().toString();
-    }*
+    }
 
     /**
      * Load a texture from a local (ui module) resource.
@@ -67,7 +67,7 @@ public class SwingTextureRegistry implements TextureRegistry {
      */
     public String loadTextureFromResource(final String resourceName) {
         return this.loadTextureFromResource(resourceName, SwingTextureRegistry.class::getResourceAsStream);
-    }*
+    }
 
     @Override
     public String loadTextureFromResource(final String resourceName, final Function<String, InputStream> resourceProvider) {
@@ -81,7 +81,7 @@ public class SwingTextureRegistry implements TextureRegistry {
         } catch (IllegalArgumentException | IOException e) {
             throw new TextureNotFoundException("The requested Resource could not be loaded!", e);
         }
-    }*
+    }
 
     @Override
     public String loadTextureFromFile(final String filePath) {
@@ -98,18 +98,18 @@ public class SwingTextureRegistry implements TextureRegistry {
             throw new TextureNotFoundException("The requested path could not be loaded!", e);
         }
         return textureHandle;
-    }*
+    }
 
     @Override
     public String createAnimatedTexture(final boolean loop) {
         final String textureHandle = SwingTextureRegistry.generateNewTextureHandle();
- *
+
         final AnimatedTexture animTexture = new AnimatedTexture(this, loop);
         this.handleToTexture.put(textureHandle, animTexture);
         this.animatedTextures.add(textureHandle);
- *
+
         return textureHandle;
-    }*
+    }
 
     @Override
     public void addAnimationFrameToTexture(final String animatedTexture, final String frameTexture, final long frames) {
@@ -119,12 +119,12 @@ public class SwingTextureRegistry implements TextureRegistry {
         } catch (final ClassCastException e) {
             throw new IllegalArgumentException("Texture handle was not a handle for an animated texture!", e);
         }
-    }*
+    }
 
     @Override
     public boolean isTextureAnimated(final String textureHandle) {
         return this.animatedTextures.contains(textureHandle);
-    }*
+    }
 
     /**
      * Get the texture for the given texture handle.

@@ -9,15 +9,14 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
-*
+import java.util.List;
 
-import java.util.List;*
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityMoveAction;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityTeleportAction;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityAlreadyOnFieldExcpetion;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFieldException;
-import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnotherFieldException;**
+import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnotherFieldException;
 
 
 /**
@@ -26,19 +25,19 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnother
  * @author Tim Neumann
  */
 public interface Playfield {
- *
+
     /**
      * @return the simulation this playfield is part of
      */
     Simulation getSimulation();
- *
+
     /**
      * Get a list of all entities on this playfield.
      *
      * @return A list of all entities
      */
     List<Entity> getAllEntities();
- *
+
     /**
      * Get a list of all entities matching the given type on this playfield.
      *
@@ -53,7 +52,7 @@ public interface Playfield {
      *     if the given type is null
      */
     <T extends Entity> List<T> getAllEntitiesOfType(Class<? extends T> type, boolean includeSubclasses);
- *
+
     /**
      * Get a list of all entities at the given position on this playfield.
      *
@@ -64,7 +63,7 @@ public interface Playfield {
      *     if the given pos is null
      */
     List<Entity> getEntitiesAt(final Position pos);
- *
+
     /**
      * Get a list of all entities matching the given type at the given position on this playfield.
      *
@@ -81,7 +80,7 @@ public interface Playfield {
      *     if the given pos or type is null
      */
     <T extends Entity> List<T> getEntitiesOfTypeAt(final Position pos, Class<? extends T> type, boolean includeSubclasses);
- *
+
     /**
      * Add a given entity to this simulation at a given position on this playfield.
      *
@@ -98,7 +97,7 @@ public interface Playfield {
      *     if the given pos or entity is null
      */
     void addEntity(Position pos, Entity entity);
- *
+
     /**
      * Move a entity of this simulation to a given position on this playfield.
      * <p>
@@ -115,7 +114,7 @@ public interface Playfield {
      *     if the given pos or entity is null
      */
     void moveEntity(Entity entity, Position pos);
- *
+
     /**
      * Move a entity of this simulation to a given position on this playfield.
      *
@@ -133,7 +132,7 @@ public interface Playfield {
      *     if the given action match with the other arguments
      */
     void moveEntity(Entity entity, Position pos, EntityMoveAction action);
- *
+
     /**
      * Remove a entity of this simulation from this playfield.
      *
@@ -145,7 +144,7 @@ public interface Playfield {
      *     if the given entity is null
      */
     void removeEntity(Entity entity);
- *
+
     /**
      * Get the position of the specified entity on the playfield.
      *
@@ -158,7 +157,7 @@ public interface Playfield {
      *     if the given entity is null
      */
     Position getEntityPosition(Entity entity);
- *
+
     /**
      * Check whether the specified entity is on this playfield.
      *
@@ -169,7 +168,7 @@ public interface Playfield {
      *     if the given entity is null
      */
     boolean containsEntity(Entity entity);
- *
+
     /**
      * Check whether a solid entity is at the given position.
      *

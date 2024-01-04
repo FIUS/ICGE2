@@ -8,7 +8,7 @@
  * SPDX-License-Identifier:    MIT
  */
 package de.unistuttgart.informatik.fius.icge.ui;
- *
+
 /**
  * Enum describing the verification status of a task.
  */
