@@ -9,9 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
-import java.util.List;
+*
 
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import java.util.List;*
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
 
 
 /**
@@ -20,7 +21,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * @author Tim Neumann
  */
 public interface ActionLog {
-
+ *
     /**
      * Get all actions which were logged.
      * <p>
@@ -30,7 +31,7 @@ public interface ActionLog {
      * @return A list of all actions logged
      */
     List<Action> getAllActions();
-
+ *
     /**
      * Get all actions which were logged of the given type.
      *
@@ -43,7 +44,7 @@ public interface ActionLog {
      * @return A list of all matching actions
      */
     <T extends Action> List<T> getActionsOfType(final Class<? extends T> type, final boolean includeSubclasses);
-
+ *
     /**
      * Get all actions which were logged and were caused by the given entity.
      *
@@ -52,7 +53,7 @@ public interface ActionLog {
      * @return A list of all matching actions
      */
     List<EntityAction> getAllActionsOfEntity(Entity entity);
-
+ *
     /**
      * Get all actions which were logged of the given type and were caused by the given entity.
      *
@@ -69,7 +70,7 @@ public interface ActionLog {
     <T extends EntityAction> List<T> getActionsOfTypeOfEntity(
             Entity entity, final Class<? extends T> type, final boolean includeSubclasses
     );
-
+ *
     /**
      * Log an action.
      *
@@ -77,7 +78,7 @@ public interface ActionLog {
      *     The action to log
      */
     void logAction(Action actionToLog);
-
+ *
     /**
      * Set ActionLog console output (default: {@code true})
      *
@@ -85,7 +86,7 @@ public interface ActionLog {
      *     true: log to console, false: do not log to console
      */
     void setConsoleOutput(boolean enable);
-
+ *
     /**
      * Get ActionLog console output status.
      * <p>
@@ -93,5 +94,5 @@ public interface ActionLog {
      * logged but not printed to console.
      */
     boolean getConsoleOutput();
-
+ *
 }

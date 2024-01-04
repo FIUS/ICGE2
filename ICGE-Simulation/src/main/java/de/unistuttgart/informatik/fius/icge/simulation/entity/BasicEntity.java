@@ -9,9 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
-import java.lang.ref.WeakReference;
-import java.util.concurrent.CompletableFuture;
+*
 
+import java.lang.ref.WeakReference;
+import java.util.concurrent.CompletableFuture;*
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -19,7 +20,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityNotOnFiel
 import de.unistuttgart.informatik.fius.icge.simulation.exception.EntityOnAnotherFieldException;
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionAttribute;
 import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
-import de.unistuttgart.informatik.fius.icge.ui.Drawable;
+import de.unistuttgart.informatik.fius.icge.ui.Drawable;**
 
 
 /**
@@ -28,19 +29,19 @@ import de.unistuttgart.informatik.fius.icge.ui.Drawable;
  * @author Tim Neumann
  */
 public abstract class BasicEntity implements Entity {
-
+ *
     /** Lock object to make setting the Playfield threadsafe. */
     private Object                   fieldLock = new Object();
     /** The current (weak) reference to the playfield. */
     private WeakReference<Playfield> field;
-
+ *
     /**
      * Lock object to ensure no two long running operations ({@code >= 1} clock tick) are scheduled at the same time.
      */
     private Object                    operationQueueLock = new Object();
     /** The completable future representing the completion of the last enqueued operation. */
     protected CompletableFuture<Void> endOfLastEnqueuedOperation;
-
+ *
     /**
      * @throws EntityNotOnFieldException
      *     if this entity is not on a playfield
@@ -56,14 +57,14 @@ public abstract class BasicEntity implements Entity {
         if (playfield == null) throw new EntityNotOnFieldException("This entity is not on a playfield");
         return playfield.getEntityPosition(this);
     }
-
+ *
     /**
      * Get the texture handle, with which to get the texture for this entity.
      *
      * @return the texture handle for the texture of this entity
      */
     protected abstract String getTextureHandle();
-
+ *
     /**
      * Get the z position of this entity.
      * <p>
@@ -73,7 +74,7 @@ public abstract class BasicEntity implements Entity {
      * @return the z position of this entity.
      */
     protected abstract int getZPosition();
-
+ *
     /**
      * @throws EntityNotOnFieldException
      *     if this entity is not on a playfield
@@ -83,7 +84,7 @@ public abstract class BasicEntity implements Entity {
         final Position pos = this.getPosition();
         return new BasicDrawable(pos.getX(), pos.getY(), this.getZPosition(), this.getTextureHandle());
     }
-
+ *
     @Override
     public void initOnPlayfield(final Playfield playfield) {
         if (playfield == null) throw new IllegalArgumentException("The given playfield is null.");
@@ -92,7 +93,7 @@ public abstract class BasicEntity implements Entity {
             this.field = new WeakReference<>(playfield);
         }
     }
-
+ *
     /**
      * Check whether this entity is on a playfield
      *
@@ -114,7 +115,7 @@ public abstract class BasicEntity implements Entity {
             return true;
         }
     }
-
+ *
     /**
      * Get the playfield of this entity.
      *
@@ -128,7 +129,7 @@ public abstract class BasicEntity implements Entity {
             return this.field.get();
         }
     }
-
+ *
     /**
      * Get the simulation of this entity.
      *
@@ -143,7 +144,7 @@ public abstract class BasicEntity implements Entity {
             return this.getPlayfield().getSimulation();
         }
     }
-
+ *
     /**
      * Prevent this entity from performing any long running operation for {@code ticks} simulation ticks.
      * <p>
@@ -164,7 +165,7 @@ public abstract class BasicEntity implements Entity {
             endOfOperation.complete(null);
         }
     }
-
+ *
     /**
      * Wait for the last enqueued long running operation to finish before allowing the new Operation to perform.
      * <p>
@@ -204,10 +205,10 @@ public abstract class BasicEntity implements Entity {
             endOfLastEnqueuedOperation.join();
         }
     }
-
+ *
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(this.hashCode());
     }
-
+ *
 }

@@ -9,9 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
+*
+
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
 
 
 /**
@@ -20,10 +22,10 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * @author Tim Neumann
  */
 public class EntitySpawnAction extends EntityAction {
-
+ *
     private final Playfield playfield;
     private final Position  position;
-
+ *
     /**
      * Create an entity spawn action.
      *
@@ -41,21 +43,21 @@ public class EntitySpawnAction extends EntityAction {
         this.playfield = playfield;
         this.position = position;
     }
-
+ *
     /**
      * @return the playfield the entity was added to
      */
     public Playfield getPlayfield() {
         return this.playfield;
     }
-
+ *
     /**
      * @return the position the entity was added at
      */
     public Position getPosition() {
         return this.position;
     }
-
+ *
     @Override
     public String getDescription() {
         return this.getEntity() + " spawned in " + this.getPlayfield() + " at " + this.getPosition();

@@ -9,12 +9,14 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+*
+
 import de.unistuttgart.informatik.fius.icge.simulation.inspection.InspectionManager;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulation;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.StandardSimulationClock;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.actions.StandardActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.internal.entity.StandardEntityTypeRegistry;
-import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;
+import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.StandardPlayfield;**
 
 
 /**
@@ -23,10 +25,9 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.playfield.Standa
  * @author Tim Neumann
  */
 public class SimulationBuilder {
-
-    private TaskVerifier taskVerifier;
-
-    private Simulation simulation;
+    *
+    private TaskVerifier taskVerifier;*
+    private Simulation simulation;*
 
     /**
      * Set the task verifier to use with this simulation.
@@ -46,7 +47,7 @@ public class SimulationBuilder {
                 "The simulation was already built! Use the methods of the Simulation Object to change its properties."
         );
         this.taskVerifier = taskVerifier;
-    }
+    }*
 
     /**
      * Actually build the simulation.
@@ -60,17 +61,17 @@ public class SimulationBuilder {
             throw new IllegalStateException("The simulation was already built! Use getBuiltSimulation() to acess the built window.");
         final StandardPlayfield playfield = new StandardPlayfield();
         final StandardSimulationClock simulationClock = new StandardSimulationClock();
-
+ *
         final StandardEntityTypeRegistry entityTypeRegistry = new StandardEntityTypeRegistry();
-
+ *
         final StandardActionLog actionLog = new StandardActionLog();
-
+ *
         final InspectionManager inspectionManager = new InspectionManager();
-
+ *
         this.simulation = new StandardSimulation(
                 playfield, simulationClock, entityTypeRegistry, actionLog, inspectionManager, this.taskVerifier
         );
-    }
+    }*
 
     /**
      * Get whether the window has been built.
@@ -79,7 +80,7 @@ public class SimulationBuilder {
      */
     public boolean hasBuiltSimulation() {
         return this.simulation != null;
-    }
+    }*
 
     /**
      * Get the simulation that was built.
@@ -92,7 +93,7 @@ public class SimulationBuilder {
     public Simulation getBuiltSimulation() {
         if (!this.hasBuiltSimulation())
             throw new IllegalStateException("The simulation was not yet built! Use buildSimulation() to do that.");
-
+ *
         return this.simulation;
     }
 }

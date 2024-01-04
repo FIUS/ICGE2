@@ -9,6 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+*
+
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.programs.Program;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
@@ -25,7 +27,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.internal.programs.Standar
 import de.unistuttgart.informatik.fius.icge.simulation.internal.tasks.StandardTaskRunner;
 import de.unistuttgart.informatik.fius.icge.simulation.tasks.Task;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
-import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
+import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;**
 
 
 /**
@@ -34,16 +36,15 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
  * @author Tim Neumann
  */
 public class StandardSimulation implements Simulation {
-
+    *
     private final StandardPlayfield          playfield;
     private final StandardSimulationClock    simulationClock;
     private final StandardActionLog          actionLog;
     private final StandardEntityTypeRegistry entityTypeRegistry;
     private final TaskVerifier               taskVerifier;
-    private final StandardSimulationProxy    simulationProxy;
-
-    private StandardTaskRunner          runningTask;
-    private final StandardProgramRunner programRunner;
+    private final StandardSimulationProxy    simulationProxy;*
+    private StandardTaskRunner               runningTask;
+    private final StandardProgramRunner programRunner;*
 
     /**
      * Creates a new standard simulation with the given parameters.
@@ -71,59 +72,59 @@ public class StandardSimulation implements Simulation {
         this.actionLog = actionLog;
         this.entityTypeRegistry = entityTypeRegistry;
         this.taskVerifier = taskVerifier;
-
+ *
         this.programRunner = new StandardProgramRunner();
-
+ *
         this.playfield.initialize(this);
-
+ *
         if (taskVerifier != null) {
             taskVerifier.attachToSimulation(this);
         }
-
+ *
         this.simulationProxy = new StandardSimulationProxy(
                 this, simulationClock, inspectionManager, entityTypeRegistry, playfield, taskVerifier
         );
-    }
+    }*
 
     @Override
     public Playfield getPlayfield() {
         return this.playfield;
-    }
+    }*
 
     @Override
     public TaskVerifier getTaskVerifier() {
         return this.taskVerifier;
-    }
+    }*
 
     @Override
     public SimulationClock getSimulationClock() {
         return this.simulationClock;
-    }
+    }*
 
     @Override
     public ActionLog getActionLog() {
         return this.actionLog;
-    }
+    }*
 
     @Override
     public EntityTypeRegistry getEntityTypeRegistry() {
         return this.entityTypeRegistry;
-    }
+    }*
 
     @Override
     public SimulationProxy getSimulationProxyForWindow() {
         return this.simulationProxy;
-    }
+    }*
 
     @Override
     public void attachToWindow(final GameWindow window) {
         this.attachToWindow(window, false);
-    }
+    }*
 
     @Override
     public void attachToWindow(final GameWindow window, final boolean stopWithWindowClose) {
         this.getSimulationProxyForWindow().attachToGameWindow(window, stopWithWindowClose);
-    }
+    }*
 
     @Override
     public void stop() {
@@ -133,7 +134,7 @@ public class StandardSimulation implements Simulation {
         }
         this.programRunner.stopAll();
         this.simulationClock.shutdown(); // stop the clock for good
-    }
+    }*
 
     @Override
     public void runTask(final Task taskToRun) {
@@ -142,7 +143,7 @@ public class StandardSimulation implements Simulation {
         }
         this.runningTask = new StandardTaskRunner(taskToRun, this);
         this.runningTask.runTask();
-    }
+    }*
 
     @Override
     public <E extends Entity, S extends E> void runProgram(Program<E> program, S entity) {

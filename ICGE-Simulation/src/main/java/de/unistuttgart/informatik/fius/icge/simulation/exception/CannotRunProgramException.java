@@ -9,25 +9,26 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
+*
 /**
  * This exception indicates that an entity program cannot be run.
  *
  * @author Tim Neumann
  */
 public class CannotRunProgramException extends IllegalArgumentException {
-
+ *
     /**
      * generated
      */
     private static final long serialVersionUID = -5283363131395011240L;
-
+ *
     /**
      * Constructs an <code>CannotRunProgramException</code> with no detail message.
      */
     public CannotRunProgramException() {
         super();
     }
-
+ *
     /**
      * Constructs an <code>CannotRunProgramException</code> with the specified detail message.
      *
@@ -37,7 +38,7 @@ public class CannotRunProgramException extends IllegalArgumentException {
     public CannotRunProgramException(final String s) {
         super(s);
     }
-
+ *
     /**
      * Constructs a new exception with the specified detail message and cause.
      *
@@ -55,7 +56,7 @@ public class CannotRunProgramException extends IllegalArgumentException {
     public CannotRunProgramException(final String message, final Throwable cause) {
         super(message, cause);
     }
-
+ *
     /**
      * Constructs a new exception with the specified cause and a detail message of
      * {@code (cause==null ? null : cause.toString())} (which typically contains the class and detail message of

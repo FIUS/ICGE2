@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
+*
 /**
  * This exception indicates that an action was illegal, because the subject entity is not the the relevant playfield.
  *
@@ -19,7 +20,7 @@ public class EntityNotOnFieldException extends SimulationExcpetion {
      * generated
      */
     private static final long serialVersionUID = -8786124964224174226L;
-
+ *
     /**
      * Constructs a new EntityAlreadyOnFieldExcpetion with {@code null} as its detail message. The cause is not
      * initialized, and may subsequently be initialized by a call to {@link #initCause}.
@@ -27,7 +28,7 @@ public class EntityNotOnFieldException extends SimulationExcpetion {
     public EntityNotOnFieldException() {
         super();
     }
-
+ *
     /**
      * Constructs a new EntityAlreadyOnFieldExcpetion with the specified detail message. The cause is not initialized,
      * and may subsequently be initialized by a call to {@link #initCause}.
@@ -38,7 +39,7 @@ public class EntityNotOnFieldException extends SimulationExcpetion {
     public EntityNotOnFieldException(final String message) {
         super(message);
     }
-
+ *
     /**
      * Constructs a new EntityAlreadyOnFieldExcpetion with the specified detail message and cause.
      *

@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation;
 
+*
 /**
  * The four fundamental directions possible in the simulation.
  * <p>
@@ -37,7 +38,7 @@ public enum Direction {
     SOUTH,
     /** The west direction; at the left of the screen ({@link Position#getX()} getting smaller) */
     WEST;
-
+ *
     /**
      * Get the direction that is next in a clock wise rotation
      *

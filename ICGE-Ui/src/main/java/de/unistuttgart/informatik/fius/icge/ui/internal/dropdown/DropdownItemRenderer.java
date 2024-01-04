@@ -9,21 +9,21 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal.dropdown;
 
+*
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-
+import java.awt.Insets;*
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
-
+import javax.swing.SwingConstants;*
 import de.unistuttgart.informatik.fius.icge.ui.internal.SwingTextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector.DropdownEntry;
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector.DropdownEntry;**
 
 
 /**
@@ -33,12 +33,10 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelecto
  * @version 1.0
  */
 class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSelector.DropdownEntry> {
-    private static final long serialVersionUID = 2930839533138981414L;
-
+    private static final long serialVersionUID = 2930839533138981414L;*
     /** The texture registry */
-    private final SwingTextureRegistry textureRegistry;
-
-    private final JLabel labelItem;
+    private final SwingTextureRegistry textureRegistry;*
+    private final JLabel labelItem;*
 
     /**
      * Constructor for the DropdownItemRenderer
@@ -50,20 +48,20 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
      */
     public DropdownItemRenderer(final SwingTextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
-
+ *
         this.labelItem = new JLabel();
         this.setLayout(new GridBagLayout());
         final GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
         constraints.insets = new Insets(2, 2, 2, 2);
-
+ *
         this.labelItem.setOpaque(true);
         this.labelItem.setHorizontalAlignment(SwingConstants.LEFT);
-
+ *
         this.add(this.labelItem, constraints);
         this.setBackground(Color.LIGHT_GRAY);
-    }
+    }*
 
     @Override
     public Component getListCellRendererComponent(
@@ -74,12 +72,12 @@ class DropdownItemRenderer extends JPanel implements ListCellRenderer<DropdownSe
             this.labelItem.setText("∅");
         } else {
             this.labelItem.setText(value.displayName);
-
+ *
             if (!value.textureID.equals("")) {
                 this.labelItem.setIcon(new ImageIcon(this.textureRegistry.getTextureForHandle(value.textureID).getTexture()));
             }
         }
-
+ *
         return this;
     }
 }

@@ -9,14 +9,16 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
 
-import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;
+*
+
+import de.unistuttgart.informatik.fius.icge.ui.BasicDrawable;**
 
 
 /**
  * Same as {@link BasicDrawable} but won't tile.
  */
 public class UntilableDrawable extends BasicDrawable {
-
+ *
     /**
      * Create a new untilable Drawable.
      *
@@ -28,7 +30,7 @@ public class UntilableDrawable extends BasicDrawable {
     public UntilableDrawable(final double x, final double y, final int z, final String textureHandle) {
         super(x, y, z, textureHandle);
     }
-
+ *
     @Override
     public boolean isTilable() {
         return false;

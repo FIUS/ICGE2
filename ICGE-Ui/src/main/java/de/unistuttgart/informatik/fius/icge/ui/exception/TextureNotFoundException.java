@@ -9,16 +9,17 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.exception;
 
+*
 /**
  * Exception thrown when a texture file or resource could not be found.
  */
 public class TextureNotFoundException extends RuntimeException {
-
+ *
     /**
      * generated
      */
     private static final long serialVersionUID = -6554875504029045378L;
-
+ *
     /**
      * Construct a new {@code TextureNotFoundException} with the given message.
      *
@@ -28,7 +29,7 @@ public class TextureNotFoundException extends RuntimeException {
     public TextureNotFoundException(final String message) {
         super(message);
     }
-
+ *
     /**
      * Construct a new {@code TextureNotFoundException} with the given message.
      *

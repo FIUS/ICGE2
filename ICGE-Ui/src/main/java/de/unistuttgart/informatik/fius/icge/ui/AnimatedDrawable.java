@@ -9,28 +9,29 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+*
 /**
  * A class containing all information needed to draw a moving object onto the playfield by a {@link PlayfieldDrawer}.
  *
  * @author Fabian Bühler
  */
 public class AnimatedDrawable implements Drawable {
-
+ *
     private final double xStart;
     private final double yStart;
     private final double xEnd;
     private final double yEnd;
-
+ *
     private final int z;
-
+ *
     private final String textureHandle;
-
+ *
     private final long tickStart;
     private final long tickEnd;
     private final long duration;
-
+ *
     private long currentTick = 0;
-
+ *
     /**
      * Create a new animated Drawable.
      *
@@ -66,12 +67,12 @@ public class AnimatedDrawable implements Drawable {
         this.z = z;
         this.textureHandle = textureHandle;
     }
-
+ *
     @Override
     public void setCurrentTick(final long renderTick) {
         this.currentTick = renderTick;
     }
-
+ *
     @Override
     public double getX() {
         if (this.currentTick <= this.tickStart) return this.xStart;
@@ -79,7 +80,7 @@ public class AnimatedDrawable implements Drawable {
         final double completion = (this.currentTick - this.tickStart) / (double) this.duration;
         return ((this.xEnd - this.xStart) * completion) + this.xStart;
     }
-
+ *
     @Override
     public double getY() {
         if (this.currentTick <= this.tickStart) return this.yStart;
@@ -87,27 +88,27 @@ public class AnimatedDrawable implements Drawable {
         final double completion = (this.currentTick - this.tickStart) / (double) this.duration;
         return ((this.yEnd - this.yStart) * completion) + this.yStart;
     }
-
+ *
     @Override
     public int getZ() {
         return this.z;
     }
-
+ *
     @Override
     public String getTextureHandle() {
         return this.textureHandle;
     }
-
+ *
     @Override
     public boolean isTilable() {
         return false;
     }
-
+ *
     @Override
     public boolean isAnimated() {
         return this.currentTick <= this.tickEnd;
     }
-
+ *
     /**
      * Get's {@link #xStart xStart}
      *
@@ -116,7 +117,7 @@ public class AnimatedDrawable implements Drawable {
     public double getxStart() {
         return this.xStart;
     }
-
+ *
     /**
      * Get's {@link #yStart yStart}
      *
@@ -125,7 +126,7 @@ public class AnimatedDrawable implements Drawable {
     public double getyStart() {
         return this.yStart;
     }
-
+ *
     /**
      * Get's {@link #xEnd xEnd}
      *
@@ -134,7 +135,7 @@ public class AnimatedDrawable implements Drawable {
     public double getxEnd() {
         return this.xEnd;
     }
-
+ *
     /**
      * Get's {@link #yEnd yEnd}
      *
@@ -143,7 +144,7 @@ public class AnimatedDrawable implements Drawable {
     public double getyEnd() {
         return this.yEnd;
     }
-
+ *
     /**
      * Get's {@link #tickStart tickStart}
      *
@@ -152,7 +153,7 @@ public class AnimatedDrawable implements Drawable {
     public long getTickStart() {
         return this.tickStart;
     }
-
+ *
     /**
      * Get's {@link #tickEnd tickEnd}
      *
@@ -161,7 +162,7 @@ public class AnimatedDrawable implements Drawable {
     public long getTickEnd() {
         return this.tickEnd;
     }
-
+ *
     /**
      * Get's {@link #duration duration}
      *

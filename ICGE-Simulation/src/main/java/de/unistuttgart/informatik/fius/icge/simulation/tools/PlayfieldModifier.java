@@ -9,11 +9,12 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.tools;
 
-import java.util.function.Supplier;
+*
 
+import java.util.function.Supplier;*
 import de.unistuttgart.informatik.fius.icge.simulation.Playfield;
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
 
 
 /**
@@ -23,7 +24,7 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  */
 public class PlayfieldModifier {
     private final Playfield playfield;
-
+ *
     /**
      * Create a new playfield modifier for the given playfield.
      *
@@ -33,7 +34,7 @@ public class PlayfieldModifier {
     public PlayfieldModifier(final Playfield playfield) {
         this.playfield = playfield;
     }
-
+ *
     /**
      * Place the given entity at the given position on the playfield.
      *
@@ -45,7 +46,7 @@ public class PlayfieldModifier {
     public void placeEntityAt(final Entity entity, final Position position) {
         this.playfield.addEntity(position, entity);
     }
-
+ *
     /**
      * Place the given number of entities supplied by the given factory at the given location.
      *
@@ -61,7 +62,7 @@ public class PlayfieldModifier {
             placeEntityAt(entityFactory.get(), position);
         }
     }
-
+ *
     /**
      * Place an entity supplied by the given factory at each of the given positions
      *

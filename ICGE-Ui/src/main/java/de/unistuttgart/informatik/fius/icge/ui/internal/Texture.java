@@ -9,8 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+*
+
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.Image;**
 
 
 /**
@@ -19,7 +21,7 @@ import java.awt.Image;
  * @author Fabian Bühler
  */
 public interface Texture {
-
+ *
     /**
      * Get the texture image.
      *
@@ -28,7 +30,7 @@ public interface Texture {
     default Image getTexture() {
         return this.getTexture(0);
     }
-
+ *
     /**
      * Get the texture image.
      *
@@ -37,7 +39,7 @@ public interface Texture {
      * @return the image
      */
     Image getTexture(long frame);
-
+ *
     /**
      * Draw the texture onto the screen.
      * <p>
@@ -57,7 +59,7 @@ public interface Texture {
     default void drawTexture(final long frame, final Graphics g, final int x, final int y, final int size) {
         this.drawTexture(frame, g, x, y, size, size);
     }
-
+ *
     /**
      * Draw the texture onto the screen.
      * <p>

@@ -9,7 +9,9 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector;
+*
+
+import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelector;**
 
 
 /**
@@ -20,7 +22,7 @@ import de.unistuttgart.informatik.fius.icge.ui.internal.dropdown.DropdownSelecto
  * @version 1.0
  */
 public interface Toolbar {
-
+ *
     /**
      * The clock button state represents the states of the clock buttons in the ui
      */
@@ -32,7 +34,7 @@ public interface Toolbar {
         /** Indicates an error or unavailable clock or simulation */
         BLOCKED
     }
-
+ *
     /**
      * The control button state represents the status of the control buttons in the ui
      */
@@ -46,7 +48,7 @@ public interface Toolbar {
         /** Indicates that the user input is blocked or unavailable */
         BLOCKED
     }
-
+ *
     /**
      * Append the list of entities with the given entry
      *
@@ -57,7 +59,7 @@ public interface Toolbar {
      * @see DropdownSelector
      */
     void addEntity(String displayName, String textureID);
-
+ *
     /**
      * Set the state of the control buttons.
      *
@@ -65,7 +67,7 @@ public interface Toolbar {
      *     The new state
      */
     void setControlButtonState(ControlButtonState controlButtonState);
-
+ *
     /**
      * Set the state of the clock buttons.
      *
@@ -73,14 +75,14 @@ public interface Toolbar {
      *     The new state
      */
     void setClockButtonState(ClockButtonState clockButtonState);
-
+ *
     /**
      * Get the current position of the speed slider.
      *
      * @return The position from 0 to 10 (both inclusive)
      */
     int getSpeedSliderPosition();
-
+ *
     /**
      * Set the position of the speed slider.
      *
@@ -88,14 +90,14 @@ public interface Toolbar {
      *     The new position; can be from 0 to 10 (both inclusive)
      */
     void setSpeedSliderPosition(int position);
-
+ *
     /**
      * Get the entity currently selected in the entity selection dropdown.
      *
      * @return The name of the currently selected entity
      */
     String getCurrentlySelectedEntity();
-
+ *
     /**
      * Set the entity selected in the entity selection dropdown.
      *
@@ -103,12 +105,12 @@ public interface Toolbar {
      *     The name of the entity to select
      */
     void setCurrentlySelectedEntity(String entity);
-
+ *
     /**
      * Enable the entity selector
      */
     void enableEntitySelector();
-
+ *
     /**
      * Disable the entity selector
      */

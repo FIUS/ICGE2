@@ -9,18 +9,19 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
+*
 /**
  * This exception indicates that an action is illegal, because the subject entity is already on another playfield.
  *
  * @author Tim Neumann
  */
 public class EntityOnAnotherFieldException extends SimulationExcpetion {
-
+ *
     /**
      * generated
      */
     private static final long serialVersionUID = -2894368466373991151L;
-
+ *
     /**
      * Constructs a new EntityOnAnotherFieldException with {@code null} as its detail message. The cause is not
      * initialized, and may subsequently be initialized by a call to {@link #initCause}.
@@ -28,7 +29,7 @@ public class EntityOnAnotherFieldException extends SimulationExcpetion {
     public EntityOnAnotherFieldException() {
         super();
     }
-
+ *
     /**
      * Constructs a new EntityOnAnotherFieldException with the specified detail message. The cause is not initialized,
      * and may subsequently be initialized by a call to {@link #initCause}.
@@ -39,7 +40,7 @@ public class EntityOnAnotherFieldException extends SimulationExcpetion {
     public EntityOnAnotherFieldException(final String message) {
         super(message);
     }
-
+ *
     /**
      * Constructs a new EntityOnAnotherFieldException with the specified detail message and cause.
      *

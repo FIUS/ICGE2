@@ -9,9 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+*
+
 import java.awt.Graphics;
 import java.awt.Image;
-import java.util.ArrayList;
+import java.util.ArrayList;**
 
 
 /**
@@ -20,11 +22,11 @@ import java.util.ArrayList;
  * @author Fabian Bühler
  */
 public class AnimatedTexture implements Texture {
-
+    *
     private final SwingTextureRegistry      registry;
     private final ArrayList<AnimationFrame> animationFrames;
     private long                            duration;
-    private final boolean                   loop;
+    private final boolean                   loop;*
 
     /**
      * Create a new animated Texture.
@@ -39,7 +41,7 @@ public class AnimatedTexture implements Texture {
         this.animationFrames = new ArrayList<>();
         this.duration = 0;
         this.loop = loop;
-    }
+    }*
 
     /**
      * Add a texture at the end of the animation.
@@ -56,7 +58,7 @@ public class AnimatedTexture implements Texture {
         this.duration += frames;
         final AnimationFrame frame = new AnimationFrame(last, last + (frames - 1), texture);
         this.animationFrames.add(frame);
-    }
+    }*
 
     /**
      * Get the texture for the current frame.
@@ -67,7 +69,7 @@ public class AnimatedTexture implements Texture {
      */
     public Texture getTextureForTick(final long frame) {
         return this.getTextureForTick(frame, 0);
-    }
+    }*
 
     /**
      * Get the texture for the current frame.
@@ -80,7 +82,7 @@ public class AnimatedTexture implements Texture {
      */
     private Texture getTextureForTick(final long frame, final long animationStart) {
         if (this.duration == 0) throw new IllegalStateException("AnimatedTexture is empty!");
-
+ *
         long animationFrame = frame - animationStart;
         if (this.loop) {
             animationFrame = animationFrame % this.duration;
@@ -97,23 +99,23 @@ public class AnimatedTexture implements Texture {
             if ((animFrame.startFrame <= animationFrame) && (animFrame.endFrame >= animationFrame)) return animFrame.texture;
         }
         throw new IllegalStateException("This can only happen if the start and end frames of the animation frames were set wrong!");
-    }
+    }*
 
     @Override
     public Image getTexture(final long frame) {
         return this.getTextureForTick(frame).getTexture();
-    }
+    }*
 
     @Override
     public void drawTexture(final long frame, final Graphics g, final int x, final int y, final int width, final int height) {
         this.getTextureForTick(frame).drawTexture(frame, g, x, y, width, height);
-    }
+    }*
 
     private class AnimationFrame {
         private final long    startFrame;
         private final long    endFrame;
         private final Texture texture;
-
+ *
         private AnimationFrame(final long startFrame, final long endFrame, final Texture texture) {
             this.startFrame = startFrame;
             this.endFrame = endFrame;

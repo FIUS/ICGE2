@@ -8,10 +8,10 @@
  * SPDX-License-Identifier:    MIT
  */
 package de.unistuttgart.informatik.fius.icge.simulation.tasks;
-
+ *
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
-
-
+ *
+ *
 /**
  * The interface for a task to be solved by students.
  *

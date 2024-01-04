@@ -9,12 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+*
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
+import java.awt.event.WindowEvent;*
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,8 +25,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-
+import javax.swing.WindowConstants;*
 import de.unistuttgart.informatik.fius.icge.ui.Console;
 import de.unistuttgart.informatik.fius.icge.ui.EntitySidebar;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
@@ -33,7 +33,7 @@ import de.unistuttgart.informatik.fius.icge.ui.PlayfieldDrawer;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.TaskStatusDisplay;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
+import de.unistuttgart.informatik.fius.icge.ui.Toolbar;**
 
 
 /**
@@ -44,16 +44,14 @@ import de.unistuttgart.informatik.fius.icge.ui.Toolbar;
  * @version 1.0
  */
 public class SwingGameWindow extends JFrame implements GameWindow {
-    private static final long serialVersionUID = -7215617949088643819L;
-
+    private static final long serialVersionUID = -7215617949088643819L;*
     private final SwingTextureRegistry   textureRegistry;
     private final SwingPlayfieldDrawer   playfieldDrawer;
     private final SwingToolbar           toolbar;
     private final SwingEntitySidebar     entitySidebar;
     private final SwingConsole           console;
-    private final SwingTaskStatusDisplay taskStatus;
-
-    private SimulationProxy simulationProxy;
+    private final SwingTaskStatusDisplay taskStatus;*
+    private SimulationProxy simulationProxy;*
 
     /**
      * Create a new Swing game window using the given submodules.
@@ -82,7 +80,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         this.console = console;
         this.taskStatus = taskStatus;
         SwingUtilities.invokeLater(this::initGameWindow);
-    }
+    }*
 
     @Override
     public void setSimulationProxy(final SimulationProxy simulationProxy) {
@@ -92,55 +90,55 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         this.toolbar.setSimulationProxy(simulationProxy);
         this.entitySidebar.setSimulationProxy(simulationProxy);
         this.taskStatus.setSimulationProxy(simulationProxy);
-    }
+    }*
 
     @Override
     public TextureRegistry getTextureRegistry() {
         return this.textureRegistry;
-    }
+    }*
 
     @Override
     public PlayfieldDrawer getPlayfieldDrawer() {
         return this.playfieldDrawer;
-    }
+    }*
 
     @Override
     public Toolbar getToolbar() {
         return this.toolbar;
-    }
+    }*
 
     @Override
     public EntitySidebar getEntitySidebar() {
         return this.entitySidebar;
-    }
+    }*
 
     @Override
     public Console getConsole() {
         return this.console;
-    }
+    }*
 
     @Override
     public TaskStatusDisplay getTaskStatusDisplay() {
         return this.taskStatus;
-    }
+    }*
 
     @Override
     public void setWindowTitle(final String title) {
         // UI operations must happen in swing thread!
         SwingUtilities.invokeLater(() -> this.setTitle(title));
-    }
+    }*
 
     @Override
     public void start() {
         // Asynchronously set visible to true
         SwingUtilities.invokeLater(() -> this.setVisible(true));
-    }
+    }*
 
     @Override
     public void stop() {
         // programmatically close the window
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-    }
+    }*
 
     /**
      * Initialize window listeners and layout all child components.
@@ -150,7 +148,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
     @SuppressWarnings("unused") // Suppress unused warnings on 'ClassCastException e'
     private void initGameWindow() {
         // init jFrame
-
+ *
         //
         // setup window closing
         //
@@ -161,9 +159,9 @@ public class SwingGameWindow extends JFrame implements GameWindow {
                 SwingGameWindow.this.cleanup(); // stop simulation etc.
             }
         });
-
+ *
         this.playfieldDrawer.initialize();
-
+ *
         //
         // convert toolbar
         //
@@ -173,7 +171,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         } catch (ClassCastException | NullPointerException e) {
             toolbarComponent = new JLabel("Toolbar not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
-
+ *
         //
         // convert sidebar
         //
@@ -183,7 +181,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         } catch (ClassCastException | NullPointerException e) {
             sidebarComponent = new JLabel(UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
-
+ *
         //
         // convert console
         //
@@ -193,7 +191,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         } catch (NullPointerException e) {
             consoleComponent = new JLabel("Console not valid!", UIManager.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
         }
-
+ *
         //
         // setup bottom pane layout
         //
@@ -201,7 +199,7 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         bottomPane.addTab("Console", new JScrollPane(consoleComponent));
         bottomPane.addTab("Task Status", this.taskStatus);
         bottomPane.setPreferredSize(new Dimension(400, 200));
-
+ *
         //
         // setup JFrame layout
         //
@@ -212,12 +210,12 @@ public class SwingGameWindow extends JFrame implements GameWindow {
         final JSplitPane jsp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, sidebarComponent);
         jsp2.setOneTouchExpandable(true);
         this.getContentPane().add(BorderLayout.CENTER, jsp2);
-
+ *
         //
         // finalize jFrame
         //
         this.pack();
-    }
+    }*
 
     /**
      * Clean up all resources used by this window and tell the simulation that the window is now closed.

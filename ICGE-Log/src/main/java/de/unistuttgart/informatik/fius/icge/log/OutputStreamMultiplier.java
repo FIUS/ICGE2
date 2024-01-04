@@ -9,9 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.log;
 
+*
+
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.ArrayList;**
 
 
 /**
@@ -21,15 +23,15 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class OutputStreamMultiplier extends OutputStream {
-
-    private final ArrayList<OutputStream> listenerStreams;
+    *
+    private final ArrayList<OutputStream> listenerStreams;*
 
     /**
      * Default Constructor
      */
     public OutputStreamMultiplier() {
         this.listenerStreams = new ArrayList<>();
-    }
+    }*
 
     /**
      * Add a output stream to also recieve everything this stream recieves
@@ -40,7 +42,7 @@ public class OutputStreamMultiplier extends OutputStream {
      */
     public boolean addOutputStream(final OutputStream listenerStream) {
         return this.listenerStreams.add(listenerStream);
-    }
+    }*
 
     /**
      * Remove a output stream from recieving everything this stream recieves
@@ -51,30 +53,30 @@ public class OutputStreamMultiplier extends OutputStream {
      */
     public boolean removeOutputStream(final OutputStream listenerStream) {
         return this.listenerStreams.remove(listenerStream);
-    }
+    }*
 
     /**
      * Clears all connected output streams
      */
     public void clearOutputStreams() {
         this.listenerStreams.clear();
-    }
+    }*
 
     @Override
     public void flush() throws IOException {
         super.flush();
-
+ *
         for (final OutputStream listenerStream : this.listenerStreams) {
             listenerStream.flush();
         }
-    }
+    }*
 
     @Override
     public void write(final int arg0) throws IOException {
         for (final OutputStream listenerStream : this.listenerStreams) {
             listenerStream.write(arg0);
         }
-    }
+    }*
 
     @Override
     public void close() throws IOException {

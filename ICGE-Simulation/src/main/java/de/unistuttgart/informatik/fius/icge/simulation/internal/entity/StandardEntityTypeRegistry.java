@@ -9,16 +9,17 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.entity;
 
+*
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
-
+import java.util.function.Supplier;*
 import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.EntityTypeRegistry;
 import de.unistuttgart.informatik.fius.icge.simulation.exception.ElementExistsException;
-import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
+import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;**
 
 
 /**
@@ -27,11 +28,10 @@ import de.unistuttgart.informatik.fius.icge.ui.exception.ListenerSetException;
  * @author Fabian Bühler
  */
 public class StandardEntityTypeRegistry implements EntityTypeRegistry {
-
+    *
     private final Map<String, Supplier<? extends Entity>> typeToEntityFactory = new HashMap<>();
-    private final Map<String, String>                     typeToTextureHandle = new HashMap<>();
-
-    private EntityRegisteredListener entityRegisteredListener;
+    private final Map<String, String>                     typeToTextureHandle = new HashMap<>();*
+    private EntityRegisteredListener entityRegisteredListener;*
 
     @Override
     public void registerEntityType(final String typeName, final String textureHandle, final Class<? extends Entity> entityType) {
@@ -49,7 +49,7 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
             }
         };
         this.registerEntityType(typeName, textureHandle, entityFactory);
-    }
+    }*
 
     @Override
     public synchronized void registerEntityType(
@@ -63,22 +63,22 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
         if (this.typeToEntityFactory.containsKey(typeName)) throw new ElementExistsException();
         this.typeToEntityFactory.put(typeName, entityFactory);
         this.typeToTextureHandle.put(typeName, textureHandle);
-
+ *
         if (this.entityRegisteredListener != null) {
             this.entityRegisteredListener.entityWasRegistered(typeName, textureHandle);
         }
-    }
+    }*
 
     @Override
     public Set<String> getRegisteredEntityTypes() {
         return this.typeToEntityFactory.keySet();
-    }
+    }*
 
     @Override
     public String getTextureHandleOfEntityType(final String typeName) {
         if ((typeName == null) || typeName.equals("")) throw new IllegalArgumentException("Type name cannot be null or empty!");
         return this.typeToTextureHandle.get(typeName);
-    }
+    }*
 
     @Override
     public Entity getNewEntity(final String typeName) {
@@ -86,7 +86,7 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
         final Supplier<? extends Entity> entityFactory = this.typeToEntityFactory.get(typeName);
         if (entityFactory == null) return null;
         return entityFactory.get();
-    }
+    }*
 
     /**
      * Set an entity selector listener that gets informed about all entity types added.
@@ -105,14 +105,14 @@ public class StandardEntityTypeRegistry implements EntityTypeRegistry {
             }
             this.entityRegisteredListener = listener;
         } else throw new ListenerSetException();
-    }
+    }*
 
     /**
      * Remove the set entity selector listener that gets informed about all entity types added.
      */
     public synchronized void removeEntityRegisteredListener() {
         this.entityRegisteredListener = null;
-    }
+    }*
 
     /**
      * The interface for when an entity is registered

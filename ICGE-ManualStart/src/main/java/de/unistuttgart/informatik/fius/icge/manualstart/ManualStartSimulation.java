@@ -9,11 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.manualstart;
 
+*
+
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.SimulationBuilder;
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
 import de.unistuttgart.informatik.fius.icge.ui.TextureRegistry;
-import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;
+import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;**
 
 
 /**
@@ -22,10 +24,10 @@ import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;
  * @author Tim Neumann
  */
 public class ManualStartSimulation {
-
+    *
     private static String textureHandleWall;
     private static String textureHandleCoin;
-    private static String animated;
+    private static String animated;*
 
     /**
      * @param args
@@ -38,20 +40,20 @@ public class ManualStartSimulation {
         // wb.setDpiScale(1.0);
         wb.buildWindow();
         final GameWindow w = wb.getBuiltWindow();
-
+ *
         ManualStartSimulation.prepareTextures(w.getTextureRegistry());
         TestEntity.TEXTURE_HANDLE = ManualStartSimulation.animated;
         Coin.TEXTURE_HANDLE = textureHandleCoin;
-
+ *
         final SimulationBuilder sb = new SimulationBuilder();
         sb.setTaskVerifier(new TestTaskVerifier());
         sb.buildSimulation();
         final Simulation sim = sb.getBuiltSimulation();
-
+ *
         w.start();
         sim.attachToWindow(w, true);
         sim.runTask(new TestTask());
-    }
+    }*
 
     private static void prepareTextures(final TextureRegistry tr) {
         ManualStartSimulation.textureHandleWall = tr

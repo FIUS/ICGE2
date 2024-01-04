@@ -9,18 +9,19 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
+*
 /**
  * The parent of all exceptions thrown by the simulation.
  *
  * @author Tim Neumann
  */
 public class SimulationExcpetion extends RuntimeException {
-
+ *
     /**
      * generated
      */
     private static final long serialVersionUID = 8969492057602725022L;
-
+ *
     /**
      * Constructs a new SimulationExcpetion with {@code null} as its detail message. The cause is not initialized, and
      * may subsequently be initialized by a call to {@link #initCause}.
@@ -28,7 +29,7 @@ public class SimulationExcpetion extends RuntimeException {
     public SimulationExcpetion() {
         super();
     }
-
+ *
     /**
      * Constructs a new SimulationExcpetion with the specified detail message. The cause is not initialized, and may
      * subsequently be initialized by a call to {@link #initCause}.
@@ -39,7 +40,7 @@ public class SimulationExcpetion extends RuntimeException {
     public SimulationExcpetion(final String message) {
         super(message);
     }
-
+ *
     /**
      * Constructs a new SimulationExcpetion with the specified cause and a detail message of
      * {@code (cause==null ? null : cause.toString())} (which typically contains the class and detail message of
@@ -54,7 +55,7 @@ public class SimulationExcpetion extends RuntimeException {
     public SimulationExcpetion(final Throwable cause) {
         super(cause);
     }
-
+ *
     /**
      * Constructs a new SimulationExcpetion with the specified detail message and cause. *
      *

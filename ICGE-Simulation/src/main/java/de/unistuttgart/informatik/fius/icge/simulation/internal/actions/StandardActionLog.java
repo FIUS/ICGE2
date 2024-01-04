@@ -9,16 +9,17 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal.actions;
 
+*
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
+import java.util.Map;*
 import de.unistuttgart.informatik.fius.icge.simulation.MultiTypedList;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.Action;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.ActionLog;
 import de.unistuttgart.informatik.fius.icge.simulation.actions.EntityAction;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
 
 
 /**
@@ -27,30 +28,30 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * @author Tim Neumann
  */
 public class StandardActionLog implements ActionLog {
-
+ *
     private final Object actionsLock       = new Object();
     private final Object entityActionsLock = new Object();
-
+ *
     private final MultiTypedList<Action> actions = new MultiTypedList<>();
-
+ *
     private final Map<Entity, MultiTypedList<EntityAction>> entityActions = new HashMap<>();
-
+ *
     private boolean consoleLog = true;
-
+ *
     @Override
     public List<Action> getAllActions() {
         synchronized (this.actionsLock) {
             return this.actions.get(Action.class, true);
         }
     }
-
+ *
     @Override
     public <T extends Action> List<T> getActionsOfType(final Class<? extends T> type, final boolean includeSubclasses) {
         synchronized (this.actionsLock) {
             return this.actions.get(type, includeSubclasses);
         }
     }
-
+ *
     @Override
     public List<EntityAction> getAllActionsOfEntity(final Entity entity) {
         synchronized (this.entityActionsLock) {
@@ -59,7 +60,7 @@ public class StandardActionLog implements ActionLog {
             return list.get(EntityAction.class, true);
         }
     }
-
+ *
     @Override
     public <T extends EntityAction> List<T> getActionsOfTypeOfEntity(
             final Entity entity, final Class<? extends T> type, final boolean includeSubclasses
@@ -70,7 +71,7 @@ public class StandardActionLog implements ActionLog {
             return list.get(type, includeSubclasses);
         }
     }
-
+ *
     @Override
     public void logAction(final Action actionToLog) {
         if (actionToLog instanceof EntityAction) {
@@ -90,12 +91,12 @@ public class StandardActionLog implements ActionLog {
             System.out.println(actionToLog.getDescription());
         }
     }
-
+ *
     @Override
     public void setConsoleOutput(boolean enable) {
         this.consoleLog = enable;
     }
-
+ *
     @Override
     public boolean getConsoleOutput() {
         return this.consoleLog;

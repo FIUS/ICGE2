@@ -9,12 +9,13 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.internal;
 
+*
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-
+import java.util.function.Consumer;*
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.Simulation;
 import de.unistuttgart.informatik.fius.icge.simulation.TaskVerifier;
@@ -31,7 +32,7 @@ import de.unistuttgart.informatik.fius.icge.ui.SimulationProxy;
 import de.unistuttgart.informatik.fius.icge.ui.SimulationTreeNode;
 import de.unistuttgart.informatik.fius.icge.ui.TaskInformation;
 import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ClockButtonState;
-import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;
+import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;**
 
 
 /**
@@ -43,30 +44,26 @@ import de.unistuttgart.informatik.fius.icge.ui.Toolbar.ControlButtonState;
  * @version 1.0
  */
 public class StandardSimulationProxy implements SimulationProxy {
-
+    *
     /** A lookup table for the simulation times */
     public static final int[] SIMULATION_TIMES = {
             // 0,   1,   2,   3,  4,  5,  6,  7,  8,  9, 10
             1000, 415, 200, 115, 75, 50, 42, 34, 26, 18, 10
             // These values are aproximated by two functions originally by haslersn which where modified by waeltkts
-    };
-
+    };*
     // GAME WINDOW
     private GameWindow gameWindow;
-    private boolean    stopSimulationWithWindowClose = false;
-
+    private boolean    stopSimulationWithWindowClose = false;*
     // MANAGERS
-    private final InspectionManager inspectionManager;
-
+    private final InspectionManager inspectionManager;*
     // CURRENT SIMULATION
-    private final Simulation                      simulation;
-    private final StandardEntityTypeRegistry      entityTypeRegistry;
-    private final StandardSimulationClock         simulationClock;
-    private final StandardPlayfield               playfield;
-    private final TaskVerifier                    taskVerifier;
-    private final Map<SimulationTreeNode, Entity> simualtionSidebarMap;
-
-    private Entity entityToInspect;
+    private final Simulation                    simulation;
+    private final StandardEntityTypeRegistry    entityTypeRegistry;
+    private final StandardSimulationClock       simulationClock;
+    private final StandardPlayfield             playfield;
+    private final TaskVerifier                  taskVerifier;
+    private final Map<SimulationTreeNode, Entity> simualtionSidebarMap;*
+    private Entity entityToInspect;*
 
     /**
      * Create a new standard simulation proxy
@@ -95,7 +92,7 @@ public class StandardSimulationProxy implements SimulationProxy {
         this.playfield = playfield;
         this.taskVerifier = taskVerifier;
         this.simualtionSidebarMap = new ConcurrentHashMap<>();
-
+ *
         // attach tick listeners to simulation clock
         // only do this once per SimulationProxy as unsetting these listeners is not possible atm
         this.simulationClock.setAnimationTickListener(new Consumer<Long>() {
@@ -106,24 +103,24 @@ public class StandardSimulationProxy implements SimulationProxy {
                 }
             }
         });
-
+ *
         this.simulationClock.registerPostTickListener(unused -> {
             updateEntityInspector();
             return true; // post tick listener could be removed by returning false here
         });
-    }
+    }*
 
     @Override
     public void attachToGameWindow(final GameWindow window) {
         this.attachToGameWindow(window, false);
-    }
+    }*
 
     @Override
     public void attachToGameWindow(final GameWindow window, final boolean stopWithWindowClose) {
         if (this.gameWindow != null) throw new IllegalStateException("Already attached to a window!");
         this.gameWindow = window;
         this.stopSimulationWithWindowClose = stopWithWindowClose;
-
+ *
         //Simulation Clock
         if (this.simulationClock.isRunning()) {
             this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
@@ -131,21 +128,21 @@ public class StandardSimulationProxy implements SimulationProxy {
             this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
         }
         this.simulationSpeedChange(this.gameWindow.getToolbar().getSpeedSliderPosition());
-
+ *
         this.simulationClock.setStateChangeListener(new StateChangeListener() {
             @Override
             public void clockStarted() {
                 StandardSimulationProxy.this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
             }
-
+ *
             @Override
             public void clockPaused() {
                 StandardSimulationProxy.this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
             }
         });
-
+ *
         //EntityDrawing
-
+ *
         this.playfield.setDrawablesChangedListener(new Consumer<List<Drawable>>() {
             @Override
             public void accept(final List<Drawable> drawables) {
@@ -154,10 +151,10 @@ public class StandardSimulationProxy implements SimulationProxy {
                 }
             }
         });
-
+ *
         //ControlButtonState
         this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.VIEW);
-
+ *
         //EntitySelection
         this.entityTypeRegistry.setEntityRegisteredListener((entityName, textureHandle) -> {
             if (StandardSimulationProxy.this.gameWindow != null) {
@@ -175,7 +172,7 @@ public class StandardSimulationProxy implements SimulationProxy {
         } catch (@SuppressWarnings("unused") final NullPointerException e) {
             // catching exception instead of checking before allows to avoid synchronization here
         }
-
+ *
         this.gameWindow.getEntitySidebar().setSimulationTreeRootNode(this.playfield.getSimulationTree());
         this.gameWindow.getEntitySidebar().enableSimulationTree();
         this.playfield.setSimulationTreeEntityAddedListener((node, entity) -> {
@@ -186,18 +183,18 @@ public class StandardSimulationProxy implements SimulationProxy {
             this.simualtionSidebarMap.remove(node);
             this.gameWindow.getEntitySidebar().updateSimulationTree();
         });
-
+ *
         this.gameWindow.getEntitySidebar().disableEntityInspector();
-
+ *
         // taskState
         TaskInformation task = null;
         if (this.taskVerifier != null) {
             task = this.taskVerifier.getTaskInformation();
         }
         this.gameWindow.getTaskStatusDisplay().setTaskInformation(task);
-
+ *
         this.gameWindow.setSimulationProxy(this);
-    }
+    }*
 
     @Override
     public void windowClosed() {
@@ -208,15 +205,15 @@ public class StandardSimulationProxy implements SimulationProxy {
         this.playfield.removeSimulationTreeEntityAddedListener();
         this.playfield.removeSimulationTreeEntityRemovedListener();
         this.entityTypeRegistry.removeEntityRegisteredListener();
-
+ *
         // remove gameWindow reference
         this.gameWindow = null;
-
+ *
         // stop simulation
         if (this.stopSimulationWithWindowClose) {
             this.simulation.stop();
         }
-    }
+    }*
 
     @Override
     public void buttonPressed(final ButtonType type) {
@@ -227,7 +224,7 @@ public class StandardSimulationProxy implements SimulationProxy {
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PLAYING);
                 break;
-
+ *
             case STEP:
                 if (!this.simulationClock.isRunning()) {
                     this.simulationClock.step();
@@ -236,37 +233,37 @@ public class StandardSimulationProxy implements SimulationProxy {
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
                 break;
-
+ *
             case PAUSE:
                 if (this.simulationClock.isRunning()) {
                     this.simulationClock.stopInternal();
                 }
                 this.gameWindow.getToolbar().setClockButtonState(ClockButtonState.PAUSED);
                 break;
-
+ *
             case VIEW:
                 this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.VIEW);
                 this.gameWindow.getPlayfieldDrawer().setSelectedTool(ControlButtonState.VIEW);
                 break;
-
+ *
             case ADD:
                 this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.ADD);
                 this.gameWindow.getPlayfieldDrawer().setSelectedTool(ControlButtonState.ADD);
                 break;
-
+ *
             case SUB:
                 this.gameWindow.getToolbar().setControlButtonState(ControlButtonState.SUB);
                 this.gameWindow.getPlayfieldDrawer().setSelectedTool(ControlButtonState.SUB);
                 break;
-
+ *
             default:
         }
-    }
+    }*
 
     @Override
     public void simulationSpeedChange(final int value) {
         this.simulationClock.setPeriod(StandardSimulationProxy.SIMULATION_TIMES[value]);
-    }
+    }*
 
     @Override
     public void selectedEntityChanged(final String name) {
@@ -274,9 +271,9 @@ public class StandardSimulationProxy implements SimulationProxy {
         if ((name != null) && !name.equals("")) {
             textureHandle = this.entityTypeRegistry.getTextureHandleOfEntityType(name);
         }
-
+ *
         this.gameWindow.getPlayfieldDrawer().setSelectedEntityType(name, textureHandle);
-    }
+    }*
 
     @Override
     public void refreshTaskInformation() {
@@ -286,7 +283,7 @@ public class StandardSimulationProxy implements SimulationProxy {
             task = this.taskVerifier.getTaskInformation();
         }
         this.gameWindow.getTaskStatusDisplay().setTaskInformation(task);
-    }
+    }*
 
     @Override
     public void spawnEntityAt(final String typeName, final int x, final int y) {
@@ -301,12 +298,12 @@ public class StandardSimulationProxy implements SimulationProxy {
             System.out.println("Something went wrong while creating new entity.");
             e.printStackTrace();
         }
-    }
+    }*
 
     @Override
     public void clearCell(final int x, final int y) {
         final List<Entity> toRemove = this.playfield.getEntitiesAt(new Position(x, y));
-
+ *
         toRemove.forEach(entity -> {
             try {
                 this.playfield.removeEntity(entity);
@@ -314,11 +311,11 @@ public class StandardSimulationProxy implements SimulationProxy {
                 // nothing to do because entity was either null or already not on the field
             }
         });
-    }
+    }*
 
     private EntityInspectorEntry[] getEntries(final Entity e) {
         final List<EntityInspectorEntry> result = new ArrayList<>();
-
+ *
         for (final String name : this.inspectionManager.getAttributeNamesOfEntity(e)) {
             String type = "string";
             if (!this.inspectionManager.isAttributeEditable(e, name)) {
@@ -337,7 +334,7 @@ public class StandardSimulationProxy implements SimulationProxy {
                 this.updateEntityInspector();
             }));
         }
-
+ *
         for (final String name : this.inspectionManager.getMethodNamesOfEntity(e)) {
             final String type = "function";
             result.add(new EntityInspectorEntry(name, type, "", unused -> {
@@ -348,13 +345,13 @@ public class StandardSimulationProxy implements SimulationProxy {
             }));
         }
         return result.toArray(new EntityInspectorEntry[result.size()]);
-    }
+    }*
 
     private void updateEntityInspector() {
         if (this.gameWindow == null) return;
         if (this.entityToInspect == null) return;
         this.gameWindow.getEntitySidebar().setEntityInspectorEntries(this.getEntries(this.entityToInspect));
-    }
+    }*
 
     @Override
     public void selectedSimulationEntityChange(final SimulationTreeNode node) {
@@ -363,7 +360,7 @@ public class StandardSimulationProxy implements SimulationProxy {
         } else {
             this.entityToInspect = this.simualtionSidebarMap.get(node);
         }
-
+ *
         if (this.entityToInspect != null) {
             this.gameWindow.getEntitySidebar().enableEntityInspector();
             this.gameWindow.getEntitySidebar().setEntityInspectorName(this.entityToInspect.toString());
@@ -373,7 +370,7 @@ public class StandardSimulationProxy implements SimulationProxy {
             this.gameWindow.getEntitySidebar().setEntityInspectorEntries(new EntityInspectorEntry[0]);
             this.gameWindow.getEntitySidebar().disableEntityInspector();
         }
-    }
+    }*
 
     @Override
     public void entityValueChange(final String name, final String value) {

@@ -9,25 +9,26 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
+*
 /**
  * This exception indicates that the element already exists.
  *
  * @author Tim Neumann
  */
 public class ElementExistsException extends IllegalArgumentException {
-
+ *
     /**
      * generated
      */
     private static final long serialVersionUID = -564159508677510779L;
-
+ *
     /**
      * Constructs an <code>ElementExistsException</code> with no detail message.
      */
     public ElementExistsException() {
         super();
     }
-
+ *
     /**
      * Constructs an <code>ElementExistsException</code> with the specified detail message.
      *

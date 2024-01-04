@@ -9,9 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
+*
+
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.CollectableEntity;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
 
 
 /**
@@ -20,11 +22,11 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * @author Tim Neumann
  */
 public class EntityDropAction extends EntityAction {
-
+ *
     private final CollectableEntity dropped;
     private final Position          dropperPos;
     private final Position          dropppedPos;
-
+ *
     /**
      * Create an entity drop action.
      *
@@ -49,32 +51,32 @@ public class EntityDropAction extends EntityAction {
         this.dropppedPos = droppedPos;
         this.dropperPos = dropperPos;
     }
-
+ *
     /**
      * @return the entity that was dropped
      */
     public CollectableEntity getDroppedEntity() {
         return this.dropped;
     }
-
+ *
     /**
      * @return the position the dropped entity was dropped to
      */
     public Position getDroppedEntityPosition() {
         return this.dropppedPos;
     }
-
+ *
     /**
      * @return the position the dropper was at while dropping
      */
     public Position getDropperPosition() {
         return this.dropperPos;
     }
-
+ *
     @Override
     public String getDescription() {
         return this.getEntity() + " (at " + this.getDropperPosition() + ") dropped " + this.getDroppedEntity() + " at "
                 + this.getDroppedEntityPosition();
     }
-
+ *
 }

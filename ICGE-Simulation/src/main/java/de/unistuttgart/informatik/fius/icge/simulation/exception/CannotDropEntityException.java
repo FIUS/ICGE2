@@ -9,18 +9,19 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
+*
 /**
  * This exception indicates that an entity program cannot be run.
  *
  * @author Tim Neumann
  */
 public class CannotDropEntityException extends SimulationExcpetion {
-
+ *
     /**
      * generated
      */
     private static final long serialVersionUID = 8237903756645049779L;
-
+ *
     /**
      * Constructs a new CannotDropEntityException with {@code null} as its detail message. The cause is not initialized,
      * and may subsequently be initialized by a call to {@link #initCause}.
@@ -28,7 +29,7 @@ public class CannotDropEntityException extends SimulationExcpetion {
     public CannotDropEntityException() {
         super();
     }
-
+ *
     /**
      * Constructs a new CannotDropEntityException with the specified detail message. The cause is not initialized, and
      * may subsequently be initialized by a call to {@link #initCause}.
@@ -39,7 +40,7 @@ public class CannotDropEntityException extends SimulationExcpetion {
     public CannotDropEntityException(final String message) {
         super(message);
     }
-
+ *
     /**
      * Constructs a new CannotDropEntityException with the specified cause and a detail message of
      * {@code (cause==null ? null : cause.toString())} (which typically contains the class and detail message of
@@ -54,7 +55,7 @@ public class CannotDropEntityException extends SimulationExcpetion {
     public CannotDropEntityException(final Throwable cause) {
         super(cause);
     }
-
+ *
     /**
      * Constructs a new CannotDropEntityException with the specified detail message and cause.
      *

@@ -9,10 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
-import java.io.InputStream;
-import java.util.function.Function;
+*
 
-import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;
+import java.io.InputStream;
+import java.util.function.Function;*
+import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundException;**
 
 
 /**
@@ -21,7 +22,7 @@ import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundExceptio
  * @author Tim Neumann
  */
 public interface TextureRegistry {
-
+ *
     /**
      * Load an image from an internal resource as texture and return the handle to the texture.
      *
@@ -42,7 +43,7 @@ public interface TextureRegistry {
      *     the texture could not be loaded from the given resource location
      */
     String loadTextureFromResource(String resourceName, final Function<String, InputStream> resourceProvider);
-
+ *
     /**
      * Create a new animated texture with the animation length in render ticks.
      *
@@ -53,7 +54,7 @@ public interface TextureRegistry {
      * @return the handle to retrieve the texture
      */
     String createAnimatedTexture(boolean loop);
-
+ *
     /**
      * Add a animation frame to an animated texture.
      *
@@ -65,7 +66,7 @@ public interface TextureRegistry {
      *     the number of frames to show this texture
      */
     void addAnimationFrameToTexture(String animatedTexture, String frameTexture, long frames);
-
+ *
     /**
      * Check if a texture is animated.
      *
@@ -74,7 +75,7 @@ public interface TextureRegistry {
      * @return true iff the texture is animated
      */
     boolean isTextureAnimated(String textureHandle);
-
+ *
     /**
      * Load an image from a file path as texture and return the handle to the texture.
      *

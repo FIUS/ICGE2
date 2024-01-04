@@ -8,10 +8,10 @@
  * SPDX-License-Identifier:    MIT
  */
 package de.unistuttgart.informatik.fius.icge.simulation.entity;
-
+ *
 import de.unistuttgart.informatik.fius.icge.simulation.MultiTypedList;
-
-
+ *
+ *
 /**
  * An inventory of a entity.
  *

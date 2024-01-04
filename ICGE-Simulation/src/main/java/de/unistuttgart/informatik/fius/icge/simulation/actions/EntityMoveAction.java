@@ -9,8 +9,10 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
+*
+
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
 
 
 /**
@@ -21,10 +23,10 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * @see EntityTeleportAction
  */
 public abstract class EntityMoveAction extends EntityAction {
-
+ *
     private final Position from;
     private final Position to;
-
+ *
     /**
      * Create an entity move action.
      *
@@ -42,14 +44,14 @@ public abstract class EntityMoveAction extends EntityAction {
         this.from = from;
         this.to = to;
     }
-
+ *
     /**
      * @return the position the entity was at before the move
      */
     public Position from() {
         return this.from;
     }
-
+ *
     /**
      * @return the position the entity is after the move
      */

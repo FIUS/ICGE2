@@ -9,16 +9,17 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui.internal;
 
+*
 /**
  * Enum to identify different standard styles for the ConsoleBufferedOutputStream
  *
  * @author David Ruff
  */
 public enum OutputStyle {
-
+ *
     /** Standard Style for text from stdout */
     STANDARD,
-
+ *
     /** Style for text from stderr (e.g. errors) */
     ERROR
 }

@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.exception;
 
+*
 /**
  * This exception indicates, that a entity could not move.
  * <p>
@@ -22,7 +23,7 @@ public class IllegalMoveException extends SimulationExcpetion {
      * generated
      */
     private static final long serialVersionUID = -4781899414191823139L;
-
+ *
     /**
      * Constructs a new IllegalMoveException with {@code null} as its detail message. The cause is not initialized, and
      * may subsequently be initialized by a call to {@link #initCause}.
@@ -30,7 +31,7 @@ public class IllegalMoveException extends SimulationExcpetion {
     public IllegalMoveException() {
         super();
     }
-
+ *
     /**
      * Constructs a new IllegalMoveException with the specified detail message. The cause is not initialized, and may
      * subsequently be initialized by a call to {@link #initCause}.
@@ -41,7 +42,7 @@ public class IllegalMoveException extends SimulationExcpetion {
     public IllegalMoveException(final String message) {
         super(message);
     }
-
+ *
     /**
      * Constructs a new IllegalMoveException with the specified detail message and cause. *
      *

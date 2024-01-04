@@ -9,9 +9,11 @@
  */
 package de.unistuttgart.informatik.fius.icge.simulation.actions;
 
+*
+
 import de.unistuttgart.informatik.fius.icge.simulation.Position;
 import de.unistuttgart.informatik.fius.icge.simulation.entity.CollectableEntity;
-import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
+import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;**
 
 
 /**
@@ -20,11 +22,11 @@ import de.unistuttgart.informatik.fius.icge.simulation.entity.Entity;
  * @author Tim Neumann
  */
 public class EntityCollectAction extends EntityAction {
-
+ *
     private final CollectableEntity collected;
     private final Position          collectorPos;
     private final Position          collectedPos;
-
+ *
     /**
      * Create an entity collect action.
      *
@@ -49,32 +51,32 @@ public class EntityCollectAction extends EntityAction {
         this.collectedPos = collectedPos;
         this.collectorPos = collectorPos;
     }
-
+ *
     /**
      * @return the entity that was collected
      */
     public CollectableEntity getCollectedEntity() {
         return this.collected;
     }
-
+ *
     /**
      * @return the position the collected entity was at while being collected
      */
     public Position getCollectedEntityPosition() {
         return this.collectedPos;
     }
-
+ *
     /**
      * @return the position the collector was at while collecting
      */
     public Position getCollectorPosition() {
         return this.collectorPos;
     }
-
+ *
     @Override
     public String getDescription() {
         return this.getEntity() + " (at " + this.getCollectorPosition() + ") collected " + this.getCollectedEntity() + " at "
                 + this.getCollectedEntityPosition();
     }
-
+ *
 }

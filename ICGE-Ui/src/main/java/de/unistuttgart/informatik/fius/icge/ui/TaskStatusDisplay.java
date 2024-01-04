@@ -9,6 +9,7 @@
  */
 package de.unistuttgart.informatik.fius.icge.ui;
 
+*
 /**
  * The task status used by a {@link GameWindow} to show the current task status.
  *
@@ -16,7 +17,7 @@ package de.unistuttgart.informatik.fius.icge.ui;
  * @version 1.0
  */
 public interface TaskStatusDisplay {
-
+ *
     /**
      * Set the task information to be displayed.
      *
