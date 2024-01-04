@@ -16,7 +16,7 @@ import de.unistuttgart.informatik.fius.icge.ui.exception.TextureNotFoundExceptio
 
 /**
  * The enum for all builtin mario textures.
- * 
+ *
  * @author Tim Neumann
  */
 public enum Texture {

@@ -9,10 +9,8 @@
  */
 package de.unistuttgart.informatik.fius.icge.manualstart;
 
-*
-
 import de.unistuttgart.informatik.fius.icge.ui.GameWindow;
-import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;**
+import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;
 
 
 /**
@@ -21,7 +19,7 @@ import de.unistuttgart.informatik.fius.icge.ui.WindowBuilder;**
  * @author Tim Neumann
  */
 public class ManualStartUi {
- *
+
     /**
      * Main entry point of the program
      *
@@ -31,7 +29,7 @@ public class ManualStartUi {
     public static void main(final String[] args) {
         ManualStartUi.newStyleBuilder();
     }
- *
+
     private static void newStyleBuilder() {
         final WindowBuilder wb = new WindowBuilder();
         wb.setTitle("Window Builder start!");
