@@ -61,6 +61,13 @@
                                 <goal>jar</goal>
                             </goals>
                         </execution>
+                        <execution>
+                            <id>bundle-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
                     </executions>
                 </plugin>
                 <plugin>
