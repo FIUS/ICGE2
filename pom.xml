@@ -189,5 +189,11 @@
             <organization>University of Stuttgart - Institute of Architecture of Application Systems</organization>
             <organizationUrl>https://www.iaas.uni-stuttgart.de/en/institute/</organizationUrl>
         </developer>
+        <developer>
+            <name>Tim Neumann</name>
+            <email>tim.neumann@stuvus.uni-stuttgart.de</email>
+            <organization>stuvus - Studierendenvertretung Uni Stuttgart</organization>
+            <organizationUrl>https://stuvus.uni-stuttgart.de/</organizationUrl>
+        </developer>
     </developers>
 </project>
