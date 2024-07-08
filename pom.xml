@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.uni-stuttgart.informatik.fius</groupId>
+    <groupId>de.fius</groupId>
     <artifactId>icge</artifactId>
     <version>2.3.8</version>
     <name>Introduction Course Game Engine</name>
@@ -53,7 +53,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.7.0</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -64,30 +64,9 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.1</version>
-                    <configuration>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <groupId>${project.groupId}</groupId>
-                        <version>${icge.version}</version>
-                        <deployAtEnd>false</deployAtEnd>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>deploy-executable</id>
-                            <goals>
-                                <goal>deploy-file</goal>
-                            </goals>
-                            <configuration>
-                                <file>target/*.jar</file>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.3.1</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -111,7 +90,7 @@
                     </configuration>
                     <dependencies>
                         <dependency>
-                            <groupId>de.uni-stuttgart.informatik.fius</groupId>
+                            <groupId>de.fius</groupId>
                             <artifactId>icge-build-tools</artifactId>
                             <version>${icge.version}</version>
                         </dependency>
@@ -120,6 +99,46 @@
             </plugins>
         </pluginManagement>
     </build>
+    <profiles>
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.5.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -129,28 +148,22 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>de.uni-stuttgart.informatik.fius</groupId>
+                <groupId>de.fius</groupId>
                 <artifactId>icge-ui</artifactId>
                 <version>${icge.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.uni-stuttgart.informatik.fius</groupId>
+                <groupId>de.fius</groupId>
                 <artifactId>icge-simulation</artifactId>
                 <version>${icge.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.uni-stuttgart.informatik.fius</groupId>
+                <groupId>de.fius</groupId>
                 <artifactId>icge-log</artifactId>
                 <version>${icge.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/FIUS/ICGE2</url>
-        </repository>
-    </distributionManagement>
     <modules>
         <module>ICGE-Log</module>
         <module>ICGE-Ui</module>
@@ -158,4 +171,29 @@
         <module>ICGE-ManualStart</module>
         <module>ICGE-build-tools</module>
     </modules>
+    <scm>
+        <connection>scm:git:git://github.com/fius/ICGE2.git</connection>
+        <developerConnection>scm:git:https://github.com/fius/ICGE2.git</developerConnection>
+        <url>https://github.com/fius/ICGE2/tree/master</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Fabian Bühler</name>
+            <email>fabian.buehler@iaas.uni-stuttgart.de</email>
+            <organization>University of Stuttgart - Institute of Architecture of Application Systems</organization>
+            <organizationUrl>https://www.iaas.uni-stuttgart.de/en/institute/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Tim Neumann</name>
+            <email>tim.neumann@stuvus.uni-stuttgart.de</email>
+            <organization>stuvus - Studierendenvertretung Uni Stuttgart</organization>
+            <organizationUrl>https://stuvus.uni-stuttgart.de/</organizationUrl>
+        </developer>
+    </developers>
 </project>
