@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.fius</groupId>
         <artifactId>icge</artifactId>
-        <version>2.3.8</version>
+        <version>2.3.9-Snapshot</version>
     </parent>
     <artifactId>icge-manualstart</artifactId>
     <name>ICGE Manual Start</name>
     <properties>
-        <icge.version>2.3.8</icge.version>
+        <icge.version>2.3.9-Snapshot</icge.version>
     </properties>
     <dependencies>
         <dependency>
